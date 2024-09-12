@@ -22,6 +22,7 @@ import Mypage from "../pages/mypage/Mypage";
 import UserInfoEditPage from "../pages/mypage/UserInfoEditPage";
 import VerificationPage from "../pages/mypage/VerificationPage";
 import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
+import PasswordChangePage from "../pages/auth/PasswordChangePage";
 
 const router: React.FC = () => {
   return (
@@ -33,6 +34,10 @@ const router: React.FC = () => {
         {/*렌딩페이지, 메인페이지 하나로 합쳐서 보여줄까 ? */}
         <Route path="/survey" element={<SurveyPage />} />
         <Route path="/passwordreset" element={<PasswordResetPage />} />
+        <Route
+          path="/passwordreset/:token"
+          element={<PasswordChangePage />}
+        />{" "}
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/contact" element={<ContactPage />} />
