@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../apis/axios";
 import UsAndThem from "../../assets/background/UsAndThem.png";
+// 타입 지정!
 
 const PasswordChangePage: React.FC = () => {
   const { token } = useParams<{ token: string }>(); // URL의 토큰을 가져옴
