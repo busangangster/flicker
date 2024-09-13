@@ -24,7 +24,7 @@ import VerificationPage from "../pages/mypage/VerificationPage";
 import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
 
-const router: React.FC = () => {
+const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
@@ -62,4 +62,4 @@ const router: React.FC = () => {
   );
 };
 
-export default router;
+export default AppRouter;
