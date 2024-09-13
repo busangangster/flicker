@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.NoSuchElementException;
 
 @Entity
 @Builder
@@ -17,16 +19,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberSeq;
+    private Long userSeq;
 
     @Column(nullable = false)
     private String userName;
     private String email;
     private String hashedPass;
-//    private String fullName;
     private String nickname;
     private LocalDate birthDate;
-//    private Integer age;
     private Character gender;
     private String profilePhotoUrl;
 
@@ -39,4 +39,12 @@ public class User {
      */
     @Embedded
     private Role role;
+
+    public Integer getAge(){
+        if(this.birthDate == null){
+            throw new NoSuchElementException();
+        }
+        LocalDate now = LocalDate.now();
+        return Period.between(this.birthDate, now).getYears();
+    }
 }
