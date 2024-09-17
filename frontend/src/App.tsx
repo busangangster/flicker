@@ -1,12 +1,12 @@
+// App.tsx
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import AppRouter from "./router/AppRouter";
+import Router from "./router/AppRouter";
 
-const App: React.FC = () => {
+const App = () => {
   return (
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
+    <div>
+      <Router />
+    </div>
   );
 };
 
