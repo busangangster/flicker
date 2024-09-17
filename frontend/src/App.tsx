@@ -1,9 +1,13 @@
-import React from 'react'
+// App.tsx
+import React from "react";
+import Router from "./router/router";
 
 const App = () => {
   return (
-    <div>App</div>
-  )
-}
+    <div>
+      <Router /> 
+    </div>
+  );
+};
 
-export default App
+export default App;
