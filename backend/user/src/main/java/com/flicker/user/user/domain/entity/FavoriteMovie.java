@@ -40,4 +40,6 @@ public class FavoriteMovie {
         this.createdAt = LocalDateTime.now();
         this.isActive = 1;
     }
+
+
 }
