@@ -47,13 +47,17 @@ const AppRouter: React.FC = () => {
         <Route path="/recommend" element={<RecommendPage />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/search" element={<SearchPage />} />{" "}
+        <Route
+          // path="/photocarddetail/:movieName"
+          path="/photocarddetail"
+          element={<PhotoCardDetailPage />}
+        />
         {/* 경로 검색어 수정 해야함!*/}
         <Route path="/mypage" element={<Mypage />}>
           <Route path="favorite" element={<FavoritePage />} />
           <Route path="myinformation" element={<MyInformaitonPage />} />
-          <Route path="phtotobook" element={<PhotoBookPage />} />
+          <Route path="photobook" element={<PhotoBookPage />} />
           <Route path="photocard" element={<PhotoCardPage />} />
-          <Route path="photocarddetail" element={<PhotoCardDetailPage />} />
           <Route path="userinfoedit" element={<UserInfoEditPage />} />
           <Route path="verification" element={<VerificationPage />} />
         </Route>
