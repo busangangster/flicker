@@ -19,9 +19,12 @@ public enum StatusCode {
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, 405, "중복된 이메일 입니다."),
     DUPLICATE_ID(HttpStatus.BAD_REQUEST, 406, "중복된 아이디 입니다."),
     INVALID_ID_OR_PASSWORD(HttpStatus.BAD_REQUEST, 407, "아이디/비밀번호가 일치하지 않습니다."),
+    VALUE_CANT_NULL(HttpStatus.BAD_REQUEST, 408, "값을 반드시 입력해야 합니다."),
+
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버에서 처리 중 에러가 발생했습니다."),
     SERVICE_STOP(HttpStatus.INTERNAL_SERVER_ERROR, 501, "현재 서버가 이용 불가능 상태입니다.");
+
 
 
     private final HttpStatus httpStatus;

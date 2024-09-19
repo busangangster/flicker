@@ -1,6 +1,6 @@
 package com.flicker.user.common.exception;
 
-import com.common.demo.module.status.StatusCode;
+import com.flicker.user.common.status.StatusCode;
 import lombok.Getter;
 
 @Getter

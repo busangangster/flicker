@@ -1,7 +1,7 @@
 package com.flicker.user.common.exception;
 
-import com.common.demo.module.response.ResponseDto;
-import com.common.demo.module.status.StatusCode;
+import com.flicker.user.common.response.ResponseDto;
+import com.flicker.user.common.status.StatusCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,13 +25,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RestApiException.class)
     public ResponseEntity<ResponseDto> handleRestApiException(RestApiException ex) {
-        return handleExceptionInternal(ex.getStatusCode());
+        return CustomHandleExceptionInternal(ex.getStatusCode(),ex.getData());
     }
 
     private ResponseEntity<ResponseDto> handleExceptionInternal(StatusCode errorCode) {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(new ResponseDto(errorCode,null));
+    }
+
+    private ResponseEntity<ResponseDto> CustomHandleExceptionInternal(StatusCode errorCode, Object data) {
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(new ResponseDto(errorCode,data));
     }
 
 }
