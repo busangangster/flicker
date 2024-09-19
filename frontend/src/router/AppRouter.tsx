@@ -24,7 +24,7 @@ import VerificationPage from "../pages/mypage/VerificationPage";
 import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
 
-const AppRouter: React.FC = () => {
+const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="/home" element={<MainPage />} />
@@ -60,4 +60,4 @@ const AppRouter: React.FC = () => {
   );
 };
 
-export default AppRouter;
+export default AppRoutes;
