@@ -1,9 +1,9 @@
-package com.flicker.common.module;
+package com.flicker.movie.common.module;
 
 
-import com.flicker.common.module.exception.RestApiException;
-import com.flicker.common.module.response.ResponseDto;
-import com.flicker.common.module.status.StatusCode;
+import com.flicker.movie.common.module.exception.RestApiException;
+import com.flicker.movie.common.module.response.ResponseDto;
+import com.flicker.movie.common.module.status.StatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

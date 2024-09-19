@@ -1,7 +1,7 @@
 package com.flicker.movie.movie.domain.entity;
 
-import com.flicker.common.module.exception.RestApiException;
-import com.flicker.common.module.status.StatusCode;
+import com.flicker.movie.common.module.exception.RestApiException;
+import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,7 +43,7 @@ public class Movie {
     }
 
     // 영화에 배우 추가
-    public void addActor(Actor actor) {
+    private void addActor(Actor actor) {
         actor.setMovie(this);  // 양방향 관계 설정 (Actor 객체가 이 영화에 속해 있음을 명시)
         this.actors.add(actor);  // 배우 리스트에 새로운 배우 추가
     }
@@ -53,10 +53,21 @@ public class Movie {
         actorList.forEach(this::addActor);  // 전달된 배우 리스트를 하나씩 영화에 추가
     }
 
+    // 배우 조회
+    public Actor getActor(int actorSeq) {
+        // actors 리스트에서 해당 배우를 찾아 반환
+        return this.actors.stream()
+                .filter(a -> a.getActorSeq() == actorSeq)  // 배우 번호로 필터링
+                .findFirst()
+                .orElseThrow(() -> new RestApiException(StatusCode.NOT_FOUND, "해당 배우 정보를 찾을 수 없습니다."));
+    }
+
     // 영화에서 배우 제거
-    public void removeActor(Actor actor) {
-        this.actors.remove(actor);  // 배우 리스트에서 해당 배우를 제거
-        actor.setMovie(null);  // 양방향 관계 해제 (Actor 객체에서 영화와의 관계를 끊음)
+    public void removeActor(int actorSeq) {
+        // actors 리스트에서 해당 배우를 찾아 제거
+        Actor removeActor = this.getActor(actorSeq);
+        this.actors.remove(removeActor);  // 배우 리스트에서 해당 배우를 제거
+        removeActor.setMovie(null);  // 양방향 관계 해제 (Actor 객체에서 영화와의 관계를 끊음)
     }
 
     // 영화 상세 정보 업데이트 (불변 객체 MovieDetail을 새로 생성해서 할당)
@@ -73,7 +84,7 @@ public class Movie {
     public void updateMovieRating(double newRating) {
         newRating = Math.round(newRating * 10) / 10.0;
         if(newRating < 0 || newRating > 5) {
-            throw new RestApiException(StatusCode.BAD_REQUEST, "영화 평점은 0~5사이여야 합니다.");
+            throw new RestApiException(StatusCode.BAD_REQUEST, "영화 평점은 0~5 사이여야 합니다.");
         }
         this.movieRating = newRating;  // 영화 평점을 새로운 값으로 업데이트
     }

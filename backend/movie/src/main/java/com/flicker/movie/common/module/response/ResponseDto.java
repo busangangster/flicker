@@ -1,6 +1,6 @@
-package com.flicker.common.module.response;
+package com.flicker.movie.common.module.response;
 
-import com.flicker.common.module.status.StatusCode;
+import com.flicker.movie.common.module.status.StatusCode;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 

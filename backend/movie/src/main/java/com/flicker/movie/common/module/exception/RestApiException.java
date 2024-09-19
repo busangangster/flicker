@@ -1,7 +1,7 @@
-package com.flicker.common.module.exception;
+package com.flicker.movie.common.module.exception;
 
 
-import com.flicker.common.module.status.StatusCode;
+import com.flicker.movie.common.module.status.StatusCode;
 import lombok.Getter;
 
 @Getter

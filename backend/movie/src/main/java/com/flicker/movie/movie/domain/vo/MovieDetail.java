@@ -1,7 +1,7 @@
 package com.flicker.movie.movie.domain.vo;
 
-import com.flicker.common.module.exception.RestApiException;
-import com.flicker.common.module.status.StatusCode;
+import com.flicker.movie.common.module.exception.RestApiException;
+import com.flicker.movie.common.module.status.StatusCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

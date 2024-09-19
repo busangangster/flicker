@@ -1,7 +1,7 @@
 package com.flicker.movie.movie.domain.entity;
 
-import com.flicker.common.module.exception.RestApiException;
-import com.flicker.common.module.status.StatusCode;
+import com.flicker.movie.common.module.exception.RestApiException;
+import com.flicker.movie.common.module.status.StatusCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,25 +33,27 @@ public class Actor {
     }
 
     // 배우 정보 변경 메서드 (비즈니스 로직)
-    public void updateActor(String newRole, String newActorName) {
+    public void updateActor(String newActorName, String newRole) {
+        validate(newActorName, newRole); // 유효성 검증
         this.role = newRole; // 배우의 역할을 업데이트
         this.actorName = newActorName; // 배우 이름을 업데이트
     }
 
-    // 빌더 내부에서 유효성 검증 메서드 추가
+    // 빌더 내부에서 유효성 검증
     public static class ActorBuilder {
         public Actor build() {
-            validate();  // 빌드 시 유효성 검증 수행
+            validate(actorName, role);  // 빌드 시 유효성 검증 수행
             return new Actor(actorSeq, actorName, role, movie);
         }
 
-        // 유효성 검증 메서드
-        private void validate() {
-            if (actorName == null || actorName.length() > 255) {
-                throw new RestApiException(StatusCode.BAD_REQUEST, "배우 이름을 확인해주세요 (길이초과 또는 null)");
-            } else if (role != null && role.length() > 255) {
-                throw new RestApiException(StatusCode.BAD_REQUEST, "배우 역할을 확인해주세요 (길이초과)");
-            }
+    }
+
+    // 유효성 검증 메서드
+    private static void validate(String actorName, String role) {
+        if (actorName == null || actorName.length() > 255) {
+            throw new RestApiException(StatusCode.BAD_REQUEST, "배우 이름을 확인해주세요 (길이초과 또는 null)");
+        } else if (role != null && role.length() > 255) {
+            throw new RestApiException(StatusCode.BAD_REQUEST, "배우 역할을 확인해주세요 (길이초과)");
         }
     }
 }
