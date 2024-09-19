@@ -29,7 +29,6 @@ const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/home" element={<MainPage />} />
-        <Route path="/error" element={<ErrorPage />} />
         <Route path="/landing" element={<LandingPage />} />{" "}
         {/*렌딩페이지, 메인페이지 하나로 합쳐서 보여줄까 ? */}
         <Route path="/survey" element={<SurveyPage />} />
@@ -60,6 +59,7 @@ const AppRouter: React.FC = () => {
           <Route path="photocard" element={<PhotoCardPage />} />
           <Route path="userinfoedit" element={<UserInfoEditPage />} />
           <Route path="verification" element={<VerificationPage />} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
