@@ -1,79 +1,9 @@
-// frontend/src/pages/auth/PasswordResetPage.tsx
-import React, { useState } from "react";
-import axios from "../../apis/axios";
-import UsAndThem from "../../assets/background/UsAndThem.png";
+import React from 'react'
 
-const PasswordResetPage: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      await axios.post("/auth/request-password-reset", { email });
-      setIsModalOpen(true);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      alert("이메일 전송에 실패했습니다. 다시 시도해주세요.");
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
+const PasswordResetPage = () => {
   return (
-    <div
-      className="min-h-screen w-full bg-black flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${UsAndThem})` }}
-    >
-      <form onSubmit={handleSubmit} className="w-full max-w-xl p-8">
-        <h2 className="text-3xl font-bold mb-6 text-white text-center">
-          비밀번호 재설정
-        </h2>
+    <div>PasswordResetPage</div>
+  )
+}
 
-        <input
-          type="email"
-          name="email"
-          placeholder="이메일"
-          value={email}
-          onChange={handleChange}
-          className="w-full py-2 px-4 mb-6 border border-gray-500 rounded bg-black text-white placeholder-gray-400 focus:outline-none"
-        />
-
-        <button
-          type="submit"
-          className="w-full py-2 mb-4 text-white bg-[#4D7FFF] rounded hover:bg-blue-600 focus:outline-none"
-        >
-          인증 메일 전송하기
-        </button>
-      </form>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-600 p-6 rounded-2xl shadow-lg text-center">
-            <h3 className="text-lg text-white font-bold mb-4">알림</h3>
-            <p className="mb-6 text-white">
-              인증 메일이 전송되었습니다. 메일을 확인해주세요.
-            </p>
-            <div className="flex justify-center">
-              <button
-                onClick={closeModal}
-                className="py-2 px-4 bg-[#4D7FFF] text-white rounded-xl hover:bg-blue-600 focus:outline-none"
-              >
-                확인
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default PasswordResetPage;
+export default PasswordResetPage

@@ -1,9 +1,14 @@
-import React from 'react'
+// App.tsx
+import React from "react";
+import AppRouter from "./router/AppRouter.tsx";
+import ErrorBoundaryWrapper from "./components/ErrorBoundary.tsx";
 
 const App = () => {
   return (
-    <div>App</div>
-  )
-}
+    <ErrorBoundaryWrapper>
+      <AppRouter />
+    </ErrorBoundaryWrapper>
+  );
+};
 
-export default App
+export default App;
