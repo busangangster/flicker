@@ -1,12 +1,13 @@
 // App.tsx
 import React from "react";
-import Router from "./router/AppRouter.tsx";
+import AppRouter from "./router/AppRouter.tsx";
+import ErrorBoundaryWrapper from "./components/ErrorBoundary.tsx";
 
 const App = () => {
   return (
-    <div>
-      <Router />
-    </div>
+    <ErrorBoundaryWrapper>
+      <AppRouter />
+    </ErrorBoundaryWrapper>
   );
 };
 
