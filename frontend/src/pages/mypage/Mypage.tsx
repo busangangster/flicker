@@ -1,14 +1,23 @@
-// Mypage.tsx
 import React from "react";
-import { Outlet } from "react-router-dom"; // Outlet을 가져옵니다.
+import { Outlet } from "react-router-dom";
+import Navbar from "../../components/common/Navbar";
+import SideBar from "../../components/SideBar";
 
-const Mypage: React.FC = () => {
+const MyPage: React.FC = () => {
   return (
-    <div>
-      {/* 자식 경로가 렌더링될 위치 */}
-      <Outlet />
+    <div className="min-h-screen flex flex-col">
+      <header className="sticky top-0 bg-black z-10">
+        <Navbar />
+      </header>
+
+      <div className="flex h-screen bg-black text-white">
+        <SideBar />
+        <div className=" items-center justify-center flex h-[900px] flex-grow">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Mypage;
+export default MyPage;
