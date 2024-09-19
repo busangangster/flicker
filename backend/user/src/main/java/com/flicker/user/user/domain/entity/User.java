@@ -1,5 +1,6 @@
 package com.flicker.user.user.domain.entity;
 
+import com.flicker.user.user.domain.UserGrade;
 import com.flicker.user.user.domain.vo.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,6 @@ import java.util.NoSuchElementException;
 
 @Entity
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class User {
 
@@ -30,15 +30,30 @@ public class User {
     private Character gender;
     private String profilePhotoUrl;
 
+    @Embedded
+    private Role role;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer isActive;
 
-    /*
-        role을 반드시 가져야 한다.
-     */
-    @Embedded
-    private Role role;
+    protected User() {
+    }
+
+    public User(LocalDate birthDate, String email, Character gender, String hashedPass, String nickname, String profilePhotoUrl, String userName) {
+        this.birthDate = birthDate;
+        this.email = email;
+        this.gender = gender;
+        this.hashedPass = hashedPass;
+        this.nickname = nickname;
+        this.profilePhotoUrl = profilePhotoUrl;
+        this.userName = userName;
+
+        this.role = new Role(UserGrade.USER);
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.isActive = 1;
+    }
 
     public Integer getAge(){
         if(this.birthDate == null){
