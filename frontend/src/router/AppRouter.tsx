@@ -1,6 +1,6 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainPage from "../pages/MainPage";
+import { Routes, Route } from "react-router-dom";
+import MainPage from "../pages/Home";
 import ErrorPage from "../pages/ErrorPage";
 import LandingPage from "../pages/LandingPage";
 import SurveyPage from "../pages/SurveyPage";
@@ -26,39 +26,37 @@ import PasswordChangePage from "../pages/auth/PasswordChangePage";
 
 const AppRouter: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/home" element={<MainPage />} />
-        <Route path="/error" element={<ErrorPage />} />
-        <Route path="/landing" element={<LandingPage />} />{" "}
-        {/*렌딩페이지, 메인페이지 하나로 합쳐서 보여줄까 ? */}
-        <Route path="/survey" element={<SurveyPage />} />
-        <Route path="/passwordreset" element={<PasswordResetPage />} />
-        <Route
-          path="/passwordreset/:token"
-          element={<PasswordChangePage />}
-        />{" "}
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/servicedetail" element={<ServiceDetailPage />} />
-        <Route path="/moviedetail" element={<MovieDetailPage />} />
-        <Route path="/recommendlist" element={<RecommendListPage />} />
-        <Route path="/recommend" element={<RecommendPage />} />
-        <Route path="/review" element={<ReviewPage />} />
-        <Route path="/search" element={<SearchPage />} />{" "}
-        {/* 경로 검색어 수정 해야함!*/}
-        <Route path="/mypage" element={<Mypage />}>
-          <Route path="favorite" element={<FavoritePage />} />
-          <Route path="myinformation" element={<MyInformaitonPage />} />
-          <Route path="phtotobook" element={<PhotoBookPage />} />
-          <Route path="photocard" element={<PhotoCardPage />} />
-          <Route path="photocarddetail" element={<PhotoCardDetailPage />} />
-          <Route path="userinfoedit" element={<UserInfoEditPage />} />
-          <Route path="verification" element={<VerificationPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/home" element={<MainPage />} />
+      <Route path="/error" element={<ErrorPage />} />
+      <Route path="/landing" element={<LandingPage />} />{" "}
+      {/*렌딩페이지, 메인페이지 하나로 합쳐서 보여줄까 ? */}
+      <Route path="/survey" element={<SurveyPage />} />
+      <Route path="/passwordreset" element={<PasswordResetPage />} />
+      <Route
+        path="/passwordreset/:token"
+        element={<PasswordChangePage />}
+      />{" "}
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/signin" element={<SignInPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/servicedetail" element={<ServiceDetailPage />} />
+      <Route path="/moviedetail" element={<MovieDetailPage />} />
+      <Route path="/recommendlist" element={<RecommendListPage />} />
+      <Route path="/recommend" element={<RecommendPage />} />
+      <Route path="/review" element={<ReviewPage />} />
+      <Route path="/search" element={<SearchPage />} />{" "}
+      {/* 경로 검색어 수정 해야함!*/}
+      <Route path="/mypage" element={<Mypage />}>
+        <Route path="favorite" element={<FavoritePage />} />
+        <Route path="myinformation" element={<MyInformaitonPage />} />
+        <Route path="phtotobook" element={<PhotoBookPage />} />
+        <Route path="photocard" element={<PhotoCardPage />} />
+        <Route path="photocarddetail" element={<PhotoCardDetailPage />} />
+        <Route path="userinfoedit" element={<UserInfoEditPage />} />
+        <Route path="verification" element={<VerificationPage />} />
+      </Route>
+    </Routes>
   );
 };
 
