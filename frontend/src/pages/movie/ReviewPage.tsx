@@ -179,7 +179,7 @@ const ReviewPage: React.FC = () => {
           {/* 포스터 */}
           <div className="mb-6">
             <img
-              src="src/assets/survey/notebook.jpg"
+              src="assets/survey/image20.jpg"
               alt="Movie Poster"
               className="w-full rounded-sm mb-4"
             />

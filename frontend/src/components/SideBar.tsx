@@ -8,7 +8,7 @@ const Sidebar: React.FC = () => {
       <div>MY PAGE</div>
       <div className="flex flex-col items-center my-8 ">
         <img
-          src="/src/assets/George.jpg"
+          src="/assets/George.jpg"
           alt="Profile"
           className="rounded-[90px] w-[220px] h-[170px] mb-2"
         />
@@ -48,9 +48,14 @@ const Sidebar: React.FC = () => {
         >
           Favorites
         </NavLink>
-        <a href="#" className="hover:underline">
+        <NavLink
+          to="/mypage/photobook"
+          className={({ isActive }) =>
+            isActive ? "font-semibold underline" : "hover:underline"
+          }
+        >
           PhotoBook
-        </a>
+        </NavLink>
       </nav>
 
       {/* Logout Button */}

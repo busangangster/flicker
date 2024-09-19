@@ -53,7 +53,7 @@ const MovieDetailPage: React.FC = () => {
         {/* 배경 이미지 영역 */}
         <div
           className="absolute inset-0 h-[650px] w-full bg-cover bg-center"
-          style={{ backgroundImage: "url('src/assets/topgun-bg.png')" }}
+          style={{ backgroundImage: "url('/assets/background/topgun-bg.png')" }}
         >
           <div className="absolute inset-0 bg-black opacity-70"></div>
         </div>
@@ -66,7 +66,7 @@ const MovieDetailPage: React.FC = () => {
           {/* Left Section: Movie Poster and Details */}
           <div className="flex flex-col lg:flex-row">
             <img
-              src="src/assets/topgun-poster.jpg"
+              src="/assets/background/topgun-poster.jpg"
               alt="Movie Poster"
               className="w-[270px] h-[410px] shadow-md border"
             />
@@ -199,7 +199,7 @@ const MovieDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[50px] ml-[80px] mt-[20px]">
+      <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[80px] ml-[80px] mt-[20px]">
         <h2 className="text-[24px] text-white flex mb-[20px]">
           탑건: 매버릭과 유사한 장르 작품들
         </h2>

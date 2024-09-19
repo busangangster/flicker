@@ -6,6 +6,17 @@ import { useNavigate } from "react-router-dom";
 const PhotoBookPage: React.FC = () => {
   const navigate = useNavigate();
 
+  const images = [
+    { src: "/assets/survey/image1.jpg", alt: "Movie 1" },
+    { src: "/assets/survey/image2.jpg", alt: "Movie 2" },
+    { src: "/assets/survey/image3.jpg", alt: "Movie 3" },
+    { src: "/assets/survey/image10.jpg", alt: "Movie 4" },
+    { src: "/assets/survey/image5.jpg", alt: "Movie 5" },
+    { src: "/assets/survey/image6.jpg", alt: "Movie 6" },
+    { src: "/assets/survey/image7.jpg", alt: "Movie 7" },
+    { src: "/assets/survey/image8.jpg", alt: "Movie 8" },
+  ];
+
   // 목업 데이터 설정
   const pages = [
     {
@@ -33,53 +44,21 @@ const PhotoBookPage: React.FC = () => {
       content: (
         <div className="grid grid-cols-4 gap-4 p-4">
           {/* 8개의 영화 포스터를 두 페이지에 배치 */}
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+1"
-            alt="Movie 1"
-            className="border rounded-md"
-          />
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+2"
-            alt="Movie 2"
-            className="border rounded-md"
-          />
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+3"
-            alt="Movie 3"
-            className="border rounded-md"
-          />
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+4"
-            alt="Movie 4"
-            className="border rounded-md"
-          />
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+5"
-            alt="Movie 5"
-            className="border rounded-md"
-          />
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+6"
-            alt="Movie 6"
-            className="border rounded-md"
-          />
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+7"
-            alt="Movie 7"
-            className="border rounded-md"
-          />
-          <img
-            src="https://via.placeholder.com/200x300?text=Movie+8"
-            alt="Movie 8"
-            className="border rounded-md"
-          />
+          {images.map((image, index) => (
+            <img
+              key={index} // 각 요소에 고유한 key를 부여
+              src={image.src}
+              alt={image.alt}
+              className="border rounded-md object-cover w-full h-[306px]" // 원하는 스타일 적용
+            />
+          ))}
         </div>
       ),
     },
   ];
 
   return (
-    <div className="flex flex-col items-center bg-black min-h-screen text-white w-screen">
+    <div className="bg-black p-8 rounded-lg w-[1200px] relative">
       <div className="fixed top-0 left-0 p-4"></div>
 
       <div className="flex w-full h-full justify-center items-center mt-8">

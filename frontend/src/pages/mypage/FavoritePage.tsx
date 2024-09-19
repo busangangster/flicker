@@ -8,20 +8,20 @@ import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types"; // S
 
 const FavoritePage: React.FC = () => {
   const movieImages = [
-    "/src/assets/avengers1.jpg",
-    "/src/assets/fastand.jpg",
-    "/src/assets/firstandF.jpg",
-    "https://via.placeholder.com/200x300?text=Movie+4",
-    "https://via.placeholder.com/200x300?text=Movie+5",
-    "/src/assets/lordof.jpg",
-    "/src/assets/monster.jpg",
-    "https://via.placeholder.com/200x300?text=Movie+8",
-    "https://via.placeholder.com/200x300?text=Movie+9",
-    "https://via.placeholder.com/200x300?text=Movie+10",
-    "https://via.placeholder.com/200x300?text=Movie+11",
-    "https://via.placeholder.com/200x300?text=Movie+12",
-    "https://via.placeholder.com/200x300?text=Movie+13",
-    "https://via.placeholder.com/200x300?text=Movie+14",
+    "/assets/survey/image1.jpg",
+    "/assets/survey/image2.jpg",
+    "/assets/survey/image3.jpg",
+    "/assets/survey/image4.jpg",
+    "/assets/survey/image5.jpg",
+    "/assets/survey/image7.jpg",
+    "/assets/survey/image8.jpg",
+    "/assets/survey/image9.jpg",
+    "/assets/survey/image10.jpg",
+    "/assets/survey/image11.jpg",
+    "/assets/survey/image12.jpg",
+    "/assets/survey/image13.jpg",
+    "/assets/survey/image14.jpg",
+    "/assets/survey/image15.jpg",
   ];
 
   // 8개씩 나누어 슬라이드 페이지로 구성
@@ -121,10 +121,10 @@ const FavoritePage: React.FC = () => {
           nextEl: nextRef.current,
           hideOnClick: true,
         }}
-        pagination={{
-          clickable: true,
-          hideOnClick: true,
-        }}
+        // pagination={{
+        //   clickable: true,
+        //   hideOnClick: true,
+        // }}
         spaceBetween={30}
         slidesPerView={1}
         style={{ overflow: "hidden" }}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,9 +37,9 @@ const Navbar: React.FC = () => {
       <div className="flex items-center justify-between w-full">
         {/* 로고 */}
         <div className="flex-none ml-[25px]">
-          <a href="/" className="text-2xl font-bold text-white">
+          <NavLink to="/home" className="text-2xl font-bold text-white">
             Flicker
-          </a>
+          </NavLink>
         </div>
 
         {/* 가운데 버튼 */}
@@ -50,50 +51,51 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* 오른쪽 컨테이너 */}
-        <div className="flex-none h-[57px] flex items-center relative text-white">
+        <div className="flex-none h-[57px] flex items-center relative text-white ">
           {/* 메뉴 항목들 */}
           {(menuOpen || animateMenu) && (
             <div
               className={`absolute right-[180px] flex items-center space-x-4 mr-4 transition-transform duration-300 transform text-white ${
                 animateMenu
                   ? "translate-x-0 opacity-100" // 열릴 때 애니메이션
-                  : "translate-x-full opacity-0" // 닫힐 때 애니메이션
+                  : "translate-x-[calc(100%-180px)] opacity-0" // 닫힐 때 애니메이션
               }`}
               style={{
                 transition: "transform 0.3s ease, opacity 0.3s ease", // 애니메이션 속도 설정
                 display: menuOpen || animateMenu ? "flex" : "none", // 애니메이션 중이거나 메뉴가 열려 있을 때만 표시
+                // overflow: "hidden",
               }}
             >
-              <a
-                href="#"
+              <NavLink
+                to="/"
                 className="text-white font-semibold whitespace-nowrap"
               >
                 about
-              </a>
-              <a
-                href="#"
+              </NavLink>
+              <NavLink
+                to="/"
                 className="text-white font-semibold whitespace-nowrap"
               >
                 for me
-              </a>
-              <a
-                href="#"
+              </NavLink>
+              <NavLink
+                to="/"
                 className="text-white font-semibold whitespace-nowrap"
               >
                 movies
-              </a>
-              <a
-                href="#"
+              </NavLink>
+              <NavLink
+                to="/contact"
                 className="text-white font-semibold whitespace-nowrap"
               >
                 contact
-              </a>
-              <a
-                href="#"
+              </NavLink>
+              <NavLink
+                to="/signin"
                 className="text-white font-semibold whitespace-nowrap"
               >
                 login
-              </a>
+              </NavLink>
             </div>
           )}
 

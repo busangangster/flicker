@@ -1,0 +1,23 @@
+.swiper-button-next-custom1,
+.swiper-button-prev-custom1 {
+  color: rgb(103, 103, 103); /* SVG 색상 */
+  position: absolute;
+  height: 50%; /* 전체 높이 차지 */
+  top: 60%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+}
+
+.swiper-button-next-custom1 {
+  right: 10px; /* 오른쪽에 위치 */
+}
+
+.swiper-button-prev-custom1 {
+  left: -10px; /* 왼쪽에 위치 */
+}
+
+.swiper-button-next-custom1:hover,
+.swiper-button-prev-custom1:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}

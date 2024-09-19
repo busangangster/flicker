@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import "../App.css";
+
+const imagePaths = Array.from(
+  { length: 30 },
+  (_, i) => `/assets/survey/image${i + 1}.jpg`
+);
+
 const movies = Array.from({ length: 30 }, (_, i) => ({
   id: i,
   title: `Movie ${i + 1}`,
-  image: "https://via.placeholder.com/135x177", // 예시 이미지 URL 사용
-  //   image: "/src/assets/avengers1.jpg", // 예시 이미지 URL 사용
+  image: imagePaths[i], // 이미지 배열에서 경로를 가져옴
 }));
 
 const Survey: React.FC = () => {
@@ -50,15 +55,13 @@ const Survey: React.FC = () => {
               <img
                 src={movie.image}
                 alt={movie.title}
-                className={`w-full h-full rounded-[5px]  shadow-md transition ${
-                  selectedMovies.includes(movie.id) ? "blur-[2px]" : ""
-                }`}
+                className="w-full h-full rounded-[5px] shadow-md transition"
               />
               {selectedMovies.includes(movie.id) && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 bg-white opacity-70 flex items-center justify-center rounded-[5px]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-12 w-12 text-blue-500"
+                    className="h-16 w-16 text-blue-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -69,7 +72,7 @@ const Survey: React.FC = () => {
                       strokeLinejoin="round"
                       d="M5 13l4 4L19 7"
                     />
-                  </svg>{" "}
+                  </svg>
                 </div>
               )}
             </div>

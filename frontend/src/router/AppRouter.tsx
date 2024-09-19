@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import MainPage from "../pages/Home";
 import ErrorPage from "../pages/ErrorPage";
 import LandingPage from "../pages/LandingPage";
 import SurveyPage from "../pages/SurveyPage";
@@ -23,20 +22,19 @@ import UserInfoEditPage from "../pages/mypage/UserInfoEditPage";
 import VerificationPage from "../pages/mypage/VerificationPage";
 import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
+import Home from "../pages/Home";
+import MoviesPage from "../pages/movie/MoviesPage";
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/home" element={<MainPage />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/landing" element={<LandingPage />} />{" "}
       {/*렌딩페이지, 메인페이지 하나로 합쳐서 보여줄까 ? */}
       <Route path="/survey" element={<SurveyPage />} />
       <Route path="/passwordreset" element={<PasswordResetPage />} />
-      <Route
-        path="/passwordreset/:token"
-        element={<PasswordChangePage />}
-      />{" "}
+      <Route path="/passwordreset/:token" element={<PasswordChangePage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/contact" element={<ContactPage />} />
@@ -45,7 +43,8 @@ const AppRoutes: React.FC = () => {
       <Route path="/recommendlist" element={<RecommendListPage />} />
       <Route path="/recommend" element={<RecommendPage />} />
       <Route path="/review" element={<ReviewPage />} />
-      <Route path="/search" element={<SearchPage />} />{" "}
+      <Route path="/search" element={<SearchPage />} />
+      <Route path="/movies" element={<MoviesPage />} />
       {/* 경로 검색어 수정 해야함!*/}
       <Route path="/mypage" element={<Mypage />}>
         <Route path="favorite" element={<FavoritePage />} />
