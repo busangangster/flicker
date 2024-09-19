@@ -24,7 +24,7 @@ import VerificationPage from "../pages/mypage/VerificationPage";
 import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
 
-const router: React.FC = () => {
+const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
@@ -46,13 +46,17 @@ const router: React.FC = () => {
         <Route path="/recommend" element={<RecommendPage />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/search" element={<SearchPage />} />{" "}
+        <Route
+          // path="/photocarddetail/:movieName"
+          path="/photocarddetail"
+          element={<PhotoCardDetailPage />}
+        />
         {/* 경로 검색어 수정 해야함!*/}
         <Route path="/mypage" element={<Mypage />}>
           <Route path="favorite" element={<FavoritePage />} />
           <Route path="myinformation" element={<MyInformaitonPage />} />
-          <Route path="phtotobook" element={<PhotoBookPage />} />
+          <Route path="photobook" element={<PhotoBookPage />} />
           <Route path="photocard" element={<PhotoCardPage />} />
-          <Route path="photocarddetail" element={<PhotoCardDetailPage />} />
           <Route path="userinfoedit" element={<UserInfoEditPage />} />
           <Route path="verification" element={<VerificationPage />} />
           <Route path="*" element={<ErrorPage />} />
@@ -62,4 +66,4 @@ const router: React.FC = () => {
   );
 };
 
-export default router;
+export default AppRouter;
