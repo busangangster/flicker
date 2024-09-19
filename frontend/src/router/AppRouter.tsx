@@ -50,7 +50,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/mypage" element={<Mypage />}>
         <Route path="favorite" element={<FavoritePage />} />
         <Route path="myinformation" element={<MyInformaitonPage />} />
-        <Route path="phtotobook" element={<PhotoBookPage />} />
+        <Route path="photobook" element={<PhotoBookPage />} />
         <Route path="photocard" element={<PhotoCardPage />} />
         <Route path="photocarddetail" element={<PhotoCardDetailPage />} />
         <Route path="userinfoedit" element={<UserInfoEditPage />} />
