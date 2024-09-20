@@ -5,7 +5,7 @@ import Member from "../../components/Member";
 
 const ContactPage: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white pb-10">
+    <div className="flex flex-col h-screen bg-black text-white pb-10 overflow-y-auto">
       {/* NavBar 고정 */}
       <header className="sticky top-0 bg-transparent z-10">
         <Navbar />

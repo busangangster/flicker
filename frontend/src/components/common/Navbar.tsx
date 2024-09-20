@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className={`w-full bg-black absolute z-50`}>
+    <div className={`w-full bg-black absolute z-20`}>
       <header className="flex items-center mx-auto rounded-md mt-[25px] border bg-black border-white w-full h-[57px]">
         <div className="flex items-center justify-between w-full">
           {/* 로고 */}
@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
                   about
                 </NavLink>
                 <NavLink
-                  to="/"
+                  to="/recommend"
                   className="text-white font-semibold whitespace-nowrap"
                 >
                   for me

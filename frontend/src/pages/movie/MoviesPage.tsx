@@ -3,7 +3,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Navbar from "../../components/common/Navbar";
-import "../../css/MoivesPage.css";
+import "../../css/MoviesPage.css";
 import MoviesList from "../../components/MoviesList";
 
 const MoviesPage = () => {

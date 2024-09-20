@@ -3,7 +3,7 @@ import Navbar from "../../components/common/Navbar"; // NavBar 컴포넌트 경�
 
 const ServiceDetailPage: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white pb-10">
+    <div className="flex flex-col h-screen bg-black text-white pb-10 overflow-y-auto">
       {/* 상단 네비게이션 바 */}
       <header className="sticky top-0 bg-transparent z-10">
         <Navbar />

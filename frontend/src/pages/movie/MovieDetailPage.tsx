@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Swiper, SwiperSlide } from "swiper/react";
 import Navbar from "../../components/common/Navbar";
+import MoviesList from "../../components/MoviesList";
 
 const MovieDetailPage: React.FC = () => {
   const actors = [
@@ -27,18 +27,19 @@ const MovieDetailPage: React.FC = () => {
   ];
 
   const movieImg = [
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
-    "https://via.placeholder.com/200x300?text=Movie+2",
+    "/assets/survey/image1.jpg",
+    "/assets/survey/image2.jpg",
+    "/assets/survey/image3.jpg",
+    "/assets/survey/image4.jpg",
+    "/assets/survey/image5.jpg",
+    "/assets/survey/image6.jpg",
+    "/assets/survey/image7.jpg",
+    "/assets/survey/image8.jpg",
+    "/assets/survey/image9.jpg",
+    "/assets/survey/image10.jpg",
+    "/assets/survey/image11.jpg",
+    "/assets/survey/image12.jpg",
+    "/assets/survey/image13.jpg",
   ];
 
   const [isFilled, setIsFilled] = useState(false);
@@ -58,11 +59,11 @@ const MovieDetailPage: React.FC = () => {
           <div className="absolute inset-0 bg-black opacity-70"></div>
         </div>
         {/* Header with Navbar */}
-        <header className="sticky top-0 bg-transparent z-10">
+        <header className="sticky top-0 bg-transparent z-20">
           <Navbar />
         </header>
         {/* Top section */}
-        <div className="relative flex items-end text-white p-3 w-[1100px] h-[480px] bg-transparent ml-[50px] mt-[70px] overflow-hidden">
+        <div className="relative flex items-end text-white p-3 w-[1100px] h-[480px] bg-transparent ml-[50px] mt-[100px] overflow-hidden">
           {/* Left Section: Movie Poster and Details */}
           <div className="flex flex-col lg:flex-row">
             <img
@@ -116,9 +117,8 @@ const MovieDetailPage: React.FC = () => {
                 {actors.map((actor, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 relative text-[15px] rounded-[5px] text-white z-10"
+                    className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10" // z-index: 10, 네비게이션 바보다 낮음
                   >
-                    <span className="absolute inset-0 bg-black opacity-70 rounded-[5px] z-[-1]"></span>
                     {actor}
                   </span>
                 ))}
@@ -129,7 +129,7 @@ const MovieDetailPage: React.FC = () => {
       </div>
       <div className="flex">
         {/* 리뷰 섹션 */}
-        <div className="p-4 bg-black text-black rounded-md w-[800px] h-[400px] mt-8 ml-[150px] border-b border-white">
+        <div className="p-4 bg-black text-black rounded-md w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
           <div className="flex w-[800px] justify-between">
             <h3 className="text-2xl font-bold text-white">Reviews</h3>
             <div className="text-white flex ml-auto items-end">more</div>
@@ -180,7 +180,7 @@ const MovieDetailPage: React.FC = () => {
         </div>
 
         {/* 트레일러 섹션 */}
-        <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[50px]">
+        <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
           {/* 부모 요소에 높이 설정 */}
           <div className="relative w-full max-w-4xl h-full">
             <iframe
@@ -199,31 +199,11 @@ const MovieDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[80px] ml-[80px] mt-[20px]">
-        <h2 className="text-[24px] text-white flex mb-[20px]">
-          탑건: 매버릭과 유사한 장르 작품들
-        </h2>
-        <Swiper
-          slidesPerView={8}
-          // spaceBetween={}
-          // slidesOffsetBefore={50} // 시작할 때 한 칸 걸쳐 보이도록 설정
-          navigation
-          pagination={{ clickable: true }}
-          // style={{ padding: "0 0" }} // 슬라이더 여백 조정
-        >
-          {movieImg.map((img, index) => (
-            <SwiperSlide
-              key={index}
-              className="flex justify-center items-center"
-            >
-              <img
-                src={img}
-                alt={`Movie ${index + 1}`}
-                className="rounded-lg shadow-md"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
+        <MoviesList
+          category="탑건: 매버릭과 유사한 장르 작품들"
+          movieImg={movieImg}
+        />
       </div>
     </div>
   );
