@@ -100,7 +100,7 @@ public class MovieService {
                 .toList();
     }
 
-    // TODO: Kafka 이벤트 발행
+    // TODO: Kafka 이벤트 발행, ElasticSearch 활용
     @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq) {
         // 1. redis 키워드 조회 후 결과 반환
@@ -141,10 +141,5 @@ public class MovieService {
     public List<MovieListResponse> getTopMovieList() {
         return null;
     }
-    // TODO: 관리자 여부 확인
-    @Transactional
-    public boolean isAdmin(int userSeq) {
-        return false;
-    }
-
+    // TODO: 페이징 처리
 }
