@@ -28,6 +28,7 @@ import MoviesPage from "../pages/movie/MoviesPage";
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/landing" element={<LandingPage />} />{" "}

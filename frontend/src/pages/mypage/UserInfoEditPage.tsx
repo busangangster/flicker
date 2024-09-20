@@ -8,7 +8,7 @@ const UserInfoEditPage: React.FC = () => {
       {/* User Profile Picture and Information */}
       <div className="flex items-start space-x-8">
         <img
-          src="/src/assets/George.jpg" // 실제 프로필 이미지 경로로 대체
+          src="/assets/George.jpg" // 실제 프로필 이미지 경로로 대체
           alt="User"
           className="rounded-[90px] w-[220px] h-[170px] object-cover mr-10"
         />

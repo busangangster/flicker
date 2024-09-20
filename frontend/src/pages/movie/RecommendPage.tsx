@@ -9,12 +9,12 @@ const RecommendPage: React.FC = () => {
 
   // 왼쪽 영역 클릭 시 이동할 경로
   const handleLeftClick = () => {
-    navigate("/left-path"); // 원하는 경로로 이동
+    navigate("/recommendlist"); // 원하는 경로로 이동
   };
 
   // 오른쪽 영역 클릭 시 이동할 경로
   const handleRightClick = () => {
-    navigate("/right-path"); // 원하는 경로로 이동
+    navigate("/recommendlist"); // 원하는 경로로 이동
   };
 
   return (

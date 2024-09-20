@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
   return (
-    <aside className="w-[300px] h-[830px] rounded-md bg-[#2C3751] bg-opacity-80 flex flex-col items-center py-8 ml-20 my-[20px]">
+    <aside className="w-[300px] h-[830px] rounded-md bg-[#2C3751] bg-opacity-80 flex flex-col items-center py-8 ml-20 mt-[110px]">
       {/* Profile Section */}
       <div>MY PAGE</div>
       <div className="flex flex-col items-center my-8 ">

@@ -10,7 +10,7 @@ const ServiceDetailPage: React.FC = () => {
       </header>
 
       {/* 페이지 내용 */}
-      <div className="flex flex-col justify-between mt-16">
+      <div className="flex flex-col justify-between mt-[120px]">
         {/* 상단 내용 */}
         <div className="flex justify-between px-48 py-24">
           <div>

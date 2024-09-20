@@ -12,7 +12,7 @@ const ContactPage: React.FC = () => {
       </header>
 
       {/* 팀 소개 영역 */}
-      <section className="flex flex-col items-center justify-center mt-28 space-y-10 px-80 mb-12">
+      <section className="flex flex-col items-center justify-center mt-[250px] space-y-10 px-80 mb-12">
         <div className="flex items-center justify-center space-x-10">
           {/* 팀 이미지 */}
           <img

@@ -14,11 +14,11 @@ const CircleCarousel: React.FC = () => {
   const appRef = useRef<Application | null>(null);
 
   const imageUrls = [
-    "/src/assets/avengers1.jpg",
-    "/src/assets/fastand.jpg",
-    "/src/assets/firstandF.jpg",
-    "/src/assets/lordof.jpg",
-    "/src/assets/monster.jpg",
+    "/assets/survey/image1.jpg",
+    "/assets/survey/image2.jpg",
+    "/assets/survey/image3.jpg",
+    "/assets/survey/image20.jpg",
+    "/assets/survey/image5.jpg",
   ];
 
   useEffect(() => {

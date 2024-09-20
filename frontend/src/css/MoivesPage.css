@@ -9,7 +9,7 @@
   display: flex; /* 중앙 정렬을 위해 flex 사용 */
   align-items: center; /* 수직 중앙 정렬 */
   justify-content: center; /* 수평 중앙 정렬 */
-  z-index: 10;
+  z-index: 3;
   cursor: pointer;
   transition: background-color 0.3s ease; /* 배경색 전환 효과 */
 }

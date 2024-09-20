@@ -12,7 +12,7 @@ const MyPage: React.FC = () => {
 
       <div className="flex h-screen bg-black text-white">
         <SideBar />
-        <div className=" items-center justify-center flex h-[900px] flex-grow">
+        <div className=" items-center justify-center flex h-[900px] flex-grow mt-[90px]">
           <Outlet />
         </div>
       </div>

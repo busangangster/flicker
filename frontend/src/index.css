@@ -7,7 +7,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 스크롤바를 숨깁니다 */
+  /* overflow: hidden; 스크롤바를 숨깁니다 */
 }
 
 /* input의 자동 완성 시 배경색을 검정으로 유지 */

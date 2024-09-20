@@ -52,7 +52,7 @@ const MoviesPage = () => {
         <Navbar />
       </header>
 
-      <div className="mt-[40px] flex justify-end items-end w-[1800px]">
+      <div className="mt-[100px] flex justify-end items-end w-[1800px]">
         <div
           ref={searchRef}
           className={`flex items-center transition-all duration-400 ${
