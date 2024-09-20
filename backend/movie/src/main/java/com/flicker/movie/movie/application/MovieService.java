@@ -1,15 +1,14 @@
 package com.flicker.movie.movie.application;
 
-import com.flicker.movie.movie.domain.entity.Actor;
-import com.flicker.movie.movie.domain.entity.Movie;
+import com.flicker.movie.movie.domain.entity.*;
+import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.dto.MovieCreateRequest;
-import com.flicker.movie.movie.dto.MovieRatingUpdateRequest;
-import com.flicker.movie.movie.dto.MovieUpdateRequest;
+import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -61,4 +60,91 @@ public class MovieService {
         // 2. 영화 삭제
         movie.deleteMovie();
     }
+
+    // TODO: Kafka 이벤트 발행
+    @Transactional
+    public MovieDetailResponse getMovieDetail(int movieSeq, int userSeq) {
+        // 1. 영화 정보 조회
+        Movie movie = movieRepoUtil.findById(movieSeq);
+        // 2. MovieDetailResponse 생성
+        return new MovieDetailResponse(movie, movie.getMovieDetail());
+    }
+
+    @Transactional
+    public List<MovieListResponse> getAllMovieList() {
+        // 1. 영화 리스트 조회
+        List<Movie> movieList = movieRepoUtil.findAll();
+        // 2. MovieDetailResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
+    @Transactional
+    public List<MovieListResponse> getMovieListByGenre(String genre) {
+        // 1. 장르별 영화 리스트 조회
+        List<Movie> movieList = movieRepoUtil.findByGenre(genre);
+        // 2. MovieDetailResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
+    @Transactional
+    public List<MovieListResponse> getMovieListByActor(String actorName) {
+        // 1. 배우별 영화 리스트 조회
+        List<Movie> movieList = movieRepoUtil.findByActor(actorName);
+        // 2. MovieDetailResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
+    // TODO: Kafka 이벤트 발행
+    @Transactional
+    public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq) {
+        // 1. redis 키워드 조회 후 결과 반환
+        List<MongoMovie> mongoMovieList = movieRepoUtil.findByKeywordForRedis(keyword);
+        if (mongoMovieList != null && !mongoMovieList.isEmpty()) {
+            List<MovieListResponse> responses = new ArrayList<>();
+            for (MongoMovie mongoMovie : mongoMovieList) {
+                responses.add(new MovieListResponse(mongoMovie));
+            }
+            return responses;
+        }
+        // redis에 저장된 키워드가 없을 경우
+        // 2. 키워드를 포함하는 영화 리스트 조회
+        List<Movie> movieList = movieRepoUtil.findByKeyword(keyword);
+        // 3. DB에서 가져온 결과 MongoDB에 저장 후 키 반환
+        String mongoKey = movieRepoUtil.saveSearchListForMongoDB(movieList);
+        // 4. Redis에 SearchResult 저장
+        SearchResult searchResult = MovieBuilderUtil.buildSearchResult(keyword, mongoKey);
+        movieRepoUtil.saveSearchResult(searchResult);
+        // 4. MovieDetailResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
+    // TODO: 회원 번호 -> 회원의 최근 행동 조회 -> 영화 번호 리스트 -> 영화 목록 반환
+    @Transactional
+    public List<MovieListResponse> getActionRecommendationList(int userSeq) {
+        return null;
+    }
+    // TODO: 회원 번호 -> 평점, 리뷰 목록 -> 영화 번호 리스트 -> 영화 목록 반환
+    @Transactional
+    public List<MovieListResponse> getReviewRecommendationList(int userSeq) {
+        return null;
+    }
+    // TODO: 1일 기준 TOP 10 영화 번호 리스트 조회 -> 영화 목록 반환
+    @Transactional
+    public List<MovieListResponse> getTopMovieList() {
+        return null;
+    }
+    // TODO: 관리자 여부 확인
+    @Transactional
+    public boolean isAdmin(int userSeq) {
+        return false;
+    }
+
 }

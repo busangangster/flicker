@@ -45,7 +45,6 @@ public class Actor {
             validate(actorName, role);  // 빌드 시 유효성 검증 수행
             return new Actor(actorSeq, actorName, role, movie);
         }
-
     }
 
     // 유효성 검증 메서드

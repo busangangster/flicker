@@ -1,7 +1,7 @@
 package com.flicker.movie.movie.application;
 
-import com.flicker.movie.movie.domain.entity.Actor;
-import com.flicker.movie.movie.domain.entity.Movie;
+import com.flicker.movie.movie.domain.entity.*;
+import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
 import com.flicker.movie.movie.dto.ActorRequest;
 import com.flicker.movie.movie.dto.MovieRequest;
@@ -47,4 +47,28 @@ public class MovieBuilderUtil {
                 .collect(Collectors.toList());
     }
 
+    // MongoMovieList 빌더 메서드
+    public MongoMovieList buildMongoMovieList(List<Movie> movieList) {
+        // movieList를 MongoMovieList로 변환
+        List<MongoMovie> mongoMovies = movieList.stream()
+                .map(movie -> MongoMovie.builder()
+                        .movieSeq(movie.getMovieSeq()) // 영화 ID 설정
+                        .movieTitle(movie.getMovieDetail().getMovieTitle()) // 영화 제목 설정
+                        .moviePosterUrl(movie.getMovieDetail().getMoviePosterUrl()) // 영화 포스터 URL 설정
+                        .build())
+                .collect(Collectors.toList());
+        // MongoMovieList 생성
+        return MongoMovieList.builder()
+                .mongoMovies(mongoMovies)
+                .build();
+    }
+
+    // SearchResult 빌더 메서드
+    public static SearchResult buildSearchResult(String keyword, String mongoKey) {
+        return SearchResult.builder()
+                .keyword(keyword)
+                .mongoKey(mongoKey)
+                .expiration(86400L) // 24시간
+                .build();
+    }
 }

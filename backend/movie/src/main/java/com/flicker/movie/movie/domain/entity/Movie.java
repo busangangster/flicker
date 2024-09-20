@@ -5,13 +5,14 @@ import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = "actors")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -28,8 +29,8 @@ public class Movie {
     @Column(nullable = false)
     private double movieRating;  // 영화 평점
 
-    @Column(nullable = false)
-    private String DEL_YN;  // 영화 삭제 여부를 나타내는 플래그 (Y/N)
+    @Column(name = "DEL_YN" , nullable = false)
+    private String delYN; // 영화 삭제 여부를 나타내는 플래그 (Y/N)
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column
@@ -38,19 +39,29 @@ public class Movie {
 
     @PrePersist
     public void prePersist() {
-        this.DEL_YN = "N";  // 영화가 생성되면 기본적으로 삭제되지 않음을 표시 (DEL_YN = "N")
+        this.delYN = "N";  // 영화가 생성되면 기본적으로 삭제되지 않음을 표시 (DEL_YN = "N")
         this.movieRating = 0;  // 영화 평점은 0으로 초기화
     }
 
     // 영화에 배우 추가
     private void addActor(Actor actor) {
+        // 배우 이름을 기준으로 중복 여부 확인
+        boolean actorExists = this.actors.stream()
+                .anyMatch(existingActor -> existingActor.getActorName().equals(actor.getActorName()));
+        // 이미 같은 이름의 배우가 존재하는 경우 예외 발생
+        if (actorExists) {
+            throw new RestApiException(StatusCode.DUPLICATE_ACTOR, "이미 같은 이름의 배우가 추가되었습니다.");
+        }
         actor.setMovie(this);  // 양방향 관계 설정 (Actor 객체가 이 영화에 속해 있음을 명시)
         this.actors.add(actor);  // 배우 리스트에 새로운 배우 추가
     }
 
     // 여러 배우를 영화에 추가
+    @Transactional // 여러 배우를 추가하는 동안 예외가 발생하면 모든 배우 추가를 롤백
     public void addActors(List<Actor> actorList) {
-        actorList.forEach(this::addActor);  // 전달된 배우 리스트를 하나씩 영화에 추가
+        for (Actor actor : actorList) {
+            addActor(actor);  // 배우를 하나씩 추가
+        } // 전달된 배우 리스트를 하나씩 영화에 추가
     }
 
     // 배우 조회
@@ -77,13 +88,13 @@ public class Movie {
 
     // 영화 삭제
     public void deleteMovie() {
-        this.DEL_YN = "Y";  // 영화 삭제를 표시 (DEL_YN 값을 "Y"로 변경)
+        this.delYN = "Y";  // 영화 삭제를 표시 (DEL_YN 값을 "Y"로 변경)
     }
 
     // 영화 평점 업데이트
     public void updateMovieRating(double newRating) {
         newRating = Math.round(newRating * 10) / 10.0;
-        if(newRating < 0 || newRating > 5) {
+        if (newRating < 0 || newRating > 5) {
             throw new RestApiException(StatusCode.BAD_REQUEST, "영화 평점은 0~5 사이여야 합니다.");
         }
         this.movieRating = newRating;  // 영화 평점을 새로운 값으로 업데이트
