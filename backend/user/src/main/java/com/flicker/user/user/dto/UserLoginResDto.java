@@ -1,19 +1,20 @@
-package com.flicker.user.user.domain.vo;
+package com.flicker.user.user.dto;
 
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Embeddable
-@Getter
+@Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo {
+@NoArgsConstructor
+public class UserLoginResDto {
+    private String userId;
+    private String email;
+    private String nickname;
     private LocalDate birthDate;
     private Character gender;
 }

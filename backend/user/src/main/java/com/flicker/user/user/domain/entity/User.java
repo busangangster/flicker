@@ -37,56 +37,47 @@ public class User {
     @Embedded
     private Role role;
 
+    private String userId;
     private String nickname;
     private String email;
     private String hashedPass;
     private String profilePhotoUrl;
 
-    @OneToMany(mappedBy = "userMovieId.userSeq")
+    @OneToMany(mappedBy = "user")
     private List<FavoriteMovie> favoriteMovies;
-    @OneToMany(mappedBy = "userMovieId.userSeq")
+    @OneToMany(mappedBy = "user")
     private List<BookmarkMovie> bookmarkMovies;
-    @OneToMany(mappedBy = "userMovieId.userSeq")
+    @OneToMany(mappedBy = "user")
     private List<UnlikeMovie> unlikeMovies;
-
-
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer isActive;
 
-    public void addBookmarkMovie(MovieSeqListDto dto) {
-        for(Long movieSeq : dto.getMovieIdList()){
-            if(isDuplicateFavoriteMovie(movieSeq)){
-                continue;
-            }
-            FavoriteMovie favoriteMovie =  new FavoriteMovie(new UserAndMovieIdDto(movieSeq, this.userSeq));
-            favoriteMovies.add(favoriteMovie);
-        }
-    }
 
     public boolean isDuplicateFavoriteMovie(Long movieSeq){
-        for(FavoriteMovie favoriteMovie : favoriteMovies){
-            if(favoriteMovie.getUserMovieId().getMovieSeq().equals(movieSeq)){
-                return true;
-            }
-        }
-        return false;
+        FavoriteMovie tmp = new FavoriteMovie(movieSeq);
+        return favoriteMovies.contains(tmp);
     }
 
     public void removeFavoriteMovie(Long movieSeq){
         if(isDuplicateFavoriteMovie(movieSeq)){
-            favoriteMovies.remove(movieSeq);
+            for(int i=0;i<favoriteMovies.size();i++){
+                if(favoriteMovies.get(i).getMovieSeq().equals(movieSeq)){
+                    favoriteMovies.remove(i);
+                    break;
+                }
+            }
         }
     }
 
     public void addFavoriteMovie(MovieSeqListDto dto){
-
         for(Long movieSeq : dto.getMovieIdList()){
             if(isDuplicateFavoriteMovie(movieSeq)){
                 continue;
             }
-            FavoriteMovie favoriteMovie =  new FavoriteMovie(new UserAndMovieIdDto(movieSeq, this.userSeq));
+            FavoriteMovie favoriteMovie =  new FavoriteMovie(this.userSeq);
+            favoriteMovie.updateUser(this);
             favoriteMovies.add(favoriteMovie);
         }
     }
@@ -117,17 +108,20 @@ public class User {
     }
 
     protected User() {
+
     }
 
-    public User(LocalDate birthDate, String email, Character gender, String hashedPass, String nickname) {
+    public User(LocalDate birthDate, String email, Character gender, String hashedPass, String nickname, String userId) {
         if(birthDate == null || email == null || gender == null || hashedPass == null || nickname == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL,null);
         }
+
         this.userInfo = UserInfo
                 .builder()
                 .birthDate(birthDate)
                 .gender(gender)
                 .build();
+        this.userId = userId;
         this.nickname = nickname;
         this.email = email;
         this.hashedPass = hashedPass;
