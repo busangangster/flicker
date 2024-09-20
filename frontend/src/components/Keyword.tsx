@@ -23,7 +23,7 @@ const Keyword: React.FC = () => {
   return (
     <div className="mt-4">
       <h2 className="text-lg font-semibold mb-2">Keyword</h2>
-      <div className="bg-gray-800 p-4 rounded">
+      <div className="bg-gray-800 p-2 rounded">
         <WordCloud
           data={words}
           font={(word) => "Raleway"} // 폰트 설정

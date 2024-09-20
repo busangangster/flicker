@@ -5,6 +5,7 @@ import Ratings from "../../components/Ratings";
 import Keyword from "../../components/Keyword";
 import Filter from "../../components/Filter";
 import ReviewForm from "../../components/ReviewForm";
+import Navbar from "../../components/common/Navbar";
 
 // 목업 데이터
 const mockReviews = [
@@ -153,46 +154,51 @@ const ReviewPage: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center bg-black text-white min-h-screen w-screen">
-      {/* 양쪽 패딩을 위한 빈 공간 (1/5로 조정하여 여백을 줄임) */}
-      <div className="w-1/4"></div>
+    <div className="flex flex-col bg-black h-screen overflow-y-auto">
+      <header className="sticky top-0 bg-transparent z-10">
+        <Navbar />
+      </header>
+      <div className="flex justify-center bg-black text-white mt-[120px] ">
+        {/* 양쪽 패딩을 위한 빈 공간 (1/5로 조정하여 여백을 줄임) */}
+        <div className="w-1/4"></div>
 
-      {/* 메인 콘텐츠 영역 */}
-      <div className="flex w-3/5 p-4">
-        {/* 리뷰 섹션 */}
-        <div className="w-3/4 pr-4 border-r border-gray-700">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold">Reviews</h1>
-            {/* Filter 컴포넌트를 오른쪽 끝에 배치 */}
-            <Filter options={filterOptions} onChange={handleFilterChange} />
+        {/* 메인 콘텐츠 영역 */}
+        <div className="flex w-3/5 p-4">
+          {/* 리뷰 섹션 */}
+          <div className="w-3/4 pr-4 border-r border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-3xl font-bold">Reviews</h1>
+              {/* Filter 컴포넌트를 오른쪽 끝에 배치 */}
+              <Filter options={filterOptions} onChange={handleFilterChange} />
+            </div>
+            {/* 리뷰 작성 폼 추가 */}
+            <ReviewForm onSubmit={handleAddReview} />
+            {/* 여러 개의 리뷰를 불러오는 부분 */}
+            {reviews.map((review) => (
+              <Review key={review.review_seq} review={review} />
+            ))}
           </div>
-          {/* 리뷰 작성 폼 추가 */}
-          <ReviewForm onSubmit={handleAddReview} />
-          {/* 여러 개의 리뷰를 불러오는 부분 */}
-          {reviews.map((review) => (
-            <Review key={review.review_seq} review={review} />
-          ))}
+
+          {/* 오른쪽 사이드 섹션 */}
+          <div className="w-1/4 pl-4">
+            {/* 포스터 */}
+            <div className="mb-6">
+              <img
+                src="assets/survey/image20.jpg"
+                alt="Movie Poster"
+                className="w-full rounded-sm mb-4"
+              />
+            </div>
+            {/* Ratings */}
+            <Ratings />
+            {/* Word Cloud */}
+            <Keyword />
+          </div>
         </div>
 
-        {/* 오른쪽 사이드 섹션 */}
-        <div className="w-1/4 pl-4">
-          {/* 포스터 */}
-          <div className="mb-6">
-            <img
-              src="assets/survey/image20.jpg"
-              alt="Movie Poster"
-              className="w-full rounded-sm mb-4"
-            />
-          </div>
-          {/* Ratings */}
-          <Ratings />
-          {/* Word Cloud */}
-          <Keyword />
-        </div>
+        {/* 양쪽 패딩을 위한 빈 공간 (1/5로 조정하여 여백을 줄임) */}
+        <div className="w-1/5"></div>
       </div>
-
-      {/* 양쪽 패딩을 위한 빈 공간 (1/5로 조정하여 여백을 줄임) */}
-      <div className="w-1/5"></div>
     </div>
   );
 };

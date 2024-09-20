@@ -56,16 +56,14 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
         <div className="rounded-full bg-gray-500 w-8 h-8 flex items-center justify-center text-white font-bold">
           {currentUserNickname.charAt(0)}
         </div>
-        <span className="ml-4 font-semibold text-xs">
-          {currentUserNickname}
-        </span>
-        <span className="text-gray-400 text-xs ml-2">'s flick record is</span>
+        <span className="ml-4 font-semibold ">{currentUserNickname}</span>
+        <span className="text-gray-400 text-sm ml-2">'s flick record is</span>
         {/* 별점 입력 */}
         <div className="flex ml-2">
           {Array.from({ length: 5 }, (_, index) => (
             <div
               key={index}
-              className="relative w-3.5 h-3.5"
+              className="relative w-5 h-5"
               style={{ marginRight: 0 }}
             >
               {/* 왼쪽 반쪽 클릭 */}
@@ -78,7 +76,7 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
                     : starOutline
                 }
                 alt="Star"
-                className="w-full h-full cursor-pointer"
+                className="w-5 h-5 cursor-pointer"
                 onClick={(e) =>
                   handleRatingClick(
                     index,
@@ -88,7 +86,7 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
               />
             </div>
           ))}
-          <span className="ml-2 text-sm text-white">{rating.toFixed(1)}</span>
+          <span className="ml-2 text-white">{rating.toFixed(1)}</span>
         </div>
       </div>
       {/* 리뷰 내용 입력 */}
@@ -96,9 +94,9 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="리뷰 내용을 입력하세요."
-        className="p-2 w-full border border-white rounded-sm bg-black text-xs text-white mb-1"
+        className="p-2 w-full border border-white rounded-sm bg-black text-white mb-1 mt-4"
       />
-      <div className="flex items-center mb-2">
+      <div className="flex items-center mb-2 mt-5">
         {/* 스포일러 체크박스 */}
         <input
           type="checkbox"
@@ -106,13 +104,13 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
           onChange={() => setIsSpoiler(!isSpoiler)}
           className="mr-2"
         />
-        <label className="text-xs text-gray-200">
+        <label className="text-gray-200">
           스포일러 내용이 포함되어 있어요!
         </label>
         {/* 작성 버튼 */}
         <button
           type="submit"
-          className="ml-auto bg-[#4D7FFF] text-white text-xs px-2 py-1 rounded hover:bg-blue-700"
+          className="ml-auto bg-[#4D7FFF] text-white px-2 py-1 rounded hover:bg-blue-700 "
         >
           작성하기
         </button>

@@ -17,13 +17,13 @@ const UserInfoEditPage: React.FC = () => {
             <p className="w-24 font-semibold">닉네임</p>
             <input
               type="text"
-              className="border-b border-gray-400 flex-grow pl-2 bg-black"
+              className="border-b placeholder-white flex-grow pl-2 bg-black"
               placeholder="김싸피"
             />
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">아이디</p>
-            <p className="border-b border-gray-400 flex-grow pl-2">
+            <p className="border-b border-gray-200 text-gray-400 flex-grow pl-2">
               kimssafy123
             </p>
           </div>
@@ -39,19 +39,21 @@ const UserInfoEditPage: React.FC = () => {
             <p className="w-24 font-semibold">이메일</p>
             <input
               type="text"
-              className="border-b border-gray-400 flex-grow pl-2 bg-black"
+              className="border-b border-gray-400 placeholder-white flex-grow pl-2 bg-black"
               placeholder="kimssafy123@gmail.com"
             />
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">생년월일</p>
-            <p className="border-b border-gray-400 flex-grow pl-2">
+            <p className="border-b border-gray-400 text-gray-400 flex-grow pl-2">
               1997/12/25
             </p>
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">성별</p>
-            <p className="border-b border-gray-400 flex-grow pl-2">여성</p>
+            <p className="border-b border-gray-400 text-gray-400 flex-grow pl-2">
+              여성
+            </p>
           </div>
         </div>
       </div>

@@ -16,17 +16,17 @@ const Review: React.FC<{ review: any }> = ({ review }) => {
 
   return (
     <div key={review.review_seq} className="border-b border-gray-700 mb-2">
-      <div className="flex items-start">
+      <div className="flex items-start mt-5">
         {/* 프로필 */}
         <div className="rounded-full bg-gray-500 w-8 h-8 flex items-center justify-center text-white font-bold">
           {review.nickname.charAt(0)}
         </div>
         <div className="ml-4 flex flex-col w-full">
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center justify-between mb-1 ">
             <div className="flex items-center">
               {/* 닉네임 및 별점 */}
-              <span className="font-semibold text-xs">{review.nickname}</span>
-              <span className="text-gray-400 text-xs ml-2">
+              <span className="font-semibold">{review.nickname}</span>
+              <span className="text-gray-400 text-sm ml-2">
                 's flick record is
               </span>
               {/* 별점 표시 */}
@@ -38,14 +38,14 @@ const Review: React.FC<{ review: any }> = ({ review }) => {
                       key={index}
                       src={starFull}
                       alt="Full Star"
-                      className="w-3 h-3"
+                      className="w-4 h-4"
                     />
                   )
                 )}
                 {review.review_rating % 1 !== 0 && (
-                  <img src={starHalf} alt="Half Star" className="w-3 h-3" />
+                  <img src={starHalf} alt="Half Star" className="w-4 h-4" />
                 )}
-                <span className="ml-2 text-sm text-white font-bold">
+                <span className="ml-2 text-white font-bold">
                   {review.review_rating}
                 </span>
               </span>
@@ -60,24 +60,21 @@ const Review: React.FC<{ review: any }> = ({ review }) => {
               <img
                 src={review.liked ? thumbUp : thumbUpOutline}
                 alt="Thumb Up"
-                className="w-3 h-3 mr-1"
+                className="w-4 h-4 mr-1"
               />
-              <span className="text-xs text-gray-300">{review.likes}</span>
+              <span className=" text-gray-300">{review.likes}</span>
             </button>
           </div>
           {/* 리뷰 내용 표시 */}
           {showContent ? (
-            <p className="text-white text-xs mt-1 mb-1">{review.content}</p>
+            <p className="text-white  mt-1 mb-1">{review.content}</p>
           ) : (
-            <p
-              className="text-gray-400 text-xs cursor-pointer"
-              onClick={toggleContent}
-            >
+            <p className="text-gray-400 cursor-pointer" onClick={toggleContent}>
               스포일러 내용이 포함되어 있어요! 클릭하면, 내용을 볼 수 있어요.
             </p>
           )}
           {/* 작성 날짜 표시 */}
-          <span className="text-gray-400 text-[10px] self-end mb-1">
+          <span className="text-gray-400 text-sm self-end mb-1">
             {new Date(review.created_at).toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "2-digit",

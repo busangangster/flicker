@@ -9,7 +9,7 @@ interface FilterProps {
 const Filter: React.FC<FilterProps> = ({ options, onChange }) => {
   return (
     <select
-      className="p-1 rounded bg-gray-700 text-white mb-4 text-xs"
+      className="p-1 rounded bg-gray-700 text-white mb-4 text-sm"
       onChange={(e) => onChange && onChange(e.target.value)}
     >
       {options.map((option) => (
