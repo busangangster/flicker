@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
                   about
                 </NavLink>
                 <NavLink
-                  to="/"
+                  to="/recommend"
                   className="text-white font-semibold whitespace-nowrap"
                 >
                   for me
