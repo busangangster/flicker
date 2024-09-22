@@ -1,4 +1,3 @@
-// ReviewPage.tsx
 import React, { useState, useEffect } from "react";
 import Review from "../../components/Review";
 import Ratings from "../../components/Ratings";
@@ -79,76 +78,46 @@ const mockReviews = [
     liked: false,
     nickname: "HyeJin",
   },
-  {
-    review_seq: 4,
-    member_seq: 4,
-    movie_id: 104,
-    review_rating: 2.5,
-    content:
-      "기대보다 아쉬웠어요. 캐릭터들이 조금 더 깊이 있었으면 좋았을 것 같아요.",
-    created_at: "2024-09-15T09:15:00",
-    likes: 150,
-    liked: false,
-    nickname: "EunJi",
-  },
-  {
-    review_seq: 5,
-    member_seq: 5,
-    movie_id: 105,
-    review_rating: 4.5,
-    content: "재밌고 감동적이었어요! 영화 보는 내내 몰입해서 봤습니다.",
-    created_at: "2024-09-14T18:45:00",
-    likes: 430,
-    liked: true,
-    nickname: "DongHoon",
-  },
-  {
-    review_seq: 6,
-    member_seq: 6,
-    movie_id: 106,
-    review_rating: 3.0,
-    content:
-      "평범한 영화였어요. 몇몇 장면은 인상적이었지만 전체적으로는 무난했어요.",
-    created_at: "2024-09-13T12:00:00",
-    likes: 210,
-    liked: false,
-    nickname: "HyeJin",
-  },
 ];
 
 const ReviewPage: React.FC = () => {
-  const [reviews, setReviews] = useState(mockReviews);
-  const [sortOption, setSortOption] = useState("recent");
+  const [reviews, setReviews] = useState(mockReviews); // 초기 리뷰 데이터
+  const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
 
   // 정렬 조건이 변경될 때마다 리뷰를 정렬
   useEffect(() => {
     const sortedReviews = [...reviews];
-    if (sortOption === "recent") {
+
+    // 정렬 옵션에 따른 정렬 로직
+    if (sortOption === "최신순") {
       sortedReviews.sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
-    } else if (sortOption === "oldest") {
+    } else if (sortOption === "오래된 순") {
       sortedReviews.sort(
         (a, b) =>
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       );
-    } else if (sortOption === "popular") {
+    } else if (sortOption === "좋아요 많은 순") {
       sortedReviews.sort((a, b) => b.likes - a.likes);
     }
-    setReviews(sortedReviews);
-  }, [sortOption]);
+
+    setReviews(sortedReviews); // 정렬된 리뷰 설정
+  }, [sortOption]); // sortOption이 변경될 때마다 실행
 
   const filterOptions = [
-    { value: "recent", label: "최신순" },
-    { value: "popular", label: "좋아요 많은 순" },
-    { value: "oldest", label: "오래된 순" },
+    { value: "최신순", label: "최신순" },
+    { value: "좋아요 많은 순", label: "좋아요 많은 순" },
+    { value: "오래된 순", label: "오래된 순" },
   ];
 
+  // 필터 변경 시 정렬 옵션 업데이트
   const handleFilterChange = (value: string) => {
     setSortOption(value);
   };
 
+  // 새 리뷰 추가 핸들러
   const handleAddReview = (newReview: any) => {
     setReviews((prev) => [newReview, ...prev]);
   };
@@ -168,9 +137,15 @@ const ReviewPage: React.FC = () => {
           <div className="w-3/4 pr-4 border-r border-gray-700">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-3xl font-bold">Reviews</h1>
-              {/* Filter 컴포넌트를 오른쪽 끝에 배치 */}
-              <Filter options={filterOptions} onChange={handleFilterChange} />
+              <div className="w-40">
+                <Filter
+                  options={filterOptions}
+                  onChange={handleFilterChange}
+                  defaultValue="최신순"
+                />
+              </div>
             </div>
+
             {/* 리뷰 작성 폼 추가 */}
             <ReviewForm onSubmit={handleAddReview} />
             {/* 여러 개의 리뷰를 불러오는 부분 */}

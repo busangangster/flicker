@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineClose } from "react-icons/ai";
 
 interface SearchBarProps {
   initialSearchQuery?: string;
@@ -33,6 +34,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
     }
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -54,9 +59,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
       ref={searchRef}
       className={`flex items-center transition-all duration-400 ${
         isExpanded ? "w-[370px] border border-white p-2 rounded" : "w-[50px]"
-      }`}
+      } relative`}
     >
-      <div className="flex items-center">
+      <div className="flex items-center w-full">
         <svg
           onClick={handleClick}
           width="30"
@@ -68,7 +73,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             isExpanded ? "translate-x-[-50px]" : ""
           }`}
         >
-          <circle cx="11" cy="11" r="7" stroke="white" strokeWidth="2" />
+          <circle cx="12" cy="11" r="7" stroke="white" strokeWidth="2" />
           <line
             x1="16"
             y1="16"
@@ -79,16 +84,23 @@ const SearchBar: React.FC<SearchBarProps> = ({
           />
         </svg>
 
-        <form onSubmit={handleSearchSubmit}>
+        <form onSubmit={handleSearchSubmit} className="relative w-full">
           <input
             type="text"
             placeholder="제목, 사람, 장르"
             value={searchQuery}
             onChange={handleSearchChange}
-            className={`bg-transparent border-none outline-none text-white text-lg transition-all duration-400 ${
-              isExpanded ? "w-[200px] opacity-100" : "w-0 opacity-0"
+            className={`bg-transparent border-none outline-none text-white text-lg w-full pr-8 transition-all duration-400 ${
+              isExpanded ? "opacity-100" : "w-0 opacity-0"
             }`}
           />
+          {isExpanded && searchQuery && (
+            <AiOutlineClose
+              onClick={clearSearch}
+              className="cursor-pointer text-white absolute right-2 top-1/2 transform -translate-y-1/2"
+              size={24} // 엑스 아이콘 크기
+            />
+          )}
         </form>
       </div>
     </div>
