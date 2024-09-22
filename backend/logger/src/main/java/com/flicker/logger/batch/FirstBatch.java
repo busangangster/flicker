@@ -69,16 +69,12 @@ import java.util.Map;
     @Bean
     public ItemProcessor<BeforeEntity, AfterEntity> middleProcessor() {
 
-        return new ItemProcessor<BeforeEntity, AfterEntity>() {
+        return item -> {
 
-            @Override
-            public AfterEntity process(BeforeEntity item) throws Exception {
+            AfterEntity afterEntity = new AfterEntity();
+            afterEntity.setUsername(item.getUsername());
 
-                AfterEntity afterEntity = new AfterEntity();
-                afterEntity.setUsername(item.getUsername());
-
-                return afterEntity;
-            }
+            return afterEntity;
         };
     }
 
