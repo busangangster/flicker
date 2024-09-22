@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Application, Sprite, Ticker, Assets, Texture } from "pixi.js";
+import { useNavigate } from "react-router-dom";
 
-// ExtendedSprite 타입 정의
 interface ExtendedSprite extends Sprite {
   userData: {
     angle: number;
@@ -12,6 +12,7 @@ interface ExtendedSprite extends Sprite {
 const CircleCarousel: React.FC = () => {
   const pixiContainerRef = useRef<HTMLDivElement | null>(null);
   const appRef = useRef<Application | null>(null);
+  const navigate = useNavigate();
 
   const imageUrls = [
     "/assets/survey/image1.jpg",
@@ -23,6 +24,18 @@ const CircleCarousel: React.FC = () => {
 
   useEffect(() => {
     const app = new Application();
+
+    // 각 이미지 URL을 받아서 해당 이미지를 pixi.js의 Texture로 변환해 반환하는 비동기 함수
+    const loadTexture = async (url: string): Promise<Texture> => {
+      try {
+        if (!url) throw new Error("No URL provided");
+        const texture = await Assets.load(url);
+        return texture || Texture.WHITE;
+      } catch (error) {
+        console.error("Failed to load texture:", error);
+        return Texture.WHITE;
+      }
+    };
 
     const initializeApp = async () => {
       await app.init({
@@ -47,17 +60,11 @@ const CircleCarousel: React.FC = () => {
         const spacingFactor = 1; // 카드 간격 조절
         let lastClosestCard: ExtendedSprite | null = null;
 
-        // 텍스처 로드 함수
-        const loadTexture = async (url: string) => {
-          try {
-            if (!url) throw new Error("No URL provided");
-            const texture = await Assets.load(url);
-            return texture || Texture.WHITE;
-          } catch (error) {
-            console.error("Failed to load texture:", error);
-            return Texture.WHITE;
-          }
-        };
+        // 텍스처 로드 함수, textures 배열: 로드된 Texture 객체들이 담긴 배열로, setupCard 함수에서 개별 카드 생성에 사용됩니다.
+        // Promise.all: imageUrls 배열의 모든 이미지 경로를 loadTexture 함수로 비동기 호출하여 모든 텍스처가 로드될 때까지 기다립니다. 모든 텍스처가 로드된 후 textures 배열에 담깁니다.
+        const textures = await Promise.all(
+          imageUrls.map((url) => loadTexture(url))
+        );
 
         // 카드 배경 텍스처 생성 함수
         const createCardBackgroundTexture = (
@@ -146,8 +153,13 @@ const CircleCarousel: React.FC = () => {
 
           // 모든 카드를 정면으로 바라보도록 회전 각도 0으로 설정
           cardContainer.rotation = 0;
-
           cardContainer.userData = { angle, rotationOffset: 0 };
+          cardContainer.interactive = true; // 상호작용 가능하도록 설정
+          cardContainer.cursor = "pointer"; // 커서를 손 모양으로 변경
+          cardContainer.on("pointertap", () => {
+            // navigate(`/detail/${index}`);
+            navigate("/moviedetail");
+          });
 
           cards.push(cardContainer);
           app.stage.addChild(cardContainer);
@@ -170,15 +182,17 @@ const CircleCarousel: React.FC = () => {
         // 카드 업데이트 함수
         function updateCards() {
           cards.forEach((card, i) => {
-            const angle =
-              (i / cardCount) * Math.PI * 2 * spacingFactor + rotationOffset;
-            card.x = centerX + radiusX * Math.cos(angle);
-            card.y = centerY + radiusY * Math.sin(angle);
+            if (card) {
+              const angle =
+                (i / cardCount) * Math.PI * 2 * spacingFactor + rotationOffset;
+              card.x = centerX + radiusX * Math.cos(angle);
+              card.y = centerY + radiusY * Math.sin(angle);
 
-            // 모든 카드를 정면으로 바라보도록 회전 각도 0으로 유지
-            card.rotation = 0;
+              // 모든 카드를 정면으로 바라보도록 회전 각도 0으로 유지
+              card.rotation = 0;
 
-            card.userData.angle = angle;
+              card.userData.angle = angle;
+            }
           });
 
           bringCenterCardToFront();

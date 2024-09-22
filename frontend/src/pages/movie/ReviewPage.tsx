@@ -80,39 +80,39 @@ const mockReviews = [
     nickname: "HyeJin",
   },
   {
-    review_seq: 4,
-    member_seq: 4,
-    movie_id: 104,
+    review_seq: 7,
+    member_seq: 7,
+    movie_id: 107,
     review_rating: 2.5,
     content:
       "기대보다 아쉬웠어요. 캐릭터들이 조금 더 깊이 있었으면 좋았을 것 같아요.",
     created_at: "2024-09-15T09:15:00",
-    likes: 150,
+    likes: 158,
     liked: false,
     nickname: "EunJi",
   },
   {
-    review_seq: 5,
-    member_seq: 5,
-    movie_id: 105,
+    review_seq: 8,
+    member_seq: 8,
+    movie_id: 108,
     review_rating: 4.5,
     content: "재밌고 감동적이었어요! 영화 보는 내내 몰입해서 봤습니다.",
     created_at: "2024-09-14T18:45:00",
-    likes: 430,
+    likes: 350,
     liked: true,
-    nickname: "DongHoon",
+    nickname: "Harry",
   },
   {
-    review_seq: 6,
-    member_seq: 6,
-    movie_id: 106,
+    review_seq: 9,
+    member_seq: 9,
+    movie_id: 109,
     review_rating: 3.0,
     content:
       "평범한 영화였어요. 몇몇 장면은 인상적이었지만 전체적으로는 무난했어요.",
     created_at: "2024-09-13T12:00:00",
-    likes: 210,
+    likes: 125,
     liked: false,
-    nickname: "HyeJin",
+    nickname: "Poter",
   },
 ];
 
@@ -153,6 +153,20 @@ const ReviewPage: React.FC = () => {
     setReviews((prev) => [newReview, ...prev]);
   };
 
+  const handleLikeToggle = (reviewSeq: number) => {
+    setReviews((prevReviews) =>
+      prevReviews.map((review) =>
+        review.review_seq === reviewSeq
+          ? {
+              ...review,
+              liked: !review.liked,
+              likes: review.liked ? review.likes - 1 : review.likes + 1,
+            }
+          : review
+      )
+    );
+  };
+
   return (
     <div className="flex flex-col bg-black h-screen overflow-y-auto">
       <header className="sticky top-0 bg-transparent z-10">
@@ -167,7 +181,7 @@ const ReviewPage: React.FC = () => {
           {/* 리뷰 섹션 */}
           <div className="w-3/4 pr-4 border-r border-gray-700">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-3xl font-bold">Reviews</h1>
+              <h1 className="text-3xl font-bold mb-5">Reviews</h1>
               {/* Filter 컴포넌트를 오른쪽 끝에 배치 */}
               <Filter options={filterOptions} onChange={handleFilterChange} />
             </div>
@@ -175,7 +189,13 @@ const ReviewPage: React.FC = () => {
             <ReviewForm onSubmit={handleAddReview} />
             {/* 여러 개의 리뷰를 불러오는 부분 */}
             {reviews.map((review) => (
-              <Review key={review.review_seq} review={review} />
+              <Review
+                key={review.review_seq}
+                review={review}
+                liked={review.liked}
+                likes={review.likes}
+                onLikeToggle={handleLikeToggle}
+              />
             ))}
           </div>
 

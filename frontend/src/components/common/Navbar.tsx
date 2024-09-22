@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
 
   return (
     <div className={`w-full bg-black absolute z-20`}>
-      <header className="flex items-center mx-auto rounded-md mt-[25px] border bg-black border-white w-full h-[57px]">
+      <header className="flex items-center mx-auto rounded-md mt-[25px] border bg-black border-white w-[1800px] h-[57px]">
         <div className="flex items-center justify-between w-full">
           {/* 로고 */}
           <div className="flex-none ml-[25px]">
