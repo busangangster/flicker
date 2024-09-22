@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -43,10 +43,42 @@ const MovieDetailPage: React.FC = () => {
   ];
 
   const [isFilled, setIsFilled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [interestOption, setInterestOption] = useState("관심 없음");
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleHeart = () => {
     setIsFilled(!isFilled);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleOptionClick = () => {
+    setInterestOption((prev) =>
+      prev === "관심 없음" ? "관심 없음 취소" : "관심 없음"
+    );
+    setIsDropdownOpen(false); 
+  };
+
+  // 드롭다운 외부 클릭 시 닫히도록 설정
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col bg-black h-screen overflow-y-auto">
@@ -80,7 +112,10 @@ const MovieDetailPage: React.FC = () => {
                     <span className="text-2xl">4.1</span>
                   </span>
                 </h2>
-                <div className="flex items-end ml-[400px]">
+                <div
+                  className="flex items-end ml-[400px] relative"
+                  ref={dropdownRef}
+                >
                   <svg
                     className={`w-6 h-6 cursor-pointer ${
                       isFilled
@@ -93,7 +128,22 @@ const MovieDetailPage: React.FC = () => {
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
-                  <button className="text-white text-3xl ml-2">⋮</button>
+                  <button
+                    className="text-white text-3xl ml-2 relative"
+                    onClick={toggleDropdown}
+                  >
+                    ⋮
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-40 bg-gray-200 text-black bg-opacity-90 rounded-md shadow-lg z-50 font-bold text-left">
+                        <div
+                          className="cursor-pointer px-4 py-2 text-base hover:bg-gray-400 rounded-md hover:bg-opacity-80 shadow-lg z-50"
+                          onClick={handleOptionClick}
+                        >
+                          {interestOption}
+                        </div>
+                      </div>
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -127,8 +177,9 @@ const MovieDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 리뷰 섹션 */}
       <div className="flex">
-        {/* 리뷰 섹션 */}
         <div className="p-4 bg-black text-black rounded-md w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
           <div className="flex w-[800px] justify-between">
             <h3 className="text-2xl font-bold text-white">Reviews</h3>
@@ -149,7 +200,6 @@ const MovieDetailPage: React.FC = () => {
                 1편 보고 가는게 더 좋다 감동도 2배 더 느낄 수 있음
               </p>
             </div>
-            {/* 다른 리뷰 추가 */}
             <div className="flex items-start space-x-2">
               <div className="bg-gray-800 w-8 h-8 flex items-center justify-center rounded-full">
                 <span className="text-white font-bold">J</span>
@@ -181,7 +231,6 @@ const MovieDetailPage: React.FC = () => {
 
         {/* 트레일러 섹션 */}
         <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
-          {/* 부모 요소에 높이 설정 */}
           <div className="relative w-full max-w-4xl h-full">
             <iframe
               src="https://www.youtube.com/embed/qSqVVswa420"
@@ -199,6 +248,7 @@ const MovieDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
       <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
           category="탑건: 매버릭과 유사한 장르 작품들"
