@@ -1,13 +1,12 @@
 package com.flicker.user.user.domain.entity;
 
-import com.flicker.user.user.dto.UserAndMovieIdDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -15,13 +14,12 @@ import java.time.LocalDateTime;
 @Getter
 public class FavoriteMovie {
 
-    @EmbeddedId
-    private UserMovieId userMovieId;
+    @Id
+    private Long favoriteMovieSeq;
 
-    @ManyToOne
-    @JoinColumn(name = "userSeq_123123")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
+    private Long movieSeq;
     private LocalDateTime createdAt;
     private Integer isActive;
 
@@ -31,15 +29,26 @@ public class FavoriteMovie {
 
     protected FavoriteMovie() {}
 
-    public FavoriteMovie(UserAndMovieIdDto dto) {
-        this.userMovieId = UserMovieId
-                .builder()
-                .movieSeq(dto.getMovieSeq())
-                .userSeq(dto.getUserSeq())
-                .build();
+    public FavoriteMovie(Long favoriteMovieSeq) {
+        this.favoriteMovieSeq = favoriteMovieSeq;
         this.createdAt = LocalDateTime.now();
         this.isActive = 1;
     }
 
+    public void updateUser(User user) {
+        this.user = user;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FavoriteMovie that = (FavoriteMovie) o;
+        return Objects.equals(favoriteMovieSeq, that.favoriteMovieSeq);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(favoriteMovieSeq);
+    }
 }

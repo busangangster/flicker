@@ -14,8 +14,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {
-
     private LocalDate birthDate;
     private Character gender;
-
 }
