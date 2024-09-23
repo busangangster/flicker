@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.config.KafkaConfig;
-import com.flicker.movie.movie.dto.MovieEvent;
+import com.flicker.movie.movie.dto.UserActionEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +37,14 @@ public class CustomProducer {
         properties.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 1000);  // 재시도 간의 대기 시간 1초
         properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 120000); // 메시지 전송 최대 허용 시간 (2분)
         properties.put(ProducerConfig.ACKS_CONFIG, "all");  // 모든 브로커가 메시지를 확인할 때까지 기다림
-
+        // UTF-8 설정 추가
+        properties.setProperty("key.serializer.encoding", "UTF-8");
+        properties.setProperty("value.serializer.encoding", "UTF-8");
         producer = new KafkaProducer<>(properties);
     }
 
     // MovieEvent 객체를 JSON으로 직렬화하여 Kafka로 전송
-    public void send(MovieEvent event) {
+    public void send(UserActionEvent event) {
         try {
             // 객체를 JSON으로 직렬화
             String jsonMessage = objectMapper.writeValueAsString(event);

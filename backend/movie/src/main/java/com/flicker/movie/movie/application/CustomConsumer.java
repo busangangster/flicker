@@ -41,6 +41,9 @@ public class CustomConsumer {
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, config.getConsumer().getAutoOffsetReset());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, config.getConsumer().getMaxPollRecords());
         properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, config.getConsumer().getEnableAutoCommit());
+        // UTF-8 설정 추가
+        properties.setProperty("key.deserializer.encoding", "UTF-8");
+        properties.setProperty("value.deserializer.encoding", "UTF-8");
         consumer = new KafkaConsumer<>(properties);
     }
 

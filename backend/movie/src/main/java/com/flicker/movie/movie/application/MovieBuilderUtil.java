@@ -3,7 +3,7 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.dto.MovieEvent;
+import com.flicker.movie.movie.dto.UserActionEvent;
 import com.flicker.movie.movie.dto.ActorRequest;
 import com.flicker.movie.movie.dto.MovieRequest;
 import org.springframework.stereotype.Component;
@@ -75,8 +75,8 @@ public class MovieBuilderUtil {
     }
 
     // MovieEvent 빌더 메서드
-    public static MovieEvent buildMovieEvent(int userSeq, int movieSeq, String keyword, String action, LocalDateTime timestamp) {
-        return MovieEvent.builder()
+    public static UserActionEvent buildMovieEvent(int userSeq, int movieSeq, String keyword, String action, LocalDateTime timestamp) {
+        return UserActionEvent.builder()
                 .userSeq(userSeq)
                 .movieSeq(movieSeq)
                 .keyword(keyword)

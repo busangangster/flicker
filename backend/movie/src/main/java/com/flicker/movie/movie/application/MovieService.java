@@ -3,7 +3,7 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.dto.MovieEvent;
+import com.flicker.movie.movie.dto.UserActionEvent;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -103,9 +103,9 @@ public class MovieService {
     @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq, int page, int size) {
         // 1. MovieEvent 객체 생성
-        MovieEvent movieEvent = MovieBuilderUtil.buildMovieEvent(userSeq, 0, keyword, "SEARCH", LocalDateTime.now());
+        UserActionEvent userActionEvent = MovieBuilderUtil.buildMovieEvent(userSeq, 0, keyword, "SEARCH", LocalDateTime.now());
         // 2. Kafka 이벤트 발행
-        customProducer.send(movieEvent);
+        customProducer.send(userActionEvent);
         // 3. redis 키워드 조회 후 결과 반환
         String redisKey = keyword + "/" + page + "/" + size;
         List<MongoMovie> mongoMovieList = movieRepoUtil.findByKeywordForRedis(redisKey);
@@ -134,9 +134,9 @@ public class MovieService {
     @Transactional
     public MovieDetailResponse getMovieDetail(int movieSeq, int userSeq) {
         // 1. MovieEvent 객체 생성
-        MovieEvent movieEvent = MovieBuilderUtil.buildMovieEvent(userSeq, movieSeq, null, "DETAIL", LocalDateTime.now());
+        UserActionEvent userActionEvent = MovieBuilderUtil.buildMovieEvent(userSeq, movieSeq, null, "DETAIL", LocalDateTime.now());
         // 2. Kafka 이벤트 발행
-        customProducer.send(movieEvent);
+        customProducer.send(userActionEvent);
         // 3. 영화 정보 조회
         Movie movie = movieRepoUtil.findById(movieSeq);
         // 4. MovieDetailResponse 생성

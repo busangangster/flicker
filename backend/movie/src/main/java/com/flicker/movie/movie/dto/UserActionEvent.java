@@ -1,5 +1,6 @@
 package com.flicker.movie.movie.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +12,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MovieEvent {
+public class UserActionEvent {
     private int userSeq;
+
     private int movieSeq;
+
     private String keyword;
+
     private String action; // "SEARCH" or "DETAIL"
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }
