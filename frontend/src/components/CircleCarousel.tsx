@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Application, Sprite, Ticker, Assets, Texture } from "pixi.js";
+import { Application, Sprite, Assets, Texture } from "pixi.js";
 import { useNavigate } from "react-router-dom";
 
 interface ExtendedSprite extends Sprite {
@@ -14,6 +14,12 @@ const CircleCarousel: React.FC = () => {
   const appRef = useRef<Application | null>(null);
   const navigate = useNavigate();
 
+  // Refs for cleanup
+  const updateCardsRef = useRef<() => void>(() => {});
+  const pointerDownHandlerRef = useRef<(event: PointerEvent) => void>();
+  const pointerUpHandlerRef = useRef<(event: PointerEvent) => void>();
+  const pointerMoveHandlerRef = useRef<(event: PointerEvent) => void>();
+
   const imageUrls = [
     "/assets/survey/image1.jpg",
     "/assets/survey/image2.jpg",
@@ -24,8 +30,9 @@ const CircleCarousel: React.FC = () => {
 
   useEffect(() => {
     const app = new Application();
+    appRef.current = app;
 
-    // 각 이미지 URL을 받아서 해당 이미지를 pixi.js의 Texture로 변환해 반환하는 비동기 함수
+    // Function to load textures
     const loadTexture = async (url: string): Promise<Texture> => {
       try {
         if (!url) throw new Error("No URL provided");
@@ -39,34 +46,32 @@ const CircleCarousel: React.FC = () => {
 
     const initializeApp = async () => {
       await app.init({
-        autoStart: false,
+        autoStart: true, // Start the application immediately
         resizeTo: window,
         backgroundColor: 0x000000,
-        sharedTicker: true,
+        sharedTicker: false, // Use a dedicated ticker for this app
         autoDensity: true,
         resolution: window.devicePixelRatio || 1,
       });
 
       if (pixiContainerRef.current) {
         pixiContainerRef.current.appendChild(app.view);
-        appRef.current = app;
 
         const centerX = app.screen.width / 2;
         const centerY = app.screen.height;
-        const radiusX = 750; // 가로 반지름
-        const radiusY = 400; // 세로 반지름
-        const cardCount = 20; // 카드 개수
+        const radiusX = 750; // Horizontal radius
+        const radiusY = 400; // Vertical radius
+        const cardCount = 20; // Number of cards
         const cards: ExtendedSprite[] = [];
-        const spacingFactor = 1; // 카드 간격 조절
+        const spacingFactor = 1; // Card spacing adjustment
         let lastClosestCard: ExtendedSprite | null = null;
 
-        // 텍스처 로드 함수, textures 배열: 로드된 Texture 객체들이 담긴 배열로, setupCard 함수에서 개별 카드 생성에 사용됩니다.
-        // Promise.all: imageUrls 배열의 모든 이미지 경로를 loadTexture 함수로 비동기 호출하여 모든 텍스처가 로드될 때까지 기다립니다. 모든 텍스처가 로드된 후 textures 배열에 담깁니다.
+        // Load textures
         const textures = await Promise.all(
           imageUrls.map((url) => loadTexture(url))
         );
 
-        // 카드 배경 텍스처 생성 함수
+        // Function to create card background texture
         const createCardBackgroundTexture = (
           width: number,
           height: number,
@@ -99,7 +104,7 @@ const CircleCarousel: React.FC = () => {
           return Texture.from(canvas);
         };
 
-        // 카드 배경 텍스처 생성
+        // Create card background texture
         const backgroundTexture = createCardBackgroundTexture(
           220,
           310,
@@ -107,57 +112,33 @@ const CircleCarousel: React.FC = () => {
           4
         );
 
-        // 카드 생성
-        for (let i = 0; i < cardCount; i++) {
-          const texture = await loadTexture(imageUrls[i % imageUrls.length]); // 이미지 URL로 텍스처 로드
-          setupCard(
-            texture,
-            backgroundTexture,
-            i,
-            centerX,
-            centerY,
-            radiusX,
-            radiusY,
-            spacingFactor
-          );
-        }
-
-        // 카드 설정 함수
+        // Function to set up each card
         function setupCard(
           texture: Texture,
           backgroundTexture: Texture,
-          index: number,
-          centerX: number,
-          centerY: number,
-          radiusX: number,
-          radiusY: number,
-          spacingFactor: number
+          index: number
         ) {
           const cardBackground = new Sprite(backgroundTexture);
           cardBackground.anchor.set(0.5);
 
-          // 수정된 부분: 카드 설정 함수 내 이미지의 크기와 위치를 카드 배경에 맞게 조정
           const sprite = new Sprite(texture || Texture.WHITE);
-          sprite.width = 220; // 배경의 너비에 맞춤
-          sprite.height = 310; // 배경의 높이에 맞춤
-          sprite.position.set(-110, -155); // 배경의 중심에 맞게 위치 조정
+          sprite.width = 220;
+          sprite.height = 310;
+          sprite.position.set(-110, -155);
 
           const cardContainer = new Sprite() as ExtendedSprite;
           cardContainer.addChild(cardBackground);
           cardContainer.addChild(sprite);
 
-          // 간격 조절을 위해 spacingFactor를 적용하여 각도를 계산
           const angle = (index / cardCount) * Math.PI * 2 * spacingFactor;
           cardContainer.x = centerX + radiusX * Math.cos(angle);
           cardContainer.y = centerY + radiusY * Math.sin(angle);
 
-          // 모든 카드를 정면으로 바라보도록 회전 각도 0으로 설정
           cardContainer.rotation = 0;
           cardContainer.userData = { angle, rotationOffset: 0 };
-          cardContainer.interactive = true; // 상호작용 가능하도록 설정
-          cardContainer.cursor = "pointer"; // 커서를 손 모양으로 변경
+          cardContainer.interactive = true;
+          cardContainer.cursor = "pointer";
           cardContainer.on("pointertap", () => {
-            // navigate(`/detail/${index}`);
             navigate("/moviedetail");
           });
 
@@ -165,11 +146,17 @@ const CircleCarousel: React.FC = () => {
           app.stage.addChild(cardContainer);
         }
 
+        // Set up all cards
+        for (let i = 0; i < cardCount; i++) {
+          const texture = textures[i % textures.length]; // Use loaded textures
+          setupCard(texture, backgroundTexture, i);
+        }
+
         let dragging = false;
         let previousPosition = { x: 0, y: 0 };
         let rotationOffset = 0;
 
-        // 각도 계산 함수
+        // Function to calculate angle
         function calculateAngle(
           x1: number,
           y1: number,
@@ -179,8 +166,8 @@ const CircleCarousel: React.FC = () => {
           return Math.atan2(y2 - y1, x2 - x1);
         }
 
-        // 카드 업데이트 함수
-        function updateCards() {
+        // Update cards function
+        const updateCards = () => {
           cards.forEach((card, i) => {
             if (card) {
               const angle =
@@ -188,17 +175,16 @@ const CircleCarousel: React.FC = () => {
               card.x = centerX + radiusX * Math.cos(angle);
               card.y = centerY + radiusY * Math.sin(angle);
 
-              // 모든 카드를 정면으로 바라보도록 회전 각도 0으로 유지
               card.rotation = 0;
-
               card.userData.angle = angle;
             }
           });
 
           bringCenterCardToFront();
-        }
+        };
+        updateCardsRef.current = updateCards; // Store reference for cleanup
 
-        // 중심에 가장 가까운 카드를 최상단으로 이동
+        // Function to bring the center card to the front
         function bringCenterCardToFront() {
           let closestCard: ExtendedSprite | null = null;
           let minAngleDiff = Infinity;
@@ -211,7 +197,6 @@ const CircleCarousel: React.FC = () => {
             }
           });
 
-          // 가장 가까운 카드가 변경되었고, 중앙에 정확히 왔을 때만 최상단 이동
           if (
             closestCard &&
             closestCard !== lastClosestCard &&
@@ -223,17 +208,19 @@ const CircleCarousel: React.FC = () => {
           }
         }
 
-        // 드래그 이벤트 설정
-        app.view.addEventListener("pointerdown", (event) => {
+        // Event handlers
+        const pointerDownHandler = (event: PointerEvent) => {
           dragging = true;
           previousPosition = { x: event.clientX, y: event.clientY };
-        });
+        };
+        pointerDownHandlerRef.current = pointerDownHandler;
 
-        app.view.addEventListener("pointerup", () => {
+        const pointerUpHandler = () => {
           dragging = false;
-        });
+        };
+        pointerUpHandlerRef.current = pointerUpHandler;
 
-        app.view.addEventListener("pointermove", (event) => {
+        const pointerMoveHandler = (event: PointerEvent) => {
           if (!dragging) return;
 
           const currentPosition = { x: event.clientX, y: event.clientY };
@@ -255,31 +242,71 @@ const CircleCarousel: React.FC = () => {
 
           previousPosition = currentPosition;
 
-          updateCards(); // 카드 업데이트 및 최상단 카드 처리
-        });
+          updateCards();
+        };
+        pointerMoveHandlerRef.current = pointerMoveHandler;
 
-        // 티커를 통해 애플리케이션 렌더링
-        Ticker.shared.add(() => {
-          updateCards(); // 매 프레임마다 카드 업데이트 및 최상단 카드 처리
-          app.render();
-        });
+        // Add event listeners
+        app.view.addEventListener("pointerdown", pointerDownHandler);
+        app.view.addEventListener("pointerup", pointerUpHandler);
+        app.view.addEventListener("pointermove", pointerMoveHandler);
+
+        // Use app.ticker instead of Ticker.shared
+        app.ticker.add(updateCards);
+
+        // Start the application
+        app.start();
       }
     };
 
-    // 초기화 함수 호출
     initializeApp();
 
+    // Cleanup function
     return () => {
-      if (Ticker.shared) {
-        Ticker.shared.stop();
-        Ticker.shared.destroy();
+      // Remove event listeners
+      if (
+        appRef.current &&
+        appRef.current.view &&
+        pointerDownHandlerRef.current &&
+        pointerUpHandlerRef.current &&
+        pointerMoveHandlerRef.current
+      ) {
+        appRef.current.view.removeEventListener(
+          "pointerdown",
+          pointerDownHandlerRef.current
+        );
+        appRef.current.view.removeEventListener(
+          "pointerup",
+          pointerUpHandlerRef.current
+        );
+        appRef.current.view.removeEventListener(
+          "pointermove",
+          pointerMoveHandlerRef.current
+        );
       }
 
+      // Remove ticker function
+      if (appRef.current && updateCardsRef.current) {
+        appRef.current.ticker.remove(updateCardsRef.current);
+      }
+
+      // Destroy the Pixi application
       if (appRef.current) {
-        appRef.current.destroy(true, { children: true, texture: true });
+        appRef.current.destroy(true, {
+          children: true,
+          texture: true,
+          baseTexture: true,
+        });
+        appRef.current = null;
+      }
+
+      // Optionally clear the assets cache
+      // Correct method to clear cache
+      if (Assets && Assets.cache) {
+        Assets.cache.reset();
       }
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <div
