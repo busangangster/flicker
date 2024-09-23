@@ -157,6 +157,20 @@ const ReviewPage: React.FC = () => {
     setReviews((prev) => [newReview, ...prev]);
   };
 
+  const handleLikeToggle = (reviewSeq: number) => {
+    setReviews((prevReviews) =>
+      prevReviews.map((review) =>
+        review.review_seq === reviewSeq
+          ? {
+              ...review,
+              liked: !review.liked,
+              likes: review.liked ? review.likes - 1 : review.likes + 1,
+            }
+          : review
+      )
+    );
+  };
+
   return (
     <div className="flex flex-col bg-black h-screen overflow-y-auto">
       <header className="sticky top-0 bg-transparent z-10">
@@ -185,7 +199,13 @@ const ReviewPage: React.FC = () => {
             <ReviewForm onSubmit={handleAddReview} />
             {/* 여러 개의 리뷰를 불러오는 부분 */}
             {reviews.map((review) => (
-              <Review key={review.review_seq} review={review} />
+              <Review
+                key={review.review_seq}
+                review={review}
+                liked={review.liked}
+                likes={review.likes}
+                onLikeToggle={handleLikeToggle}
+              />
             ))}
           </div>
 

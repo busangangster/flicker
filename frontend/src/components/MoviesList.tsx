@@ -4,10 +4,9 @@ import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
 import { useNavigate } from "react-router-dom";
 
-// MoviesList 컴포넌트에 필요한 props 타입 정의
 interface MoviesListProps {
-  category: string; // 카테고리 제목
-  movieImg: string[]; // 영화 이미지 배열
+  category: string;
+  movieImg: string[];
 }
 
 const MoviesList: React.FC<MoviesListProps> = ({ category, movieImg }) => {
@@ -140,7 +139,10 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movieImg }) => {
         modules={[Navigation, Pagination]}
       >
         {movieImg.map((img, index) => (
-          <SwiperSlide key={index} className="flex justify-center items-center">
+          <SwiperSlide
+            key={index}
+            className="flex justify-center items-center transition-transform duration-300 transform hover:-translate-y-2 mt-4" // mb-4를 추가하여 아래에 여유 공간 확보
+          >
             <img
               src={img}
               alt={`Movie ${index + 1}`}

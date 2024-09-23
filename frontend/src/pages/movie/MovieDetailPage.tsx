@@ -7,6 +7,9 @@ import MoviesList from "../../components/MoviesList";
 import { useNavigate } from "react-router-dom";
 
 const MovieDetailPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [isFilled, setIsFilled] = useState(false);
+
   const actors = [
     "Tom Cruise",
     "Miles Teller",

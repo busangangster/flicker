@@ -31,7 +31,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/error" element={<ErrorPage />} />
-      <Route path="/landing" element={<LandingPage />} />{" "}
+      <Route path="/landing" element={<LandingPage />} />
       {/*렌딩페이지, 메인페이지 하나로 합쳐서 보여줄까 ? */}
       <Route path="/survey" element={<SurveyPage />} />
       <Route path="/passwordreset" element={<PasswordResetPage />} />

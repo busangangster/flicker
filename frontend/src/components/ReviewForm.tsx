@@ -1,7 +1,4 @@
-// ReviewForm.tsx
 import React, { useState } from "react";
-
-// 별 이미지 import
 import starOutline from "../assets/review/star_outline.png";
 import starHalf from "../assets/review/star_half.png";
 import starFull from "../assets/review/star.png";
@@ -16,10 +13,50 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
   const [content, setContent] = useState("");
   const [isSpoiler, setIsSpoiler] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false); // 폼 제출 여부 상태 관리
+  const [isDragging, setIsDragging] = useState(false); // 드래그 상태 관리
 
-  const handleRatingClick = (index: number, isLeftHalf: boolean) => {
+  const handleRatingChange = (index: number, isLeftHalf: boolean) => {
     const newRating = isLeftHalf ? index + 0.5 : index + 1;
+
     setRating(newRating);
+  };
+
+  const handleMouseDown = () => {
+    setIsDragging(true);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+
+    // 드래그 상태에서 첫 번째 별의 왼쪽으로 벗어났다면 강제로 0으로 설정
+    if (rating === 0.5) {
+      setRating(0);
+    }
+  };
+
+  const handleMouseMove = (
+    index: number,
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    if (isDragging) {
+      const starElement = event.currentTarget.getBoundingClientRect();
+      const mouseX = event.clientX;
+
+      // 첫 번째 별의 왼쪽으로 벗어났는지 확인
+      if (index === 0 && mouseX < starElement.left) {
+        setRating(0);
+      } else {
+        const isLeftHalf =
+          event.nativeEvent.offsetX < event.currentTarget.width / 2;
+        handleRatingChange(index, isLeftHalf);
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -59,7 +96,7 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
         <span className="ml-4 font-semibold ">{currentUserNickname}</span>
         <span className="text-gray-400 text-sm ml-2">'s flick record is</span>
         {/* 별점 입력 */}
-        <div className="flex ml-2">
+        <div className="flex ml-2" onMouseLeave={handleMouseLeave}>
           {Array.from({ length: 5 }, (_, index) => (
             <div
               key={index}
@@ -77,8 +114,12 @@ const ReviewForm: React.FC<{ onSubmit: (review: any) => void }> = ({
                 }
                 alt="Star"
                 className="w-5 h-5 cursor-pointer"
+                onDragStart={(e) => e.preventDefault()} // 드래그 금지
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={(e) => handleMouseMove(index, e)}
                 onClick={(e) =>
-                  handleRatingClick(
+                  handleRatingChange(
                     index,
                     e.nativeEvent.offsetX < e.currentTarget.width / 2
                   )

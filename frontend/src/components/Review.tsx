@@ -1,12 +1,24 @@
 // Review.tsx
-import React, { useState } from "react";
+import React from "react";
 import starFull from "../assets/review/star.png";
 import starHalf from "../assets/review/star_half.png";
 import thumbUpOutline from "../assets/review/thumb_up_outline.png";
 import thumbUp from "../assets/review/thumb_up.png";
 
-const Review: React.FC<{ review: any }> = ({ review }) => {
-  const [showContent, setShowContent] = useState(!review.isSpoiler); // 스포일러 여부에 따른 내용 표시 여부
+interface ReviewProps {
+  review: any;
+  liked: boolean;
+  likes: number;
+  onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
+}
+
+const Review: React.FC<ReviewProps> = ({
+  review,
+  liked,
+  likes,
+  onLikeToggle,
+}) => {
+  const [showContent, setShowContent] = React.useState(!review.isSpoiler); // 스포일러 여부에 따른 내용 표시 여부
 
   const toggleContent = () => {
     if (review.isSpoiler) {
@@ -53,23 +65,26 @@ const Review: React.FC<{ review: any }> = ({ review }) => {
             {/* 좋아요 버튼 */}
             <button
               className="flex items-center p-0 bg-transparent border-none outline-none"
-              onClick={() => {
-                // 좋아요 버튼 기능 추가
-              }}
+              onClick={() => onLikeToggle(review.review_seq)} // 좋아요 토글 함수 호출
             >
               <img
-                src={review.liked ? thumbUp : thumbUpOutline}
+                src={liked ? thumbUp : thumbUpOutline}
                 alt="Thumb Up"
                 className="w-4 h-4 mr-1"
               />
-              <span className=" text-gray-300">{review.likes}</span>
+              <span className=" text-gray-300">{likes}</span>
             </button>
           </div>
           {/* 리뷰 내용 표시 */}
           {showContent ? (
-            <p className="text-white  mt-1 mb-1">{review.content}</p>
+            <p className="text-white mt-1 mb-1" onClick={toggleContent}>
+              {review.content}
+            </p>
           ) : (
-            <p className="text-gray-400 cursor-pointer" onClick={toggleContent}>
+            <p
+              className="text-gray-400 cursor-pointer mt-1 mb-1"
+              onClick={toggleContent}
+            >
               스포일러 내용이 포함되어 있어요! 클릭하면, 내용을 볼 수 있어요.
             </p>
           )}
