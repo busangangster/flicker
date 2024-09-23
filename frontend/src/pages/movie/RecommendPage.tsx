@@ -5,16 +5,16 @@ import Navbar from "../../components/common/Navbar";
 import theaterDoorImage from "../../assets/movie/theater_door.jpg"; // 이미지 경로
 
 const RecommendPage: React.FC = () => {
-  const navigate = useNavigate(); // useNavigate 훅 선언
+  const navigate = useNavigate();
 
   // 왼쪽 영역 클릭 시 이동할 경로
-  const handleLeftClick = () => {
-    navigate("/recommendlist"); // 원하는 경로로 이동
+  const gotoLeftRecommend = () => {
+    navigate("/recommendlist");
   };
 
   // 오른쪽 영역 클릭 시 이동할 경로
-  const handleRightClick = () => {
-    navigate("/recommendlist"); // 원하는 경로로 이동
+  const gotoRightRecommend = () => {
+    navigate("/recommendlist");
   };
 
   return (
@@ -35,13 +35,13 @@ const RecommendPage: React.FC = () => {
         {/* 왼쪽 반 클릭 시 이동 */}
         <div
           className="absolute left-0 top-0 h-full w-1/2 cursor-pointer"
-          onClick={handleLeftClick}
+          onClick={gotoLeftRecommend}
         />
 
         {/* 오른쪽 반 클릭 시 이동 */}
         <div
           className="absolute right-0 top-0 h-full w-1/2 cursor-pointer"
-          onClick={handleRightClick}
+          onClick={gotoRightRecommend}
         />
       </div>
     </div>

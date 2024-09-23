@@ -5,113 +5,123 @@ import Keyword from "../../components/Keyword";
 import Filter from "../../components/Filter";
 import ReviewForm from "../../components/ReviewForm";
 import Navbar from "../../components/common/Navbar";
+import { ReviewType } from "../../type";
 
 // 목업 데이터
 const mockReviews = [
   {
-    review_seq: 1,
-    member_seq: 1,
-    movie_id: 101,
-    review_rating: 4.0,
+    reviewSeq: 1,
+    userSeq: 1,
+    movieId: 101,
+    reviewRating: 4.0,
     content:
       "영화관에서 탑건 보고 집에 가려고 차 댔을 때의 기분을 그대로 느꼈어요.",
-    created_at: "2024-09-18T10:00:00",
+    createdAt: "2024-09-18T10:00:00",
     likes: 523,
     liked: false,
     nickname: "HyunJeong",
+    isSpoiler: false,
   },
   {
-    review_seq: 2,
-    member_seq: 2,
-    movie_id: 102,
-    review_rating: 3.5,
+    reviewSeq: 2,
+    userSeq: 2,
+    movieId: 102,
+    reviewRating: 3.5,
     content:
       "탑건1(1986년)의 36년만의 나온 속편. 매우 만족 스러웠고 매우 재밌었다 무조건 특별관에서 봐야되는 영화 2022년 개봉작 영화중에서 범죄도시2 이후 2번째로 엄청 좋았던 영화 톰 크루즈 미모는 여전히 잘생겼다 1편을 보고 가야되는 질문에서 답을 하자면 1편 보고 가는게 더 좋다 감동도 2배 더 느낄 수 있음",
-    created_at: "2024-09-17T11:00:00",
+    createdAt: "2024-09-17T11:00:00",
     likes: 320,
     liked: true,
     nickname: "Jaechan",
+    isSpoiler: false,
   },
   {
-    review_seq: 3,
-    member_seq: 3,
-    movie_id: 103,
-    review_rating: 5.0,
+    reviewSeq: 3,
+    userSeq: 3,
+    movieId: 103,
+    reviewRating: 5.0,
     content: "이 영화는 정말 최고입니다! 스토리, 연기, 모든 것이 완벽했습니다.",
-    created_at: "2024-09-16T14:30:00",
+    createdAt: "2024-09-16T14:30:00",
     likes: 720,
     liked: true,
     nickname: "MinSu",
+    isSpoiler: true,
   },
   {
-    review_seq: 4,
-    member_seq: 4,
-    movie_id: 104,
-    review_rating: 2.5,
+    reviewSeq: 4,
+    userSeq: 4,
+    movieId: 104,
+    reviewRating: 2.5,
     content:
       "기대보다 아쉬웠어요. 캐릭터들이 조금 더 깊이 있었으면 좋았을 것 같아요.",
-    created_at: "2024-09-15T09:15:00",
+    createdAt: "2024-09-15T09:15:00",
     likes: 150,
     liked: false,
     nickname: "EunJi",
+    isSpoiler: true,
   },
   {
-    review_seq: 5,
-    member_seq: 5,
-    movie_id: 105,
-    review_rating: 4.5,
+    reviewSeq: 5,
+    userSeq: 5,
+    movieId: 105,
+    reviewRating: 4.5,
     content: "재밌고 감동적이었어요! 영화 보는 내내 몰입해서 봤습니다.",
-    created_at: "2024-09-14T18:45:00",
+    createdAt: "2024-09-14T18:45:00",
     likes: 430,
     liked: true,
     nickname: "DongHoon",
+    isSpoiler: false,
   },
   {
-    review_seq: 6,
-    member_seq: 6,
-    movie_id: 106,
-    review_rating: 3.0,
+    reviewSeq: 6,
+    userSeq: 6,
+    movieId: 106,
+    reviewRating: 3.0,
     content:
       "평범한 영화였어요. 몇몇 장면은 인상적이었지만 전체적으로는 무난했어요.",
-    created_at: "2024-09-13T12:00:00",
+    createdAt: "2024-09-13T12:00:00",
     likes: 210,
     liked: false,
     nickname: "HyeJin",
+    isSpoiler: false,
   },
   {
-    review_seq: 7,
-    member_seq: 7,
-    movie_id: 107,
-    review_rating: 2.5,
+    reviewSeq: 7,
+    userSeq: 7,
+    movieId: 107,
+    reviewRating: 2.5,
     content:
       "기대보다 아쉬웠어요. 캐릭터들이 조금 더 깊이 있었으면 좋았을 것 같아요.",
-    created_at: "2024-09-15T09:15:00",
+    createdAt: "2024-09-15T09:15:00",
     likes: 158,
     liked: false,
     nickname: "EunJi",
+    isSpoiler: false,
   },
   {
-    review_seq: 8,
-    member_seq: 8,
-    movie_id: 108,
-    review_rating: 4.5,
+    reviewSeq: 8,
+    userSeq: 8,
+    movieId: 108,
+    reviewRating: 4.5,
     content: "재밌고 감동적이었어요! 영화 보는 내내 몰입해서 봤습니다.",
-    created_at: "2024-09-14T18:45:00",
+    createdAt: "2024-09-14T18:45:00",
     likes: 350,
     liked: true,
     nickname: "Harry",
+    isSpoiler: true,
   },
   {
-    review_seq: 9,
-    member_seq: 9,
-    movie_id: 109,
-    review_rating: 3.0,
+    reviewSeq: 9,
+    userSeq: 9,
+    movieId: 109,
+    reviewRating: 3.0,
     content:
       "평범한 영화였어요. 몇몇 장면은 인상적이었지만 전체적으로는 무난했어요.",
-    created_at: "2024-09-13T12:00:00",
+    createdAt: "2024-09-13T12:00:00",
     likes: 125,
     liked: false,
     nickname: "Poter",
+    isSpoiler: false,
   },
 ];
 
@@ -127,19 +137,19 @@ const ReviewPage: React.FC = () => {
     if (sortOption === "최신순") {
       sortedReviews.sort(
         (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
     } else if (sortOption === "오래된 순") {
       sortedReviews.sort(
         (a, b) =>
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
     } else if (sortOption === "좋아요 많은 순") {
       sortedReviews.sort((a, b) => b.likes - a.likes);
     }
 
     setReviews(sortedReviews); // 정렬된 리뷰 설정
-  }, [sortOption]); // sortOption이 변경될 때마다 실행
+  }, [reviews, sortOption]); // sortOption이 변경될 때마다 실행
 
   const filterOptions = [
     { value: "최신순", label: "최신순" },
@@ -153,14 +163,14 @@ const ReviewPage: React.FC = () => {
   };
 
   // 새 리뷰 추가 핸들러
-  const handleAddReview = (newReview: any) => {
-    setReviews((prev) => [newReview, ...prev]);
+  const handleAddReview = (newReview: ReviewType) => {
+    setReviews((prev: ReviewType[]) => [newReview, ...prev]);
   };
 
   const handleLikeToggle = (reviewSeq: number) => {
     setReviews((prevReviews) =>
       prevReviews.map((review) =>
-        review.review_seq === reviewSeq
+        review.reviewSeq === reviewSeq
           ? {
               ...review,
               liked: !review.liked,
@@ -200,10 +210,11 @@ const ReviewPage: React.FC = () => {
             {/* 여러 개의 리뷰를 불러오는 부분 */}
             {reviews.map((review) => (
               <Review
-                key={review.review_seq}
+                key={review.reviewSeq}
                 review={review}
                 liked={review.liked}
                 likes={review.likes}
+                nickname={review.nickname}
                 onLikeToggle={handleLikeToggle}
               />
             ))}
