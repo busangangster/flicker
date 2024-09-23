@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [isFilled, setIsFilled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [interestOption, setInterestOption] = useState("관심 없음");
 
   const actors = [
     "Tom Cruise",
@@ -46,10 +48,6 @@ const MovieDetailPage: React.FC = () => {
     "/assets/survey/image13.jpg",
   ];
 
-  const navigate = useNavigate();
-  const [isFilled, setIsFilled] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [interestOption, setInterestOption] = useState("관심 없음");
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
