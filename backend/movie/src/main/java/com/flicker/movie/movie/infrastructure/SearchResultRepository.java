@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface SearchResultRepository extends CrudRepository<SearchResult, String> {
 
-    Optional<SearchResult> findByKeyword(String keyword);
+    Optional<SearchResult> findByKeyword(String redisKey);
 }

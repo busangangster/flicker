@@ -1,6 +1,8 @@
 package com.flicker.movie.movie.infrastructure;
 
 import com.flicker.movie.movie.domain.entity.Movie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,11 +16,11 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>, MovieRep
     Optional<Movie> findByMovieDetail_MovieTitleAndMovieDetail_MovieYear(String movieTitle, int movieYear);
 
     // DEL_YN이 N인 영화 전체 목록 조회 (영화 제작 연도 내림차순)
-    List<Movie> findByDelYNOrderByMovieDetail_MovieYearDesc(String delYN);
+    Page<Movie> findByDelYNOrderByMovieDetail_MovieYearDesc(String delYNm, Pageable pageable);
 
     // DEL_YN이 N이고, 영화 제목에 특정 키워드가 포함된 영화 목록 조회 (영화 제작 연도 내림차순)
-    List<Movie> findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDesc(String genre, String delYN);
+    Page<Movie> findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDesc(String genre, String delYN, Pageable pageable);
 
     // 해당 배우가 출연한 영화 조회 (영화 제작 연도 내림차순)
-    List<Movie> findByActors_ActorNameContainingAndDelYNOrderByMovieDetail_MovieYearDesc(String actorName, String delYN);
+    Page<Movie> findByActors_ActorNameContainingAndDelYNOrderByMovieDetail_MovieYearDesc(String actorName, String delYN, Pageable pageable);
 }

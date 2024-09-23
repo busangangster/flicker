@@ -2,17 +2,19 @@ package com.flicker.movie.movie.application;
 
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
-import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.entity.MongoMovieList;
 import com.flicker.movie.movie.domain.entity.Movie;
 import com.flicker.movie.movie.domain.entity.SearchResult;
+import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.infrastructure.MongoMovieListRepository;
 import com.flicker.movie.movie.infrastructure.MovieRepository;
 import com.flicker.movie.movie.infrastructure.SearchResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,9 +81,9 @@ public class MovieRepoUtil {
      * @return 조회된 영화 목록
      * @throws RestApiException 영화 목록 조회 중 오류가 발생할 경우 발생
      */
-    public List<Movie> findAll() {
+    public List<Movie> findAll(Pageable pageable) {
         try {
-            return movieRepository.findByDelYNOrderByMovieDetail_MovieYearDesc("N");
+            return movieRepository.findByDelYNOrderByMovieDetail_MovieYearDesc("N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 전체 목록 조회 중 오류가 발생했습니다.");
         }
@@ -94,9 +96,9 @@ public class MovieRepoUtil {
      * @return 조회된 영화 목록
      * @throws RestApiException 장르별 영화 목록 조회 중 오류가 발생할 경우 발생
      */
-    public List<Movie> findByGenre(String genre) {
+    public List<Movie> findByGenre(String genre, Pageable pageable) {
         try {
-            return movieRepository.findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDesc(genre, "N");
+            return movieRepository.findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDesc(genre, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "장르별 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -109,9 +111,9 @@ public class MovieRepoUtil {
      * @return 조회된 영화 목록
      * @throws RestApiException 배우별 영화 목록 조회 중 오류가 발생할 경우 발생
      */
-    public List<Movie> findByActor(String actorName) {
+    public List<Movie> findByActor(String actorName, Pageable pageable) {
         try {
-            return movieRepository.findByActors_ActorNameContainingAndDelYNOrderByMovieDetail_MovieYearDesc(actorName, "N");
+            return movieRepository.findByActors_ActorNameContainingAndDelYNOrderByMovieDetail_MovieYearDesc(actorName, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "배우별 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -124,9 +126,9 @@ public class MovieRepoUtil {
      * @return 조회된 영화 목록
      * @throws RestApiException 키워드를 포함하는 영화 목록 조회 중 오류가 발생할 경우 발생
      */
-    public List<Movie> findByKeyword(String keyword) {
+    public List<Movie> findByKeyword(String keyword, Pageable pageable) {
         try {
-            return movieRepository.findByKeywordInTitlePlotActorGenre(keyword, "N");
+            return movieRepository.findByKeywordInTitlePlotActorGenre(keyword, "N", pageable);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "키워드를 포함하는 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -135,20 +137,21 @@ public class MovieRepoUtil {
     /**
      * Redis에 저장된 키워드를 사용하여 영화 목록을 조회하는 메서드입니다.
      *
-     * @param keyword 조회할 키워드
+     * @param redisKey 조회할 키워드
      * @return 조회된 영화 목록
      */
-    public List<MongoMovie> findByKeywordForRedis(String keyword) {
+    public List<MongoMovie> findByKeywordForRedis(String redisKey) {
         try {
-            Optional<SearchResult> searchResultOptional = searchResultRepository.findByKeyword(keyword);
-            // Redis에 값이 없으면 null 반환
+            Optional<SearchResult> searchResultOptional = searchResultRepository.findByKeyword(redisKey);
+            // Redis에 키가 없으면 null 반환
             if (searchResultOptional.isEmpty()) {
-                return null;
+                return null;  // 키 자체가 없을 때
             }
             // MongoDB에서 조회
             String mongoKey = searchResultOptional.get().getMongoKey();
             Optional<MongoMovieList> mongoMovieList = mongoMovieListRepository.findByMongoKey(mongoKey);
-            return mongoMovieList.map(MongoMovieList::getMongoMovies).orElse(null);
+            // MongoMovies가 비어있는 경우 빈 리스트 반환
+            return mongoMovieList.map(MongoMovieList::getMongoMovies).orElse(Collections.emptyList());
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 저장된 키워드를 조회하는 중 오류가 발생했습니다.");
         }

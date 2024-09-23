@@ -16,7 +16,7 @@ import org.springframework.data.redis.core.TimeToLive;
 public class SearchResult {
 
     @Id
-    private String keyword; // 검색어
+    private String keyword; // 레디스 key 값
 
     private String mongoKey; // MongoDB의 _id 값
 
