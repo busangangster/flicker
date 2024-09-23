@@ -1,5 +1,4 @@
-// Keyword.tsx
-import React from "react";
+import React, { useMemo } from "react";
 import WordCloud from "react-d3-cloud";
 
 // 단어 리스트
@@ -20,30 +19,35 @@ const fontSize = (word: { value: number }) => word.value * 2; // 기존보다 �
 const rotate = () => 0;
 
 const Keyword: React.FC = () => {
+  // useMemo를 사용하여 워드 클라우드 데이터를 메모이제이션
+  const wordCloudComponent = useMemo(() => {
+    return (
+      <WordCloud
+        data={words}
+        font={(word) => "Raleway"} // 폰트 설정
+        fontSize={fontSize} // 글자 크기 설정
+        rotate={rotate} // 글자 회전 설정
+        padding={5} // 단어 간격 설정
+        fill={(d) => {
+          const colors = [
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+            "#4BC0C0",
+            "#9966FF",
+          ];
+          return colors[Math.floor(Math.random() * colors.length)];
+        }}
+        width={500} // 워드 클라우드의 너비
+        height={500} // 워드 클라우드의 높이
+      />
+    );
+  }, []); // 빈 배열을 의존성으로 전달하여 처음 렌더링 시에만 실행
+
   return (
     <div className="mt-4">
       <h2 className="text-lg font-semibold mb-2">Keyword</h2>
-      <div className="bg-gray-800 p-2 rounded">
-        <WordCloud
-          data={words}
-          font={(word) => "Raleway"} // 폰트 설정
-          fontSize={fontSize} // 글자 크기 설정
-          rotate={rotate} // 글자 회전 설정
-          padding={5} // 단어 간격 설정
-          fill={(d) => {
-            const colors = [
-              "#FF6384",
-              "#36A2EB",
-              "#FFCE56",
-              "#4BC0C0",
-              "#9966FF",
-            ];
-            return colors[Math.floor(Math.random() * colors.length)];
-          }}
-          width={500} // 워드 클라우드의 너비
-          height={500} // 워드 클라우드의 높이
-        />
-      </div>
+      <div className="bg-gray-800 p-2 rounded">{wordCloudComponent}</div>
     </div>
   );
 };
