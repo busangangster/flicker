@@ -5,7 +5,7 @@ import MoviesList from "../../components/MoviesList";
 import SearchBar from "../../components/SearchBar";
 import Filter from "../../components/Filter"; // Filter 컴포넌트 추가
 
-const MoviesPage = () => {
+const MoviesPage: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false); // 검색창 상태 관리
   const [selectedGenre, setSelectedGenre] = useState(""); // 선택된 장르 관리
 

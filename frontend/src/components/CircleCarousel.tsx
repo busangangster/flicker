@@ -295,7 +295,6 @@ const CircleCarousel: React.FC = () => {
         appRef.current.destroy(true, {
           children: true,
           texture: true,
-          baseTexture: true,
         });
         appRef.current = null;
       }

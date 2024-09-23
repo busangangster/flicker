@@ -3,15 +3,12 @@ import { Application, Sprite, Container, Graphics, Assets } from "pixi.js";
 import gsap from "gsap";
 import Navbar from "../components/common/Navbar";
 import CircleCarousel from "../components/CircleCarousel";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
   const pixiContainerRef = useRef<HTMLDivElement | null>(null);
   const animationStopped = useRef(false);
   const [animationFinished, setAnimationFinished] = useState(false); // 애니메이션 종료 상태 관리
   const [showLanding, setShowLanding] = useState(false); // LandingPage 표시 여부 상태
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     // 페이지가 로드될 때마다 visited 값을 초기화하여 새로고침 여부를 다시 판단
