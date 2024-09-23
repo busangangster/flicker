@@ -3,7 +3,7 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.domain.vo.MovieEvent;
+import com.flicker.movie.movie.dto.MovieEvent;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -158,6 +158,4 @@ public class MovieService {
     public List<MovieListResponse> getTopMovieList() {
         return null;
     }
-
-    // TODO: 영화 평점 업데이트 구독
 }

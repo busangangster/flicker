@@ -3,7 +3,7 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.domain.vo.MovieEvent;
+import com.flicker.movie.movie.dto.MovieEvent;
 import com.flicker.movie.movie.dto.ActorRequest;
 import com.flicker.movie.movie.dto.MovieRequest;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
 package com.flicker.movie.movie.config;
 
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +12,30 @@ public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.producer.key-serializer}")
-    private String keySerializer;
+    private Producer producer;
 
-    @Value("${spring.kafka.producer.value-serializer}")
-    private String valueSerializer;
+    private Consumer consumer;
 
-    @Value("${spring.kafka.template.default-topic}")
-    private String defaultTopic;
+    private Template template;
+
+    @Data
+    public static class Producer {
+        private String keySerializer;
+        private String valueSerializer;
+    }
+
+    @Data
+    public static class Consumer {
+        private String groupId;
+        private String enableAutoCommit;
+        private String autoOffsetReset;
+        private String keyDeserializer;
+        private String valueDeserializer;
+        private String maxPollRecords;
+    }
+
+    @Data
+    public static class Template {
+        private String defaultTopic;
+    }
 }

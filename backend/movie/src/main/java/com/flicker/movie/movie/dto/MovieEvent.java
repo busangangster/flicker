@@ -1,4 +1,4 @@
-package com.flicker.movie.movie.domain.vo;
+package com.flicker.movie.movie.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

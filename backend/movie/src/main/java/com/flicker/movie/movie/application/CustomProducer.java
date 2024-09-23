@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.config.KafkaConfig;
-import com.flicker.movie.movie.domain.vo.MovieEvent;
+import com.flicker.movie.movie.dto.MovieEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +30,8 @@ public class CustomProducer {
         // Kafka Producer 설정
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getBootstrapServers());
-        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getKeySerializer());
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getValueSerializer());
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getProducer().getKeySerializer());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getProducer().getValueSerializer());
         // 재시도 설정
         properties.put(ProducerConfig.RETRIES_CONFIG, 5);  // 최대 5번 재시도
         properties.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 1000);  // 재시도 간의 대기 시간 1초
@@ -46,7 +46,7 @@ public class CustomProducer {
         try {
             // 객체를 JSON으로 직렬화
             String jsonMessage = objectMapper.writeValueAsString(event);
-            ProducerRecord<String, String> record = new ProducerRecord<>(config.getDefaultTopic(), jsonMessage);
+            ProducerRecord<String, String> record = new ProducerRecord<>(config.getTemplate().getDefaultTopic(), jsonMessage);
 
             producer.send(record, (metadata, exception) -> {
                 String logMessage = String.format("Publishing message: %s", jsonMessage);
