@@ -65,13 +65,13 @@ const MoviesPage: React.FC = () => {
 
       <div className="mt-[100px] flex justify-between items-end w-[1800px] pl-10">
         {/* Filter 컴포넌트 추가 */}
-        <div className="w-40 mb-3 mt-1">
+        <div className="mb-3 mt-1">
           {/* {" "} */}
           <Filter
             options={genres}
             onChange={(value) => setSelectedGenre(value)}
             defaultValue={selectedGenre || "장르"}
-            customClass="grid grid-cols-3 gap-2 w-[36rem]" // MoviesPage에서만 3열 적용
+            customClass="grid grid-cols-3 gap-2 w-96" // MoviesPage에서만 3열 적용
           />
         </div>
         <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />

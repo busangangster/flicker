@@ -58,7 +58,7 @@ const Filter: React.FC<FilterProps> = ({
       {isOpen && (
         <div
           className={`absolute z-50 mt-2 rounded-md shadow-lg bg-gray-700 ${
-            customClass || "w-36"
+            customClass || "w-40"
           }`}
         >
           <div className={`py-1 ${customClass || ""}`}>
