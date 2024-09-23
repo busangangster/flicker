@@ -1,7 +1,10 @@
 package com.flicker.user.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flicker.user.common.exception.RestApiException;
+import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.user.dto.UserLoginReqDto;
+import com.flicker.user.user.dto.UserLoginResDto;
 import com.flicker.user.user.infrastructure.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,10 +30,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-//    private final UserRepository userRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
+
+        System.out.println("!@#!@#");
+
 
         UserLoginReqDto loginDto = new UserLoginReqDto();
         try {
@@ -38,7 +43,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             ServletInputStream inputStream = req.getInputStream();
             String messagebody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
             loginDto = mapper.readValue(messagebody, UserLoginReqDto.class);
-
         } catch (IOException e) {
             // TODO : 예외 처리
             throw new RuntimeException(e);
@@ -55,7 +59,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
 
-        String username = auth.getName();
 
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -66,8 +69,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
             // @TODO : DB에서 데이터 들고오고 createToken에 넣기
 
-            String access = jwtUtil.createToken("access", username, role, 600000L);
-            String refresh = jwtUtil.createToken("refresh", username, role, 86400000L);
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+
+            UserLoginResDto dto = UserLoginResDto.builder()
+                    .userId(userDetails.getUserId())
+                    .email(userDetails.getEmail())
+                    .nickname(userDetails.getNickname())
+                    .birthDate(userDetails.getBirthDate())
+                    .gender(userDetails.getGender())
+                    .profilePhotoUrl(userDetails.getProfilePhotoUrl())
+                    .build();
+
+            String access = jwtUtil.createToken("access", dto, role, 600000L);
+            String refresh = jwtUtil.createToken("refresh", dto, role, 86400000L);
 
 
             // TODO : Refresh Token 저장 로직 구현
@@ -84,6 +98,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         // TODO : 응답 에러코드와 함께 메세지 함께 보내야함.
         response.setStatus(401);
+
     }
 
     private Cookie createCookie(String key, String value) {

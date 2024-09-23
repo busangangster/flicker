@@ -1,9 +1,6 @@
 package com.flicker.user.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,10 +8,12 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserLoginResDto {
     private String userId;
     private String email;
     private String nickname;
     private LocalDate birthDate;
     private Character gender;
+    private String profilePhotoUrl;
 }

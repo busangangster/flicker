@@ -1,7 +1,8 @@
-package com.flicker.user.jwt;
+package com.flicker.user.jwt.application;
 
 import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.status.StatusCode;
+import com.flicker.user.jwt.CustomUserDetails;
 import com.flicker.user.user.domain.entity.User;
 import com.flicker.user.user.infrastructure.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

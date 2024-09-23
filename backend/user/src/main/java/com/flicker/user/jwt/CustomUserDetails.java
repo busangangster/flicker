@@ -3,6 +3,8 @@ package com.flicker.user.jwt;
 import com.flicker.user.user.domain.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -19,6 +21,34 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 권한을 반환합니다. 여기서는 간단히 'ROLE_USER' 권한을 반환하는 예입니다.
         return Collections.singleton(() -> "ROLE_USER");
+    }
+
+    public Long getUserSeq(){
+        return user.getUserSeq();
+    }
+
+    public LocalDate getBirthDate(){
+        return user.getUserInfo().getBirthDate();
+    }
+
+    public Character getGender(){
+        return user.getUserInfo().getGender();
+    }
+
+    public String getNickname(){
+        return user.getNickname();
+    }
+
+    public String getEmail(){
+        return user.getEmail();
+    }
+
+    public String getProfilePhotoUrl(){
+        return user.getProfilePhotoUrl();
+    }
+
+    public String getUserId(){
+        return user.getUserId();
     }
 
     @Override
