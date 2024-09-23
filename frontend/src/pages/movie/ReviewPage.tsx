@@ -78,6 +78,41 @@ const mockReviews = [
     liked: false,
     nickname: "HyeJin",
   },
+  {
+    review_seq: 7,
+    member_seq: 7,
+    movie_id: 107,
+    review_rating: 2.5,
+    content:
+      "기대보다 아쉬웠어요. 캐릭터들이 조금 더 깊이 있었으면 좋았을 것 같아요.",
+    created_at: "2024-09-15T09:15:00",
+    likes: 158,
+    liked: false,
+    nickname: "EunJi",
+  },
+  {
+    review_seq: 8,
+    member_seq: 8,
+    movie_id: 108,
+    review_rating: 4.5,
+    content: "재밌고 감동적이었어요! 영화 보는 내내 몰입해서 봤습니다.",
+    created_at: "2024-09-14T18:45:00",
+    likes: 350,
+    liked: true,
+    nickname: "Harry",
+  },
+  {
+    review_seq: 9,
+    member_seq: 9,
+    movie_id: 109,
+    review_rating: 3.0,
+    content:
+      "평범한 영화였어요. 몇몇 장면은 인상적이었지만 전체적으로는 무난했어요.",
+    created_at: "2024-09-13T12:00:00",
+    likes: 125,
+    liked: false,
+    nickname: "Poter",
+  },
 ];
 
 const ReviewPage: React.FC = () => {

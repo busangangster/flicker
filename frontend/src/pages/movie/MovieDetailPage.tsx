@@ -4,6 +4,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Navbar from "../../components/common/Navbar";
 import MoviesList from "../../components/MoviesList";
+import { useNavigate } from "react-router-dom";
 
 const MovieDetailPage: React.FC = () => {
   const actors = [
@@ -42,6 +43,7 @@ const MovieDetailPage: React.FC = () => {
     "/assets/survey/image13.jpg",
   ];
 
+  const navigate = useNavigate();
   const [isFilled, setIsFilled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [interestOption, setInterestOption] = useState("관심 없음");
@@ -52,6 +54,10 @@ const MovieDetailPage: React.FC = () => {
     setIsFilled(!isFilled);
   };
 
+  const goToReview = () => {
+    navigate("/review");
+  };
+
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
@@ -60,7 +66,7 @@ const MovieDetailPage: React.FC = () => {
     setInterestOption((prev) =>
       prev === "관심 없음" ? "관심 없음 취소" : "관심 없음"
     );
-    setIsDropdownOpen(false); 
+    setIsDropdownOpen(false);
   };
 
   // 드롭다운 외부 클릭 시 닫히도록 설정
@@ -183,7 +189,12 @@ const MovieDetailPage: React.FC = () => {
         <div className="p-4 bg-black text-black rounded-md w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
           <div className="flex w-[800px] justify-between">
             <h3 className="text-2xl font-bold text-white">Reviews</h3>
-            <div className="text-white flex ml-auto items-end">more</div>
+            <div
+              className="text-white flex ml-auto items-end cursor-pointer"
+              onClick={goToReview}
+            >
+              more
+            </div>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
             <div className="flex items-start space-x-2">
