@@ -24,11 +24,11 @@ const Keyword: React.FC = () => {
     return (
       <WordCloud
         data={words}
-        font={(word) => "Raleway"} // 폰트 설정
+        font={() => "NanumGothic"}
         fontSize={fontSize} // 글자 크기 설정
         rotate={rotate} // 글자 회전 설정
         padding={5} // 단어 간격 설정
-        fill={(d) => {
+        fill={() => {
           const colors = [
             "#FF6384",
             "#36A2EB",

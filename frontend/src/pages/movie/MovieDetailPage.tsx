@@ -186,11 +186,11 @@ const MovieDetailPage: React.FC = () => {
 
       {/* 리뷰 섹션 */}
       <div className="flex">
-        <div className="p-4 bg-black text-black rounded-md w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
+        <div className="p-4 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
           <div className="flex w-[800px] justify-between">
             <h3 className="text-2xl font-bold text-white">Reviews</h3>
             <div
-              className="text-white flex ml-auto items-end cursor-pointer"
+              className="text-white flex ml-auto items-end cursor-pointer italic underline"
               onClick={goToReview}
             >
               more
