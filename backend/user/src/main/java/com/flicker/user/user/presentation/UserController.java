@@ -8,6 +8,7 @@ import com.flicker.user.user.dto.UserLoginReqDto;
 import com.flicker.user.user.dto.UserLoginResDto;
 import com.flicker.user.user.dto.UserRegisterDto;
 import com.flicker.user.user.dto.UserUpdateDto;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,15 +43,17 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody UserLoginReqDto dto){
+    public ResponseEntity<ResponseDto> login(@RequestBody UserLoginReqDto dto, HttpServletRequest request){
 
-        if(dto.getUserId() == null || dto.getPassword() == null){
-            throw new RestApiException(StatusCode.INVALID_INPUT_DATA_TYPE,"아이디, 패스워드가 공백일 수 없습니다.");
-        }
-        UserLoginResDto loginResDto = userService.login(dto);
-        return ResponseDto.response(StatusCode.SUCCESS, loginResDto);
+//        if(dto.getUserId() == null || dto.getPassword() == null){
+//            throw new RestApiException(StatusCode.INVALID_INPUT_DATA_TYPE,"아이디, 패스워드가 공백일 수 없습니다.");
+//        }
+//        UserLoginResDto loginResDto = userService.login(dto);
+        String username = request.getParameter("username");
+        System.out.println(username);
+
+        return ResponseDto.response(StatusCode.SUCCESS, "OK");
     }
-
 
     // 회원 탈퇴
     @PutMapping()
@@ -59,6 +62,19 @@ public class UserController {
         return ResponseDto.response(StatusCode.SUCCESS, null);
     }
 
+//    @PostMapping("/user/api/join")
+//    public ResponseEntity<?> join(@RequestBody JoinDto joinDto) {
+//
+//        joinService.joinProcess(joinDto);
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @PostMapping("/user/api/test")
+//    public void test(HttpServletRequest request) {
+//
+//        String username = request.getHeader("X-auth-username");
+//        System.out.println(username);
+//    }
     // 로그 아웃
 
     // 선호 영화 추가

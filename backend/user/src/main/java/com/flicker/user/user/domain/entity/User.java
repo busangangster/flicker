@@ -2,19 +2,15 @@ package com.flicker.user.user.domain.entity;
 
 import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.status.StatusCode;
-import com.flicker.user.common.util.HashUtil;
 import com.flicker.user.user.domain.UserGrade;
 import com.flicker.user.user.domain.vo.Role;
 import com.flicker.user.user.domain.vo.UserInfo;
 import com.flicker.user.user.dto.MovieSeqListDto;
-import com.flicker.user.user.dto.UserAndMovieIdDto;
 import com.flicker.user.user.dto.UserUpdateDto;
 import jakarta.persistence.*;
-import jdk.jshell.Snippet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -95,7 +91,7 @@ public class User {
     public void updateUser(UserUpdateDto dto){
         this.nickname = dto.getNickname();
         this.email = dto.getEmail();
-        this.hashedPass = HashUtil.sha256(dto.getPassword());
+        this.hashedPass = dto.getPassword();
         this.updatedAt = LocalDateTime.now();
     }
 
