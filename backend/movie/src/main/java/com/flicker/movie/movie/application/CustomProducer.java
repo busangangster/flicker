@@ -1,11 +1,17 @@
 package com.flicker.movie.movie.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flicker.movie.common.module.exception.RestApiException;
+import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.config.KafkaConfig;
+import com.flicker.movie.movie.domain.vo.MovieEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -15,53 +21,52 @@ import java.util.Properties;
 @Slf4j
 public class CustomProducer {
 
-    private final KafkaConfig config;  // Kafka 설정을 주입받는 Config 객체
-    private KafkaProducer<String, String> producer = null;  // Kafka 프로듀서를 관리하는 객체
+    private final KafkaConfig config;
+    private KafkaProducer<String, String> producer = null;
+    private final ObjectMapper objectMapper;  // Jackson ObjectMapper로 JSON 직렬화
 
-    /**
-     * Kafka 프로듀서를 초기화하는 메서드.
-     * @PostConstruct 어노테이션으로 인해 클래스 생성 후 자동으로 호출됨.
-     */
     @PostConstruct
     public void build() {
+        // Kafka Producer 설정
         Properties properties = new Properties();
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getBootstrapServers()); // Kafka 브로커 주소 설정
-        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getKeySerializer()); // 메시지 키 직렬화 설정
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getValueSerializer()); // 메시지 값 직렬화 설정
-        producer = new KafkaProducer<>(properties); // Kafka 프로듀서 생성
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getBootstrapServers());
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getKeySerializer());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getValueSerializer());
+        // 재시도 설정
+        properties.put(ProducerConfig.RETRIES_CONFIG, 5);  // 최대 5번 재시도
+        properties.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 1000);  // 재시도 간의 대기 시간 1초
+        properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 120000); // 메시지 전송 최대 허용 시간 (2분)
+        properties.put(ProducerConfig.ACKS_CONFIG, "all");  // 모든 브로커가 메시지를 확인할 때까지 기다림
+
+        producer = new KafkaProducer<>(properties);
     }
 
-    /**
-     * Kafka에 메시지를 전송하는 메서드.
-     * ProducerRecord를 생성하여 전송하며, 전송 후 콜백으로 성공 여부를 로깅.
-     *
-     * @param message 전송할 메시지
-     */
-    public void send(String message) {
-        // 메시지를 전송할 Kafka 토픽과 메시지를 포함한 ProducerRecord 객체 생성
-        ProducerRecord<String, String> record = new ProducerRecord<>(config.getDefaultTopic(), message);
+    // MovieEvent 객체를 JSON으로 직렬화하여 Kafka로 전송
+    public void send(MovieEvent event) {
+        try {
+            // 객체를 JSON으로 직렬화
+            String jsonMessage = objectMapper.writeValueAsString(event);
+            ProducerRecord<String, String> record = new ProducerRecord<>(config.getDefaultTopic(), jsonMessage);
 
-        // 메시지 전송
-        producer.send(record, (metadata, exception) -> {
-            if (exception != null) {
-                // 메시지 전송 실패 시 에러 로깅
-                log.error("Failed to publish message: {} due to {}", message, exception.getMessage());
-            } else {
-                // 메시지 전송 성공 시 파티션과 오프셋 정보를 로깅
-                log.info("Successfully published message: {} to partition: {}, offset: {}", message, metadata.partition(), metadata.offset());
-            }
-        });
+            producer.send(record, (metadata, exception) -> {
+                String logMessage = String.format("Publishing message: %s", jsonMessage);
+                if (exception != null) {
+                    // 전송 실패 시 로깅
+                    log.error("{} failed due to {}", logMessage, exception.getMessage());
+                } else {
+                    // 전송 성공 시 로깅
+                    log.info("{} succeeded - partition: {}, offset: {}", logMessage, metadata.partition(), metadata.offset());
+                }
+            });
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 발행 중 오류가 발생했습니다.");
+        }
     }
 
-    /**
-     * Kafka 프로듀서를 종료하는 메서드.
-     * @PreDestroy 어노테이션으로 인해 애플리케이션이 종료될 때 자동으로 호출됨.
-     */
     @PreDestroy
     public void closeProducer() {
         if (producer != null) {
-            producer.close(); // Kafka 프로듀서 종료
-            log.info("Kafka producer closed."); // 종료 로그 출력
+            producer.close();
         }
     }
 }

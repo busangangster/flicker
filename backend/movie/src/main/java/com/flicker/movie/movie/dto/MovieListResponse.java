@@ -13,12 +13,6 @@ public class MovieListResponse {
 
     private String moviePosterUrl;
 
-    public MovieListResponse(int movieSeq, String movieTitle, String moviePosterUrl) {
-        this.movieSeq = movieSeq;
-        this.movieTitle = movieTitle;
-        this.moviePosterUrl = moviePosterUrl;
-    }
-
     public MovieListResponse(Movie movie, MovieDetail movieDetail) {
         this.movieSeq = movie.getMovieSeq();
         this.movieTitle = movieDetail.getMovieTitle();

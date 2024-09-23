@@ -3,10 +3,12 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
+import com.flicker.movie.movie.domain.vo.MovieEvent;
 import com.flicker.movie.movie.dto.ActorRequest;
 import com.flicker.movie.movie.dto.MovieRequest;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +71,17 @@ public class MovieBuilderUtil {
                 .keyword(keyword)
                 .mongoKey(mongoKey)
                 .expiration(86400L) // 24시간
+                .build();
+    }
+
+    // MovieEvent 빌더 메서드
+    public static MovieEvent buildMovieEvent(int userSeq, int movieSeq, String keyword, String action, LocalDateTime timestamp) {
+        return MovieEvent.builder()
+                .userSeq(userSeq)
+                .movieSeq(movieSeq)
+                .keyword(keyword)
+                .action(action)
+                .timestamp(timestamp)
                 .build();
     }
 }
