@@ -21,10 +21,12 @@ public enum StatusCode {
     INVALID_ID_OR_PASSWORD(HttpStatus.BAD_REQUEST, 407, "아이디/비밀번호가 일치하지 않습니다."),
     VALUE_CANT_NULL(HttpStatus.BAD_REQUEST, 408, "값을 반드시 입력해야 합니다."),
     DUPLICATE_MOVIE(HttpStatus.BAD_REQUEST, 409, "중복된 영화입니다."),
+    DUPLICATE_ACTOR(HttpStatus.BAD_REQUEST, 410, "중복된 배우입니다."),
 
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버에서 처리 중 에러가 발생했습니다."),
-    SERVICE_STOP(HttpStatus.INTERNAL_SERVER_ERROR, 501, "현재 서버가 이용 불가능 상태입니다.");
+    SERVICE_STOP(HttpStatus.INTERNAL_SERVER_ERROR, 501, "현재 서버가 이용 불가능 상태입니다."),
+    KAFKA_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 502, "카프카 서버 에러입니다.");
 
 
 

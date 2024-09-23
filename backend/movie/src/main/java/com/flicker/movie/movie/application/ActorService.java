@@ -41,5 +41,6 @@ public class ActorService {
         // 2. 배우 정보 수정
         Actor actor = movie.getActor(request.getActorSeq());
         actor.updateActor(request.getActorName(), request.getRole());
+        // 수정 시 배우 중복 처리는 아직 안함
     }
 }
