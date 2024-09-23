@@ -1,22 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "./axios";
+import Cookies from "js-cookie";
+import { handleApiError } from "../utils/errorHandling";
+import { SignUpParams, SignInParams, SignInResponse } from "../type";
 
-export const signin = async (username: string, password: string) => {
+export const signUp = async (params: SignUpParams) => {
   try {
-    console.log("로그인 요청 데이터:", { username, password });
-
-    const response = await axios.post("/auth/login", { username, password });
-    return response;
+    const response = await axios.post("/users", params);
+    return response.data;
   } catch (error) {
-    // error를 any로 캐스팅하여 사용
-    const err = error as any;
+    handleApiError(error as any);
+    throw error;
+  }
+};
 
-    if (err.response) {
-      console.error("API 로그인 오류 상태:", err.response.status);
-      console.error("API 로그인 오류 데이터:", err.response.data);
-    } else {
-      console.error("API 로그인 오류:", err.message);
-    }
-    throw err;
+export const signin = async (
+  params: SignInParams
+): Promise<SignInResponse | undefined> => {
+  try {
+    console.log("로그인 요청 데이터:", params);
+
+    const response = await axios.post<SignInResponse>("/users/login", params);
+    const { accessToken, refreshToken } = response.data;
+
+    // JWT 토큰을 로컬 스토리지와 쿠키에 저장
+    localStorage.setItem("accessToken", accessToken);
+    Cookies.set("refreshToken", refreshToken, { expires: 1 }); // 1일간 유지
+    return response.data;
+  } catch (error) {
+    handleApiError(error as any);
+    throw error;
+  }
+};
+
+export const verifyToken = async () => {
+  try {
+    const response = await axios.get("/auth-test");
+    return response.data;
+  } catch (error) {
+    handleApiError(error as any);
+    throw error;
   }
 };
