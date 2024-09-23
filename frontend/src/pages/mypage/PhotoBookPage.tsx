@@ -1,11 +1,8 @@
 // PhotoBookPage.tsx
 import React from "react";
 import FlipPage from "react-flip-page";
-import { useNavigate } from "react-router-dom";
 
 const PhotoBookPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const images = [
     { src: "/assets/survey/image1.jpg", alt: "Movie 1" },
     { src: "/assets/survey/image2.jpg", alt: "Movie 2" },

@@ -8,7 +8,7 @@ import Navbar from "../../components/common/Navbar";
 import { ReviewType } from "../../type";
 
 // 목업 데이터
-const mockReviews = [
+const mockReviews: ReviewType[] = [
   {
     reviewSeq: 1,
     userSeq: 1,
@@ -126,7 +126,7 @@ const mockReviews = [
 ];
 
 const ReviewPage: React.FC = () => {
-  const [reviews, setReviews] = useState(mockReviews); // 초기 리뷰 데이터
+  const [reviews, setReviews] = useState<ReviewType[]>(mockReviews); // 초기 리뷰 데이터
   const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
 
   // 정렬 조건이 변경될 때마다 리뷰를 정렬

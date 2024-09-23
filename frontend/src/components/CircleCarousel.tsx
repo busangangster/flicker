@@ -1,18 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Application, Sprite, Assets, Texture } from "pixi.js";
-import { useNavigate } from "react-router-dom";
+import { ExtendedSprite } from "../type";
 
-interface ExtendedSprite extends Sprite {
-  userData: {
-    angle: number;
-    rotationOffset: number;
-  };
+interface CircleCarouselProps {
+  onCardClick: (videoUrl: string) => void; // 외부에서 사용하는 함수
+  className?: string;
 }
 
-const CircleCarousel: React.FC = () => {
+const CircleCarousel: React.FC<CircleCarouselProps> = ({
+  onCardClick,
+  className = "",
+}) => {
   const pixiContainerRef = useRef<HTMLDivElement | null>(null);
   const appRef = useRef<Application | null>(null);
-  const navigate = useNavigate();
+  const [backgroundVideoUrl, setBackgroundVideoUrl] = useState<string | null>(
+    null
+  ); // 비디오 URL 상태
 
   // Refs for cleanup
   const updateCardsRef = useRef<() => void>(() => {});
@@ -20,12 +23,15 @@ const CircleCarousel: React.FC = () => {
   const pointerUpHandlerRef = useRef<(event: PointerEvent) => void>();
   const pointerMoveHandlerRef = useRef<(event: PointerEvent) => void>();
 
-  const imageUrls = [
-    "/assets/survey/image1.jpg",
-    "/assets/survey/image2.jpg",
-    "/assets/survey/image3.jpg",
-    "/assets/survey/image20.jpg",
-    "/assets/survey/image5.jpg",
+  const items = [
+    {
+      imageUrl: "/assets/CircleCarousel/베테랑.jpg",
+      videoUrl: "BQZ3-mdczwM",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/기생충.jpg",
+      videoUrl: "qSqVVswa420",
+    },
   ];
 
   useEffect(() => {
@@ -48,7 +54,7 @@ const CircleCarousel: React.FC = () => {
       await app.init({
         autoStart: true, // Start the application immediately
         resizeTo: window,
-        backgroundColor: 0x000000,
+        backgroundColor: 0x000000, // 배경색 설정
         sharedTicker: false, // Use a dedicated ticker for this app
         autoDensity: true,
         resolution: window.devicePixelRatio || 1,
@@ -68,7 +74,7 @@ const CircleCarousel: React.FC = () => {
 
         // Load textures
         const textures = await Promise.all(
-          imageUrls.map((url) => loadTexture(url))
+          items.map((item) => loadTexture(item.imageUrl))
         );
 
         // Function to create card background texture
@@ -116,7 +122,8 @@ const CircleCarousel: React.FC = () => {
         function setupCard(
           texture: Texture,
           backgroundTexture: Texture,
-          index: number
+          index: number,
+          videoUrl: string
         ) {
           const cardBackground = new Sprite(backgroundTexture);
           cardBackground.anchor.set(0.5);
@@ -139,7 +146,8 @@ const CircleCarousel: React.FC = () => {
           cardContainer.interactive = true;
           cardContainer.cursor = "pointer";
           cardContainer.on("pointertap", () => {
-            navigate("/moviedetail");
+            setBackgroundVideoUrl(videoUrl); // 클릭한 비디오 URL 설정
+            onCardClick(videoUrl); // 외부에서도 이벤트 발생
           });
 
           cards.push(cardContainer);
@@ -148,8 +156,9 @@ const CircleCarousel: React.FC = () => {
 
         // Set up all cards
         for (let i = 0; i < cardCount; i++) {
-          const texture = textures[i % textures.length]; // Use loaded textures
-          setupCard(texture, backgroundTexture, i);
+          const item = items[i % items.length];
+          const texture = textures[i % textures.length];
+          setupCard(texture, backgroundTexture, i, item.videoUrl);
         }
 
         let dragging = false;
@@ -202,7 +211,6 @@ const CircleCarousel: React.FC = () => {
             closestCard !== lastClosestCard &&
             minAngleDiff < 0.01
           ) {
-            console.log("Closest card detected, moving to top.");
             lastClosestCard = closestCard;
             app.stage.setChildIndex(closestCard, app.stage.children.length - 1);
           }
@@ -305,18 +313,29 @@ const CircleCarousel: React.FC = () => {
         Assets.cache.reset();
       }
     };
-  }, [navigate]);
+  }, []);
 
   return (
     <div
       ref={pixiContainerRef}
-      className="w-full h-full"
+      className={`w-full h-full ${className}`} // className 추가
       style={{
         position: "absolute",
         top: "50%",
         transform: "translateY(-50%)",
       }}
-    />
+    >
+      {/* backgroundVideoUrl이 존재하면 iframe으로 영상 출력 */}
+      {backgroundVideoUrl && (
+        <iframe
+          src={`https://www.youtube.com/embed/${backgroundVideoUrl}?autoplay=1&mute=1&loop=1&playlist=${backgroundVideoUrl}`}
+          title="YouTube video player"
+          className="absolute top-0 left-0 w-full h-full z-[-1]"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      )}
+    </div>
   );
 };
 

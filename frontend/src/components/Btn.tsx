@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const Btn = () => {
-  return (
-    <div>Btn</div>
-  )
-}
+const Btn: React.FC = () => {
+  return <div>Btn</div>;
+};
 
-export default Btn
+export default Btn;

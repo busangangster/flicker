@@ -1,8 +1,8 @@
-// SignInPage.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signin } from "../../apis/authApi";
 import UsAndThem from "../../assets/background/UsAndThem.png";
+import { isAxiosError } from "axios"; // axios 모듈에서 isAxiosError 가져오기
 
 const SignInPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -44,13 +44,19 @@ const SignInPage: React.FC = () => {
     } catch (error: unknown) {
       console.error("로그인 오류:", error);
 
-      // 오류 메시지를 사용자가 이해할 수 있는 형식으로 표시
-      if (error.response && error.response.status === 400) {
-        setError("로그인 실패: 아이디나 비밀번호가 올바르지 않습니다.");
+      // error가 AxiosError 타입인지 확인
+      if (isAxiosError(error)) {
+        // AxiosError 타입일 경우, error.response에 안전하게 접근
+        if (error.response && error.response.status === 400) {
+          setError("로그인 실패: 아이디나 비밀번호가 올바르지 않습니다.");
+        } else {
+          setError(
+            "로그인 실패: 서버에 문제가 발생했습니다. 나중에 다시 시도하세요."
+          );
+        }
       } else {
-        setError(
-          "로그인 실패: 서버에 문제가 발생했습니다. 나중에 다시 시도하세요."
-        );
+        // 일반적인 오류 처리
+        setError("로그인 중 알 수 없는 오류가 발생했습니다.");
       }
     }
   };

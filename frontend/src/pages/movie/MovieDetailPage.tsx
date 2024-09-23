@@ -244,7 +244,7 @@ const MovieDetailPage: React.FC = () => {
         <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
           <div className="relative w-full max-w-4xl h-full">
             <iframe
-              src="https://www.youtube.com/embed/qSqVVswa420"
+              src="https://www.youtube.com/embed/qSqVVswa420?autoplay=1&mute=1"
               title="YouTube video player"
               className="w-full h-full rounded-lg shadow-md"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
