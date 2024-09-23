@@ -1,6 +1,8 @@
 package com.flicker.user.user.domain.entity;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 import java.io.Serializable;
@@ -12,6 +14,11 @@ import java.io.Serializable;
 @Builder
 @Data
 public class UserMovieId implements Serializable {
-    private Long userSeq;
+
+    @ManyToOne
+    @JoinColumn(name = "userSeq_123123")
+    private User user;
+
+//    private Long userSeq;
     private Long movieSeq;
 }

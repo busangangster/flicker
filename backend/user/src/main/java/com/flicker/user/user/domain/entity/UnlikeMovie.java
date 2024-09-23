@@ -1,14 +1,9 @@
 package com.flicker.user.user.domain.entity;
 
-import com.flicker.user.user.dto.UserAndMovieIdDto;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,29 +12,24 @@ import java.time.LocalDateTime;
 @Getter
 public class UnlikeMovie {
 
-    @EmbeddedId
-    private UserMovieId userMovieId;
+    @Id
+    private Long unlikeMovieSeq;
 
-    @ManyToOne
-    @JoinColumn(name = "userSeq123123345")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
-    private LocalDateTime createAt;
+    private Long movieSeq;
+    private LocalDateTime createdAt;
     private Integer isActive;
 
     public void deleteBookmarkMovie(){
         this.isActive = 0;
     }
 
-    protected UnlikeMovie() {
-    }
+    protected UnlikeMovie() {}
 
-    public UnlikeMovie(UserAndMovieIdDto dto){
-        this.userMovieId = UserMovieId.builder()
-                .userSeq(dto.getUserSeq())
-                .movieSeq(dto.getMovieSeq())
-                .build();
+    public UnlikeMovie(Long unlikeMovieSeq){
+        this.unlikeMovieSeq = unlikeMovieSeq;
         this.isActive = 1;
-        this.createAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 }
