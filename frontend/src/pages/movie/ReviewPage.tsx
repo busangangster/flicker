@@ -5,9 +5,10 @@ import Keyword from "../../components/Keyword";
 import Filter from "../../components/Filter";
 import ReviewForm from "../../components/ReviewForm";
 import Navbar from "../../components/common/Navbar";
+import { ReviewType } from "../../type";
 
 // 목업 데이터
-const mockReviews = [
+const mockReviews: ReviewType[] = [
   {
     review_seq: 1,
     member_seq: 1,
@@ -19,6 +20,9 @@ const mockReviews = [
     likes: 523,
     liked: false,
     nickname: "HyunJeong",
+    username: "",
+    rating: 0,
+    date: "",
   },
   {
     review_seq: 2,
@@ -31,6 +35,9 @@ const mockReviews = [
     likes: 320,
     liked: true,
     nickname: "Jaechan",
+    username: "",
+    rating: 0,
+    date: "",
   },
   {
     review_seq: 3,
@@ -42,6 +49,9 @@ const mockReviews = [
     likes: 720,
     liked: true,
     nickname: "MinSu",
+    username: "",
+    rating: 0,
+    date: "",
   },
   {
     review_seq: 4,
@@ -54,6 +64,9 @@ const mockReviews = [
     likes: 150,
     liked: false,
     nickname: "EunJi",
+    username: "",
+    rating: 0,
+    date: "",
   },
   {
     review_seq: 5,
@@ -65,6 +78,9 @@ const mockReviews = [
     likes: 430,
     liked: true,
     nickname: "DongHoon",
+    username: "",
+    rating: 0,
+    date: "",
   },
   {
     review_seq: 6,
@@ -77,6 +93,9 @@ const mockReviews = [
     likes: 210,
     liked: false,
     nickname: "HyeJin",
+    username: "",
+    rating: 0,
+    date: "",
   },
   {
     review_seq: 7,
@@ -89,6 +108,9 @@ const mockReviews = [
     likes: 158,
     liked: false,
     nickname: "EunJi",
+    username: "",
+    rating: 0,
+    date: "",
   },
   {
     review_seq: 8,
@@ -100,23 +122,14 @@ const mockReviews = [
     likes: 350,
     liked: true,
     nickname: "Harry",
-  },
-  {
-    review_seq: 9,
-    member_seq: 9,
-    movie_id: 109,
-    review_rating: 3.0,
-    content:
-      "평범한 영화였어요. 몇몇 장면은 인상적이었지만 전체적으로는 무난했어요.",
-    created_at: "2024-09-13T12:00:00",
-    likes: 125,
-    liked: false,
-    nickname: "Poter",
+    username: "",
+    rating: 0,
+    date: "",
   },
 ];
 
 const ReviewPage: React.FC = () => {
-  const [reviews, setReviews] = useState(mockReviews); // 초기 리뷰 데이터
+  const [reviews, setReviews] = useState<ReviewType[]>(mockReviews); // 초기 리뷰 데이터
   const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
 
   // 정렬 조건이 변경될 때마다 리뷰를 정렬
@@ -153,7 +166,7 @@ const ReviewPage: React.FC = () => {
   };
 
   // 새 리뷰 추가 핸들러
-  const handleAddReview = (newReview: any) => {
+  const handleAddReview = (newReview: ReviewType) => {
     setReviews((prev) => [newReview, ...prev]);
   };
 
