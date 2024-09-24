@@ -3,14 +3,18 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.domain.entity.MongoMovieList;
+import com.flicker.movie.movie.domain.entity.MongoUserAction;
 import com.flicker.movie.movie.domain.entity.Movie;
 import com.flicker.movie.movie.domain.entity.SearchResult;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.infrastructure.MongoMovieListRepository;
+import com.flicker.movie.movie.infrastructure.MongoUserActionRepository;
 import com.flicker.movie.movie.infrastructure.MovieRepository;
 import com.flicker.movie.movie.infrastructure.SearchResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +37,7 @@ public class MovieRepoUtil {
     private final MovieRepository movieRepository;
     private final SearchResultRepository searchResultRepository;
     private final MongoMovieListRepository mongoMovieListRepository;
+    private final MongoUserActionRepository mongoUserActionRepository;
     private final MovieBuilderUtil movieBuilderUtil;
 
     /**
@@ -197,6 +202,23 @@ public class MovieRepoUtil {
             return movieRepository.findByMovieSeqIn(movieSeqList);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천된 영화 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+    public void saveUserActionForMongoDB(MongoUserAction mongoUserAction) {
+        try {
+            mongoUserActionRepository.save(mongoUserAction);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에 사용자 행동 로그를 저장하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    public List<MongoUserAction> findUserActionList(int userSeq) {
+        try {
+            Pageable pageable = PageRequest.of(0, 10);
+            return mongoUserActionRepository.findByUserSeqOrderByTimestampDesc(userSeq, pageable);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자 행동 로그를 조회하는 중 오류가 발생했습니다.");
         }
     }
 }

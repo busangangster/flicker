@@ -1,8 +1,13 @@
 package com.flicker.movie.movie.dto;
 
+import com.flicker.movie.movie.domain.entity.Actor;
 import com.flicker.movie.movie.domain.entity.Movie;
+import com.flicker.movie.movie.domain.entity.WordCloud;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
 import lombok.Data;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class MovieDetailResponse {
@@ -19,8 +24,10 @@ public class MovieDetailResponse {
     private String trailerUrl;
     private String backgroundUrl;
     private double movieRating;
+    private List<ActorResponse> actors;
+    private List<WordCloudResponse> wordClouds;
 
-    public MovieDetailResponse(Movie movie, MovieDetail movieDetail) {
+    public MovieDetailResponse(Movie movie, MovieDetail movieDetail, List<Actor> actors, List<WordCloud> wordClouds) {
         this.movieSeq = movie.getMovieSeq();
         this.movieTitle = movieDetail.getMovieTitle();
         this.director = movieDetail.getDirector();
@@ -34,5 +41,13 @@ public class MovieDetailResponse {
         this.trailerUrl = movieDetail.getTrailerUrl();
         this.backgroundUrl = movieDetail.getBackgroundUrl();
         this.movieRating = movie.getMovieRating();
+        // Actor -> ActorResponse 변환
+        this.actors = actors.stream()
+                .map(ActorResponse::new)  // Actor -> ActorResponse 변환
+                .collect(Collectors.toList());
+        // WordCloud -> WordCloudResponse 변환
+        this.wordClouds = wordClouds.stream()
+                .map(WordCloudResponse::new)  // WordCloud -> WordCloudResponse 변환
+                .collect(Collectors.toList());
     }
 }

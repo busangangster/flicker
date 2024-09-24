@@ -32,6 +32,6 @@ public class KafkaConfig {
 
     @Data
     public static class Template {
-        private String defaultTopic;
+        private String movieInfoTopic;
     }
 }

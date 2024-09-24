@@ -3,7 +3,8 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.dto.UserActionEvent;
+import com.flicker.movie.movie.dto.KeywordCount;
+import com.flicker.movie.movie.dto.MovieInfoEvent;
 import com.flicker.movie.movie.dto.ActorRequest;
 import com.flicker.movie.movie.dto.MovieRequest;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,16 @@ public class MovieBuilderUtil {
                 .collect(Collectors.toList());
     }
 
+    // WordCloud 리스트 빌더 메서드
+    public List<WordCloud> buildWordCloudList(List<KeywordCount> keywordCounts) {
+        return keywordCounts.stream()
+                .map(keywordCount -> WordCloud.builder()
+                        .keyword(keywordCount.getKeyword()) // 키워드 설정
+                        .count(keywordCount.getCount()) // 키워드 빈도 설정
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     // MongoMovieList 빌더 메서드
     public MongoMovieList buildMongoMovieList(List<Movie> movieList) {
         // movieList를 MongoMovieList로 변환
@@ -74,12 +85,23 @@ public class MovieBuilderUtil {
                 .build();
     }
 
-    // MovieEvent 빌더 메서드
-    public static UserActionEvent buildMovieEvent(int userSeq, int movieSeq, String keyword, String action, LocalDateTime timestamp) {
-        return UserActionEvent.builder()
+    // MongoUserAction 빌더 메서드
+    public MongoUserAction buildMongoUserAction(int userSeq, Integer movieSeq, String keyword, String action, LocalDateTime timestamp) {
+        return MongoUserAction.builder()
                 .userSeq(userSeq)
                 .movieSeq(movieSeq)
                 .keyword(keyword)
+                .action(action)
+                .timestamp(timestamp)
+                .build();
+    }
+
+
+    // MovieInfoEvent 빌더 메서드
+    public MovieInfoEvent buildMovieInfoEvent(int movieSeq, String type, String action, LocalDateTime timestamp) {
+        return MovieInfoEvent.builder()
+                .movieSeq(movieSeq)
+                .type(type)
                 .action(action)
                 .timestamp(timestamp)
                 .build();

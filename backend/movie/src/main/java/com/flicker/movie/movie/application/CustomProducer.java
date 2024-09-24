@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.config.KafkaConfig;
-import com.flicker.movie.movie.dto.UserActionEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +43,15 @@ public class CustomProducer {
     }
 
     // MovieEvent 객체를 JSON으로 직렬화하여 Kafka로 전송
-    public void send(UserActionEvent event) {
+    public <T> void send(T event, String topic) {
         try {
+            if (topic.equals("movieInfo")) {
+                topic = config.getTemplate().getMovieInfoTopic();
+            }
+
             // 객체를 JSON으로 직렬화
             String jsonMessage = objectMapper.writeValueAsString(event);
-            ProducerRecord<String, String> record = new ProducerRecord<>(config.getTemplate().getDefaultTopic(), jsonMessage);
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, jsonMessage);
 
             producer.send(record, (metadata, exception) -> {
                 String logMessage = String.format("Publishing message: %s", jsonMessage);

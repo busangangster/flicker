@@ -6,7 +6,6 @@ import com.flicker.movie.movie.application.ActorService;
 import com.flicker.movie.movie.application.MovieService;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -110,4 +109,12 @@ public class MovieController {
         List<MovieListResponse> response = movieService.getRecommendationList(movieSeqList);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
+
+    // 사용자 최근 행동 로그 조회
+    @GetMapping("/actions/{userSeq}")
+    public ResponseEntity<ResponseDto> getUserActionList(@PathVariable int userSeq) {
+        List<UserActionResponse> response = movieService.getUserActionList(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
 }

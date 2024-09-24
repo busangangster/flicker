@@ -3,7 +3,7 @@ package com.flicker.movie.movie.application;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.dto.UserActionEvent;
+import com.flicker.movie.movie.dto.UserActionResponse;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +37,9 @@ public class MovieService {
         movie.addActors(actorList);
         // 데이터베이스에 저장
         movieRepoUtil.saveMovie(movie);
+        // Kafka 이벤트 발행
+        MovieInfoEvent movieInfoEvent = movieBuilderUtil.buildMovieInfoEvent(movie.getMovieSeq(), "MOVIE", "Create", LocalDateTime.now());
+        customProducer.send(movieInfoEvent, "movieInfo");
     }
 
     @Transactional
@@ -64,6 +67,9 @@ public class MovieService {
         Movie movie = movieRepoUtil.findById(movieSeq);
         // 2. 영화 삭제
         movie.deleteMovie();
+        // 3. Kafka 이벤트 발행
+        MovieInfoEvent movieInfoEvent = movieBuilderUtil.buildMovieInfoEvent(movieSeq, "MOVIE", "Delete", LocalDateTime.now());
+        customProducer.send(movieInfoEvent, "movieInfo");
     }
 
     @Transactional
@@ -102,10 +108,10 @@ public class MovieService {
     // TODO: ElasticSearch 활용 ( 검색 속도 개선 필요 )
     @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq, int page, int size) {
-        // 1. MovieEvent 객체 생성
-        UserActionEvent userActionEvent = MovieBuilderUtil.buildMovieEvent(userSeq, 0, keyword, "SEARCH", LocalDateTime.now());
-        // 2. Kafka 이벤트 발행
-        customProducer.send(userActionEvent);
+        // 1. MongoUserAction 객체 생성
+        MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, null, keyword, "SEARCH", LocalDateTime.now());
+        // 2. MongoDB에 행동 로그 저장
+        movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
         // 3. redis 키워드 조회 후 결과 반환
         String redisKey = keyword + "/" + page + "/" + size;
         List<MongoMovie> mongoMovieList = movieRepoUtil.findByKeywordForRedis(redisKey);
@@ -134,13 +140,13 @@ public class MovieService {
     @Transactional
     public MovieDetailResponse getMovieDetail(int movieSeq, int userSeq) {
         // 1. MovieEvent 객체 생성
-        UserActionEvent userActionEvent = MovieBuilderUtil.buildMovieEvent(userSeq, movieSeq, null, "DETAIL", LocalDateTime.now());
-        // 2. Kafka 이벤트 발행
-        customProducer.send(userActionEvent);
+        MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, movieSeq, null, "DETAIL", LocalDateTime.now());
+        // 2. MongoDB에 행동 로그 저장
+        movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
         // 3. 영화 정보 조회
         Movie movie = movieRepoUtil.findById(movieSeq);
         // 4. MovieDetailResponse 생성
-        return new MovieDetailResponse(movie, movie.getMovieDetail());
+        return new MovieDetailResponse(movie, movie.getMovieDetail(), movie.getActors(), movie.getWordClouds());
     }
 
     @Transactional
@@ -150,6 +156,16 @@ public class MovieService {
         // 2. MovieDetailResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
+    @Transactional
+    public List<UserActionResponse> getUserActionList(int userSeq) {
+        // 1. 사용자 행동 로그 조회
+        List<MongoUserAction> userActionList = movieRepoUtil.findUserActionList(userSeq);
+        // 2. UserActionResponse 리스트 생성
+        return userActionList.stream()
+                .map(UserActionResponse::new)
                 .toList();
     }
 }
