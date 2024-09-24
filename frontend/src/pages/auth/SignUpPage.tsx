@@ -1,31 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../apis/axios";
+import { signUp } from "../../apis/authApi";
 import UsAndThem from "../../assets/background/UsAndThem.png";
 import calendar_white from "../../assets/icons/calendar_white.png";
+import { SignUpParams } from "../../type";
 
 const SignUpPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    confirmPassword: "",
+  const [formData, setFormData] = useState<SignUpParams>({
+    userId: "",
     email: "",
-    birthDate: "",
-    gender: "",
+    password: "",
+    passCheck: "",
     nickname: "",
+    birthDate: "",
+    gender: "", // 기본값을 'M'으로 설정
   });
 
   const [errors, setErrors] = useState({
-    username: "",
+    userId: "",
     password: "",
-    confirmPassword: "",
+    passCheck: "",
     email: "",
     nickname: "",
     gender: "",
   });
 
-  const [isIdChecked, setIsIdChecked] = useState(false);
   const navigate = useNavigate();
+  const [isIdChecked, setIsIdChecked] = useState(false);
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -36,12 +37,12 @@ const SignUpPage: React.FC = () => {
           error = "올바른 이메일 형식이 아니에요.";
         }
         break;
-      case "confirmPassword":
+      case "passCheck":
         if (value !== formData.password) {
           error = "비밀번호가 일치하지 않아요.";
         }
         break;
-      case "username":
+      case "userId":
         if (!/^[a-zA-Z0-9]*$/.test(value)) {
           error = "영어와 숫자만 입력가능해요.";
         }
@@ -67,14 +68,15 @@ const SignUpPage: React.FC = () => {
     validateField(name, value);
   };
 
-  const handleGenderChange = (gender: string) => {
+  // 성별을 "M" 또는 "F"로만 설정하도록 타입을 강제
+  const handleGenderChange = (gender: "M" | "F") => {
     setFormData({ ...formData, gender });
     setErrors({ ...errors, gender: "" });
   };
 
   const handleIdCheck = () => {
     setIsIdChecked(true);
-    setErrors({ ...errors, username: "" });
+    setErrors({ ...errors, userId: "" });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,7 +87,7 @@ const SignUpPage: React.FC = () => {
     if (!isValid) return;
 
     try {
-      await axios.post("/auth/signup", formData);
+      await signUp(formData);
       alert(
         "회원가입이 완료되었어요. \n앞으로 Flicker에서 소중한 기록을 남겨보세요!"
       );
@@ -105,24 +107,24 @@ const SignUpPage: React.FC = () => {
       valid = false;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "비밀번호가 일치하지 않아요.";
+    if (formData.password !== formData.passCheck) {
+      newErrors.passCheck = "비밀번호가 일치하지 않아요.";
       valid = false;
     }
 
-    if (!/^[a-zA-Z0-9]*$/.test(formData.username)) {
-      newErrors.username = "영어와 숫자만 입력가능해요.";
+    if (!/^[a-zA-Z0-9]*$/.test(formData.userId)) {
+      newErrors.userId = "영어와 숫자만 입력가능해요.";
       valid = false;
     }
 
     setErrors(newErrors);
     return valid;
   };
-
+  
   return (
     <div
       className="min-h-screen w-screen bg-black flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${UsAndThem})` }}
+      style={{ backgroundImage: `url(${UsAndThem})` }} // 잘못된 부분 수정
     >
       <form onSubmit={handleSubmit} className="w-full max-w-2xl p-8">
         <h2 className="text-3xl font-bold mb-8 text-white text-center">
@@ -133,9 +135,9 @@ const SignUpPage: React.FC = () => {
           <div className="flex w-full">
             <input
               type="text"
-              name="username" // 수정: name="id"에서 name="username"으로 변경
+              name="userId" // 수정: name="id"에서 name="userId"으로 변경
               placeholder="아이디"
-              value={formData.username}
+              value={formData.userId}
               onChange={handleChange}
               onBlur={handleBlur}
               className="flex-grow py-2 px-4 border border-gray-400 rounded bg-black text-white placeholder-gray-400 focus:outline-none"
@@ -152,8 +154,8 @@ const SignUpPage: React.FC = () => {
               {isIdChecked ? "확인완료" : "중복확인"}
             </button>
           </div>
-          {errors.username && (
-            <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+          {errors.userId && (
+            <p className="text-red-500 text-xs mt-1">{errors.userId}</p>
           )}
         </div>
 
@@ -174,17 +176,15 @@ const SignUpPage: React.FC = () => {
         <div className="mb-4">
           <input
             type="password"
-            name="confirmPassword"
+            name="passCheck"
             placeholder="비밀번호 확인"
-            value={formData.confirmPassword}
+            value={formData.passCheck}
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full py-2 px-4 border border-gray-400 rounded bg-black text-white placeholder-gray-400 focus:outline-none"
           />
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.confirmPassword}
-            </p>
+          {errors.passCheck && (
+            <p className="text-red-500 text-xs mt-1">{errors.passCheck}</p>
           )}
         </div>
 
@@ -228,18 +228,18 @@ const SignUpPage: React.FC = () => {
             <button
               type="button"
               className={`px-4 py-2 rounded ${
-                formData.gender === "남성" ? "bg-[#4D7FFF]" : "bg-gray-700"
+                formData.gender === "M" ? "bg-[#4D7FFF]" : "bg-gray-700"
               } text-white`}
-              onClick={() => handleGenderChange("남성")}
+              onClick={() => handleGenderChange("M")}
             >
               남성
             </button>
             <button
               type="button"
               className={`px-4 py-2 rounded ${
-                formData.gender === "여성" ? "bg-[#4D7FFF]" : "bg-gray-700"
+                formData.gender === "F" ? "bg-[#4D7FFF]" : "bg-gray-700"
               } text-white`}
-              onClick={() => handleGenderChange("여성")}
+              onClick={() => handleGenderChange("F")}
             >
               여성
             </button>
