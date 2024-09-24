@@ -15,7 +15,10 @@ RUN chmod +x /app/node_modules/.bin/vite
 COPY . .
 
 # 애플리케이션 실행
-CMD ["npm", "run", "dev"]
+CMD ["bash", "-c", "npm run dev"]
+
 
 # 컨테이너가 사용할 포트
 EXPOSE 5173 5174
+
+
