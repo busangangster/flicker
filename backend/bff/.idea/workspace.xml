@@ -1,42 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="9025fb05-b317-4411-88be-8bc71a07b52d" name="변경" comment="" />
+    <list default="true" id="9025fb05-b317-4411-88be-8bc71a07b52d" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/bff.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/bff.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/BffApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/application/BffMovieService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/application/BffUserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/application/Util.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/exception/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/exception/RestApiException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/response/ResponseDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/status/StatusCode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/ActorAddRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/ActorRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/ActorUpdateRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieCreateRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieUpdateRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/RecommendMovieResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/presentation/BffMovieController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/presentation/BffUserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/test/java/com/flicker/bff/BffApplicationTests.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="GitLabMergeRequestFiltersHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPENED",
-    "assignee": {
-      "type": "org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue",
-      "username": "rinch12332",
-      "fullname": "공지환"
+  <component name="GitLabMergeRequestFiltersHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPENED&quot;,
+    &quot;assignee&quot;: {
+      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
+      &quot;username&quot;: &quot;rinch12332&quot;,
+      &quot;fullname&quot;: &quot;공지환&quot;
     }
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2mSjOoN4lfAeTfV7GImuZPWw4zs" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "BE/develop/bff",
-    "kotlin-language-version-configured": "true",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;BE/develop/bff&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RunManager">
+    <configuration name="BffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="bff.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.flicker.bff.BffApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -54,6 +104,7 @@
       <option name="presentableId" value="Default" />
       <updated>1727076842617</updated>
       <workItem from="1727076843575" duration="178000" />
+      <workItem from="1727144925818" duration="81000" />
     </task>
     <servers />
   </component>
