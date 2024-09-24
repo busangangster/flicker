@@ -11,9 +11,8 @@ RUN npm install
 # 애플리케이션 소스 복사
 COPY . .
 
-
-# vite 실행 파일에 실행 권한 부여
-RUN chmod +x ./node_modules/.bin/vite
+# 모든 실행 파일에 실행 권한 부여
+RUN chmod +x ./node_modules/.bin/*
 
 # 애플리케이션 빌드
 RUN npm run build
