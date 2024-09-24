@@ -7,6 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+RUN chmod +x ./node_modules/.bin/*
+
 # 애플리케이션 소스 복사
 COPY . .
 
