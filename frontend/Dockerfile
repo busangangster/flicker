@@ -9,13 +9,12 @@ COPY package*.json ./
 RUN npm install --production=false
 
 # vite 실행 파일에 권한 추가 (npm install 후에 실행)
-RUN chmod +x /app/node_modules/.bin/vite
+RUN chmod 777 /app/node_modules/.bin/vite
 
 # 애플리케이션 소스 복사
 COPY . .
 
-# 애플리케이션 실행
-CMD ["bash", "-c", "npm run dev"]
+CMD ["npm", "run", "dev"]
 
 
 # 컨테이너가 사용할 포트
