@@ -8,6 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# vite 실행 파일에 권한 추가 (npm install 후에 실행)
+RUN chmod +x /app/node_modules/.bin/vite
+
 # 애플리케이션 소스 복사
 COPY . .
 
