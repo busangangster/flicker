@@ -1,4 +1,3 @@
-# 베이스 이미지로 Node.js 사용
 FROM node:16 AS build
 
 # 애플리케이션 디렉토리 생성
@@ -11,21 +10,13 @@ RUN npm install
 # 애플리케이션 소스 복사
 COPY . .
 
-# 모든 실행 파일에 실행 권한 부여
-RUN chmod +x ./node_modules/.bin/*
-
 # 애플리케이션 빌드
 RUN npm run build
 
-# Nginx 이미지로 변경하여 빌드된 파일을 서비스
+# Nginx 설정
 FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# 빌드된 파일을 Nginx의 기본 제공 디렉토리로 복사
-COPY --from=build /app/dist /usr/share/nginx/html  # dist 폴더로 수정
-
-# 컨테이너가 사용할 포트
 EXPOSE 80
-
-# Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
-
