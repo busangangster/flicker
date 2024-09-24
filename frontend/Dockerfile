@@ -9,7 +9,7 @@ COPY package*.json ./
 RUN npm install
 
 # vite와 ./node_modules/.bin 내의 모든 파일에 실행 권한 부여
-RUN chmod 755 ./node_modules/.bin/vite ./node_modules/.bin/*
+RUN chmod 777 ./node_modules/.bin/vite ./node_modules/.bin/*
 
 # 애플리케이션 소스 복사
 COPY . .
