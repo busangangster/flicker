@@ -1,7 +1,6 @@
 package com.flicker.bff.application;
 
 import com.flicker.bff.common.module.response.ResponseDto;
-import com.flicker.bff.common.module.status.StatusCode;
 import com.flicker.bff.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
