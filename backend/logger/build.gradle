@@ -30,9 +30,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	// EXCEL
 	implementation 'org.apache.poi:poi-ooxml:5.3.0'
+
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
 
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
