@@ -23,4 +23,6 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>, MovieRep
 
     // 해당 배우가 출연한 영화 조회 (영화 제작 연도 내림차순)
     Page<Movie> findByActors_ActorNameContainingAndDelYNOrderByMovieDetail_MovieYearDesc(String actorName, String delYN, Pageable pageable);
+
+    List<Movie> findByMovieSeqIn(List<Integer> movieSeqList);
 }
