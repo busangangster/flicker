@@ -9,7 +9,10 @@ COPY package*.json ./
 RUN npm install --production=false
 
 # vite와 tsc에 실행 권한 부여
-RUN chmod 755 ./node_modules/.bin/tsc ./node_modules/.bin/vite
+RUN chmod 777 ./node_modules/.bin/tsc ./node_modules/.bin/vite
+
+# tsc 파일이 있는지 확인 (디버깅용)
+RUN ls -la ./node_modules/.bin/tsc
 
 # 애플리케이션 소스 복사
 COPY . .
@@ -31,4 +34,3 @@ EXPOSE 80
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
-
