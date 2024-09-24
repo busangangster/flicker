@@ -16,8 +16,8 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false, // 필요에 따라 수정
+    "noUnusedParameters": false, // 필요에 따라 수정
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"]
