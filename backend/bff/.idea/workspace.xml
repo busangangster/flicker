@@ -5,37 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9025fb05-b317-4411-88be-8bc71a07b52d" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/bff.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/bff.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/BffApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/application/BffMovieService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/application/BffUserService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/application/Util.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/exception/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/exception/RestApiException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/response/ResponseDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/common/module/status/StatusCode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/ActorAddRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/ActorRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/ActorUpdateRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieCreateRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/MovieUpdateRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/dto/RecommendMovieResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/presentation/BffMovieController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/java/com/flicker/bff/presentation/BffUserController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bff/src/test/java/com/flicker/bff/BffApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/application/BffMovieService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/application/BffMovieService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/MovieResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/RecommendMovieResponse.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +46,10 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;BE/develop/bff&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -105,6 +82,8 @@
       <updated>1727076842617</updated>
       <workItem from="1727076843575" duration="178000" />
       <workItem from="1727144925818" duration="81000" />
+      <workItem from="1727145279356" duration="1260000" />
+      <workItem from="1727146809555" duration="252000" />
     </task>
     <servers />
   </component>

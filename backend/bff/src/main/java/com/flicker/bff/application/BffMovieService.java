@@ -104,52 +104,29 @@ public class BffMovieService {
     }
 
     public ResponseEntity<ResponseDto> getActionRecommendationList(int userSeq) {
-        // 1. 해당 유저의 이름을 가져옵니다. TODO: 경로 수정
-        String path = util.getUri("/nickName/" + userSeq);
-        String nickName = util.sendGetRequest(userBaseUrl, path).getBody().getData().toString();
-
-        // 2. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
-        path = util.getUri("/list/recommendation/action/" + userSeq);
+        // 1. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
+        String path = util.getUri("/list/recommendation/action/" + userSeq);
         List<Integer> movieSeqList = (List<Integer>) util.sendGetRequest(batchBaseUrl, path).getBody().getData();
-
-        // 3. 해당 영화 번호 목록에 해당 하는 영화 목록을 가져옵니다.
-        path = util.getUri("/list/recommendation/action");
-        List<MovieResponse> movieList = (List<MovieResponse>) util.sendPostRequest(movieBaseUrl, path, movieSeqList).getBody().getData();
-
-        // 4. 데이터 종합해서 반환
-        RecommendMovieResponse response = new RecommendMovieResponse(nickName, movieList);
-        return ResponseDto.response(StatusCode.SUCCESS, response);
+        // 2. 해당 영화 번호 목록에 해당 하는 영화 목록을 가져옵니다.
+        path = util.getUri("/list/recommendation");
+        return util.sendPostRequest(movieBaseUrl, path, movieSeqList);
     }
 
     public ResponseEntity<ResponseDto> getReviewRecommendationList(int userSeq) {
-        // 1. 해당 유저의 이름을 가져옵니다. TODO: 경로 수정
-        String path = util.getUri("/nickName/" + userSeq);
-        String nickName = util.sendGetRequest(userBaseUrl, path).getBody().getData().toString();
-
-        // 2. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
-        path = util.getUri("/list/recommendation/review/" + userSeq);
+        // 1. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
+        String path = util.getUri("/list/recommendation/review/" + userSeq);
         List<Integer> movieSeqList = (List<Integer>) util.sendGetRequest(batchBaseUrl, path).getBody().getData();
-
-        // 3. 해당 영화 번호 목록에 해당 하는 영화 목록을 가져옵니다.
-        path = util.getUri("/list/recommendation/review");
-        List<MovieResponse> movieList = (List<MovieResponse>) util.sendPostRequest(movieBaseUrl, path, movieSeqList).getBody().getData();
-
-        // 4. 데이터 종합해서 반환
-        RecommendMovieResponse response = new RecommendMovieResponse(nickName, movieList);
-        return ResponseDto.response(StatusCode.SUCCESS, response);
+        // 2. 해당 영화 번호 목록에 해당 하는 영화 목록을 가져옵니다.
+        path = util.getUri("/list/recommendation");
+        return util.sendPostRequest(movieBaseUrl, path, movieSeqList);
     }
 
     public ResponseEntity<ResponseDto> getTopMovieList() {
         // 1. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
         String path = util.getUri("/list/recommendation/top10");
         List<Integer> movieSeqList = (List<Integer>) util.sendGetRequest(batchBaseUrl, path).getBody().getData();
-
         // 2. 해당 영화 번호 목록에 해당 하는 영화 목록을 가져옵니다.
-        path = util.getUri("/list/recommendation/top10");
-        List<MovieResponse> movieList = (List<MovieResponse>) util.sendPostRequest(movieBaseUrl, path, movieSeqList).getBody().getData();
-
-        // 3. 데이터 종합해서 반환
-        RecommendMovieResponse response = new RecommendMovieResponse(null, movieList);
-        return ResponseDto.response(StatusCode.SUCCESS, response);
+        path = util.getUri("/list/recommendation");
+        return util.sendPostRequest(movieBaseUrl, path, movieSeqList);
     }
 }
