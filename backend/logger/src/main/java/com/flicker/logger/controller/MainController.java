@@ -1,6 +1,7 @@
 package com.flicker.logger.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -42,4 +43,15 @@ public class MainController {
         return "ok";
     }
 
+    @GetMapping("/rating")
+    public String startBatchJob() throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(jobRegistry.getJob("calculateAverageRatingJob"), jobParameters);
+
+        return "ok";
+    }
 }

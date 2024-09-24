@@ -1,4 +1,4 @@
-package com.flicker.logger.kafka;
+package com.flicker.logger.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.logger.entity.Review;
