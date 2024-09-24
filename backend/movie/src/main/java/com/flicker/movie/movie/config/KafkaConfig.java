@@ -1,21 +1,17 @@
 package com.flicker.movie.movie.config;
 
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Getter
+@ConfigurationProperties(prefix = "spring.kafka")
+@Data
 public class KafkaConfig {
 
-    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
-
     private Producer producer;
-
     private Consumer consumer;
-
     private Template template;
 
     @Data

@@ -104,24 +104,10 @@ public class MovieController {
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
-    // 행동 기반 추천 영화 목록 조회
-    @GetMapping("/list/recommendation/action/{userSeq}")
-    public ResponseEntity<ResponseDto> getActionRecommendationList(@PathVariable int userSeq) {
-        List<MovieListResponse> response = movieService.getActionRecommendationList(userSeq);
-        return ResponseDto.response(StatusCode.SUCCESS, response);
-    }
-
-    // 평점,리뷰 기반 추천 영화 목록 조회
-    @GetMapping("/list/recommendation/review/{userSeq}")
-    public ResponseEntity<ResponseDto> getReviewRecommendationList(@PathVariable int userSeq) {
-        List<MovieListResponse> response = movieService.getReviewRecommendationList(userSeq);
-        return ResponseDto.response(StatusCode.SUCCESS, response);
-    }
-
-    // 1일 기준 TOP 10 영화 목록 조회
-    @GetMapping("/list/top10")
-    public ResponseEntity<ResponseDto> getTopMovieList() {
-        List<MovieListResponse> response = movieService.getTopMovieList();
+    // 추천된 영화 목록 조회
+    @PostMapping("/list/recommendation")
+    public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody List<Integer> movieSeqList) {
+        List<MovieListResponse> response = movieService.getRecommendationList(movieSeqList);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 }

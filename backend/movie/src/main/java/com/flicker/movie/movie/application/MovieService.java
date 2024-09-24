@@ -99,7 +99,7 @@ public class MovieService {
                 .toList();
     }
 
-    // TODO: ElasticSearch 활용
+    // TODO: ElasticSearch 활용 ( 검색 속도 개선 필요 )
     @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq, int page, int size) {
         // 1. MovieEvent 객체 생성
@@ -143,19 +143,13 @@ public class MovieService {
         return new MovieDetailResponse(movie, movie.getMovieDetail());
     }
 
-    // TODO: 회원 번호 -> 회원의 최근 행동 조회 -> 영화 번호 리스트 -> 영화 목록 반환
     @Transactional
-    public List<MovieListResponse> getActionRecommendationList(int userSeq) {
-        return null;
-    }
-    // TODO: 회원 번호 -> 평점, 리뷰 목록 -> 영화 번호 리스트 -> 영화 목록 반환
-    @Transactional
-    public List<MovieListResponse> getReviewRecommendationList(int userSeq) {
-        return null;
-    }
-    // TODO: 1일 기준 TOP 10 영화 번호 리스트 조회 -> 영화 목록 반환
-    @Transactional
-    public List<MovieListResponse> getTopMovieList() {
-        return null;
+    public List<MovieListResponse> getRecommendationList(List<Integer> movieSeqList) {
+        // 1. 추천된 영화 리스트 조회
+        List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqList);
+        // 2. MovieDetailResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
     }
 }
