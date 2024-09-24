@@ -21,10 +21,11 @@ RUN npm run build
 FROM nginx:alpine
 
 # 빌드된 파일을 Nginx의 기본 제공 디렉토리로 복사
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html  # dist 폴더로 수정
 
 # 컨테이너가 사용할 포트
 EXPOSE 80
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
+
