@@ -15,5 +15,4 @@ COPY . .
 CMD ["npm", "run", "dev"]
 
 # 컨테이너가 사용할 포트
-EXPOSE 3000  # 'npm run dev'가 사용하는 포트에 맞춰 조정하세요.
-
+EXPOSE 5173 5174
