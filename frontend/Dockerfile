@@ -5,9 +5,9 @@ WORKDIR /app
 
 # 애플리케이션 종속성 설치
 COPY package*.json ./
-RUN npm install
+RUN npm install --production=false
 
-RUN chmod +x ./node_modules/.bin/*
+RUN chmod 777 ./node_modules/.bin/*
 
 # 애플리케이션 소스 복사
 COPY . .
