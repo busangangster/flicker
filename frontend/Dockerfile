@@ -6,10 +6,10 @@ WORKDIR /app
 
 # 애플리케이션 종속성 설치
 COPY package*.json ./
-RUN npm install
+RUN npm install --production=false
 
-# vite와 ./node_modules/.bin 내의 모든 파일에 실행 권한 부여
-RUN chmod 777 ./node_modules/.bin/vite ./node_modules/.bin/*
+# vite와 tsc에 실행 권한 부여
+RUN chmod 755 ./node_modules/.bin/tsc ./node_modules/.bin/vite
 
 # 애플리케이션 소스 복사
 COPY . .
@@ -31,3 +31,4 @@ EXPOSE 80
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
+
