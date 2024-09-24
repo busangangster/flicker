@@ -6,7 +6,7 @@ WORKDIR /app
 
 # 애플리케이션 종속성 설치
 COPY package*.json ./
-RUN npm install
+RUN npm install --production=false
 
 # vite 실행 파일에 권한 추가 (npm install 후에 실행)
 RUN chmod +x /app/node_modules/.bin/vite
