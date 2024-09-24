@@ -14,6 +14,8 @@ export interface ExtendedSprite extends Sprite {
   userData: {
     angle: number;
     rotationOffset: number;
+    yOffset: number;
+    // initialY: number; // 초기 y 위치를 추가
   };
 }
 

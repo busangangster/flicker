@@ -62,9 +62,9 @@ const Home: React.FC = () => {
       app.stage.addChild(mainContainer);
 
       const background = new Graphics();
-      background.beginFill(0x0c0c0c);
-      background.drawRect(0, 0, app.screen.width, app.screen.height);
-      background.endFill();
+      background.fill(0x0c0c0c);
+      background.rect(0, 0, app.screen.width, app.screen.height);
+      background.fill();
       mainContainer.addChild(background);
 
       const screenCenterY = app.screen.height / 2;
@@ -99,7 +99,7 @@ const Home: React.FC = () => {
           images.map((path) => Assets.load(path))
         );
 
-        const sprites = textures.map((texture, index) => {
+        const sprites = textures.map((texture) => {
           const sprite = new Sprite(texture);
           sprite.anchor.set(0.5);
           sprite.x = app.screen.width / 2;
@@ -215,11 +215,13 @@ const Home: React.FC = () => {
       )}
 
       {animationFinished && (
-        <div className="min-h-screen flex flex-col">
-          <header className="sticky top-0 bg-black z-10">
+        <div className="min-h-screen flex flex-col relative z-20">
+          {/* z-index를 20으로 유지 */}
+          <header className="sticky top-0 bg-black z-30">
             <Navbar />
           </header>
-          <main className="w-full h-screen z-1">
+          <main className="w-full h-screen">
+            {/* 투명도를 낮춰 비디오가 보이게 함 */}
             <CircleCarousel onCardClick={handleCardClick} />
           </main>
         </div>
@@ -227,13 +229,13 @@ const Home: React.FC = () => {
 
       {backgroundVideoUrl && (
         <div
-          className="absolute top-0 left-0 w-full h-full z-0" // z-index 수정
-          style={{ pointerEvents: "none" }} // 화면 클릭 가능
+          className="absolute top-0 left-0 w-full h-full z-10" // z-index 수정
+          // style={{ pointerEvents: "none" }} // 투명도 및 배경 확인
         >
           <iframe
             src={`https://www.youtube.com/embed/${backgroundVideoUrl}?autoplay=1&mute=1&loop=1&playlist=${backgroundVideoUrl}`}
             title="YouTube video player"
-            className="w-full h-full"
+            className="w-full h-[1030px] overflow-hidden"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
