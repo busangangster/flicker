@@ -11,11 +11,6 @@ RUN npm install
 # 애플리케이션 소스 복사
 COPY . .
 
-# 사용자 권한 설정
-RUN chown -R node:node /app
-
-# 노드 사용자로 전환
-USER node
 
 # TypeScript 실행 파일에 실행 권한 부여
 RUN chmod +x ./node_modules/.bin/tsc
