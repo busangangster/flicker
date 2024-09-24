@@ -5,9 +5,7 @@ WORKDIR /app
 
 # 애플리케이션 종속성 설치
 COPY package*.json ./
-RUN npm install --production=false
-
-RUN chmod 777 ./node_modules/.bin/*
+RUN npm install
 
 # 애플리케이션 소스 복사
 COPY . .
@@ -18,6 +16,7 @@ RUN npm run build
 # Nginx 설정
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
