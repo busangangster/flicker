@@ -1,0 +1,33 @@
+/* 책이 확대되는 애니메이션 */
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.9); /* 처음에는 약간 작게 */
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1); /* 원래 크기로 확대 */
+  }
+}
+
+.book-animation-in {
+  animation: zoomIn 0.8s ease-in-out; 
+}
+
+@keyframes zoomOut {
+  0% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 0.2; 
+  }
+}
+
+.book-animation-out {
+  animation: zoomOut 0.6s ease-in-out;  
+}
+
+.text-animation-out {
+  animation: zoomOut 0.6s ease-in-out;
+}

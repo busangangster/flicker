@@ -1,78 +1,42 @@
 // PhotoBookPage.tsx
 import React from "react";
-import FlipPage from "react-flip-page";
+import { useNavigate } from "react-router-dom";
+import photobook from "../../assets/photobook/photobook.png";
+import "../../css/photobook.css";
 
 const PhotoBookPage: React.FC = () => {
-  const images = [
-    { src: "/assets/survey/image1.jpg", alt: "Movie 1" },
-    { src: "/assets/survey/image2.jpg", alt: "Movie 2" },
-    { src: "/assets/survey/image3.jpg", alt: "Movie 3" },
-    { src: "/assets/survey/image10.jpg", alt: "Movie 4" },
-    { src: "/assets/survey/image5.jpg", alt: "Movie 5" },
-    { src: "/assets/survey/image6.jpg", alt: "Movie 6" },
-    { src: "/assets/survey/image7.jpg", alt: "Movie 7" },
-    { src: "/assets/survey/image8.jpg", alt: "Movie 8" },
-  ];
+  const navigate = useNavigate();
 
-  // 목업 데이터 설정
-  const pages = [
-    {
-      id: 1,
-      content: (
-        <div className="flex flex-col items-center justify-center w-full h-full bg-white">
-          <h1 className="text-5xl font-bold italic text-black mb-3">
-            MOVIE MEMORIES
-          </h1>
-          <hr className="border-t-2 border-neutral-500 my-1 w-2/3" />
-          <hr className="border-t-2 border-neutral-500 my-1 w-2/3" />
-          <p className="text-lg mt-2 text-gray-700 self-end mr-40">
-            made by nickname
-          </p>
-          <img
-            src="https://via.placeholder.com/600x400"
-            alt="Cover Image"
-            className="mt-6"
-          />
-        </div>
-      ),
-    },
-    {
-      id: 2,
-      content: (
-        <div className="grid grid-cols-4 gap-4 p-4">
-          {/* 8개의 영화 포스터를 두 페이지에 배치 */}
-          {images.map((image, index) => (
-            <img
-              key={index} // 각 요소에 고유한 key를 부여
-              src={image.src}
-              alt={image.alt}
-              className="border rounded-md object-cover w-full h-[306px]" // 원하는 스타일 적용
-            />
-          ))}
-        </div>
-      ),
-    },
-  ];
+  const goToPhotoCard = () => {
+    // 사이드바를 먼저 점차적으로 사라지게 함
+    const sidebarElement = document.querySelector(".SideBar") as HTMLElement;
+    if (sidebarElement) {
+      sidebarElement.style.transition = "opacity 0.3s ease"; // 0.3초 동안 서서히 사라짐
+      sidebarElement.style.opacity = "0";
+    }
+
+    // photobook 이미지도 0.5초 후 점차적으로 사라지게 함
+    const photobookElement = document.querySelector(
+      ".photobook-img"
+    ) as HTMLElement;
+    if (photobookElement) {
+      photobookElement.classList.add("book-animation-out"); // 확대 애니메이션 추가
+    }
+
+  
+    setTimeout(() => {
+      navigate("/mypage/photocard");
+    }, 400); 
+  };
 
   return (
     <div className="bg-black p-8 rounded-lg w-[1200px] relative">
-      <div className="fixed top-0 left-0 p-4"></div>
-
-      <div className="flex w-full h-full justify-center items-center mt-8">
-        <FlipPage
-          orientation="horizontal"
-          showSwipeHint
-          uncutPages
-          className="shadow-2xl !w-[1000px] !h-[700px]" // 높이를 조정한 클래스
-        >
-          {/* 페이지 내용 */}
-          {pages.map((page) => (
-            <article key={page.id} className="flip-page bg-white p-8">
-              {page.content}
-            </article>
-          ))}
-        </FlipPage>
-      </div>
+      <img
+        src={photobook}
+        alt="photobook"
+        onClick={goToPhotoCard}
+        className="photobook-img" 
+      />
     </div>
   );
 };
