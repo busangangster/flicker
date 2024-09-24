@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9025fb05-b317-4411-88be-8bc71a07b52d" name="변경" comment="">
+    <list default="true" id="0e4ec9e7-efe3-4f85-8ee2-f97795cbf6b9" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/bff.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/application/BffUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/application/BffUserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,49 +25,40 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="GitLabMergeRequestFiltersHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPENED&quot;,
-    &quot;assignee&quot;: {
-      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
-      &quot;username&quot;: &quot;rinch12332&quot;,
-      &quot;fullname&quot;: &quot;공지환&quot;
+  <component name="GitLabMergeRequestFiltersHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPENED",
+    "assignee": {
+      "type": "org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue",
+      "username": "rinch12332",
+      "fullname": "공지환"
     }
   }
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2mSjOoN4lfAeTfV7GImuZPWw4zs" />
+}]]></component>
+  <component name="GitLabMergeRequestsSettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "first": "https://lab.ssafy.com/s11-bigdata-recom-sub1/S11P21E206.git",
+    "second": "dfc70b0b-7bc3-4c33-8121-8a9dc3577545"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="2mV64HxhDIRbQqBRY9mVFA0F2kd" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Gradle.bff 빌드.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.BffApplication.executor": "Run",
     "git-widget-placeholder": "BE/develop/bff",
     "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration name="BffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-      <module name="bff.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.flicker.bff.BffApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -75,15 +70,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="9025fb05-b317-4411-88be-8bc71a07b52d" name="변경" comment="" />
-      <created>1727076842617</created>
+      <changelist id="0e4ec9e7-efe3-4f85-8ee2-f97795cbf6b9" name="변경" comment="" />
+      <created>1727149205215</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1727076842617</updated>
-      <workItem from="1727076843575" duration="178000" />
-      <workItem from="1727144925818" duration="81000" />
-      <workItem from="1727145279356" duration="1260000" />
-      <workItem from="1727146809555" duration="1332000" />
+      <updated>1727149205215</updated>
+      <workItem from="1727149207363" duration="13000" />
     </task>
     <servers />
   </component>
