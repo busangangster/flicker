@@ -53,53 +53,58 @@ public class User {
 
     // 리뷰 관련
 
-
-
-
-
-    public boolean isDuplicateFavoriteMovie(Long movieSeq){
-        FavoriteMovie tmp = new FavoriteMovie(movieSeq);
-        return this.favoriteMovies.contains(tmp);
+    public boolean deleteBookmarkMovie(Long movieSeq){
+        return this.bookmarkMovies.removeIf(bookmarkMovie -> bookmarkMovie.getMovieSeq().equals(movieSeq));
     }
 
-    public void deleteFavoriteMovie(Long movieSeq){
-        if(isDuplicateFavoriteMovie(movieSeq)){
-            for(int i=0;i<this.favoriteMovies.size();i++){
-                if(this.favoriteMovies.get(i).getMovieSeq().equals(movieSeq)){
-                    this.favoriteMovies.remove(i);
-                    break;
-                }
+    public boolean deleteUnlikeMovie(Long movieSeq){
+        return this.unlikeMovies.removeIf(unlikeMovie -> unlikeMovie.getMovieSeq().equals(movieSeq));
+    }
+
+    public boolean addBookmarkMovie(Long movieSeq){
+
+        for(BookmarkMovie bookmarkMovie : this.bookmarkMovies){
+            if(bookmarkMovie.getMovieSeq().equals(movieSeq)){
+                return false;
             }
         }
+
+        BookmarkMovie bookmarkMovie = new BookmarkMovie(movieSeq);
+        bookmarkMovie.updateUser(this);
+        this.bookmarkMovies.add(bookmarkMovie);
+        return true;
     }
-    public void addBookmarkMovie(Long movieSeq){
 
-    }
+    public boolean addUnlikeMovie(Long movieSeq){
 
-    public void addUnlikeMovie(Long movieSeq){
-
-        UnlikeMovie unlikeMovie = new UnlikeMovie(movieSeq);
-
-        if(this.unlikeMovies.contains(unlikeMovie)){
-            return;
+        for(UnlikeMovie unlikeMovie : this.unlikeMovies){
+            if(unlikeMovie.getMovieSeq().equals(movieSeq)){
+                return false;
+            }
         }
 
+        UnlikeMovie unlikeMovie = new UnlikeMovie(movieSeq);
+        unlikeMovie.updateUser(this);
+        this.unlikeMovies.add(unlikeMovie);
 
-        this.unlikeMovies.add(new UnlikeMovie(movieSeq));
-
+        return true;
     }
 
     public void addFavoriteMovie(MovieSeqListDto dto){
-        for(Long movieSeq : dto.getMovieIdList()){
+        for(Long movieSeq : dto.getMovieSeqList()){
 
-            FavoriteMovie favoriteMovie =  new FavoriteMovie(movieSeq);
-
-            if(this.favoriteMovies.contains(favoriteMovie)){
-                continue;
+            boolean isDuplicate = false;
+            for(FavoriteMovie favoriteMovie : favoriteMovies){
+                if(movieSeq.equals(favoriteMovie.getMovieSeq())){
+                    isDuplicate = true;
+                    break;
+                }
             }
-
-            favoriteMovie.updateUser(this);
-            favoriteMovies.add(favoriteMovie);
+            if(!isDuplicate){
+                FavoriteMovie favoriteMovie = new FavoriteMovie(movieSeq);
+                favoriteMovie.updateUser(this);
+                this.favoriteMovies.add(favoriteMovie);
+            }
         }
     }
 

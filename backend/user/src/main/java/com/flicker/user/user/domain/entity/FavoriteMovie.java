@@ -39,16 +39,4 @@ public class FavoriteMovie {
         this.user = user;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FavoriteMovie that = (FavoriteMovie) o;
-        return Objects.equals(favoriteMovieSeq, that.favoriteMovieSeq);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(favoriteMovieSeq);
-    }
 }

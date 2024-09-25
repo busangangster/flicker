@@ -21,6 +21,7 @@ public enum StatusCode {
     INVALID_ID_OR_PASSWORD(HttpStatus.BAD_REQUEST, 407, "아이디/비밀번호가 일치하지 않습니다."),
     VALUE_CANT_NULL(HttpStatus.BAD_REQUEST, 408, "값을 반드시 입력해야 합니다."),
     INVALID_INPUT_DATA_TYPE(HttpStatus.BAD_REQUEST, 409, "잘못된 데이터 형식입니다."),
+    CAN_NOT_FIND_USER(HttpStatus.BAD_REQUEST, 410, "사용자를 찾을 수 없습니다."),
 
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버에서 처리 중 에러가 발생했습니다."),

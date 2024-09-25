@@ -96,7 +96,7 @@ public class UserController {
     @PostMapping("/{userSeq}/favorite-movie")
     public ResponseEntity<ResponseDto> registerFavoriteMovie(@PathVariable(value = "userSeq")Long userSeq, @RequestBody MovieSeqListDto dto){
 
-        if(userSeq == null || dto.getMovieIdList() == null){
+        if(userSeq == null || dto.getMovieSeqList() == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
 
@@ -108,36 +108,71 @@ public class UserController {
         return ResponseDto.response(StatusCode.SUCCESS, "관심 영화 등록이 완료되었습니다.");
     }
 
-    // 관심 영화 삭제
-    @DeleteMapping("/{userSeq}/favorite-movie/{movieSeq}")
-    public ResponseEntity<ResponseDto> deleteFavoriteMovie(@PathVariable(value = "userSeq")Long userSeq, @PathVariable(value = "movieSeq")Long movieSeq){
+    // 관심없는 영화 추가
+    @PostMapping("/{userSeq}/unlike-movie/{movieSeq}")
+    public ResponseEntity<ResponseDto> registerUnlikeMovie(@PathVariable(value = "userSeq")Long userSeq, @PathVariable(value = "movieSeq")Long movieSeq){
+
         if(userSeq == null || movieSeq == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
 
-        boolean b = userService.deleteFavoriteMovie(userSeq, movieSeq);
-        if(!b){
+        if(!userService.registerUnlikeMovie(userSeq, movieSeq)){
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
         }
-
-        return ResponseDto.response(StatusCode.SUCCESS, "관심 영화 삭제가 완료되었습니다.");
-    }
-    // 비선호 영화 목록
-    @GetMapping("/{userSeq}/unlike-movie/{movieSeq}")
-    public ResponseEntity<ResponseDto> registerUnlikeMovie(@PathVariable(value = "userSeq")Long userSeq, @PathVariable(value = "movieSeq")Long movieSeq){
-        if(userSeq == null || movieSeq == null){
-            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
-        }
-
 
         return ResponseDto.response(StatusCode.SUCCESS, "OK");
     }
 
-    // 비선호 영화 삭제
+    // 찜한 영화 추가
+    @PostMapping("/{userSeq}/bookmark-movie/{movieSeq}")
+    public ResponseEntity<ResponseDto> registerBookmarkMovie(@PathVariable(value = "userSeq")Long userSeq, @PathVariable(value = "movieSeq")Long movieSeq) {
+        if(userSeq == null || movieSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+        if(!userService.registerBookmarkMovie(userSeq, movieSeq)){
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
+        }
 
-    // 비선호 영화 추가
+        return ResponseDto.response(StatusCode.SUCCESS, "OK");
+    }
 
-    // 찜한 영화 등록
+
+    // 관심 영화 목록
+    @GetMapping("/{userSeq}/favorite-movie")
+    public ResponseEntity<ResponseDto> getFavoriteMovie(@PathVariable(value = "userSeq")Long userSeq){
+        if(userSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+        MovieSeqListDto favoriteMovies = userService.getFavoriteMovies(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, favoriteMovies);
+    }
+
+    // 관심없는 영화 목록
+    @GetMapping("/{userSeq}/unlike-movie")
+    public ResponseEntity<ResponseDto> getUnlikeMovie(@PathVariable(value = "userSeq")Long userSeq){
+        if(userSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+        MovieSeqListDto favoriteMovies = userService.getUnlikeMovies(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, favoriteMovies);
+    }
+
+    // 찜한 영화 목록
+    @GetMapping("/{userSeq}/bookmark-movie")
+    public ResponseEntity<ResponseDto> getBookmarkMovie(@PathVariable(value = "userSeq")Long userSeq){
+        if(userSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+        MovieSeqListDto favoriteMovies = userService.getBookmarkMovies(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, favoriteMovies);
+    }
+
+    // 관심없는 영화 삭제
+
+
+
+
+
 
     // 찜한 영화 해제
 

@@ -21,6 +21,10 @@ public class UnlikeMovie {
     private LocalDateTime createdAt;
     private Integer isActive;
 
+    public void updateUser(User user) {
+        this.user = user;
+    }
+
     public void deleteBookmarkMovie(){
         this.isActive = 0;
     }
