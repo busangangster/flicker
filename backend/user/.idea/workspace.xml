@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a96c73e2-c196-4a65-a90d-ff2e920707d4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/common/config/JacksonConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/jwt/CustomLogoutFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/jwt/CustomUserDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/jwt/JWTUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/jwt/JwtAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/jwt/LoginFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/jwt/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/jwt/application/CustomUserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/application/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/application/UserServiceMock.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/UserConverter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/dto/UserLoginReqDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/dto/UserLoginResDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/dto/UserRegisterDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/infrastructure/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/presentation/AuthTestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/common/status/StatusCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/common/status/StatusCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/common/util/HashUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/BookmarkMovie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/BookmarkMovie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/FavoriteMovie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/FavoriteMovie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/UnlikeMovie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/UnlikeMovie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/UserMovieId.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/entity/UserMovieId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/vo/UserInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/domain/vo/UserInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/presentation/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/user/user/presentation/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2mRsVQRW2ltHEXQGHdMJ5q4JZDk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build user.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.UserApplication.executor": "Run",
+    "git-widget-placeholder": "Merging BE/release/user",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="UserApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="user.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.flicker.user.UserApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a96c73e2-c196-4a65-a90d-ff2e920707d4" name="Changes" comment="" />
+      <created>1727050746638</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727050746638</updated>
+      <workItem from="1727050747825" duration="385000" />
+      <workItem from="1727057288425" duration="4255000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
