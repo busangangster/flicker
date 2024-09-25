@@ -15,9 +15,10 @@ import static com.flicker.movie.movie.domain.entity.QMovie.movie;
 @Repository
 @RequiredArgsConstructor
 public class MovieRepositoryCustomImpl implements MovieRepositoryCustom {
-
+    // JPAQueryFactory 주입 ( QueryDSL 사용 )
     private final JPAQueryFactory queryFactory;
 
+    // 키워드가 제목, 줄거리, 장르 또는 배우 이름에 포함된 영화 목록을 조회하는 메서드
     @Override
     public List<Movie> findByKeywordInTitlePlotActorGenre(String keyword, String delYN, Pageable pageable) {
         // 쿼리 생성

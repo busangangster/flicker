@@ -6,12 +6,29 @@ import com.flicker.movie.movie.application.ActorService;
 import com.flicker.movie.movie.application.MovieService;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*
+    * MovieController 클래스는 영화 정보, 배우 정보를 등록, 수정, 삭제하는 API 요청을 처리한다.
+    * MovieService, ActorService를 주입받는다.
+    * createMovie() 메서드는 영화 정보, 배우 정보를 등록한다.
+    * updateMovie() 메서드는 영화 정보를 수정한다.
+    * updateMovieRating() 메서드는 영화 평점을 수정한다.
+    * deleteMovie() 메서드는 영화 정보를 삭제한다.
+    * addActor() 메서드는 영화 배우를 추가한다.
+    * deleteActor() 메서드는 영화 배우를 삭제한다.
+    * updateActor() 메서드는 영화 배우를 수정한다.
+    * getAllMovieList() 메서드는 모든 영화 리스트를 조회한다.
+    * getMovieListByGenre() 메서드는 장르별 영화 리스트를 조회한다.
+    * getMovieListByActor() 메서드는 배우별 영화 리스트를 조회한다.
+    * getMovieListByKeyword() 메서드는 키워드를 포함하는 영화 리스트를 조회한다.
+    * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
+    * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
+    * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/movie")
@@ -110,4 +127,12 @@ public class MovieController {
         List<MovieListResponse> response = movieService.getRecommendationList(movieSeqList);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
+
+    // 사용자 최근 행동 로그 조회
+    @GetMapping("/actions/{userSeq}")
+    public ResponseEntity<ResponseDto> getUserActionList(@PathVariable int userSeq) {
+        List<UserActionResponse> response = movieService.getUserActionList(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
 }

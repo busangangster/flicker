@@ -32,6 +32,8 @@ public class QMovie extends EntityPathBase<Movie> {
 
     public final NumberPath<Integer> movieSeq = createNumber("movieSeq", Integer.class);
 
+    public final ListPath<WordCloud, QWordCloud> wordClouds = this.<WordCloud, QWordCloud>createList("wordClouds", WordCloud.class, QWordCloud.class, PathInits.DIRECT2);
+
     public QMovie(String variable) {
         this(Movie.class, forVariable(variable), INITS);
     }

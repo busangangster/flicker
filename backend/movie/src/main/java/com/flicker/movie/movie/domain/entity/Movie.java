@@ -29,12 +29,16 @@ public class Movie {
     @Column(nullable = false)
     private double movieRating;  // 영화 평점
 
-    @Column(name = "DEL_YN" , nullable = false)
+    @Column(name = "DEL_YN", nullable = false)
     private String delYN; // 영화 삭제 여부를 나타내는 플래그 (Y/N)
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column
     private final List<Actor> actors = new ArrayList<>();  // 영화에 출연한 배우들의 리스트, 영화와 양방향 관계를 설정하며, 영화가 삭제되면 배우들도 함께 삭제됨 (CascadeType.ALL)
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column
+    private final List<WordCloud> wordClouds = new ArrayList<>();  // 영화에 대한 단어 클라우드 리스트, 영화와 양방향 관계를 설정하며, 영화가 삭제되면 단어 클라우드도 함께 삭제됨 (CascadeType.ALL)
 
 
     @PrePersist
@@ -64,6 +68,27 @@ public class Movie {
         } // 전달된 배우 리스트를 하나씩 영화에 추가
     }
 
+    // 단어 클라우드 추가
+    private void addWordCloud(WordCloud wordCloud) {
+        // 단어 클라우드의 단어를 기준으로 중복 여부 확인
+        boolean wordExists = this.wordClouds.stream()
+                .anyMatch(existingWordCloud -> existingWordCloud.getKeyword().equals(wordCloud.getKeyword()));
+        // 이미 같은 단어의 단어 클라우드가 존재하는 경우 예외 발생
+        if (wordExists) {
+            throw new RestApiException(StatusCode.DUPLICATE_KEYWORD, "해당 영화 단어 클라우드에 이미 같은 키워드가 추가되었습니다.");
+        }
+        wordCloud.setMovie(this);  // 양방향 관계 설정 (WordCloud 객체가 이 영화에 속해 있음을 명시)
+        this.wordClouds.add(wordCloud);  // 단어 클라우드 리스트에 새로운 단어 클라우드 추가
+    }
+
+    // 여러 단어클라우드를 영화에 추가
+    @Transactional // 여러 단어 클라우드를 추가하는 동안 예외가 발생하면 모든 단어 클라우드 추가를 롤백
+    public void addWordClouds(List<WordCloud> wordCloudList) {
+        for (WordCloud wordCloud : wordCloudList) {
+            addWordCloud(wordCloud);  // 단어 클라우드를 하나씩 추가
+        } // 전달된 단어 클라우드 리스트를 하나씩 영화에 추가
+    }
+
     // 배우 조회
     public Actor getActor(int actorSeq) {
         // actors 리스트에서 해당 배우를 찾아 반환
@@ -74,11 +99,12 @@ public class Movie {
     }
 
     // 영화에서 배우 제거
+    @Transactional
     public void removeActor(int actorSeq) {
         // actors 리스트에서 해당 배우를 찾아 제거
         Actor removeActor = this.getActor(actorSeq);
-        this.actors.remove(removeActor);  // 배우 리스트에서 해당 배우를 제거
         removeActor.setMovie(null);  // 양방향 관계 해제 (Actor 객체에서 영화와의 관계를 끊음)
+        this.actors.remove(removeActor);  // 배우 리스트에서 해당 배우를 제거
     }
 
     // 영화 상세 정보 업데이트 (불변 객체 MovieDetail을 새로 생성해서 할당)
@@ -98,5 +124,15 @@ public class Movie {
             throw new RestApiException(StatusCode.BAD_REQUEST, "영화 평점은 0~5 사이여야 합니다.");
         }
         this.movieRating = newRating;  // 영화 평점을 새로운 값으로 업데이트
+    }
+
+    // 워드 클라우드 초기화
+    @Transactional
+    public void clearWordClouds() {
+        // 모든 WordCloud의 movie 참조를 null로 설정하여 관계를 끊음
+        for (WordCloud wordCloud : this.wordClouds) {
+            wordCloud.setMovie(null);  // 양방향 관계 해제
+        }
+        this.wordClouds.clear();  // 워드 클라우드 리스트를 비움
     }
 }
