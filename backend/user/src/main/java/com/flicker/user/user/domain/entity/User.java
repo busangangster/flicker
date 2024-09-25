@@ -39,6 +39,7 @@ public class User {
     private String hashedPass;
     private String profilePhotoUrl;
 
+    // 선호 영화 관련
     @OneToMany(mappedBy = "user")
     private List<FavoriteMovie> favoriteMovies;
     @OneToMany(mappedBy = "user")
@@ -49,6 +50,8 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer isActive;
+
+    // 리뷰 관련
 
 
     public boolean isDuplicateFavoriteMovie(Long movieSeq){
