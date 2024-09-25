@@ -7,6 +7,8 @@ import com.flicker.user.user.application.UserService;
 import com.flicker.user.user.domain.UserConverter;
 import com.flicker.user.user.domain.entity.User;
 import com.flicker.user.user.infrastructure.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +25,15 @@ public class AuthTestController {
     private final UserRepository userRepository;
 
     @GetMapping()
-    public ResponseEntity<ResponseDto> login(){
+    public ResponseEntity<ResponseDto> login(HttpServletRequest request){
 
-//        System.out.println("123");
+        Cookie[] cookies = request.getCookies(); // 요청에서 쿠키 배열 가져오기
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                System.out.println(cookie.getName());
+            }
+        }
+
 
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
