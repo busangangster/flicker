@@ -19,7 +19,7 @@ const SearchList: React.FC<SearchListProps> = () => {
           <img
             src={imgSrc}
             alt={`Movie Poster ${index + 1}`}
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-full object-cover rounded-md transition-transform duration-300 hover:-translate-y-2 mt-4 cursor-pointer"
           />
         </div>
       ))}

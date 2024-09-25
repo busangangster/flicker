@@ -36,6 +36,17 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (animationFinished) {
+      // 애니메이션이 완료된 후 CircleCarousel에 페이드 인 효과 적용
+      gsap.fromTo(
+        ".circle-carousel",
+        { opacity: 0 }, // 초기 상태
+        { opacity: 1, duration: 2, ease: "power2.out" } // 페이드 인 애니메이션
+      );
+    }
+  }, [animationFinished]);
+
+  useEffect(() => {
     if (!showLanding) return;
 
     const app = new Application();
@@ -220,9 +231,11 @@ const Home: React.FC = () => {
           <header className="sticky top-0 bg-black z-30">
             <Navbar />
           </header>
-          <main className="w-full h-screen">
+          <main className="w-full h-screen ">
             {/* 투명도를 낮춰 비디오가 보이게 함 */}
-            <CircleCarousel onCardClick={handleCardClick} />
+            <div className="circle-carousel">
+              <CircleCarousel onCardClick={handleCardClick} />
+            </div>
           </main>
         </div>
       )}

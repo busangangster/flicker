@@ -110,12 +110,12 @@ const RecommandListPage: React.FC = () => {
           {movieImg.map((img, index) => (
             <SwiperSlide
               key={index}
-              className="flex justify-center items-center"
+              className="flex justify-center items-center transition-transform duration-300 transform hover:-translate-y-2 mt-4"
             >
               <img
                 src={img}
                 alt={`Movie ${index + 1}`}
-                className="rounded-lg shadow-md object-cover w-full h-[306px]"
+                className="rounded-lg shadow-md object-cover w-full h-[306px] cursor-pointer"
               />
             </SwiperSlide>
           ))}
