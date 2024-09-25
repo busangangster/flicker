@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import photobook from "../../assets/photobook/photobook.png";
-import "../../css/photobook.css";
+import "../../css/PhotoBook.css";
 
 const PhotoBookPage: React.FC = () => {
   const navigate = useNavigate();
