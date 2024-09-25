@@ -15,6 +15,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
+/*
+    * CustomProducer 클래스는 Kafka 메시지를 발행하는 프로듀서 역할을 한다.
+    * KafkaConfig, ObjectMapper를 주입받는다.
+    * build() 메서드에서 KafkaProducer 객체를 생성한다.
+    * send() 메서드는 MovieEvent 객체를 JSON으로 직렬화하여 Kafka로 전송한다.
+    * @PostConstruct 어노테이션을 사용하여 빈이 생성될 때 build() 메서드를 실행한다.
+    * @PreDestroy 어노테이션을 사용하여 빈이 소멸될 때 closeProducer() 메서드를 실행한다.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +41,7 @@ public class CustomProducer {
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getProducer().getValueSerializer());
         // 재시도 설정
         properties.put(ProducerConfig.RETRIES_CONFIG, 5);  // 최대 5번 재시도
-        properties.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 1000);  // 재시도 간의 대기 시간 1초
+        properties.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 2000);  // 재시도 간의 대기 시간 2초
         properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 120000); // 메시지 전송 최대 허용 시간 (2분)
         properties.put(ProducerConfig.ACKS_CONFIG, "all");  // 모든 브로커가 메시지를 확인할 때까지 기다림
         // UTF-8 설정 추가

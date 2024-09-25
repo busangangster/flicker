@@ -13,7 +13,6 @@ import com.flicker.movie.movie.infrastructure.MovieRepository;
 import com.flicker.movie.movie.infrastructure.SearchResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -118,7 +117,7 @@ public class MovieRepoUtil {
      */
     public List<Movie> findByActor(String actorName, Pageable pageable) {
         try {
-            return movieRepository.findByActors_ActorNameContainingAndDelYNOrderByMovieDetail_MovieYearDesc(actorName, "N", pageable).getContent();
+            return movieRepository.findByActors_ActorNameAndDelYNOrderByMovieDetail_MovieYearDesc(actorName, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "배우별 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -167,7 +166,7 @@ public class MovieRepoUtil {
      *
      * @param searchResult 저장할 영화 목록
      */
-    public void saveSearchResult(SearchResult searchResult) {
+    public void saveSearchResultForRedis(SearchResult searchResult) {
         try {
             searchResultRepository.save(searchResult);
         } catch (Exception e) {
@@ -205,6 +204,11 @@ public class MovieRepoUtil {
         }
     }
 
+    /**
+     * MongoDB에 사용자 행동 로그를 저장하는 메서드입니다.
+     *
+     * @param mongoUserAction 저장할 사용자 행동 로그
+     */
     public void saveUserActionForMongoDB(MongoUserAction mongoUserAction) {
         try {
             mongoUserActionRepository.save(mongoUserAction);
@@ -213,12 +217,48 @@ public class MovieRepoUtil {
         }
     }
 
-    public List<MongoUserAction> findUserActionList(int userSeq) {
+    /**
+     * MongoDB에서 사용자 행동 로그를 조회하는 메서드입니다.
+     *
+     * @param userSeq 사용자의 ID
+     * @return 조회된 사용자 행동 로그 목록
+     * @throws RestApiException 사용자 행동 로그 조회 중 오류가 발생할 경우 발생
+     */
+    public List<MongoUserAction> findUserActionListForMongoDB(int userSeq) {
         try {
             Pageable pageable = PageRequest.of(0, 10);
             return mongoUserActionRepository.findByUserSeqOrderByTimestampDesc(userSeq, pageable);
         } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자 행동 로그를 조회하는 중 오류가 발생했습니다.");
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 최근 행동 로그를 조회하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * MongoDB에서 사용자 행동 로그를 조회하는 메서드입니다.
+     *
+     * @param userSeq 사용자의 ID
+     * @return 조회된 사용자 행동 로그 목록
+     * @throws RestApiException 사용자 행동 로그 조회 중 오류가 발생할 경우 발생
+     */
+    public List<MongoUserAction> findUserActionAllForMongoDB(int userSeq) {
+        try {
+            return mongoUserActionRepository.findByUserSeq(userSeq);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 모든 행동 로그를 조회하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * MongoDB에서 사용자 행동 로그를 삭제하는 메서드입니다.
+     *
+     * @param id 삭제할 사용자 행동 로그의 ID
+     * @throws RestApiException 사용자 행동 로그 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteUserActionForMongoDB(String id) {
+        try {
+            mongoUserActionRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 가장 오래된 행동 로그를 삭제하는 중 오류가 발생했습니다.");
         }
     }
 }

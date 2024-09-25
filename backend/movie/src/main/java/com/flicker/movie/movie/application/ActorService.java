@@ -10,6 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/*
+    * ActorService 클래스는 배우 정보를 추가, 삭제, 수정하는 비즈니스 로직을 담당한다.
+    * MovieBuilderUtil, MovieRepoUtil를 주입받는다.
+    * addActor() 메서드는 배우 정보를 추가한다.
+    * deleteActor() 메서드는 배우 정보를 삭제한다.
+    * updateActor() 메서드는 배우 정보를 수정한다.
+    * @Transactional 어노테이션을 사용하여 트랜잭션을 적용한다.
+    * @RequiredArgsConstructor 어노테이션을 사용하여 final 필드를 생성자에서 초기화한다.
+    * @Service 어노테이션을 사용하여 서비스 빈으로 등록한다.
+ */
 @RequiredArgsConstructor
 @Service
 public class ActorService {

@@ -52,7 +52,5 @@ public class WordCloud {
                 throw new RestApiException(StatusCode.BAD_REQUEST, "키워드 빈도 수가 잘못되었습니다.");
             }
         }
-
     }
-
 }

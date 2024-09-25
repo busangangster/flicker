@@ -10,22 +10,35 @@ import com.flicker.movie.movie.dto.KeywordCount;
 import com.flicker.movie.movie.dto.MovieRatingEvent;
 import com.flicker.movie.movie.dto.WordCloudEvent;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
 
+/*
+     * CustomConsumer 클래스는 Kafka 메시지를 수신하는 컨슈머 역할을 한다.
+     * KafkaConfig, MovieBuilderUtil, MovieRepoUtil, ObjectMapper를 주입받는다.
+     * build() 메서드에서 KafkaConsumer 객체를 생성한다.
+     * consumeMovieRating() 메서드는 영화 평점 업데이트 Kafka 메시지를 수신한다.
+     * consumeWordCloud() 메서드는 영화 워드 클라우드 업데이트 Kafka 메시지를 수신한다.
+     * @RetryableTopic 어노테이션을 사용하여 메시지 수신 중 오류가 발생할 경우 재시도한다.
+     * @KafkaListener 어노테이션을 사용하여 토픽을 구독한다.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +46,8 @@ public class CustomConsumer {
 
     private final KafkaConfig config;
     private final MovieBuilderUtil movieBuilderUtil;
+    @Getter
+    @Setter
     private KafkaConsumer<String, String> consumer = null;
     private final ObjectMapper objectMapper;
     private final MovieRepoUtil movieRepoUtil;
@@ -54,6 +69,10 @@ public class CustomConsumer {
     }
 
     // Kafka 메시지 수신 ( 영화 평점 업데이트 )
+    @RetryableTopic(
+            attempts = "5",
+            backoff = @Backoff(delay = 2000)
+    )
     @KafkaListener(topics = "${spring.kafka.template.movie-rating-topic}")
     @Transactional
     public void consumeMovieRating(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
@@ -67,12 +86,18 @@ public class CustomConsumer {
             Movie movie = movieRepoUtil.findById(movieSeq);
             // 4. 영화 평점 업데이트
             movie.updateMovieRating(movieRating);
+            // 5. 오프셋 커밋
+            consumer.commitSync();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");
         }
     }
 
     // Kafka 메시지 수진 ( 영화 워드 클라우드 업데이트 )
+    @RetryableTopic(
+            attempts = "5",
+            backoff = @Backoff(delay = 2000)
+    )
     @KafkaListener(topics = "${spring.kafka.template.wordcloud-result-topic}")
     @Transactional
     public void consumeWordCloud(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
@@ -82,16 +107,18 @@ public class CustomConsumer {
             // 2. 영화 ID와 키워드 추출
             int movieSeq = wordCloudEvent.getMovieSeq();
             List<KeywordCount> keywordCounts = wordCloudEvent.getKeywordCounts();
+            LocalDateTime createdAt = wordCloudEvent.getTimeStamp();
             // 3. DB에서 해당 영화 조회
             Movie movie = movieRepoUtil.findById(movieSeq);
             // 4. 기존 워드 클라우드 초기화
             movie.clearWordClouds();
             // 5. 영화 워드 클라우드 추가
-            List<WordCloud> wordClouds = movieBuilderUtil.buildWordCloudList(keywordCounts);
+            List<WordCloud> wordClouds = movieBuilderUtil.buildWordCloudList(keywordCounts, createdAt);
             movie.addWordClouds(wordClouds);
+            // 6. 오프셋 커밋
+            consumer.commitSync();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");
         }
     }
-
 }

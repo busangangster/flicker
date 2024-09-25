@@ -11,7 +11,11 @@ import java.time.LocalDateTime;
 public class MovieInfoEvent {
     private int userSeq; // movie인 경우 null
 
-    private int movieSeq;
+    private Integer movieSeq; // review인 경우 null
+
+    private Integer reviewSeq; // movie인 경우 null
+
+    private Double rating; // movie인 경우 null
 
     private String type; // "REVIEW" or "MOVIE"
 

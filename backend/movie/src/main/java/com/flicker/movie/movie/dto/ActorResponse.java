@@ -1,10 +1,6 @@
 package com.flicker.movie.movie.dto;
 
 import com.flicker.movie.movie.domain.entity.Actor;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
