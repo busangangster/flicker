@@ -11,7 +11,7 @@ export const getUserInfoFromToken = () => {
     console.log("Decoded JWT Token:", decodedToken);
 
     return {
-      userId: decodedToken.username, // 임시로 username으로 설정해둠 todo !! 
+      userId: decodedToken.userId, 
       email: decodedToken.email,
       nickname: decodedToken.nickname,
       birthDate: decodedToken.birthDate,

@@ -44,7 +44,7 @@ export interface SignInResponse {
 }
 
 export interface JwtPayload {
-  username: string; // 임시로 username으로 todo !! fix!! 
+  userId: string; 
   email: string;
   nickname: string;
   birthDate: string;
