@@ -4,11 +4,15 @@ import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.user.application.UserService;
+import com.flicker.user.user.domain.entity.User;
 import com.flicker.user.user.dto.UserLoginReqDto;
 import com.flicker.user.user.dto.UserRegisterDto;
+import com.flicker.user.user.infrastructure.UserRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,11 +22,30 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
+    @GetMapping("/auth-test")
+    public ResponseEntity<ResponseDto> login(HttpServletRequest request){
+
+        Cookie[] cookies = request.getCookies(); // 요청에서 쿠키 배열 가져오기
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                System.out.println(cookie.getName());
+            }
+        }
+
+
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if(userId == null) {
+            throw new RestApiException(StatusCode.INVALID_ID_OR_PASSWORD);
+        }
+
+        User byUserId = userRepository.findByUserId(userId);
+
+        return ResponseDto.response(StatusCode.SUCCESS ,byUserId);
     }
+
 
     // 회원 가입 (아이디 중복 체크)
     // @TODO 아이디 중복 체크, 실제 서비스 실행

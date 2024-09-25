@@ -44,8 +44,6 @@ public class AuthTestController {
         User byUserId = userRepository.findByUserId(userId);
 
         return ResponseDto.response(StatusCode.SUCCESS ,byUserId);
-
-
     }
 
 
