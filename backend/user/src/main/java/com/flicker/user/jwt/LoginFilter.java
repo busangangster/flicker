@@ -84,7 +84,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String access = jwtUtil.createToken("access", dto, role, 600000L);
             String refresh = jwtUtil.createToken("refresh", dto, role, 86400000L);
 
-
             // TODO : Refresh Token 저장 로직 구현
             System.out.println("액세스 토큰 발급 : "+ access);
             System.out.println("리프레시 토큰 발급 :"+refresh);
@@ -96,16 +95,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write("OK");
+            response.getWriter().flush();
         }
         else{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Authentication failed.");
+            response.getWriter().flush();
         }
     }
 
     @Override
     public void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         // TODO : 응답 에러코드와 함께 메세지 함께 보내야함.
+        response.getWriter().write("실패");
         response.setStatus(401);
 
     }

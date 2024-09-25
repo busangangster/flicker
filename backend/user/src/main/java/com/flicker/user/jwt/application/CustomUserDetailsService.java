@@ -26,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(user == null) {
             throw new RestApiException(StatusCode.INVALID_ID_OR_PASSWORD);
         }
+
         // UserDetails 객체로 변환
         return new CustomUserDetails(user);
     }
