@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0e4ec9e7-efe3-4f85-8ee2-f97795cbf6b9" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/BoardingPageDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/BoardingPageDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/RecommendMovie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/RecommendMovieDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/presentation/BffClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/presentation/BffClientController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../user/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../user/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +22,12 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="bff" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -41,6 +42,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="BE/develop/bff" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="GitLabMergeRequestFiltersHistory">{
@@ -59,6 +65,31 @@
     &quot;second&quot;: &quot;281530d6-77f9-439b-8ef7-e4b6bbd644b8&quot;
   }
 }</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="BE/develop/bff" />
+                    <option name="lastUsedInstant" value="1727234845" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="BE/release/bff" />
+                    <option name="lastUsedInstant" value="1727234716" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$/../.." />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 8
@@ -78,7 +109,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.BffApplication.executor": "Run",
-    "git-widget-placeholder": "BE/feature/bff-user",
+    "git-widget-placeholder": "BE/develop/bff",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/Desktop/특화프로젝트/S11P21E206/backend/bff/build.gradle",
     "node.js.detected.package.eslint": "true",
