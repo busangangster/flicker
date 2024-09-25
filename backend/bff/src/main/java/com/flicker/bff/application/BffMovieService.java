@@ -16,13 +16,16 @@ public class BffMovieService {
     private final Util util; // Util 클래스 의존성 주입
 
     @Value("${movie.baseurl}")
-    private String movieBaseUrl; // 영화 API의 기본 URL
+    private String movieBaseUrl; // 영화 서버 API의 기본 URL
 
-    @Value("${user.baseurl}")
-    private String userBaseUrl; // 사용자 API의 기본 URL
+    @Value("${user-review.baseurl}")
+    private String userBaseUrl; // 사용자-리뷰 서버 API의 기본 URL
 
     @Value("${batch.baseurl}")
     private String batchBaseUrl; // 배치서버 API의 기본 URL
+
+    @Value("${recommend.baseurl}")
+    private String recommendBaseUrl; // 추천서버 API의 기본 URL
 
 
     public ResponseEntity<ResponseDto> createMovie(MovieCreateRequest request) {
@@ -88,6 +91,7 @@ public class BffMovieService {
         return util.sendGetRequest(movieBaseUrl, path);
     }
 
+    // TODO: 키워드 기반 검색 결과 및 추천
     public ResponseEntity<ResponseDto> getMovieListBySearch(String keyword, int userSeq, int page, int size) {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/list/search/" + keyword + "/" + userSeq + "/" + page + "/" + size);
@@ -101,16 +105,18 @@ public class BffMovieService {
         // 2. GET 요청 메서드를 사용하여 외부 API에 요청을 보냅니다.
         return util.sendGetRequest(movieBaseUrl, path);
     }
-
+    
+    // TODO: 경로 수정
     public ResponseEntity<ResponseDto> getActionRecommendationList(int userSeq) {
-        // 1. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
+        // 1. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. 
         String path = util.getUri("/list/recommendation/action/" + userSeq);
         List<Integer> movieSeqList = (List<Integer>) util.sendGetRequest(batchBaseUrl, path).getBody().getData();
         // 2. 해당 영화 번호 목록에 해당 하는 영화 목록을 가져옵니다.
         path = util.getUri("/list/recommendation");
         return util.sendPostRequest(movieBaseUrl, path, movieSeqList);
     }
-
+    
+    // TODO: 경로 수정
     public ResponseEntity<ResponseDto> getReviewRecommendationList(int userSeq) {
         // 1. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
         String path = util.getUri("/list/recommendation/review/" + userSeq);
@@ -119,7 +125,8 @@ public class BffMovieService {
         path = util.getUri("/list/recommendation");
         return util.sendPostRequest(movieBaseUrl, path, movieSeqList);
     }
-
+    
+    // TODO: 경로 수정
     public ResponseEntity<ResponseDto> getTopMovieList() {
         // 1. 배치 서버에서 추천된 영화 번호 목록을 가져옵니다. TODO: 경로 수정
         String path = util.getUri("/list/recommendation/top10");
