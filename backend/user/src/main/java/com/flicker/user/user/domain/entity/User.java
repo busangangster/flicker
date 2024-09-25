@@ -54,28 +54,50 @@ public class User {
     // 리뷰 관련
 
 
+
+
+
     public boolean isDuplicateFavoriteMovie(Long movieSeq){
         FavoriteMovie tmp = new FavoriteMovie(movieSeq);
-        return favoriteMovies.contains(tmp);
+        return this.favoriteMovies.contains(tmp);
     }
 
-    public void removeFavoriteMovie(Long movieSeq){
+    public void deleteFavoriteMovie(Long movieSeq){
         if(isDuplicateFavoriteMovie(movieSeq)){
-            for(int i=0;i<favoriteMovies.size();i++){
-                if(favoriteMovies.get(i).getMovieSeq().equals(movieSeq)){
-                    favoriteMovies.remove(i);
+            for(int i=0;i<this.favoriteMovies.size();i++){
+                if(this.favoriteMovies.get(i).getMovieSeq().equals(movieSeq)){
+                    this.favoriteMovies.remove(i);
                     break;
                 }
             }
         }
     }
+    public void addBookmarkMovie(Long movieSeq){
+
+    }
+
+    public void addUnlikeMovie(Long movieSeq){
+
+        UnlikeMovie unlikeMovie = new UnlikeMovie(movieSeq);
+
+        if(this.unlikeMovies.contains(unlikeMovie)){
+            return;
+        }
+
+
+        this.unlikeMovies.add(new UnlikeMovie(movieSeq));
+
+    }
 
     public void addFavoriteMovie(MovieSeqListDto dto){
         for(Long movieSeq : dto.getMovieIdList()){
-            if(isDuplicateFavoriteMovie(movieSeq)){
+
+            FavoriteMovie favoriteMovie =  new FavoriteMovie(movieSeq);
+
+            if(this.favoriteMovies.contains(favoriteMovie)){
                 continue;
             }
-            FavoriteMovie favoriteMovie =  new FavoriteMovie(this.userSeq);
+
             favoriteMovie.updateUser(this);
             favoriteMovies.add(favoriteMovie);
         }
@@ -106,9 +128,7 @@ public class User {
         return Period.between(this.userInfo.getBirthDate(), now).getYears();
     }
 
-    protected User() {
-
-    }
+    protected User() {}
 
     public User(LocalDate birthDate, String email, Character gender, String hashedPass, String nickname, String userId) {
         if(birthDate == null || email == null || gender == null || hashedPass == null || nickname == null){

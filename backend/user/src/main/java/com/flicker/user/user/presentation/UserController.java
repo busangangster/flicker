@@ -5,6 +5,7 @@ import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.user.application.UserService;
 import com.flicker.user.user.domain.entity.User;
+import com.flicker.user.user.dto.MovieSeqListDto;
 import com.flicker.user.user.dto.UserLoginReqDto;
 import com.flicker.user.user.dto.UserRegisterDto;
 import com.flicker.user.user.infrastructure.UserRepository;
@@ -34,18 +35,14 @@ public class UserController {
             }
         }
 
-
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-
         if(userId == null) {
             throw new RestApiException(StatusCode.INVALID_ID_OR_PASSWORD);
         }
-
         User byUserId = userRepository.findByUserId(userId);
 
         return ResponseDto.response(StatusCode.SUCCESS ,byUserId);
     }
-
 
     // 회원 가입 (아이디 중복 체크)
     // @TODO 아이디 중복 체크, 실제 서비스 실행
@@ -58,7 +55,13 @@ public class UserController {
         if(!dto.getPassword().equals(dto.getPassCheck())){
             throw new RestApiException(StatusCode.INVALID_INPUT_DATA_TYPE,"비밀번호가 일치하지 않습니다.");
         }
-        userService.register(dto);
+
+        boolean register = userService.register(dto);
+
+        if(!register){
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
+        }
+
         return ResponseDto.response(StatusCode.SUCCESS, "회원가입 완료");
     }
 
@@ -66,53 +69,79 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(@RequestBody UserLoginReqDto dto, HttpServletRequest request){
 
-//        if(dto.getUserId() == null || dto.getPassword() == null){
-//            throw new RestApiException(StatusCode.INVALID_INPUT_DATA_TYPE,"아이디, 패스워드가 공백일 수 없습니다.");
-//        }
-//        UserLoginResDto loginResDto = userService.login(dto);
         String username = request.getParameter("username");
-        System.out.println(username);
 
         return ResponseDto.response(StatusCode.SUCCESS, "OK");
     }
 
     // 회원 탈퇴
-    @PutMapping()
-    public ResponseEntity<ResponseDto> delete(){
-        //헤더에서 유저 정보 가져오기
+    @DeleteMapping("/{userSeq}")
+    public ResponseEntity<ResponseDto> delete(@PathVariable(value = "userSeq")Long userSeq){
+
+        boolean delete = userService.delete(userSeq);
+        if(!delete){
+            throw new RestApiException(StatusCode.BAD_REQUEST);
+        }
         return ResponseDto.response(StatusCode.SUCCESS, null);
     }
 
-//    @PostMapping("/user/api/join")
-//    public ResponseEntity<?> join(@RequestBody JoinDto joinDto) {
-//
-//        joinService.joinProcess(joinDto);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @PostMapping("/user/api/test")
-//    public void test(HttpServletRequest request) {
-//
-//        String username = request.getHeader("X-auth-username");
-//        System.out.println(username);
-//    }
     // 로그 아웃
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseDto> logout(){
+        // TODO 로그아웃은 프론트에서 처리 로그 찍기
+        return ResponseDto.response(StatusCode.SUCCESS, null);
+    }
 
-    // 선호 영화 추가
+    // 관심 영화 추가
+    @PostMapping("/{userSeq}/favorite-movie")
+    public ResponseEntity<ResponseDto> registerFavoriteMovie(@PathVariable(value = "userSeq")Long userSeq, @RequestBody MovieSeqListDto dto){
 
-    // 선호 영화 삭제
+        if(userSeq == null || dto.getMovieIdList() == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
 
-    // 추천 영화 조회 ?
+        boolean result = userService.registerFavoriteMovie(userSeq, dto);
+        if(!result){
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
+        }
 
+        return ResponseDto.response(StatusCode.SUCCESS, "관심 영화 등록이 완료되었습니다.");
+    }
+
+    // 관심 영화 삭제
+    @DeleteMapping("/{userSeq}/favorite-movie/{movieSeq}")
+    public ResponseEntity<ResponseDto> deleteFavoriteMovie(@PathVariable(value = "userSeq")Long userSeq, @PathVariable(value = "movieSeq")Long movieSeq){
+        if(userSeq == null || movieSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+        boolean b = userService.deleteFavoriteMovie(userSeq, movieSeq);
+        if(!b){
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
+        }
+
+        return ResponseDto.response(StatusCode.SUCCESS, "관심 영화 삭제가 완료되었습니다.");
+    }
     // 비선호 영화 목록
+    @GetMapping("/{userSeq}/unlike-movie/{movieSeq}")
+    public ResponseEntity<ResponseDto> registerUnlikeMovie(@PathVariable(value = "userSeq")Long userSeq, @PathVariable(value = "movieSeq")Long movieSeq){
+        if(userSeq == null || movieSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+
+        return ResponseDto.response(StatusCode.SUCCESS, "OK");
+    }
 
     // 비선호 영화 삭제
 
     // 비선호 영화 추가
 
-    // 관심 영화 등록
+    // 찜한 영화 등록
 
-    // 관심 영화 해제
+    // 찜한 영화 해제
+
+    // 추천 영화 조회 ?
 
     // 평점 등록
 

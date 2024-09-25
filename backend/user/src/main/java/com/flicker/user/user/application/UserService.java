@@ -1,11 +1,15 @@
 package com.flicker.user.user.application;
 
-import com.flicker.user.user.dto.UserLoginReqDto;
-import com.flicker.user.user.dto.UserLoginResDto;
-import com.flicker.user.user.dto.UserRegisterDto;
+import com.flicker.user.user.dto.*;
 
 public interface UserService {
 
     public boolean register(UserRegisterDto dto);
-    public UserLoginResDto login(UserLoginReqDto dto);
+    public boolean delete(Long userSeq);
+    public boolean registerFavoriteMovie(Long userSeq, MovieSeqListDto dto);
+    public boolean deleteFavoriteMovie(Long userSeq, Long movieSeq);
+    public boolean registerUnlikeMovie(Long userSeq, Long movieSeq);
+    public boolean deleteUnlikeMovie(Long userSeq, Long movieSeq);
+    public boolean registerBookmarkMovie(Long userSeq, Long movieSeq);
+    public boolean deleteBookmarkMovie(Long userSeq, Long movieSeq);
 }
