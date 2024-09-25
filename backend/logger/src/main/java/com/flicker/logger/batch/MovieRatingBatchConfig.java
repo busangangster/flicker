@@ -1,5 +1,7 @@
 package com.flicker.logger.batch;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.logger.dto.MovieAverageRating;
 import com.flicker.logger.dto.MovieRating;
 import com.flicker.logger.dto.MovieReviewEvent;
@@ -12,6 +14,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -34,78 +37,44 @@ public class MovieRatingBatchConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
-
     private final KafkaTemplate<String, String> kafkaTemplate;
-
     @Qualifier("dataDBSource") private final DataSource dataSource;
-
-//    private final List<MovieAverageRating> writtenItems = new ArrayList<>();
 
     // 1. Job 정의
     @Bean
     public Job ratingCalcJob() {
+
         log.info("Movie rating calculation batch started");
+
         return new JobBuilder("AverageRatingCalcJob", jobRepository)
                 .start(ratingStep())
-//                .next(sendToKafkaStep())
-                .build();
-    }
-
-//    @Bean
-//    public Step sendToKafkaStep() {
-//
-//        return new StepBuilder("sendToKafkaStep", jobRepository)
-//                .<MovieAverageRating, MovieRating>chunk(10, platformTransactionManager)
-//                .reader(sendToKafkaReader()) // 평균 점수를 읽어오는 Reader
-//                .processor(sendToKafkaProcessor())
-//                .writer(kafkaItemWriter()) // 카프카로 발행하는 Writer
-//                .build();
-//    }
-//
-//    @Bean
-//    @StepScope
-//    public JdbcCursorItemReader<MovieAverageRating> sendToKafkaReader() {
-//        // JdbcCursorItemReader<MovieAverageRating>를 반환
-//        return new JdbcCursorItemReaderBuilder<MovieAverageRating>()
-//                .dataSource(dataSource)
-//                .name("movieRatingReader")
-//                .sql("SELECT movie_seq, movie_count, movie_total_rating " +
-//                        "FROM data_db.movie_average_rating " +
-//                        "WHERE movie_count > 0")
-//                .rowMapper(new BeanPropertyRowMapper<>(MovieAverageRating.class))
-//                .build();
-//    }
-//
-//    @Bean
-//    @StepScope
-//    public ItemProcessor<MovieAverageRating, MovieRating> sendToKafkaProcessor() {
-//        return reviewLog -> new MovieRating(reviewLog.getMovieSeq(), reviewLog.getAverageRating());
-//    }
-//
-//    @Bean
-//    @StepScope
-//    public ItemWriter<>
-
-    @Bean
-    @StepScope
-    public JdbcBatchItemWriter<MovieAverageRating> kafkaItemWriter() {
-
-        return new JdbcBatchItemWriterBuilder<MovieAverageRating>()
-                .dataSource(dataSource)
-                .sql("UPDATE data_db.movie_review_info SET is_processed = true WHERE review_seq = :reviewSeq")
-                .beanMapped()
+                .next(sendToKafkaStep())
                 .build();
     }
 
     @Bean
     public Step ratingStep() {
-        log.info("Movie rating calculation step started");
+
+        log.info("Movie rating calculation ratingStep started");
 
         return new StepBuilder("ratingStep", jobRepository)
                 .<MovieReviewEvent, MovieAverageRating>chunk(10, platformTransactionManager) // 변경: <입력 타입, 출력 타입>
                 .reader(movieRatingReader())
                 .processor(movieRatingProcessor())
                 .writer(compositeItemWriter())
+                .build();
+    }
+
+    @Bean
+    public Step sendToKafkaStep() {
+
+        log.info("Movie rating calculation sendToKafkaStep started");
+
+        return new StepBuilder("sendToKafkaStep", jobRepository)
+                .<MovieAverageRating, MovieRating>chunk(10, platformTransactionManager)
+                .reader(sendToKafkaReader()) // 평균 점수를 읽어오는 Reader
+                .processor(sendToKafkaProcessor())
+                .writer(kafkaItemWriter(kafkaTemplate)) // 카프카로 발행하는 Writer
                 .build();
     }
 
@@ -120,6 +89,20 @@ public class MovieRatingBatchConfig {
                         "FROM data_db.movie_review_info " +
                         "WHERE is_processed = 0")
                 .rowMapper(new BeanPropertyRowMapper<>(MovieReviewEvent.class))
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    public JdbcCursorItemReader<MovieAverageRating> sendToKafkaReader() {
+        // JdbcCursorItemReader<MovieAverageRating>를 반환
+        return new JdbcCursorItemReaderBuilder<MovieAverageRating>()
+                .dataSource(dataSource)
+                .name("movieRatingReader")
+                .sql("SELECT movie_seq, movie_count, movie_total_rating " +
+                        "FROM data_db.movie_average_rating " +
+                        "WHERE movie_count > 0")
+                .rowMapper(new BeanPropertyRowMapper<>(MovieAverageRating.class))
                 .build();
     }
 
@@ -145,6 +128,12 @@ public class MovieRatingBatchConfig {
             rating.setReviewSeq(reviewLog.getReviewSeq());
             return rating;
         };
+    }
+
+    @Bean
+    @StepScope
+    public ItemProcessor<MovieAverageRating, MovieRating> sendToKafkaProcessor() {
+        return reviewLog -> new MovieRating(reviewLog.getMovieSeq(), reviewLog.getAverageRating());
     }
 
     @Bean
@@ -178,5 +167,19 @@ public class MovieRatingBatchConfig {
         CompositeItemWriter<MovieAverageRating> writer = new CompositeItemWriter<>();
         writer.setDelegates(Arrays.asList(movieRatingWriter(), logStatusUpdateWriter()));
         return writer;
+    }
+
+    @Bean
+    @StepScope
+    public ItemWriter<MovieRating> kafkaItemWriter(KafkaTemplate<String, String> kafkaTemplate) {
+
+        return item -> {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String message = objectMapper.writeValueAsString(item);
+
+            kafkaTemplate.send("movie-rating", message);
+            log.info("Movie rating sent to kafka : {}", message);
+        };
     }
 }
