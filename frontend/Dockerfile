@@ -1,5 +1,5 @@
 # Node.js를 사용한 빌드 단계
-FROM node:16 AS build
+FROM node:18 AS build
 
 # 애플리케이션 디렉토리 생성
 WORKDIR /app
