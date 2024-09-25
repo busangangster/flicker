@@ -5,12 +5,12 @@ import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.domain.entity.MongoMovieList;
 import com.flicker.movie.movie.domain.entity.MongoUserAction;
 import com.flicker.movie.movie.domain.entity.Movie;
-import com.flicker.movie.movie.domain.entity.SearchResult;
+import com.flicker.movie.movie.domain.entity.RedisSearchResult;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.infrastructure.MongoMovieListRepository;
 import com.flicker.movie.movie.infrastructure.MongoUserActionRepository;
 import com.flicker.movie.movie.infrastructure.MovieRepository;
-import com.flicker.movie.movie.infrastructure.SearchResultRepository;
+import com.flicker.movie.movie.infrastructure.RedisSearchResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +34,7 @@ import java.util.Optional;
 public class MovieRepoUtil {
 
     private final MovieRepository movieRepository;
-    private final SearchResultRepository searchResultRepository;
+    private final RedisSearchResultRepository redisSearchResultRepository;
     private final MongoMovieListRepository mongoMovieListRepository;
     private final MongoUserActionRepository mongoUserActionRepository;
     private final MovieBuilderUtil movieBuilderUtil;
@@ -146,7 +146,7 @@ public class MovieRepoUtil {
      */
     public List<MongoMovie> findByKeywordForRedis(String redisKey) {
         try {
-            Optional<SearchResult> searchResultOptional = searchResultRepository.findByKeyword(redisKey);
+            Optional<RedisSearchResult> searchResultOptional = redisSearchResultRepository.findByKeyword(redisKey);
             // Redis에 키가 없으면 null 반환
             if (searchResultOptional.isEmpty()) {
                 return null;  // 키 자체가 없을 때
@@ -164,11 +164,11 @@ public class MovieRepoUtil {
     /**
      * Redis Keyword를 저장하는 메서드입니다.
      *
-     * @param searchResult 저장할 영화 목록
+     * @param redisSearchResult 저장할 영화 목록
      */
-    public void saveSearchResultForRedis(SearchResult searchResult) {
+    public void saveSearchResultForRedis(RedisSearchResult redisSearchResult) {
         try {
-            searchResultRepository.save(searchResult);
+            redisSearchResultRepository.save(redisSearchResult);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 검색 결과를 저장하는 중 오류가 발생했습니다.");
         }
@@ -259,6 +259,32 @@ public class MovieRepoUtil {
             mongoUserActionRepository.deleteById(id);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 가장 오래된 행동 로그를 삭제하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Redis에 저장된 검색 결과를 모두 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException 검색 결과 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteAllSearchResultForRedis() {
+        try {
+            redisSearchResultRepository.deleteAll();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 저장된 검색 결과를 초기화하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * MongoDB에 저장된 검색 결과를 모두 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException 검색 결과 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteAllSearchResultForMongoDB() {
+        try {
+            mongoMovieListRepository.deleteAll();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에 저장된 검색 결과를 초기화하는 중 오류가 발생했습니다.");
         }
     }
 }

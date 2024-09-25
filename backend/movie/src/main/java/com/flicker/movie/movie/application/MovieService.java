@@ -2,10 +2,12 @@ package com.flicker.movie.movie.application;
 
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
-import com.flicker.movie.movie.domain.entity.*;
+import com.flicker.movie.movie.domain.entity.Actor;
+import com.flicker.movie.movie.domain.entity.MongoUserAction;
+import com.flicker.movie.movie.domain.entity.Movie;
+import com.flicker.movie.movie.domain.entity.RedisSearchResult;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
-import com.flicker.movie.movie.dto.UserActionResponse;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,20 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
-    * MovieService 클래스는 영화 정보를 생성, 수정, 삭제하는 비즈니스 로직을 담당한다.
-    * MovieBuilderUtil, MovieRepoUtil, CustomProducer를 주입받는다.
-    * createMovie() 메서드는 영화 정보를 생성한다.
-    * updateMovie() 메서드는 영화 정보를 수정한다.
-    * updateMovieRating() 메서드는 영화 평점을 수정한다.
-    * deleteMovie() 메서드는 영화 정보를 삭제한다.
-    * getAllMovieList() 메서드는 모든 영화 리스트를 조회한다.
-    * getMovieListByGenre() 메서드는 장르별 영화 리스트를 조회한다.
-    * getMovieListByActor() 메서드는 배우별 영화 리스트를 조회한다.
-    * getMovieListByKeyword() 메서드는 키워드를 포함하는 영화 리스트를 조회한다.
-    * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
-    * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
-    * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
-    * maintainMaxUserActions() 메서드는 사용자 행동 로그 최대 10개 유지한다.
+ * MovieService 클래스는 영화 정보를 생성, 수정, 삭제하는 비즈니스 로직을 담당한다.
+ * MovieBuilderUtil, MovieRepoUtil, CustomProducer를 주입받는다.
+ * createMovie() 메서드는 영화 정보를 생성한다.
+ * updateMovie() 메서드는 영화 정보를 수정한다.
+ * updateMovieRating() 메서드는 영화 평점을 수정한다.
+ * deleteMovie() 메서드는 영화 정보를 삭제한다.
+ * getAllMovieList() 메서드는 모든 영화 리스트를 조회한다.
+ * getMovieListByGenre() 메서드는 장르별 영화 리스트를 조회한다.
+ * getMovieListByActor() 메서드는 배우별 영화 리스트를 조회한다.
+ * getMovieListByKeyword() 메서드는 키워드를 포함하는 영화 리스트를 조회한다.
+ * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
+ * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
+ * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
+ * maintainMaxUserActions() 메서드는 사용자 행동 로그 최대 10개 유지한다.
+ * initSearchResultForRedisAndMongoDB() 메서드는 redis, mongoDB (키워드 검색결과)를 초기화한다.
  */
 @RequiredArgsConstructor
 @Service
@@ -55,7 +58,9 @@ public class MovieService {
         movie.addActors(actorList);
         // 6. 데이터베이스에 저장
         movieRepoUtil.saveMovie(movie);
-        // 7. Kafka 이벤트 발행
+        // 7. redis , mongoDB (키워드 검색결과 ) 초기화
+        initSearchResultForRedisAndMongoDB();
+        // 8. Kafka 이벤트 발행
         MovieInfoEvent movieInfoEvent = movieBuilderUtil.buildMovieInfoEvent(movie.getMovieSeq(), "MOVIE", "Create", LocalDateTime.now());
         customProducer.send(movieInfoEvent, "movieInfo");
     }
@@ -85,7 +90,9 @@ public class MovieService {
         Movie movie = movieRepoUtil.findById(movieSeq);
         // 2. 영화 삭제
         movie.deleteMovie();
-        // 3. Kafka 이벤트 발행
+        // 3. redis , mongoDB (키워드 검색결과 ) 초기화
+        initSearchResultForRedisAndMongoDB();
+        // 4. Kafka 이벤트 발행
         MovieInfoEvent movieInfoEvent = movieBuilderUtil.buildMovieInfoEvent(movieSeq, "MOVIE", "Delete", LocalDateTime.now());
         customProducer.send(movieInfoEvent, "movieInfo");
     }
@@ -152,8 +159,8 @@ public class MovieService {
         // 6. DB에서 가져온 결과 MongoDB에 저장 후 키 반환
         String mongoKey = movieRepoUtil.saveSearchListForMongoDB(movieList);
         // 7. Redis에 SearchResult 저장
-        SearchResult searchResult = MovieBuilderUtil.buildSearchResult(redisKey, mongoKey);
-        movieRepoUtil.saveSearchResultForRedis(searchResult);
+        RedisSearchResult redisSearchResult = MovieBuilderUtil.buildSearchResult(redisKey, mongoKey);
+        movieRepoUtil.saveSearchResultForRedis(redisSearchResult);
         // 8. MovieDetailResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
@@ -189,7 +196,7 @@ public class MovieService {
         // 1. 사용자 행동 로그 조회
         List<MongoUserAction> userActionList = movieRepoUtil.findUserActionListForMongoDB(userSeq);
         // 2. 사용자 행동 로그가 없을 경우
-        if(userActionList == null || userActionList.isEmpty()) {
+        if (userActionList == null || userActionList.isEmpty()) {
             throw new RestApiException(StatusCode.NO_CONTENT, "사용자 행동 로그가 존재하지 않습니다.");
         }
         // 3. UserActionResponse 리스트 생성
@@ -208,5 +215,11 @@ public class MovieService {
             MongoUserAction oldestAction = userActions.get(0);  // 가장 오래된 로그
             movieRepoUtil.deleteUserActionForMongoDB(oldestAction.getId());  // 가장 오래된 로그 삭제
         }
+    }
+
+    // redis , mongoDB (키워드 검색결과 ) 초기화
+    private void initSearchResultForRedisAndMongoDB() {
+        movieRepoUtil.deleteAllSearchResultForRedis();
+        movieRepoUtil.deleteAllSearchResultForMongoDB();
     }
 }
