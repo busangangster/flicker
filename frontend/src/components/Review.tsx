@@ -10,6 +10,9 @@ import { ReviewType } from "../type";
 interface ReviewProps {
   review: ReviewType;
   onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
+  liked: boolean;
+  likes: number;
+  nickname: string;
 }
 
 const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {

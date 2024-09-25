@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const SeviceContent = () => {
-  return (
-    <div>SeviceContent</div>
-  )
-}
+const SeviceContent: React.FC = () => {
+  return <div>SeviceContent</div>;
+};
 
-export default SeviceContent
+export default SeviceContent;

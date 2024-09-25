@@ -13,8 +13,6 @@ export interface ReviewType {
   nickname: string; // 사용자 닉네임 (일단 넣음)
 }
 
-
-
 export interface FilterOptions {
   value: string; // 드롭다운 옵션 값
   label: string; // 드롭다운 옵션 레이블
@@ -30,7 +28,5 @@ export interface ExtendedSprite extends Sprite {
     angle: number;
     rotationOffset: number;
     yOffset: number;
-    // initialY: number; // 초기 y 위치를 추가
   };
 }
-
