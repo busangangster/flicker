@@ -59,7 +59,7 @@ public class JWTUtil {
 
         String token = Jwts.builder()
                 .claim("category", category)
-                .claim("username", dto.getUserId())
+                .claim("userId", dto.getUserId())
                 .claim("email", dto.getEmail())
                 .claim("nickname", dto.getNickname())
                 .claim("birthDate", dto.getBirthDate().format(formatter))  // LocalDate -> String
