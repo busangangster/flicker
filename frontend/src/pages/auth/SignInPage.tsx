@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { signin } from "../../apis/authApi";
 import { AxiosError } from "axios";
 import UsAndThem from "../../assets/background/UsAndThem.png";
-import Cookies from "js-cookie";
 import { IoMdCheckboxOutline, IoMdSquareOutline } from "react-icons/io";
 
 const SignInPage: React.FC = () => {
@@ -40,17 +39,8 @@ const SignInPage: React.FC = () => {
       });
 
       if (response) {
-        const { accessToken, refreshToken } = response;
-
-        if (accessToken) {
-          localStorage.setItem("accessToken", accessToken);
-          Cookies.set("refreshToken", refreshToken, { expires: 7 });
-
-          alert("로그인 성공! \nFlicker에서 반짝이는 순간을 기록하세요.");
-          navigate("/"); // 메인 페이지로 이동
-        } else {
-          throw new Error("토큰이 반환되지 않았습니다.");
-        }
+        alert("로그인 성공! \nFlicker에서 반짝이는 순간을 기록하세요.");
+        navigate("/"); // 메인 페이지로 이동
       } else {
         throw new Error("로그인 응답이 없습니다.");
       }
@@ -70,7 +60,7 @@ const SignInPage: React.FC = () => {
   };
 
   const goToPasswordReset = () => {
-    navigate("/passwordreset"); // '/passwordreset' 경로로 이동
+    navigate("/passwordreset");
   };
 
   return (

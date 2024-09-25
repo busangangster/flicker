@@ -2,9 +2,15 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import photobook from "../../assets/photobook/photobook.png";
 import "../../css/photobook.css";
+import { useUserQuery } from "../../hooks/useUserQuery";
 
 const PhotoBookPage: React.FC = () => {
   const navigate = useNavigate();
+
+  const { data, error, isLoading } = useUserQuery();
+  if (!data) return <p>유저 정보가 없습니다.</p>;
+  if (isLoading) return <p>로딩 중...</p>;
+  if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
   const goToPhotoCard = () => {
     // 사이드바를 먼저 점차적으로 사라지게 함
@@ -41,6 +47,7 @@ const PhotoBookPage: React.FC = () => {
     }, 400);
   };
 
+  
   return (
     <div className="bg-black p-8 rounded-lg w-[1200px] relative">
       {/* 클릭 가능한 전체 영역 */}
@@ -55,7 +62,7 @@ const PhotoBookPage: React.FC = () => {
           <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
           <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
           <p className="photobook-text text-lg italic mt-2 text-black self-end mr-60">
-            made by nickname
+            made by {data.userId}
           </p>
           <img
             src="https://via.placeholder.com/600x400"

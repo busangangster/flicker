@@ -1,11 +1,8 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "./axios";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 import { handleApiError } from "../utils/errorHandling";
 import { SignUpParams, SignInParams, SignInResponse } from "../type";
-import { AxiosError } from "axios";
-
 
 // 회원가입 API
 export const signUp = async (params: SignUpParams) => {
@@ -21,7 +18,7 @@ export const signUp = async (params: SignUpParams) => {
 // 로그인 API
 export const signin = async (
   params: SignInParams
-): Promise<SignInResponse | undefined> => {
+): Promise<SignInResponse | ""> => {
   try {
     console.log("로그인 요청 데이터:", params);
 
@@ -29,11 +26,22 @@ export const signin = async (
       "/api/users/login",
       params
     );
-    const { accessToken, refreshToken } = response.data;
+
+    // 서버 응답에서 Authorization 헤더 추출
+    const token = response.headers["authorization"];
+
+    if (token) {
+      const accessToken = token.replace("Bearer ", "");
+      // const { accessToken, refreshToken } = response.data || {};
+      localStorage.setItem("accessToken", accessToken);
+      console.log("accessToken 저장 완료");
+    } else {
+      console.log("토큰이 없습니다.");
+    }
 
     // JWT 토큰을 로컬 스토리지와 쿠키에 저장
-    localStorage.setItem("accessToken", accessToken);
-    Cookies.set("refreshToken", refreshToken, { expires: 1 }); // 1일간 유지
+    // Cookies.set("refreshToken", refreshToken, { expires: 1 }); // 1일간 유지
+
     return response.data;
   } catch (error) {
     handleApiError(error as any);
@@ -44,11 +52,10 @@ export const signin = async (
 // 토큰 검증 API
 export const verifyToken = async () => {
   try {
-    const response = await axios.get("/api/auth-test");
+    const response = await axios.get("/api/users/auth-test");
     return response.data;
   } catch (error) {
     handleApiError(error as any);
     throw error;
   }
 };
-

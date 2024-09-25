@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HTMLFlipBook from "react-pageflip";
 import "../../css/photobook.css";
+import { useUserQuery } from "../../hooks/useUserQuery";
 
 // IFlipBook 인터페이스 정의
 interface IFlipBook {
@@ -23,6 +24,12 @@ const PhotoCardPage: React.FC = () => {
       }, 10); // 페이지 넘김 딜레이 (0.1초 후 넘김)
     }
   }, []);
+
+  const { data, error, isLoading } = useUserQuery();
+
+  if (!data) return <p>유저 정보가 없습니다.</p>;
+  if (isLoading) return <p>로딩 중...</p>;
+  if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
   const goTophotocarddetail = () => {
     navigate("/mypage/photocarddetail"); // photocarddetail 페이지로 이동
@@ -49,7 +56,7 @@ const PhotoCardPage: React.FC = () => {
           <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
           <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
           <p className="text-lg italic mt-2 text-gray-700 self-end mr-16 mb-10">
-            made by nickname
+            made by {data.userId}
           </p>
           <img
             src="https://via.placeholder.com/500x300"

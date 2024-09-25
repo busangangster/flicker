@@ -29,7 +29,7 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
 
     // 토큰 만료 시 처리
-    if (error.respose && error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       try {
         const refreshToken = Cookies.get("refreshToken");
 

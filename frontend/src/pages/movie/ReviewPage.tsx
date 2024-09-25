@@ -149,7 +149,7 @@ const ReviewPage: React.FC = () => {
     }
 
     setReviews(sortedReviews); // 정렬된 리뷰 설정
-  }, [reviews, sortOption]); // sortOption이 변경될 때마다 실행
+  }, [sortOption]); // sortOption이 변경될 때마다 실행
 
   const filterOptions = [
     { value: "최신순", label: "최신순" },

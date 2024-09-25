@@ -43,6 +43,14 @@ export interface SignInResponse {
   refreshToken: string;
 }
 
+export interface JwtPayload {
+  username: string; // 임시로 username으로 todo !! fix!! 
+  email: string;
+  nickname: string;
+  birthDate: string;
+  gender: "M" | "F" | "";
+}
+
 export interface ApiErrorResponse {
   status: number;
   message: string;

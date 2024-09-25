@@ -13,16 +13,17 @@ const initialState: AuthState = {
   error: null,
 };
 
-// 'email'을 'username'으로 수정
+
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (
-    credentials: { username: string; password: string },
+    credentials: { userId: string; password: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post("/auth/login", credentials);
+      const response = await axios.post("/users/login", credentials);
       return response.data.token;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return rejectWithValue("Login failed");
     }

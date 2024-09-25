@@ -1,7 +1,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useUserQuery } from "../hooks/useUserQuery";
+
 
 const Sidebar: React.FC = () => {
+  const { data, error, isLoading } = useUserQuery();
+  if (!data) return <p>유저 정보가 없습니다.</p>;
+  if (isLoading) return <p>로딩 중...</p>;
+  if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
+  
   return (
     <aside className="w-[300px] h-[830px] rounded-md bg-[#2C3751] bg-opacity-80 flex flex-col items-center py-8 ml-20 mt-[110px]">
       {/* Profile Section */}
@@ -13,7 +20,7 @@ const Sidebar: React.FC = () => {
           className="rounded-[90px] w-[220px] h-[170px] mb-2"
         />
         <span className="text-white font-semibold mt-3 text-[20px] mb-8">
-          busangangster
+          {data.nickname}
         </span>
 
         <div className="w-[200px] h-[60px] text-white flex justify-between items-center px-4">
