@@ -1,9 +1,16 @@
-// type.ts
+import { Sprite } from "pixi.js";
+
 export interface ReviewType {
-  username: string; // 유저 이름
+  reviewSeq: number; // 영화리뷰 시퀀스
+  userSeq: number; // 작성자 시쿼스
+  movieId: number; // 영화 id
+  reviewRating: number; // 평점
   content: string; // 리뷰 내용
-  rating: number; // 평점
-  date: string; // 리뷰 작성 날짜
+  createdAt: string; // 리뷰 작성일시
+  isSpoiler: boolean; // 스포일러 유무
+  likes: number; // 좋아요 개수 (ERD에 추가할 예쩡)
+  liked: boolean; // 좋아요 여부 (ERD에 추가할 예정)
+  nickname: string; // 사용자 닉네임 (일단 넣음)
 }
 
 export interface FilterOptions {
@@ -40,4 +47,13 @@ export interface ApiErrorResponse {
   status: number;
   message: string;
   //   data?: any; // 만약 응답 데이터 구조가 복잡하다면, 여기서 구체적인 타입을 추가할 수 있음
+}
+
+export interface ExtendedSprite extends Sprite {
+  userData: {
+    angle: number;
+    rotationOffset: number;
+    yOffset: number;
+    // initialY: number; // 초기 y 위치를 추가
+  };
 }

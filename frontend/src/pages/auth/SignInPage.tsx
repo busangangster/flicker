@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { signin } from "../../apis/authApi";
 import { AxiosError } from "axios";
 import UsAndThem from "../../assets/background/UsAndThem.png";
-import Cookies from "js-cookie"; 
+import Cookies from "js-cookie";
+import { IoMdCheckboxOutline, IoMdSquareOutline } from "react-icons/io";
 
 const SignInPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -17,30 +18,30 @@ const SignInPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
     setError(""); // 입력 시 오류 메시지 초기화
+  };
+
+  const toggleRememberMe = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      rememberMe: !prevData.rememberMe,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      // API 호출: 서버에서 id와 password를 사용하여 로그인 요청
       const response = await signin({
         userId: formData.userId,
         password: formData.password,
       });
 
-
-      // response가 존재하는지 확인 후 처리
       if (response) {
         const { accessToken, refreshToken } = response;
 
-        // JWT 토큰을 로컬 스토리지에 저장
         if (accessToken) {
           localStorage.setItem("accessToken", accessToken);
           Cookies.set("refreshToken", refreshToken, { expires: 7 });
@@ -58,7 +59,6 @@ const SignInPage: React.FC = () => {
 
       console.error("로그인 오류:", err);
 
-      // 오류 메시지를 사용자가 이해할 수 있는 형식으로 표시
       if (err.response && err.response.status === 400) {
         setError("로그인 실패: 아이디나 비밀번호가 올바르지 않습니다.");
       } else {
@@ -69,8 +69,7 @@ const SignInPage: React.FC = () => {
     }
   };
 
-  // 비밀번호 재설정 클릭 핸들러
-  const handlePasswordResetClick = () => {
+  const goToPasswordReset = () => {
     navigate("/passwordreset"); // '/passwordreset' 경로로 이동
   };
 
@@ -86,7 +85,7 @@ const SignInPage: React.FC = () => {
 
         <input
           type="text"
-          name="username"
+          name="userId"
           placeholder="아이디"
           value={formData.userId}
           onChange={handleChange}
@@ -105,20 +104,21 @@ const SignInPage: React.FC = () => {
         {error && <p className="text-red-500 text-xs mb-2">{error}</p>}
 
         <div className="flex items-center justify-between w-full mb-10">
-          <label className="flex items-center text-gray-100 text-sm">
-            <input
-              type="checkbox"
-              name="rememberMe"
-              checked={formData.rememberMe}
-              onChange={handleChange}
-              className="mr-2 ml-2"
-            />
+          <label
+            className="flex items-center text-gray-100 text-sm cursor-pointer"
+            onClick={toggleRememberMe}
+          >
+            {formData.rememberMe ? (
+              <IoMdCheckboxOutline className="mr-2 ml-2 text-xl text-gray-100" />
+            ) : (
+              <IoMdSquareOutline className="mr-2 ml-2 text-xl text-gray-100" />
+            )}
             자동 로그인
           </label>
           <a
             type="button"
             className="text-sm text-gray-100 underline hover:underline mr-2"
-            onClick={handlePasswordResetClick}
+            onClick={goToPasswordReset}
           >
             비밀번호 재설정
           </a>

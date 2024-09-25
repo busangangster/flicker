@@ -1,31 +1,162 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Application, Sprite, Assets, Texture } from "pixi.js";
-import { useNavigate } from "react-router-dom";
+import { ExtendedSprite } from "../type";
 
-interface ExtendedSprite extends Sprite {
-  userData: {
-    angle: number;
-    rotationOffset: number;
-  };
+interface CircleCarouselProps {
+  onCardClick: (videoUrl: string) => void; // 외부에서 사용하는 함수
+  className?: string;
 }
 
-const CircleCarousel: React.FC = () => {
+const CircleCarousel: React.FC<CircleCarouselProps> = ({
+  onCardClick,
+  className = "",
+}) => {
   const pixiContainerRef = useRef<HTMLDivElement | null>(null);
   const appRef = useRef<Application | null>(null);
-  const navigate = useNavigate();
+  const cardsRef = useRef<ExtendedSprite[]>([]); // 카드들을 참조하기 위한 ref
+  const isCarouselMovedRef = useRef(false); // useRef로 상태 관리
+  const isMovingRef = useRef(false); // 이동 중 여부 상태
 
   // Refs for cleanup
   const updateCardsRef = useRef<() => void>(() => {});
   const pointerDownHandlerRef = useRef<(event: PointerEvent) => void>();
   const pointerUpHandlerRef = useRef<(event: PointerEvent) => void>();
   const pointerMoveHandlerRef = useRef<(event: PointerEvent) => void>();
+  const [carouselOpacity, setCarouselOpacity] = useState(1);
 
-  const imageUrls = [
-    "/assets/survey/image1.jpg",
-    "/assets/survey/image2.jpg",
-    "/assets/survey/image3.jpg",
-    "/assets/survey/image20.jpg",
-    "/assets/survey/image5.jpg",
+  const moveCards = (distance: number) => {
+    cardsRef.current.forEach((card) => {
+      if (!card.userData.yOffset) {
+        card.userData.yOffset = 0; // yOffset 초기화
+      }
+      card.userData.yOffset += distance; // yOffset 증가 또는 감소
+      // console.log(
+      //   `After Move - Card ${index}: yOffset = ${card.userData.yOffset}`
+      // );
+    });
+    updateCardsRef.current(); // 위치 갱신
+  };
+
+  // Carousel을 아래로 이동시키는 함수
+  const moveCardsDown = (distance: number) => {
+    if (isMovingRef.current) {
+      return; // 이동 중일 때는 다른 이동 방지
+    }
+    isMovingRef.current = true; // 이동 중 상태 설정
+    moveCards(distance);
+    isCarouselMovedRef.current = true; // 이동 완료 후 상태 업데이트
+    setCarouselOpacity(0.25);
+    isMovingRef.current = false; // 이동 완료 후 이동 상태 해제
+    console.log("moveCardsDown: Carousel moved down");
+  };
+
+  // Carousel을 원래 위치로 되돌리는 함수
+  const moveCardsUp = (distance: number) => {
+    if (isMovingRef.current) {
+      return; // 이동 중일 때는 다른 이동 방지
+    }
+    isMovingRef.current = true; // 이동 중 상태 설정
+    moveCards(-distance); // 음수로 이동
+    isCarouselMovedRef.current = false; // 원래 위치로 돌아온 상태 설정
+    setCarouselOpacity(1);
+    isMovingRef.current = false; // 이동 완료 후 이동 상태 해제
+    console.log("moveCardsUp: Carousel moved up");
+  };
+
+  // 카드 클릭 이벤트 핸들러
+  const handleCardClick = (videoUrl: string) => {
+    if (isMovingRef.current) {
+      return; // 이동 중에는 클릭 이벤트 무시
+    }
+    if (isCarouselMovedRef.current) {
+      moveCardsUp(430); // 원래 위치로 되돌림
+    } else {
+      onCardClick(videoUrl); // 비디오 재생 이벤트 발생
+      moveCardsDown(430); // Carousel을 아래로 이동
+    }
+  };
+
+  const items = [
+    {
+      imageUrl: "/assets/CircleCarousel/베테랑.jpg",
+      videoUrl: "BQZ3-mdczwM",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/기생충.jpg",
+      videoUrl: "ke5YikykPj0",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/노트북.jpg",
+      videoUrl: "nTTK0S0LPtk",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/듄.jpg",
+      videoUrl: "ZQhuVLPXf24",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/명량.jpg",
+      videoUrl: "spQtwggaCy4",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/반지의제왕.jpg",
+      videoUrl: "VfrSYFChe40",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/보헤미안랩소디.jpg",
+      videoUrl: "ARCwA5NVcOM",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/분노의질주.jpg",
+      videoUrl: "1-Q0a2a_jcs",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/서울의봄.jpg",
+      videoUrl: "-AZ7cnwn2YI",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/신세계.jpg",
+      videoUrl: "rvLMVcRkRfY",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/암살.jpg",
+      videoUrl: "OkEZTCPpgXc",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/어바웃타임.jpg",
+      videoUrl: "ksn1zUkcKys",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/어벤저스.jpg",
+      videoUrl: "ijUsSpRVhBU",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/올드보이.jpg",
+      videoUrl: "2HkjrJ6IK5E",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/인셉션.jpg",
+      videoUrl: "Uj7z5HH9nfs",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/콰이어트플레이스.jpg",
+      videoUrl: "rf7SFaFSf5c",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/타이타닉.jpg",
+      videoUrl: "9KQm_7Lpt5E",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/파묘.jpg",
+      videoUrl: "fRkOWmfZjkY",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/베놈.jpg",
+      videoUrl: "BryJA-Xp-Q4",
+    },
+    {
+      imageUrl: "/assets/CircleCarousel/극한직업.jpg",
+      videoUrl: "-OvSJ4_zc2c",
+    },
   ];
 
   useEffect(() => {
@@ -46,10 +177,10 @@ const CircleCarousel: React.FC = () => {
 
     const initializeApp = async () => {
       await app.init({
-        autoStart: true, // Start the application immediately
+        autoStart: true,
         resizeTo: window,
         backgroundColor: 0x000000,
-        sharedTicker: false, // Use a dedicated ticker for this app
+        sharedTicker: false,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1,
       });
@@ -68,7 +199,7 @@ const CircleCarousel: React.FC = () => {
 
         // Load textures
         const textures = await Promise.all(
-          imageUrls.map((url) => loadTexture(url))
+          items.map((item) => loadTexture(item.imageUrl))
         );
 
         // Function to create card background texture
@@ -116,7 +247,8 @@ const CircleCarousel: React.FC = () => {
         function setupCard(
           texture: Texture,
           backgroundTexture: Texture,
-          index: number
+          index: number,
+          videoUrl: string
         ) {
           const cardBackground = new Sprite(backgroundTexture);
           cardBackground.anchor.set(0.5);
@@ -135,21 +267,23 @@ const CircleCarousel: React.FC = () => {
           cardContainer.y = centerY + radiusY * Math.sin(angle);
 
           cardContainer.rotation = 0;
-          cardContainer.userData = { angle, rotationOffset: 0 };
+          cardContainer.userData = { angle, rotationOffset: 0, yOffset: 0 };
           cardContainer.interactive = true;
           cardContainer.cursor = "pointer";
           cardContainer.on("pointertap", () => {
-            navigate("/moviedetail");
+            handleCardClick(videoUrl);
           });
 
           cards.push(cardContainer);
+          cardsRef.current.push(cardContainer); // cardsRef.current에 추가
           app.stage.addChild(cardContainer);
         }
 
         // Set up all cards
         for (let i = 0; i < cardCount; i++) {
-          const texture = textures[i % textures.length]; // Use loaded textures
-          setupCard(texture, backgroundTexture, i);
+          const item = items[i % items.length];
+          const texture = textures[i % textures.length];
+          setupCard(texture, backgroundTexture, i, item.videoUrl);
         }
 
         let dragging = false;
@@ -172,8 +306,16 @@ const CircleCarousel: React.FC = () => {
             if (card) {
               const angle =
                 (i / cardCount) * Math.PI * 2 * spacingFactor + rotationOffset;
+
+              // 기본 원형 배열 위치
+              const baseY = centerY + radiusY * Math.sin(angle);
+
+              // moveCardsDown에서 추가된 yOffset을 반영
+              const yOffset = card.userData.yOffset || 0;
+
+              // 최종 y 위치 계산
               card.x = centerX + radiusX * Math.cos(angle);
-              card.y = centerY + radiusY * Math.sin(angle);
+              card.y = baseY + yOffset; // 원래 위치에 yOffset 추가
 
               card.rotation = 0;
               card.userData.angle = angle;
@@ -181,6 +323,10 @@ const CircleCarousel: React.FC = () => {
           });
 
           bringCenterCardToFront();
+
+          if (appRef.current) {
+            appRef.current.renderer.render(appRef.current.stage); // Pixi.js 화면 갱신
+          }
         };
         updateCardsRef.current = updateCards; // Store reference for cleanup
 
@@ -202,7 +348,6 @@ const CircleCarousel: React.FC = () => {
             closestCard !== lastClosestCard &&
             minAngleDiff < 0.01
           ) {
-            console.log("Closest card detected, moving to top.");
             lastClosestCard = closestCard;
             app.stage.setChildIndex(closestCard, app.stage.children.length - 1);
           }
@@ -299,24 +444,26 @@ const CircleCarousel: React.FC = () => {
         appRef.current = null;
       }
 
-      // Optionally clear the assets cache
-      // Correct method to clear cache
       if (Assets && Assets.cache) {
         Assets.cache.reset();
       }
     };
-  }, [navigate]);
+  }, []);
 
   return (
-    <div
-      ref={pixiContainerRef}
-      className="w-full h-full"
-      style={{
-        position: "absolute",
-        top: "50%",
-        transform: "translateY(-50%)",
-      }}
-    />
+    <div className="relative w-full h-full">
+      <div
+        ref={pixiContainerRef}
+        className={`w-full h-full ${className}`}
+        style={{
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%)",
+          pointerEvents: "auto", // 이벤트를 받을 수 있도록 설정
+          opacity: carouselOpacity,
+        }}
+      ></div>
+    </div>
   );
 };
 

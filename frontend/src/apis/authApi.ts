@@ -1,8 +1,11 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "./axios";
 import Cookies from "js-cookie";
 import { handleApiError } from "../utils/errorHandling";
 import { SignUpParams, SignInParams, SignInResponse } from "../type";
+import { AxiosError } from "axios";
+
 
 // 회원가입 API
 export const signUp = async (params: SignUpParams) => {

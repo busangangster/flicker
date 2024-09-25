@@ -48,7 +48,6 @@ const MovieDetailPage: React.FC = () => {
     "/assets/survey/image13.jpg",
   ];
 
-
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleHeart = () => {
@@ -187,11 +186,11 @@ const MovieDetailPage: React.FC = () => {
 
       {/* 리뷰 섹션 */}
       <div className="flex">
-        <div className="p-4 bg-black text-black rounded-md w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
+        <div className="p-4 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
           <div className="flex w-[800px] justify-between">
             <h3 className="text-2xl font-bold text-white">Reviews</h3>
             <div
-              className="text-white flex ml-auto items-end cursor-pointer"
+              className="text-white flex ml-auto items-end cursor-pointer italic underline"
               onClick={goToReview}
             >
               more
@@ -245,7 +244,7 @@ const MovieDetailPage: React.FC = () => {
         <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
           <div className="relative w-full max-w-4xl h-full">
             <iframe
-              src="https://www.youtube.com/embed/qSqVVswa420"
+              src="https://www.youtube.com/embed/qSqVVswa420?autoplay=1&mute=1"
               title="YouTube video player"
               className="w-full h-full rounded-lg shadow-md"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

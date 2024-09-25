@@ -9,15 +9,17 @@ const Home: React.FC = () => {
   const animationStopped = useRef(false);
   const [animationFinished, setAnimationFinished] = useState(false); // 애니메이션 종료 상태 관리
   const [showLanding, setShowLanding] = useState(false); // LandingPage 표시 여부 상태
+  const [backgroundVideoUrl, setBackgroundVideoUrl] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
-    // 페이지가 로드될 때마다 visited 값을 초기화하여 새로고침 여부를 다시 판단
     if (sessionStorage.getItem("visited") === "true") {
-      setShowLanding(false); // 이미 방문한 경우 애니메이션 숨김
-      setAnimationFinished(true); // 바로 홈 화면 표시
+      setShowLanding(false);
+      setAnimationFinished(true);
     } else {
       sessionStorage.setItem("visited", "true");
-      setShowLanding(true); // 새로고침 시 LandingPage 표시
+      setShowLanding(true);
     }
   }, []);
 
@@ -34,14 +36,8 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log("새로고침 여부 확인:", sessionStorage.getItem("visited"));
-    console.log("showLanding 상태:", showLanding);
-  }, [showLanding]);
+    if (!showLanding) return;
 
-  useEffect(() => {
-    if (!showLanding) return; // showLanding이 false일 때 Pixi.js 초기화 방지
-
-    // Initialize Pixi Application
     const app = new Application();
 
     const init = async () => {
@@ -54,7 +50,6 @@ const Home: React.FC = () => {
         resolution: window.devicePixelRatio || 1,
       });
 
-      // Append the view to the container
       if (pixiContainerRef.current) {
         pixiContainerRef.current.appendChild(app.view);
       }
@@ -63,18 +58,15 @@ const Home: React.FC = () => {
     const initializeApp = async () => {
       await init();
 
-      // Main container setup
       const mainContainer = new Container();
       app.stage.addChild(mainContainer);
 
-      // Background setup
       const background = new Graphics();
-      background.beginFill(0x0c0c0c);
-      background.drawRect(0, 0, app.screen.width, app.screen.height);
-      background.endFill();
+      background.fill(0x0c0c0c);
+      background.rect(0, 0, app.screen.width, app.screen.height);
+      background.fill();
       mainContainer.addChild(background);
 
-      // Calculate the vertical center of the screen
       const screenCenterY = app.screen.height / 2;
 
       const images = [
@@ -100,30 +92,27 @@ const Home: React.FC = () => {
         "/assets/landing/fastand.jpg",
       ];
 
-      const middleIndex = Math.floor(images.length / 2); // Middle image index
+      const middleIndex = Math.floor(images.length / 2);
 
       const loadTextures = async () => {
         const textures = await Promise.all(
           images.map((path) => Assets.load(path))
         );
 
-        // Array to keep track of all sprites for staggered animation
-        const sprites = textures.map((texture, index) => {
+        const sprites = textures.map((texture) => {
           const sprite = new Sprite(texture);
           sprite.anchor.set(0.5);
           sprite.x = app.screen.width / 2;
-          sprite.y = app.screen.height + sprite.height; // Start below the screen
+          sprite.y = app.screen.height + sprite.height;
           sprite.width = 650;
           sprite.height = 330;
           mainContainer.addChild(sprite);
           return sprite;
         });
 
-        // Ensure middle sprite's center is consistently compared
         const middleSprite = sprites[middleIndex];
         const exactStopPosition = screenCenterY;
 
-        // GSAP staggered drop-up animation
         const timeline = gsap.timeline({
           smoothChildTiming: true,
           defaults: {
@@ -133,7 +122,6 @@ const Home: React.FC = () => {
             transformPerspective: 1000,
           },
           onUpdate: () => {
-            // Check if the middle sprite's center reaches the exact screen center
             if (
               !animationStopped.current &&
               middleSprite.y <= exactStopPosition
@@ -142,10 +130,8 @@ const Home: React.FC = () => {
               gsap.killTweensOf("*");
               timeline.kill();
 
-              // Set the middle sprite to the exact stop position
               middleSprite.y = exactStopPosition;
 
-              // Adjust adjacent images to ensure consistent positioning
               const previousSprite = sprites[middleIndex - 1];
               const nextSprite = sprites[middleIndex + 1];
 
@@ -158,9 +144,7 @@ const Home: React.FC = () => {
                 nextSprite.y = exactStopPosition + middleSprite.height + 50;
               }
 
-              // Wait for 1 second before zooming in
               setTimeout(() => {
-                // Zoom in the middle sprite to full screen
                 gsap.to(middleSprite, {
                   duration: 0.8,
                   x: app.screen.width / 2,
@@ -169,32 +153,29 @@ const Home: React.FC = () => {
                   height: app.screen.height,
                   ease: "power2.inOut",
                   onComplete: () => {
-                    // Fade out the zoomed-in sprite
                     gsap.to(middleSprite, {
-                      duration: 2, // fade out duration
+                      duration: 2,
                       alpha: 0,
                       ease: "power2.inOut",
                       onComplete: () => {
-                        setAnimationFinished(true); // 애니메이션이 끝난 후 상태 업데이트
+                        setAnimationFinished(true);
                       },
                     });
                   },
                 });
 
-                // Fade out previous and next sprites during the zoom-in animation
                 gsap.to([previousSprite, nextSprite], {
                   duration: 0.8,
-                  alpha: 0, // Gradually fade out
+                  alpha: 0,
                   ease: "power2.inOut",
                 });
-              }, 500); // 1-second delay
+              }, 500);
             }
           },
         });
 
-        // Apply the animation with stagger for evenly spaced drops
         timeline.to(sprites, {
-          y: -sprites[0].height, // Move sprites up to top
+          y: -sprites[0].height,
           stagger: 0.15,
           onStart: () => {
             animationStopped.current = false;
@@ -215,9 +196,12 @@ const Home: React.FC = () => {
     };
   }, [showLanding]);
 
+  const handleCardClick = (videoUrl: string) => {
+    setBackgroundVideoUrl(videoUrl);
+  };
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* Pixi.js Container */}
       {showLanding && (
         <div
           ref={pixiContainerRef}
@@ -226,18 +210,35 @@ const Home: React.FC = () => {
               ? "opacity-0 transition-opacity duration-1000"
               : ""
           }`}
+          style={{ zIndex: -1 }} // z-index 추가 확인
         ></div>
       )}
 
-      {/* Home 요소들: 애니메이션이 끝나면 보이도록 설정 */}
       {animationFinished && (
-        <div className="min-h-screen flex flex-col">
-          <header className="sticky top-0 bg-black z-10">
+        <div className="min-h-screen flex flex-col relative z-20">
+          {/* z-index를 20으로 유지 */}
+          <header className="sticky top-0 bg-black z-30">
             <Navbar />
           </header>
           <main className="w-full h-screen">
-            <CircleCarousel />
+            {/* 투명도를 낮춰 비디오가 보이게 함 */}
+            <CircleCarousel onCardClick={handleCardClick} />
           </main>
+        </div>
+      )}
+
+      {backgroundVideoUrl && (
+        <div
+          className="absolute top-0 left-0 w-full h-full z-10" // z-index 수정
+          // style={{ pointerEvents: "none" }} // 투명도 및 배경 확인
+        >
+          <iframe
+            src={`https://www.youtube.com/embed/${backgroundVideoUrl}?autoplay=1&mute=1&loop=1&playlist=${backgroundVideoUrl}`}
+            title="YouTube video player"
+            className="w-full h-[1030px] overflow-hidden"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
         </div>
       )}
     </div>
