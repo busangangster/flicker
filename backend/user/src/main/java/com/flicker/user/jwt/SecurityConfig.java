@@ -3,6 +3,7 @@ package com.flicker.user.jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -42,6 +43,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable()) // HTTP Basic 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/**").permitAll() // 특정 경로는 인증 없이 접근 허용
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 모든 경로의 OPTIONS 요청 허용
                         .requestMatchers("/api/auth-test").hasRole("USER") // auth-test 경로는 인증 필요
                         .anyRequest().authenticated() // 나머지 경로는 인증 필요
                 )
