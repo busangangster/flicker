@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HTMLFlipBook from "react-pageflip";
-import "../../css/photobook.css";
+import "../../css/PhotoBook.css";
 
 // IFlipBook 인터페이스 정의
 interface IFlipBook {
