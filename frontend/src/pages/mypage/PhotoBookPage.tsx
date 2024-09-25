@@ -1,77 +1,68 @@
-// PhotoBookPage.tsx
 import React from "react";
-import FlipPage from "react-flip-page";
+import { useNavigate } from "react-router-dom";
+import photobook from "../../assets/photobook/photobook.png";
+import "../../css/photobook.css";
 
 const PhotoBookPage: React.FC = () => {
-  const images = [
-    { src: "/assets/survey/image1.jpg", alt: "Movie 1" },
-    { src: "/assets/survey/image2.jpg", alt: "Movie 2" },
-    { src: "/assets/survey/image3.jpg", alt: "Movie 3" },
-    { src: "/assets/survey/image10.jpg", alt: "Movie 4" },
-    { src: "/assets/survey/image5.jpg", alt: "Movie 5" },
-    { src: "/assets/survey/image6.jpg", alt: "Movie 6" },
-    { src: "/assets/survey/image7.jpg", alt: "Movie 7" },
-    { src: "/assets/survey/image8.jpg", alt: "Movie 8" },
-  ];
+  const navigate = useNavigate();
 
-  // 목업 데이터 설정
-  const pages = [
-    {
-      id: 1,
-      content: (
-        <div className="flex flex-col items-center justify-center w-full h-full bg-white">
-          <h1 className="text-5xl font-bold italic text-black mb-3">
+  const goToPhotoCard = () => {
+    // 사이드바를 먼저 점차적으로 사라지게 함
+    const sidebarElement = document.querySelector(".SideBar") as HTMLElement;
+    if (sidebarElement) {
+      sidebarElement.style.transition = "opacity 0.3s ease";
+      sidebarElement.style.opacity = "0";
+    }
+
+    // 이미지와 텍스트 모두에 애니메이션 적용
+    const photobookElement = document.querySelector(
+      ".photobook-img"
+    ) as HTMLElement;
+    const textElements = document.querySelectorAll(
+      ".photobook-text"
+    ) as NodeListOf<HTMLElement>; // 모든 텍스트 요소 선택
+    const coverImageElement = document.querySelector(
+      ".cover-image"
+    ) as HTMLElement;
+
+    if (photobookElement) {
+      photobookElement.classList.add("book-animation-out");
+    }
+    // 모든 .photobook-text 요소에 애니메이션 추가
+    textElements.forEach((textElement) => {
+      textElement.classList.add("text-animation-out");
+    });
+    if (coverImageElement) {
+      coverImageElement.classList.add("cover-animation-out");
+    }
+
+    setTimeout(() => {
+      navigate("/mypage/photocard");
+    }, 400);
+  };
+
+  return (
+    <div className="bg-black p-8 rounded-lg w-[1200px] relative">
+      {/* 클릭 가능한 전체 영역 */}
+      <div className="relative cursor-pointer" onClick={goToPhotoCard}>
+        {/* 이미지 */}
+        <img src={photobook} alt="photobook" className="photobook-img w-full" />
+        {/* 이미지 위의 텍스트 및 추가 요소 */}
+        <div className="absolute -top-10 left-10 w-full h-full flex flex-col items-center justify-center">
+          <h1 className="photobook-text text-5xl font-bold italic text-black mb-3">
             MOVIE MEMORIES
           </h1>
-          <hr className="border-t-2 border-neutral-500 my-1 w-2/3" />
-          <hr className="border-t-2 border-neutral-500 my-1 w-2/3" />
-          <p className="text-lg mt-2 text-gray-700 self-end mr-40">
+          <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
+          <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
+          <p className="photobook-text text-lg italic mt-2 text-black self-end mr-60">
             made by nickname
           </p>
           <img
             src="https://via.placeholder.com/600x400"
             alt="Cover Image"
-            className="mt-6"
+            className="cover-image mt-6"
           />
         </div>
-      ),
-    },
-    {
-      id: 2,
-      content: (
-        <div className="grid grid-cols-4 gap-4 p-4">
-          {/* 8개의 영화 포스터를 두 페이지에 배치 */}
-          {images.map((image, index) => (
-            <img
-              key={index} // 각 요소에 고유한 key를 부여
-              src={image.src}
-              alt={image.alt}
-              className="border rounded-md object-cover w-full h-[306px]" // 원하는 스타일 적용
-            />
-          ))}
-        </div>
-      ),
-    },
-  ];
-
-  return (
-    <div className="bg-black p-8 rounded-lg w-[1200px] relative">
-      <div className="fixed top-0 left-0 p-4"></div>
-
-      <div className="flex w-full h-full justify-center items-center mt-8">
-        <FlipPage
-          orientation="horizontal"
-          showSwipeHint
-          uncutPages
-          className="shadow-2xl !w-[1000px] !h-[700px]" // 높이를 조정한 클래스
-        >
-          {/* 페이지 내용 */}
-          {pages.map((page) => (
-            <article key={page.id} className="flip-page bg-white p-8">
-              {page.content}
-            </article>
-          ))}
-        </FlipPage>
       </div>
     </div>
   );
