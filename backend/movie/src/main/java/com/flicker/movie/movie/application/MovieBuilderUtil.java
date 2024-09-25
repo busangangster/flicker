@@ -87,8 +87,8 @@ public class MovieBuilderUtil {
     }
 
     // SearchResult 빌더 메서드
-    public static SearchResult buildSearchResult(String keyword, String mongoKey) {
-        return SearchResult.builder()
+    public static RedisSearchResult buildSearchResult(String keyword, String mongoKey) {
+        return RedisSearchResult.builder()
                 .keyword(keyword)
                 .mongoKey(mongoKey)
                 .expiration(86400L) // 24시간

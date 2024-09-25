@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @AllArgsConstructor
 @Builder
 @RedisHash("SearchResult")
-public class SearchResult {
+public class RedisSearchResult {
 
     @Id
     private String keyword; // 레디스 key 값
