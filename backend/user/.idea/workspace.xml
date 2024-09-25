@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45ebb6c9-6b89-4cf9-94eb-90099228a3af" name="Changes" comment="" />
+    <list default="true" id="45ebb6c9-6b89-4cf9-94eb-90099228a3af" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +23,12 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="user" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -70,7 +78,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.UserApplication.executor": "Run",
-    "git-widget-placeholder": "BE/feature/user",
+    "git-widget-placeholder": "BE/feature/bff-user",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/Desktop/특화프로젝트/S11P21E206/backend/user/build.gradle",
     "node.js.detected.package.eslint": "true",
@@ -135,6 +143,7 @@
       <workItem from="1727152677134" duration="1207000" />
       <workItem from="1727167260092" duration="43000" />
       <workItem from="1727167308380" duration="1055000" />
+      <workItem from="1727222650806" duration="422000" />
     </task>
     <servers />
   </component>
