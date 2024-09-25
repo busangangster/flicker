@@ -57,18 +57,22 @@ public class JWTUtil {
 
         System.out.println("dto 를 변환 = " + dto);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .claim("category", category)
                 .claim("username", dto.getUserId())
-                .claim("email",dto.getEmail())
+                .claim("email", dto.getEmail())
                 .claim("nickname", dto.getNickname())
                 .claim("birthDate", dto.getBirthDate().format(formatter))  // LocalDate -> String
-                .claim("gender",dto.getGender())
-                .claim("profilePhotoUrl",dto.getProfilePhotoUrl())
+                .claim("gender", dto.getGender())
+                .claim("profilePhotoUrl", dto.getProfilePhotoUrl())
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + exp))
                 .signWith(secretKey)
                 .compact();
+
+        System.out.println("JWT 토큰이 생성 됨 : " + token);
+
+        return token;
     }
 }
