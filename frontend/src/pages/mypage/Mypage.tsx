@@ -7,6 +7,7 @@ const MyPage: React.FC = () => {
   const location = useLocation();
   const sidebarRef = useRef<HTMLDivElement>(null); // 사이드바에 대한 ref 설정
   const isPhotoCardPage = location.pathname === "/mypage/photocard";
+  const isPhotoCardDetailPage = location.pathname === "/mypage/photocarddetail";
 
 
   return (
@@ -16,7 +17,7 @@ const MyPage: React.FC = () => {
       </header>
 
       <div className="flex h-screen bg-black text-white">
-        {!isPhotoCardPage && (
+        {!isPhotoCardPage && !isPhotoCardDetailPage && (
           <div
             ref={sidebarRef}
             className="SideBar transition-opacity duration-500 opacity-100"
