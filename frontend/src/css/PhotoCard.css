@@ -4,13 +4,13 @@
     opacity: 0;
   }
   100% {
-    transform: translateZ(0) rotateY(720deg) scale(1); /* 4바퀴 회전 */
+    transform: translateZ(0) rotateY(360deg) scale(1); /* 4바퀴 회전 */
     opacity: 0.95;
   }
 }
 
 .photo-card-animation {
-  animation: photoCardZoomIn 1.5s ease-out forwards;
+  animation: photoCardZoomIn 0.7s ease-out forwards;
 }
 
 /* 초기 상태 - 카드 뒷면 */

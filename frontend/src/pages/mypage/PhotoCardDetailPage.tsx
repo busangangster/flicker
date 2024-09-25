@@ -57,7 +57,7 @@ const PhotoCardDetailPage: React.FC = () => {
       >
         <div className={`photo-card ${isFlipped ? "flipped" : ""}`}>
           {/* 앞면 */}
-          <div className="photo-card-front bg-white p-4 shadow-xl rounded-lg">
+          <div className="photo-card-front bg-white p-4 opacity-95 shadow-xl rounded-lg">
             <img
               src="/assets/survey/image9.jpg"
               alt="Front"
@@ -70,7 +70,7 @@ const PhotoCardDetailPage: React.FC = () => {
           </div>
 
           {/* 뒷면 */}
-          <div className="photo-card-back bg-white p-10 shadow-xl rounded-lg">
+          <div className="photo-card-back bg-white p-10 opacity-95 shadow-xl rounded-lg">
             {/* 닫기 버튼 */}
             <img
               src={closeIcon}

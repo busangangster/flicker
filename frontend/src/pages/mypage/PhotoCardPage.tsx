@@ -207,7 +207,7 @@ const PhotoCardPage: React.FC = () => {
           maxHeight={1380}
           showCover={true}
           mobileScrollSupport={true}
-          className="shadow-2xl book-animation-in"
+          className="book-animation-in"
           ref={book}
           drawShadow={true}
           flippingTime={700}
