@@ -5,15 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e4ec9e7-efe3-4f85-8ee2-f97795cbf6b9" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/ActorDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/BoardingPageDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/MovieDetailDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/MovieDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/RecommendMovie.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/ReviewDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/presentation/BffClientController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/BoardingPageDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/BoardingPageDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/RecommendMovie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/dto/client/RecommendMovieDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/flicker/bff/presentation/BffClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/flicker/bff/presentation/BffClientController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../user/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../user/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,12 +26,7 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bff" type="f1a62948:ProjectNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -77,26 +68,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.bff 빌드.executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.BffApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;BE/feature/bff-user&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/Desktop/특화프로젝트/S11P21E206/backend/bff/build.gradle&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build bff.executor": "Run",
+    "Gradle.bff 빌드.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.BffApplication.executor": "Run",
+    "git-widget-placeholder": "BE/feature/bff-user",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/특화프로젝트/S11P21E206/backend/bff/build.gradle",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="BffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
@@ -126,6 +118,7 @@
       <workItem from="1727149207363" duration="2755000" />
       <workItem from="1727162619292" duration="301000" />
       <workItem from="1727162979287" duration="4007000" />
+      <workItem from="1727223147591" duration="846000" />
     </task>
     <servers />
   </component>

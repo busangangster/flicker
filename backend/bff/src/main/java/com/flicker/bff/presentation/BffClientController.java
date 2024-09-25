@@ -66,8 +66,38 @@ public class BffClientController {
 
         List<ReviewDto> reviewList = new ArrayList<>();
         ReviewDto reviewDto = new ReviewDto();
-        reviewDto.nickname;
+        reviewDto.nickname = "busangangstar";
+        reviewDto.reviewRating = 5.0;
+        reviewDto.content = "탑건1(1986년)의 36년만의 나온 속편. \n" +
+                "매우 만족 스러웠고 매우 재밌었다 무조건 특별관에서 봐야되는 영화 2022년 개봉작 영화중에서 범죄도시2 이후 2번째로 \n" +
+                "엄청 좋았던 영화 톰 크루즈 미모는 여전히 잘생겼다 1편을 보고 가야되는 질문에서 답을 하자면 \n" +
+                "1편 보고 가는게 더 좋다 감동도 2배 더 느낄 수 있음";
+        reviewDto.isSpoiler = false;
+        reviewDto.likeCount = 12333;
+        reviewDto.likedReview = true;
+        reviewList.add(reviewDto);
 
+        reviewDto = new ReviewDto();
+        reviewDto.nickname = "jaechan";
+        reviewDto.reviewRating = 4.5;
+        reviewDto.content = "감동을 2배 더 느낄 수 있음";
+        reviewDto.isSpoiler = true;
+        reviewDto.likeCount = 345;
+        reviewDto.likedReview = false;
+        reviewList.add(reviewDto);
+        
+        boardingPageDto.setReviewList(reviewList);
 
+        List<RecommendMovieDto> recommendMovieDtos = new ArrayList<>();
+        for(int i=0;i<10;i++){
+            RecommendMovieDto recommendMovieDto = new RecommendMovieDto();
+            recommendMovieDto.movieSeq = 1L;
+            recommendMovieDto.moviePosterUrl= "https://an2-img.amz.wtchn.net/image/v2/xm228ExDiQWQClodDONRBA.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKdmNIUnpJanBiSW1SZk5Ea3dlRGN3TUhFNE1DSmRMQ0p3SWpvaUwzWXlMM04wYjNKbEwybHRZV2RsTHpFMk16RTROVFk0T0RFNU5qRXpOREU1TWpJaWZRLnZkUmY4dUh1ZE9Ra2FEY0N0M3hIUWRDQlBvVzU4aEhNOXRxN3Z5ZnhERkU";
+            recommendMovieDtos.add(recommendMovieDto);
+        }
+
+        boardingPageDto.recommendedMovieList = recommendMovieDtos;
+
+        return ResponseDto.response(StatusCode.SUCCESS, boardingPageDto);
     }
 }

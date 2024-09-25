@@ -9,6 +9,5 @@ public class BoardingPageDto {
     public boolean isLikeMovie;
     public MovieDto movie;
     public List<ReviewDto> reviewList;
-    public List<RecommendMovie> recommendedMovieList;
-
+    public List<RecommendMovieDto> recommendedMovieList;
 }
