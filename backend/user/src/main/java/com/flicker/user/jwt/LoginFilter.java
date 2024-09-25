@@ -91,9 +91,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
             response.addHeader("Authorization", "Bearer " + access);
             response.addCookie(createCookie("refresh", refresh));
+
+            // 응답 본문에 간단하게 "OK" 메시지 전송
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("OK");
         }
         else{
-            // TODO 예외 처리
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Authentication failed.");
         }
     }
 
