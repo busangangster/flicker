@@ -135,4 +135,11 @@ public class MovieController {
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
+    // Top10 영화 목록 조회
+    @GetMapping("/list/top10")
+    public ResponseEntity<ResponseDto> getTopMovieList() {
+        List<MovieListResponse> response = movieService.getTopMovieList();
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
 }

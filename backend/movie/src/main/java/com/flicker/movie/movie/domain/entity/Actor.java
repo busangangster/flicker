@@ -4,6 +4,7 @@ import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자를 protected로 제한하여 외부에서 직접 호출하지 못하게 함
@@ -29,14 +30,25 @@ public class Actor {
 
     // 양방향 관계 설정을 위한 메서드
     protected void setMovie(Movie movie) {
-        this.movie = movie; // 영화와 배우 간의 양방향 관계 설정
+        try {
+            this.movie = movie; // 영화와 배우 간의 양방향 관계 설정
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화와 배우 간의 관계 설정 중 오류가 발생했습니다.");
+        }
     }
 
     // 배우 정보 변경 메서드 (비즈니스 로직)
+    @Transactional
     public void updateActor(String newActorName, String newRole) {
-        validate(newActorName, newRole); // 유효성 검증
-        this.role = newRole; // 배우의 역할을 업데이트
-        this.actorName = newActorName; // 배우 이름을 업데이트
+        try {
+            // 유효성 검증
+            validate(newActorName, newRole);
+            // 배우 역할 및 이름 업데이트
+            this.role = newRole;
+            this.actorName = newActorName;
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "배우 정보 업데이트 중 오류가 발생했습니다.");
+        }
     }
 
     // 빌더 내부에서 유효성 검증

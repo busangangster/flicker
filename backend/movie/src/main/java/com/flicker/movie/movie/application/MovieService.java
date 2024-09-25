@@ -2,22 +2,22 @@ package com.flicker.movie.movie.application;
 
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
-import com.flicker.movie.movie.domain.entity.Actor;
-import com.flicker.movie.movie.domain.entity.MongoUserAction;
-import com.flicker.movie.movie.domain.entity.Movie;
-import com.flicker.movie.movie.domain.entity.RedisSearchResult;
+import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
 import com.flicker.movie.movie.domain.vo.MovieDetail;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
  * MovieService 클래스는 영화 정보를 생성, 수정, 삭제하는 비즈니스 로직을 담당한다.
@@ -33,8 +33,11 @@ import java.util.List;
  * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
  * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
  * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
- * maintainMaxUserActions() 메서드는 사용자 행동 로그 최대 10개 유지한다.
+ * getTopMovieList() 메서드는 Top10 영화 리스트를 조회한다.
  * initSearchResultForRedisAndMongoDB() 메서드는 redis, mongoDB (키워드 검색결과)를 초기화한다.
+ * findTopKeywords() 메서드는 상위 10개 키워드를 추출한다.
+ * findMovieSeqsByKeywords() 메서드는 영화 제목 목록의 영화 번호를 추출한다.
+ * saveTopMovieForRedis() 메서드는 Redis에 영화 번호 목록을 저장한다.
  */
 @RequiredArgsConstructor
 @Service
@@ -88,11 +91,13 @@ public class MovieService {
     public void deleteMovie(int movieSeq) {
         // 1. 영화 정보 조회
         Movie movie = movieRepoUtil.findById(movieSeq);
-        // 2. 영화 삭제
-        movie.deleteMovie();
-        // 3. redis , mongoDB (키워드 검색결과 ) 초기화
+        // 2. Top10 영화 리스트 조회
+        RedisTopMovie redisTopMovie = movieRepoUtil.findTopMovieListForRedis();
+        // 3. 영화 삭제
+        movie.deleteMovie(redisTopMovie);
+        // 4. redis , mongoDB (키워드 검색결과 ) 초기화
         initSearchResultForRedisAndMongoDB();
-        // 4. Kafka 이벤트 발행
+        // 5. Kafka 이벤트 발행
         MovieInfoEvent movieInfoEvent = movieBuilderUtil.buildMovieInfoEvent(movieSeq, "MOVIE", "Delete", LocalDateTime.now());
         customProducer.send(movieInfoEvent, "movieInfo");
     }
@@ -103,7 +108,7 @@ public class MovieService {
         Pageable pageable = PageRequest.of(page, size);
         // 2. 영화 리스트 조회
         List<Movie> movieList = movieRepoUtil.findAll(pageable);
-        // 3. MovieDetailResponse 리스트 생성
+        // 3. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
@@ -115,7 +120,7 @@ public class MovieService {
         Pageable pageable = PageRequest.of(page, size);
         // 2. 장르별 영화 리스트 조회
         List<Movie> movieList = movieRepoUtil.findByGenre(genre, pageable);
-        // 3. MovieDetailResponse 리스트 생성
+        // 3. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
@@ -127,7 +132,7 @@ public class MovieService {
         Pageable pageable = PageRequest.of(page, size);
         // 2. 배우별 영화 리스트 조회
         List<Movie> movieList = movieRepoUtil.findByActor(actorName, pageable);
-        // 3. MovieDetailResponse 리스트 생성
+        // 3. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
@@ -136,16 +141,16 @@ public class MovieService {
     // TODO: ElasticSearch 활용 ( 검색 속도 개선 필요 )
     @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq, int page, int size) {
-        // 1. 사용자 행동 로그 최대 10개 유지
-        maintainMaxUserActions(userSeq);
-        // 2. MongoUserAction 객체 생성
+        // 1. MongoUserAction 객체 생성
         MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, keyword, "SEARCH", LocalDateTime.now());
-        // 3. MongoDB에 행동 로그 저장
+        // 2. MongoDB에 행동 로그 저장
         movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
-        // 4. redis 키워드 조회 후 결과 반환
+        // 3. redis 키워드 조회 후 결과 반환
         String redisKey = keyword + "/" + page + "/" + size;
         List<MongoMovie> mongoMovieList = movieRepoUtil.findByKeywordForRedis(redisKey);
         if (mongoMovieList != null) {
+            // redis에 저장된 키워드가 있을 경우
+            // 4. MovieListResponse 리스트 생성
             List<MovieListResponse> responses = new ArrayList<>();
             for (MongoMovie mongoMovie : mongoMovieList) {
                 responses.add(new MovieListResponse(mongoMovie));
@@ -153,15 +158,15 @@ public class MovieService {
             return responses;
         }
         // redis에 저장된 키워드가 없을 경우
-        // 5. 키워드를 포함하는 영화 리스트 조회
+        // 4. 키워드를 포함하는 영화 리스트 조회
         Pageable pageable = PageRequest.of(page, size);
         List<Movie> movieList = movieRepoUtil.findByKeyword(keyword, pageable);
-        // 6. DB에서 가져온 결과 MongoDB에 저장 후 키 반환
+        // 5. DB에서 가져온 결과 MongoDB에 저장 후 키 반환
         String mongoKey = movieRepoUtil.saveSearchListForMongoDB(movieList);
-        // 7. Redis에 SearchResult 저장
+        // 6. Redis에 SearchResult 저장
         RedisSearchResult redisSearchResult = MovieBuilderUtil.buildSearchResult(redisKey, mongoKey);
         movieRepoUtil.saveSearchResultForRedis(redisSearchResult);
-        // 8. MovieDetailResponse 리스트 생성
+        // 7. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
@@ -171,13 +176,11 @@ public class MovieService {
     public MovieDetailResponse getMovieDetail(int movieSeq, int userSeq) {
         // 1. 영화 정보 조회
         Movie movie = movieRepoUtil.findById(movieSeq);
-        // 2. 사용자 행동 로그 최대 10개 유지
-        maintainMaxUserActions(userSeq);
-        // 3. MovieEvent 객체 생성
+        // 2. MovieEvent 객체 생성
         MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, movie.getMovieDetail().getMovieTitle(), "DETAIL", LocalDateTime.now());
-        // 4. MongoDB에 행동 로그 저장
+        // 3. MongoDB에 행동 로그 저장
         movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
-        // 5. MovieDetailResponse 생성
+        // 4. MovieDetailResponse 생성
         return new MovieDetailResponse(movie, movie.getMovieDetail(), movie.getActors(), movie.getWordClouds());
     }
 
@@ -185,7 +188,7 @@ public class MovieService {
     public List<MovieListResponse> getRecommendationList(List<Integer> movieSeqList) {
         // 1. 추천된 영화 리스트 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqList);
-        // 2. MovieDetailResponse 리스트 생성
+        // 2. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
@@ -205,21 +208,56 @@ public class MovieService {
                 .toList();
     }
 
-
-    // 사용자 행동 로그 최대 10개 유지하기 위한 메서드
-    private void maintainMaxUserActions(int userSeq) {
-        // 1. MongoDB에서 해당 유저의 행동 로그 조회 (오래된 로그 먼저)
-        List<MongoUserAction> userActions = movieRepoUtil.findUserActionAllForMongoDB(userSeq);
-        // 2. 행동 로그가 10개 이상이면 가장 오래된 로그 삭제 (FIFO)
-        if (userActions.size() >= 10) {
-            MongoUserAction oldestAction = userActions.get(0);  // 가장 오래된 로그
-            movieRepoUtil.deleteUserActionForMongoDB(oldestAction.getId());  // 가장 오래된 로그 삭제
-        }
+    @Transactional
+    public List<MovieListResponse> getTopMovieList() {
+        // 1. Redis에서 TopMovieList 조회
+        RedisTopMovie redisTopMovie = movieRepoUtil.findTopMovieListForRedis();
+        // 2. 영화 번호 목록 추출
+        List<Integer> movieSeqs = redisTopMovie.getMovieSeqs();
+        // 3. TopMovieList 조회
+        List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
+        // 4. MovieListResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
     }
+
+
 
     // redis , mongoDB (키워드 검색결과 ) 초기화
     private void initSearchResultForRedisAndMongoDB() {
         movieRepoUtil.deleteAllSearchResultForRedis();
         movieRepoUtil.deleteAllSearchResultForMongoDB();
+    }
+    
+    // Top10 키워드 추출
+    public List<String> findTopKeywords(List<MongoUserAction> userActions) {
+        // 키워드의 빈도를 계산하고 상위 10개를 추출
+        return userActions.stream()
+                .collect(Collectors.groupingBy(MongoUserAction::getKeyword, Collectors.counting())) // 키워드 빈도수 계산
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 빈도수 내림차순 정렬
+                .limit(10) // 상위 10개 추출
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+    
+    // 영화 제목 목록의 영화 번호 추출
+    public List<Integer> findMovieSeqsByKeywords(List<String> movieTitles) {
+        List<Integer> movieSeqs = new ArrayList<>();
+        for(String movieTitle : movieTitles) {
+            // 영화 제목으로 영화 번호 조회
+            Movie movie = movieRepoUtil.findByMovieTitle(movieTitle);
+            // 영화 번호 목록에 추가
+            movieSeqs.add(movie.getMovieSeq());
+        }
+        return movieSeqs;
+    }
+
+    // Redis에 영화 번호 목록을 저장
+    public void saveTopMovieForRedis(List<Integer> movieSeqs) {
+        // Redis에 영화 번호 목록을 저장 (키는 예를 들어 "TopMovieList")
+        RedisTopMovie redisTopMovie = movieBuilderUtil.redisTopMovieBuilder("TopMovieList", movieSeqs);
+        movieRepoUtil.saveTopMovieForRedis(redisTopMovie);
     }
 }

@@ -91,7 +91,7 @@ public class MovieBuilderUtil {
         return RedisSearchResult.builder()
                 .keyword(keyword)
                 .mongoKey(mongoKey)
-                .expiration(86400L) // 24시간
+                .expiration(1296000L) // 15일 ( 15 * 24 * 60 * 60 )
                 .build();
     }
 
@@ -115,6 +115,14 @@ public class MovieBuilderUtil {
                 .type(type)
                 .action(action)
                 .timestamp(timestamp)
+                .build();
+    }
+
+    public RedisTopMovie redisTopMovieBuilder(String topMovieList, List<Integer> movieSeqs) {
+        return RedisTopMovie.builder()
+                .id(topMovieList)
+                .movieSeqs(movieSeqs)
+                .expiration(86400L) // 24시간 ( 24 * 60 * 60 )
                 .build();
     }
 }
