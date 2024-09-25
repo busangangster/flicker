@@ -1,16 +1,17 @@
 package com.flicker.logger.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/*
+* 스케쥴러 수동 실행을 위한 스케쥴러 (ADMIN)
+* */
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
@@ -19,30 +20,6 @@ public class MainController {
     private final JobLauncher jobLauncher;
     private final JobRegistry jobRegistry;
 
-    @GetMapping("/first")
-    public String firstApi(@RequestParam("value") String value) throws Exception {
-
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addString("date", value)
-                .toJobParameters();
-
-        jobLauncher.run(jobRegistry.getJob("first"), jobParameters);
-
-        return "ok";
-    }
-
-    @GetMapping("/third")
-    public String thirdApi(@RequestParam("value") String value) throws Exception {
-
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addString("data", value)
-                .toJobParameters();
-
-        jobLauncher.run(jobRegistry.getJob("thirdJob"), jobParameters);
-
-        return "ok";
-    }
-
     @GetMapping("/rating")
     public String startBatchJob() throws Exception {
 
@@ -50,7 +27,7 @@ public class MainController {
                 .addLong("startAt", System.currentTimeMillis())
                 .toJobParameters();
 
-        jobLauncher.run(jobRegistry.getJob("calculateAverageRatingJob"), jobParameters);
+        jobLauncher.run(jobRegistry.getJob("AverageRatingCalcJob"), jobParameters);
 
         return "ok";
     }
