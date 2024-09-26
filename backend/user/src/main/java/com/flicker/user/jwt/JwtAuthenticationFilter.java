@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(token)) {
                 System.out.println("토큰 인증 성공");
-                String username = jwtUtil.getUsername(token);
+                String username = jwtUtil.getUserId(token);
 
 
 //                System.out.println("username = " + username);
@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                    System.out.println("Authentication object set in SecurityContext for user: " + username);
+//                    System.out.println("Authentication object set in SecurityContext for user: " + username);
                 }
             } else {
                 System.out.println("토큰 인증 실패");
