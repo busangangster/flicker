@@ -14,12 +14,13 @@ import java.util.Objects;
 @Getter
 public class FavoriteMovie {
 
-    @Id
-    private Long favoriteMovieSeq;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer favoriteMovieSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_seq")
     private User user;
-    private Long movieSeq;
+    private Integer movieSeq;
     private LocalDateTime createdAt;
     private Integer isActive;
 
@@ -29,8 +30,8 @@ public class FavoriteMovie {
 
     protected FavoriteMovie() {}
 
-    public FavoriteMovie(Long favoriteMovieSeq) {
-        this.favoriteMovieSeq = favoriteMovieSeq;
+    public FavoriteMovie(Integer movieSeq) {
+        this.movieSeq = movieSeq;
         this.createdAt = LocalDateTime.now();
         this.isActive = 1;
     }

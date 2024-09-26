@@ -12,12 +12,13 @@ import java.time.LocalDateTime;
 @Getter
 public class UnlikeMovie {
 
-    @Id
-    private Long unlikeMovieSeq;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer unlikeMovieSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_seq")
     private User user;
-    private Long movieSeq;
+    private Integer movieSeq;
     private LocalDateTime createdAt;
     private Integer isActive;
 
@@ -31,8 +32,8 @@ public class UnlikeMovie {
 
     protected UnlikeMovie() {}
 
-    public UnlikeMovie(Long unlikeMovieSeq){
-        this.unlikeMovieSeq = unlikeMovieSeq;
+    public UnlikeMovie(Integer movieSeq){
+        this.movieSeq = movieSeq;
         this.isActive = 1;
         this.createdAt = LocalDateTime.now();
     }

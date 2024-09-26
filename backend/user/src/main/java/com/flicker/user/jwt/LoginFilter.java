@@ -34,7 +34,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
 
-        System.out.println("로그인 시도");
+//        System.out.println("로그인 시도");
 
 
         UserLoginReqDto loginDto = new UserLoginReqDto();
@@ -59,7 +59,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
 
-        System.out.println("로그인 성공 후 토큰 발급 과정");
+        System.out.println("로그인 성공");
 
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -85,8 +85,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String refresh = jwtUtil.createToken("refresh", dto, role, 86400000L);
 
             // TODO : Refresh Token 저장 로직 구현
-            System.out.println("액세스 토큰 발급 : "+ access);
-            System.out.println("리프레시 토큰 발급 :"+refresh);
+//            System.out.println("액세스 토큰 발급 : "+ access);
+//            System.out.println("리프레시 토큰 발급 :"+refresh);
 
             response.addHeader("Authorization", "Bearer " + access);
             response.addCookie(createCookie("refresh", refresh));

@@ -26,7 +26,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSeq;
+    private Integer userSeq;
 
     @Embedded
     private UserInfo userInfo;
@@ -40,11 +40,11 @@ public class User {
     private String profilePhotoUrl;
 
     // 선호 영화 관련
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteMovie> favoriteMovies;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookmarkMovie> bookmarkMovies;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UnlikeMovie> unlikeMovies;
 
     private LocalDateTime createdAt;
@@ -53,15 +53,15 @@ public class User {
 
     // 리뷰 관련
 
-    public boolean deleteBookmarkMovie(Long movieSeq){
+    public boolean deleteBookmarkMovie(Integer movieSeq){
         return this.bookmarkMovies.removeIf(bookmarkMovie -> bookmarkMovie.getMovieSeq().equals(movieSeq));
     }
 
-    public boolean deleteUnlikeMovie(Long movieSeq){
+    public boolean deleteUnlikeMovie(Integer movieSeq){
         return this.unlikeMovies.removeIf(unlikeMovie -> unlikeMovie.getMovieSeq().equals(movieSeq));
     }
 
-    public boolean addBookmarkMovie(Long movieSeq){
+    public boolean addBookmarkMovie(Integer movieSeq){
 
         for(BookmarkMovie bookmarkMovie : this.bookmarkMovies){
             if(bookmarkMovie.getMovieSeq().equals(movieSeq)){
@@ -75,7 +75,7 @@ public class User {
         return true;
     }
 
-    public boolean addUnlikeMovie(Long movieSeq){
+    public boolean addUnlikeMovie(Integer movieSeq){
 
         for(UnlikeMovie unlikeMovie : this.unlikeMovies){
             if(unlikeMovie.getMovieSeq().equals(movieSeq)){
@@ -91,7 +91,7 @@ public class User {
     }
 
     public void addFavoriteMovie(MovieSeqListDto dto){
-        for(Long movieSeq : dto.getMovieSeqList()){
+        for(Integer movieSeq : dto.getMovieSeqList()){
 
             boolean isDuplicate = false;
             for(FavoriteMovie favoriteMovie : favoriteMovies){
@@ -101,6 +101,7 @@ public class User {
                 }
             }
             if(!isDuplicate){
+                System.out.println("저장 완료");
                 FavoriteMovie favoriteMovie = new FavoriteMovie(movieSeq);
                 favoriteMovie.updateUser(this);
                 this.favoriteMovies.add(favoriteMovie);

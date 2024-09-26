@@ -37,15 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveToken(request);
 
         if (token != null) {
-            System.out.println("Token extracted: " + token);
+//            System.out.println("Token extracted: " + token);
 
             if (jwtUtil.validateToken(token)) {
-                System.out.println("Token is valid");
-                String username = jwtUtil.getUsername(token);
+                System.out.println("토큰 인증 성공");
+                String username = jwtUtil.getUserId(token);
 
 
-                System.out.println("username = " + username);
-                System.out.println("SecurityContextHolder.getContext().getAuthentication() = " + SecurityContextHolder.getContext().getAuthentication());
+//                System.out.println("username = " + username);
+//                System.out.println("SecurityContextHolder.getContext().getAuthentication() = " + SecurityContextHolder.getContext().getAuthentication());
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -61,28 +61,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                    System.out.println("Authentication object set in SecurityContext for user: " + username);
+//                    System.out.println("Authentication object set in SecurityContext for user: " + username);
                 }
             } else {
-                System.out.println("Invalid token");
+                System.out.println("토큰 인증 실패");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 유효하지 않은 토큰에 대해 401 응답
                 return; // 필터 체인 중단
             }
         } else {
-            System.out.println("No token provided in the request");
+            System.out.println("토큰이 없음");
         }
 
-        System.out.println("Proceeding with filter chain...");
+//        System.out.println("Proceeding with filter chain...");
         filterChain.doFilter(request, response);
     }
 
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null) {
-            System.out.println("Authorization Header: " + bearerToken);
-        } else {
-            System.out.println("Authorization Header is missing");
-        }
+//        if (bearerToken != null) {
+//            System.out.println("Authorization Header: " + bearerToken);
+//        } else {
+//            System.out.println("Authorization Header is missing");
+//        }
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7); // "Bearer " 이후의 토큰 반환
         }

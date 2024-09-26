@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 public class UserAndMovieIdDto {
-    private Long movieSeq;
-    private Long userSeq;
+    private Integer movieSeq;
+    private Integer userSeq;
 
     public UserAndMovieIdDto() {
     }
 
-    public UserAndMovieIdDto(Long movieSeq, Long userSeq) {
+    public UserAndMovieIdDto(Integer movieSeq, Integer userSeq) {
         this.movieSeq = movieSeq;
         this.userSeq = userSeq;
     }
