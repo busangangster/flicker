@@ -12,13 +12,11 @@ import com.flicker.movie.movie.dto.KeywordCount;
 import com.flicker.movie.movie.dto.MovieRatingEvent;
 import com.flicker.movie.movie.dto.WordCloudEvent;
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -49,8 +47,6 @@ public class CustomConsumer {
 
     private final KafkaConfig config;
     private final MovieBuilderUtil movieBuilderUtil;
-    @Getter
-    @Setter
     private KafkaConsumer<String, String> consumer = null;
     private final ObjectMapper objectMapper;
     private final MovieRepoUtil movieRepoUtil;
@@ -59,7 +55,7 @@ public class CustomConsumer {
     @PostConstruct
     public void build() {
         Properties properties = new Properties();
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getBootstrapServers());
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getBootstrapServers());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, config.getConsumer().getGroupId());
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, config.getConsumer().getKeyDeserializer());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, config.getConsumer().getValueDeserializer());
@@ -92,7 +88,9 @@ public class CustomConsumer {
             movie.updateMovieRating(movieRating);
             // 5. 오프셋 커밋
             consumer.commitSync();
+            log.info("Kafka 메시지 처리 완료 - 영화 ID: {}, 평점: {}, 토픽: {}", movieSeq, movieRating, topic);
         } catch (Exception e) {
+            log.error("Kafka 이벤트 수신 중 오류 발생 - 토픽: {}, 에러: {}", topic, e.getMessage());
             throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");
         }
     }
@@ -121,7 +119,9 @@ public class CustomConsumer {
             movie.addWordClouds(wordClouds);
             // 6. 오프셋 커밋
             consumer.commitSync();
+            log.info("Kafka 메시지 처리 완료 - 영화 ID: {}, 토픽: {}", movieSeq, topic);
         } catch (Exception e) {
+            log.error("Kafka 이벤트 수신 중 오류 발생 - 토픽: {}, 에러: {}", topic, e.getMessage());
             throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");
         }
     }
@@ -156,8 +156,18 @@ public class CustomConsumer {
             }
             // 3. 오프셋 커밋
             consumer.commitSync();
+            log.info("Kafka 메시지 처리 완료 - 토픽: {}", topic);
         } catch (Exception e) {
+            log.error("Kafka 이벤트 수신 중 오류 발생 - 토픽: {}, 에러: {}", topic, e.getMessage());
             throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");
+        }
+    }
+
+    // 컨슈머 종료
+    @PreDestroy
+    public void closeConsumer() {
+        if (consumer != null) {
+            consumer.close();
         }
     }
 }

@@ -77,6 +77,7 @@ public class CustomProducer {
         }
     }
 
+    // KafkaProducer 객체 종료
     @PreDestroy
     public void closeProducer() {
         if (producer != null) {
