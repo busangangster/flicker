@@ -29,6 +29,8 @@ public enum StatusCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버에서 처리 중 에러가 발생했습니다."),
     SERVICE_STOP(HttpStatus.INTERNAL_SERVER_ERROR, 501, "현재 서버가 이용 불가능 상태입니다."),
     KAFKA_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 502, "카프카 서버 에러입니다."),
+    UNKNOW_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 503, "알 수 없는 에러가 발생했습니다."),
+    NOT_CUSTOM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 504, "커스텀 되지 않은 에러가 발생했습니다."),
 
     NO_CONTENT(HttpStatus.NO_CONTENT, 204, "요청한 정보가 없습니다.");
 
@@ -44,6 +46,6 @@ public enum StatusCode {
                 return statusCode;
             }
         }
-        return INTERNAL_SERVER_ERROR;
+        return StatusCode.NOT_CUSTOM_ERROR;
     }
 }
