@@ -47,7 +47,7 @@ public class Util {
                         try {
                             // 응답을 ResponseDto로 변환
                             ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
-                            return Mono.just(ResponseEntity.ok(responseDto));
+                            return Mono.just(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData()));
                         } catch (JsonProcessingException e) {
                             // 예외 발생 시 에러 메시지 출력 및 에러 처리
                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
@@ -57,11 +57,11 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 알 수 없는 오류 발생: " + e.getMessage()));
+                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
         } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient GET 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ public class Util {
                         try {
                             // 받은 응답을 ResponseDto로 변환
                             ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
-                            return Mono.just(ResponseEntity.ok(responseDto));
+                            return Mono.just(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData()));
                         } catch (JsonProcessingException e) {
                             // JSON 변환 중 오류 발생 시 예외 처리
                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
@@ -90,11 +90,11 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage()));
+                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
         } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
 
@@ -112,7 +112,7 @@ public class Util {
                         try {
                             // 받은 응답을 ResponseDto로 변환
                             ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
-                            return Mono.just(ResponseEntity.ok(responseDto));
+                            return Mono.just(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData()));
                         } catch (JsonProcessingException e) {
                             // JSON 변환 중 오류 발생 시 예외 처리
                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
@@ -123,11 +123,11 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient PUT 요청 중 알 수 없는 오류 발생: " + e.getMessage()));
+                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient PUT 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
         } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient PUT 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient PUT 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class Util {
                         try {
                             // 받은 응답을 ResponseDto로 변환
                             ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
-                            return Mono.just(ResponseEntity.ok(responseDto));
+                            return Mono.just(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData()));
                         } catch (JsonProcessingException e) {
                             // JSON 변환 중 오류 발생 시 예외 처리
                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
@@ -155,11 +155,11 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient DELETE 요청 중 알 수 없는 오류 발생: " + e.getMessage()));
+                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient DELETE 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
         } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient DELETE 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient DELETE 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
 

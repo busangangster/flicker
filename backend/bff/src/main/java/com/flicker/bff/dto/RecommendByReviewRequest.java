@@ -13,7 +13,8 @@ public class RecommendByReviewRequest {
 
     private List<RecommendSentimentReviewResponse> OtherSentimentList;
 
-    public RecommendByReviewRequest(List<RecommendReviewResponse> ownSentimentList, List<RecommendSentimentReviewResponse> OtherSentimentList) {
+    public RecommendByReviewRequest(int userSeq, List<RecommendReviewResponse> ownSentimentList, List<RecommendSentimentReviewResponse> OtherSentimentList) {
+        this.ownUserSeq = userSeq;
         this.ownSentimentList = ownSentimentList;
         this.OtherSentimentList = OtherSentimentList;
     }
