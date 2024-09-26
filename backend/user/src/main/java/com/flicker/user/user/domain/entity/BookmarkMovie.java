@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 public class BookmarkMovie {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookmarkMovieSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,8 +31,8 @@ public class BookmarkMovie {
 
     protected BookmarkMovie() {}
 
-    public BookmarkMovie(Long bookmarkMovieSeq) {
-        this.bookmarkMovieSeq = bookmarkMovieSeq;
+    public BookmarkMovie(Long movieSeq) {
+        this.movieSeq = movieSeq;
         this.isActive = 1;
         this.createdAt = LocalDateTime.now();
     }

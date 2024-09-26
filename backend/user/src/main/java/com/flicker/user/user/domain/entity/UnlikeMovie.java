@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 public class UnlikeMovie {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long unlikeMovieSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,8 +31,8 @@ public class UnlikeMovie {
 
     protected UnlikeMovie() {}
 
-    public UnlikeMovie(Long unlikeMovieSeq){
-        this.unlikeMovieSeq = unlikeMovieSeq;
+    public UnlikeMovie(Long movieSeq){
+        this.movieSeq = movieSeq;
         this.isActive = 1;
         this.createdAt = LocalDateTime.now();
     }

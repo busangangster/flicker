@@ -14,7 +14,7 @@ import java.util.Objects;
 @Getter
 public class FavoriteMovie {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long favoriteMovieSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,8 +29,8 @@ public class FavoriteMovie {
 
     protected FavoriteMovie() {}
 
-    public FavoriteMovie(Long favoriteMovieSeq) {
-        this.favoriteMovieSeq = favoriteMovieSeq;
+    public FavoriteMovie(Long movieSeq) {
+        this.movieSeq = movieSeq;
         this.createdAt = LocalDateTime.now();
         this.isActive = 1;
     }
