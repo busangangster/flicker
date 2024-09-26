@@ -1,8 +1,11 @@
 package com.flicker.bff.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -34,10 +37,37 @@ public class Util {
     public Mono<ResponseEntity<ResponseDto>> sendGetRequestAsync(String baseUrl, String path) {
         try {
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+            ObjectMapper objectMapper = new ObjectMapper();  // ObjectMapper 인스턴스 생성
+//            return webClient.get()
+//                    .uri(path)
+//                    .retrieve()
+//                    .toEntity(ResponseDto.class);  // 비동기 처리: Mono<ResponseEntity<ResponseDto>> 반환
             return webClient.get()
                     .uri(path)
                     .retrieve()
-                    .toEntity(ResponseDto.class);  // 비동기 처리: Mono<ResponseEntity<ResponseDto>> 반환
+                    .bodyToMono(String.class)  // 응답을 문자열로 받음
+                    .flatMap(response -> {
+                        // 받은 응답을 sysout으로 출력
+                        System.out.println("Response body: " + response);
+
+                        try {
+                            // 응답을 ResponseDto로 변환
+                            ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
+                            return Mono.just(ResponseEntity.ok(responseDto));
+                        } catch (JsonProcessingException e) {
+                            // 예외 발생 시 에러 메시지 출력 및 에러 처리
+                            System.out.println("Error parsing JSON: " + e.getMessage());
+                            return Mono.just(ResponseEntity
+                                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                    .body(new ResponseDto(StatusCode.INTERNAL_SERVER_ERROR, null)));
+                        }
+                    })
+                    .onErrorResume(e -> {
+                        System.out.println("Error during WebClient GET request: " + e.getMessage());
+                        return Mono.just(ResponseEntity
+                                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new ResponseDto(StatusCode.INTERNAL_SERVER_ERROR, null)));
+                    });
         } catch (Exception e) {
             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생: " + e.getMessage()));
         }
