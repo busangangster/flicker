@@ -52,7 +52,7 @@ public class SecurityConfig {
                 )
                 .userDetailsService(userDetailsService) // UserDetailsService 설정
                 .addFilterAt(new LoginFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
+                .addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 
 
 
