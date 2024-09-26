@@ -6,6 +6,10 @@ import Filter from "../../components/Filter";
 import ReviewForm from "../../components/ReviewForm";
 import Navbar from "../../components/common/Navbar";
 import { ReviewType } from "../../type";
+import { gsap } from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+gsap.registerPlugin(ScrollToPlugin);
 
 // 목업 데이터
 const mockReviews: ReviewType[] = [
@@ -149,7 +153,7 @@ const ReviewPage: React.FC = () => {
     }
 
     setReviews(sortedReviews); // 정렬된 리뷰 설정
-  }, [reviews, sortOption]); // sortOption이 변경될 때마다 실행
+  }, [sortOption]); // sortOption이 변경될 때마다 실행
 
   const filterOptions = [
     { value: "최신순", label: "최신순" },
@@ -181,8 +185,15 @@ const ReviewPage: React.FC = () => {
     );
   };
 
+  const scrollToTop = () => {
+    const scrollableElement = document.querySelector(".scroll-container"); // 스크롤 가능한 요소를 지정
+    if (scrollableElement) {
+      gsap.to(scrollableElement, { scrollTo: { y: 0 }, duration: 0.7 });
+    }
+  };
+
   return (
-    <div className="flex flex-col bg-black h-screen overflow-y-auto">
+    <div className="scroll-container flex flex-col bg-black h-screen overflow-y-auto">
       <header className="sticky top-0 bg-transparent z-10">
         <Navbar />
       </header>
@@ -239,6 +250,13 @@ const ReviewPage: React.FC = () => {
 
         {/* 양쪽 패딩을 위한 빈 공간 (1/5로 조정하여 여백을 줄임) */}
         <div className="w-1/5"></div>
+      </div>
+
+      <div
+        className=" material-icons bg-gray-200 text-black w-[42px] h-[42px] border rounded-[10px] cursor-pointer justify-center flex items-center fixed right-[85px] bottom-[30px] z-10"
+        onClick={scrollToTop}
+      >
+        arrow_upward
       </div>
     </div>
   );

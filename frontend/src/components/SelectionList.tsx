@@ -5,7 +5,7 @@ interface SearchListProps {
   searchQuery: string;
 }
 
-const SearchList: React.FC<SearchListProps> = ({ searchQuery }) => {
+const SearchList: React.FC<SearchListProps> = () => {
   // 검색 결과로 임시 포스터 이미지 리스트 생성
   const movieImages = Array.from(
     { length: 30 },
@@ -19,7 +19,7 @@ const SearchList: React.FC<SearchListProps> = ({ searchQuery }) => {
           <img
             src={imgSrc}
             alt={`Movie Poster ${index + 1}`}
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-full object-cover rounded-md transition-transform duration-300 hover:-translate-y-2 mt-4 cursor-pointer"
           />
         </div>
       ))}

@@ -74,7 +74,7 @@ const LandingPage: React.FC = () => {
         );
 
         // Array to keep track of all sprites for staggered animation
-        const sprites = textures.map((texture, index) => {
+        const sprites = textures.map((texture) => {
           const sprite = new Sprite(texture);
           sprite.anchor.set(0.5);
           sprite.x = app.screen.width / 2;

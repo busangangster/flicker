@@ -4,12 +4,12 @@ import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./router/AppRouter.tsx";
 // import ErrorBoundaryWrapper from "./components/ErrorBoundary.tsx";
 
-const App = () => {
+const App: React.FC = () => {
   return (
     // <ErrorBoundaryWrapper>
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
     // </ErrorBoundaryWrapper>
   );
 };

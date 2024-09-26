@@ -25,7 +25,9 @@ const Filter: React.FC<FilterProps> = ({
   const handleSelect = (value: string) => {
     setSelectedOption(value); // 선택된 옵션 설정
     setIsOpen(false); // 선택 후 드롭다운 닫기
-    onChange && onChange(value); // 부모 컴포넌트에 선택된 값 전달
+    if (onChange) {
+      onChange(value);
+    }
   };
 
   return (
