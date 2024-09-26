@@ -188,15 +188,30 @@ public class MovieRepoUtil {
     }
 
     /**
+     * 영화 목록을 조회하는 메서드입니다.
+     *
+     * @param movieSeqs 조회할 영화의 ID 목록
+     * @return 조회된 영화 목록
+     * @throws RestApiException 영화 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public List<Movie> findBySeqIn(List<Integer> movieSeqs) {
+        try {
+            return movieRepository.findByMovieSeqInAndDelYN(movieSeqs, "N");
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
      * 추천된 영화 목록을 조회하는 메서드입니다.
      *
      * @param movieSeqList 조회할 영화의 ID 목록
      * @return 조회된 영화 목록
      * @throws RestApiException 추천된 영화 목록 조회 중 오류가 발생할 경우 발생
      */
-    public List<Movie> findBySeqIn(List<Integer> movieSeqList) {
+    public List<Movie> findBySeqInAndFilterUnlike(List<Integer> movieSeqList, List<Integer> unlikeMovieSeqList) {
         try {
-            return movieRepository.findByMovieSeqInAndDelYN(movieSeqList, "N");
+            return movieRepository.findByMovieSeqInAndMovieSeqNotInAndDelYN(movieSeqList, unlikeMovieSeqList, "N");
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천된 영화 목록 조회 중 오류가 발생했습니다.");
         }

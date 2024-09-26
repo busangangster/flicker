@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
  * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
  * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
  * getTopMovieList() 메서드는 Top10 영화 리스트를 조회한다.
+ * getMovieListByMovieSeqList() 메서드는 영화 번호 목록으로 영화 리스트를 조회한다.
  * initSearchResultForRedisAndMongoDB() 메서드는 redis, mongoDB (키워드 검색결과)를 초기화한다.
  * findTopKeywords() 메서드는 상위 10개 키워드를 추출한다.
  * findMovieSeqsByKeywords() 메서드는 영화 제목 목록의 영화 번호를 추출한다.
@@ -185,9 +186,9 @@ public class MovieService {
     }
 
     @Transactional
-    public List<MovieListResponse> getRecommendationList(List<Integer> movieSeqList) {
+    public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
         // 1. 추천된 영화 리스트 조회
-        List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqList);
+        List<Movie> movieList = movieRepoUtil.findBySeqInAndFilterUnlike(request.getMovieSeqList(), request.getUnlikeMovieSeqList());
         // 2. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
@@ -222,6 +223,15 @@ public class MovieService {
                 .toList();
     }
 
+    @Transactional
+    public List<MovieListResponse> getMovieListByMovieSeqList(List<Integer> request) {
+        // 1. 영화 ID 리스트로 영화 목록 조회
+        List<Movie> movieList = movieRepoUtil.findBySeqIn(request);
+        // 2. MovieListResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
 
 
     // redis , mongoDB (키워드 검색결과 ) 초기화
@@ -260,4 +270,5 @@ public class MovieService {
         RedisTopMovie redisTopMovie = movieBuilderUtil.redisTopMovieBuilder("TopMovieList", movieSeqs);
         movieRepoUtil.saveTopMovieForRedis(redisTopMovie);
     }
+
 }
