@@ -116,11 +116,9 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public boolean delete(Integer userSeq) {
 
-        Optional<User> byId = userRepository.findById(userSeq);
-        if(byId.isPresent()) {
-            byId.get().deleteUser();
-            return true;
-        }
+        User user = userRepository.findById(userSeq)
+                .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_USER));
+        user.deleteUser();
 
         return false;
     }
