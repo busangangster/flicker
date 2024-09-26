@@ -1,6 +1,8 @@
 package com.flicker.bff.common.module.response;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flicker.bff.common.module.status.StatusCode;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,14 @@ public class ResponseDto {
     private final int httpStatus;
     private final int serviceStatus;
 
-
-    public ResponseDto(Object data, String message, int httpStatus, int serviceStatus) {
+    // 생성자 기반으로 역직렬화 가능하도록 @JsonCreator와 @JsonProperty 유지
+    @JsonCreator
+    public ResponseDto(
+            @JsonProperty("data") Object data,
+            @JsonProperty("message") String message,
+            @JsonProperty("httpStatus") int httpStatus,
+            @JsonProperty("serviceStatus") int serviceStatus
+    ) {
         this.data = data;
         this.message = message;
         this.httpStatus = httpStatus;
