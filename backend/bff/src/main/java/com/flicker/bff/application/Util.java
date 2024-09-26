@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -14,13 +16,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class Util {
     private final WebClient.Builder webClientBuilder;
 
+    private final ObjectMapper objectMapper;
+
     // WebClient.Builder를 생성자 주입으로 받아옴
-    public Util(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
-    }
+//    public Util(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
+//        this.webClientBuilder = webClientBuilder;
+//    }
 
     // URI를 생성하는 메서드
     public String getUri(String path) {
@@ -38,9 +43,6 @@ public class Util {
         try {
             // WebClient 인스턴스 생성
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
-            // ObjectMapper 인스턴스 생성 및 JavaTimeModule 등록
-            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.registerModule(new JavaTimeModule()); // LocalDateTime 처리를 위한 모듈 등록
             return webClient.get()
                     .uri(path)
                     .retrieve()
@@ -73,9 +75,6 @@ public class Util {
         try {
             // WebClient 인스턴스 생성
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
-            // ObjectMapper 인스턴스 생성 및 JavaTimeModule 등록
-            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.registerModule(new JavaTimeModule()); // LocalDateTime 처리를 위한 모듈 등록
             return webClient.post()
                     .uri(path)
                     .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
@@ -109,9 +108,6 @@ public class Util {
         try {
             // WebClient 인스턴스 생성
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
-            // ObjectMapper 인스턴스 생성 및 JavaTimeModule 등록
-            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.registerModule(new JavaTimeModule()); // LocalDateTime 처리를 위한 모듈 등록
             return webClient.put()
                     .uri(path)
                     .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
@@ -145,9 +141,6 @@ public class Util {
         try {
             // WebClient 인스턴스 생성
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
-            // ObjectMapper 인스턴스 생성 및 JavaTimeModule 등록
-            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.registerModule(new JavaTimeModule()); // LocalDateTime 처리를 위한 모듈 등록
             return webClient.delete()
                     .uri(path)
                     .retrieve()
