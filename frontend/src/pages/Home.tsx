@@ -38,11 +38,23 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (animationFinished) {
       // 애니메이션이 완료된 후 CircleCarousel에 페이드 인 효과 적용
-      gsap.fromTo(
-        ".circle-carousel",
-        { opacity: 0 }, // 초기 상태
-        { opacity: 1, duration: 2, ease: "power2.out" } // 페이드 인 애니메이션
-      );
+      const timeline = gsap.timeline();
+      timeline
+        .fromTo(
+          ".circle-carousel",
+          { opacity: 0 },
+          { opacity: 0.3, duration: 0.5, ease: "power2.out" } // 처음 0에서 0.3까지 서서히 증가
+        )
+        .to(".circle-carousel", {
+          opacity: 0.5,
+          duration: 0.5,
+          ease: "power2.out",
+        }) // 0.3에서 0.6까지 증가
+        .to(".circle-carousel", {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+        }); // 0.6에서 1까지 최종 증가
     }
   }, [animationFinished]);
 
@@ -96,11 +108,6 @@ const Home: React.FC = () => {
         "/assets/landing/avengers1.jpg",
         "/assets/landing/fastand.jpg",
         "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
       ];
 
       const middleIndex = Math.floor(images.length / 2);
@@ -188,6 +195,7 @@ const Home: React.FC = () => {
         timeline.to(sprites, {
           y: -sprites[0].height,
           stagger: 0.15,
+          duration: 0.7,
           onStart: () => {
             animationStopped.current = false;
             middleSprite.y = app.screen.height + middleSprite.height;

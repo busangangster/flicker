@@ -1,3 +1,4 @@
+// Navbar.js
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -26,18 +27,31 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between w-full">
           {/* 로고 */}
           <div className="flex-none ml-[25px]">
-            <NavLink to="/home" className="text-2xl font-bold text-white">
+            <NavLink
+              to="/home"
+              className="text-2xl font-bold text-white italic"
+            >
               Flicker
             </NavLink>
           </div>
 
-          {/* 가운데 버튼 */}
-          <div className="flex justify-center items-center">
+          {/* 라이트 모드 & 다크 모드 버튼 */}
+          {/* <div className="flex space-x-4 justify-center items-center">
             <div className="relative flex items-center">
-              <div className="w-5 h-5 border border-white rounded-full"></div>
-              <div className="w-5 h-5 bg-white border border-white rounded-full absolute left-3"></div>
+              <button
+                onClick={setLightMode}
+                className={`w-5 h-5 bg-white border border-white rounded-full absolute left-3 ${
+                  !isDarkMode ? "bg-white text-black" : "text-white"
+                }`}
+              ></button>
+              <button
+                onClick={setDarkMode}
+                className={`w-5 h-5 border border-white rounded-full ${
+                  isDarkMode ? "bg-black text-white" : "text-black"
+                }`}
+              ></button>
             </div>
-          </div>
+          </div> */}
 
           {/* 오른쪽 컨테이너 */}
           <div className="flex-none h-[57px] flex items-center relative text-white">
@@ -98,7 +112,6 @@ const Navbar: React.FC = () => {
         </div>
       </header>
     </div>
-    // </div>
   );
 };
 
