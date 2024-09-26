@@ -1,10 +1,18 @@
-// SignInPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signin } from "../../apis/authApi";
 import { AxiosError } from "axios";
-import UsAndThem from "../../assets/background/UsAndThem.png";
 import { IoMdCheckboxOutline, IoMdSquareOutline } from "react-icons/io";
+
+// background 이미지 목록
+const backgrounds = [
+  "/assets/background/background1.png",
+  "/assets/background/background2.png",
+  "/assets/background/background3.png",
+  "/assets/background/background4.png",
+  "/assets/background/background5.png",
+  "/assets/background/background6.png",
+];
 
 const SignInPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +22,14 @@ const SignInPage: React.FC = () => {
   });
 
   const [error, setError] = useState("");
+  const [backgroundImage, setBackgroundImage] = useState(""); // 랜덤 배경 이미지 상태
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // 랜덤한 배경 이미지 선택
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    setBackgroundImage(backgrounds[randomIndex]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -66,7 +81,7 @@ const SignInPage: React.FC = () => {
   return (
     <div
       className="min-h-screen w-screen bg-black flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${UsAndThem})` }}
+      style={{ backgroundImage: `url(${backgroundImage})` }} // 랜덤 배경 이미지 적용
     >
       <form onSubmit={handleSubmit} className="w-full max-w-xl p-8">
         <h2 className="text-3xl font-bold mb-6 text-white text-center">

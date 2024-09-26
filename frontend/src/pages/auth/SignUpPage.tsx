@@ -1,9 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../../apis/authApi";
-import UsAndThem from "../../assets/background/UsAndThem.png";
 import calendar_white from "../../assets/icons/calendar_white.png";
 import { SignUpParams } from "../../type";
+
+// background 이미지 목록
+const backgrounds = [
+  "/assets/background/background1.png",
+  "/assets/background/background2.png",
+  "/assets/background/background3.png",
+  "/assets/background/background4.png",
+  "/assets/background/background5.png",
+  "/assets/background/background6.png",
+];
 
 const SignUpPage: React.FC = () => {
   const [formData, setFormData] = useState<SignUpParams>({
@@ -27,6 +36,13 @@ const SignUpPage: React.FC = () => {
 
   const navigate = useNavigate();
   const [isIdChecked, setIsIdChecked] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState(""); // 랜덤 배경 이미지 상태
+
+  useEffect(() => {
+    // 랜덤한 배경 이미지 선택
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    setBackgroundImage(backgrounds[randomIndex]);
+  }, []);
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -120,11 +136,11 @@ const SignUpPage: React.FC = () => {
     setErrors(newErrors);
     return valid;
   };
-  
+
   return (
     <div
       className="min-h-screen w-screen bg-black flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${UsAndThem})` }} // 잘못된 부분 수정
+      style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <form onSubmit={handleSubmit} className="w-full max-w-2xl p-8">
         <h2 className="text-3xl font-bold mb-8 text-white text-center">

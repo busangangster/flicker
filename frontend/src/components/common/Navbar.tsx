@@ -99,7 +99,7 @@ const Navbar: React.FC = () => {
                   className="text-white font-semibold whitespace-nowrap"
                 >
                   contact
-                </NavLink>
+                </NavLink> 
                 <div>
                   {data ? (
                     <button
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
                       onClick={goToSignin}
                       className="text-white font-semibold whitespace-nowrap"
                     >
-                      Login
+                      login
                     </button>
                   )}
                 </div>

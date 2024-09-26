@@ -28,16 +28,14 @@ export const signin = async (
     );
 
     // 서버 응답에서 Authorization 헤더 추출
-    const token = response.headers["authorization"];
 
-    if (token) {
-      const accessToken = token.replace("Bearer ", "");
-      // const { accessToken, refreshToken } = response.data || {};
-      localStorage.setItem("accessToken", accessToken);
-      console.log("accessToken 저장 완료");
-    } else {
-      console.log("토큰이 없습니다.");
-    }
+    const accessToken = response.headers["authorization"].replace(
+      "Bearer ",
+      ""
+    );
+    // const { accessToken, refreshToken } = response.data || {};
+    localStorage.setItem("accessToken", accessToken);
+    console.log("accessToken 저장 완료");
 
     // JWT 토큰을 로컬 스토리지와 쿠키에 저장
     // Cookies.set("refreshToken", refreshToken, { expires: 1 }); // 1일간 유지

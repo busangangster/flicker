@@ -1,20 +1,35 @@
-// RecommendPage.tsx
-import React from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 훅 가져오기
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
-import theaterDoorImage from "../../assets/movie/theater_door.jpg"; // 이미지 경로
+import theaterDoorImage from "/assets/movie/theater7.jpg";
+import left_left_door from "/assets/movie/left_left_door.jpg";
+import left_right_door from "/assets/movie/left_right_door.jpg";
+import right_left_door from "/assets/movie/right_left_door.jpg";
+import right_right_door from "/assets/movie/right_right_door.jpg";
+import "../../css/RecommendPage.css"; // CSS 파일에서 애니메이션 정의
 
 const RecommendPage: React.FC = () => {
   const navigate = useNavigate();
+  const [isLeftOpen, setIsLeftOpen] = useState(false);
+  const [isRightOpen, setIsRightOpen] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false); // 배경 확대 상태
 
-  // 왼쪽 영역 클릭 시 이동할 경로
+  // 왼쪽 문 클릭 시 애니메이션 및 이동
   const gotoLeftRecommend = () => {
-    navigate("/recommendlist");
+    setIsLeftOpen(true);
+    setIsZoomed(true); // 문 아래쪽 부분 확대 시작
+    setTimeout(() => {
+      navigate("/recommendlist");
+    }, 1000); // 1초 후 이동
   };
 
-  // 오른쪽 영역 클릭 시 이동할 경로
+  // 오른쪽 문 클릭 시 애니메이션 및 이동
   const gotoRightRecommend = () => {
-    navigate("/recommendlist");
+    setIsRightOpen(true);
+    setIsZoomed(true); // 문 아래쪽 부분 확대 시작
+    setTimeout(() => {
+      navigate("/recommendlist");
+    }, 1000); // 1초 후 이동
   };
 
   return (
@@ -23,26 +38,161 @@ const RecommendPage: React.FC = () => {
         <Navbar />
       </header>
 
-      {/* 배경 이미지 설정 */}
+      {/* 반짝이는 동그라미 추가 */}
+      {/* <div>
+        {Array.from({ length: 26 }).map((_, index) => (
+          <div
+            key={index}
+            className="twinkling-circle z-10"
+            style={{
+              position: "absolute",
+              top: "8.5%",
+              left: `${27.3 + index * 1.815}%`, // left 값을 1.8씩 증가
+            }}
+          ></div>
+        ))}
+      </div>
+      <div>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <div
+            key={index}
+            className="twinkling-circle z-10"
+            style={{
+              position: "absolute",
+              top: "26.5%",
+              left: `${27.3 + index * 1.815}%`, // left 값을 1.8씩 증가
+            }}
+          ></div>
+        ))}
+      </div>
+      <div>
+        {Array.from({ length: 15 }).map((_, index) => (
+          <div
+            key={index}
+            className="twinkling-circle z-10"
+            style={{
+              position: "absolute",
+              top: "26.5%",
+              left: `${46.5 + index * 1.88}%`, // left 값을 1.8씩 증가
+            }}
+          ></div>
+        ))}
+      </div> */}
+
       <div
-        className="relative flex items-center justify-center w-full h-full"
+        className={`relative flex items-center justify-center w-full h-full door-container ${
+          isZoomed ? "zoom-door-bottom" : ""
+        }`}
         style={{
           backgroundImage: `url(${theaterDoorImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        {/* 왼쪽 반 클릭 시 이동 */}
-        <div
-          className="absolute left-0 top-0 h-full w-1/2 cursor-pointer"
+        {/* 왼쪽 문 */}
+        <img
+          src={left_left_door}
+          alt="left_left_door"
+          className={`absolute h-[54.5vh] w-[8.5vw] door ${
+            isLeftOpen ? "open-left" : ""
+          }`}
+          style={{
+            left: "31.5vw",
+            top: "40vh",
+          }}
+          onClick={gotoLeftRecommend}
+        />
+        <img
+          src={left_right_door}
+          alt="left_right_door"
+          className={`absolute h-[54.5vh] w-[8.5vw] door ${
+            isLeftOpen ? "open-right" : ""
+          }`}
+          style={{
+            left: "39.8vw",
+            top: "40vh",
+          }}
           onClick={gotoLeftRecommend}
         />
 
-        {/* 오른쪽 반 클릭 시 이동 */}
-        <div
-          className="absolute right-0 top-0 h-full w-1/2 cursor-pointer"
+        {/* 오른쪽 문 */}
+        <img
+          src={right_left_door}
+          alt="right_left_door"
+          className={`absolute h-[54.5vh] w-[8.3vw] door ${
+            isRightOpen ? "open-left" : ""
+          }`}
+          style={{
+            left: "55vw",
+            top: "40vh",
+          }}
           onClick={gotoRightRecommend}
         />
+        <img
+          src={right_right_door}
+          alt="right_right_door"
+          className={`absolute h-[54.5vh] w-[8.3vw] door ${
+            isRightOpen ? "open-right" : ""
+          }`}
+          style={{
+            left: "63vw",
+            top: "40vh",
+          }}
+          onClick={gotoRightRecommend}
+        />
+
+        {/* f11 확대할 때의 문 */}
+        {/* 왼쪽 문 */}
+        {/* <img
+          src={left_left_door}
+          alt="left_left_door"
+          className={`absolute h-[52vh] w-[10vw] door ${
+            isLeftOpen ? "open-left" : ""
+          }`}
+          style={{
+            left: "29vw",
+            top: "40vh",
+          }}
+          onClick={gotoLeftRecommend}
+        />
+        <img
+          src={left_right_door}
+          alt="left_right_door"
+          className={`absolute h-[52vh] w-[10vw] door ${
+            isLeftOpen ? "open-right" : ""
+          }`}
+          style={{
+            left: "38.5vw",
+            top: "40vh",
+          }}
+          onClick={gotoLeftRecommend}
+        /> */}
+
+        {/* 오른쪽 문 */}
+        {/* <img
+          src={right_left_door}
+          alt="right_left_door"
+          className={`absolute h-[52vh] w-[9.5vw] door ${
+            isRightOpen ? "open-left" : ""
+          }`}
+          style={{
+            left: "55.5vw",
+            top: "40vh",
+          }}
+          onClick={gotoRightRecommend}
+        />
+        <img
+          src={right_right_door}
+          alt="right_right_door"
+          className={`absolute h-[52vh] w-[9.5vw] door ${
+            isRightOpen ? "open-right" : ""
+          }`}
+          style={{
+            left: "65vw",
+            top: "40vh",
+          }}
+          onClick={gotoRightRecommend}
+        /> */}
       </div>
     </div>
   );

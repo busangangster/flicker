@@ -1,0 +1,45 @@
+.door-container {
+  transition: transform 1s ease; /* 확대 애니메이션 */
+}
+
+.zoom-door-bottom {
+  transform: scale(1.3) translateY(0%); /* 문 아래쪽만 확대하고 약간 위로 이동 */
+  transform-origin: bottom center; /* 문 아래쪽을 중심으로 확대 */
+}
+
+.door {
+  transition: transform 1s ease; /* 애니메이션 전환 효과 */
+  transform-origin: left center; /* 기본 왼쪽을 축으로 회전 (왼쪽 문) */
+}
+
+.open-left {
+  transform: rotateY(-90deg); /* 왼쪽 문이 앞으로 열리는 애니메이션 */
+}
+
+.open-right {
+  transform-origin: right center; /* 오른쪽 문은 오른쪽을 축으로 회전 */
+  transform: rotateY(90deg); /* 오른쪽 문이 앞으로 열리는 애니메이션 */
+}
+
+/* 반짝거리는 작은 동그라미 */
+.twinkling-circle {
+  width: 15px;
+  height: 15px;
+  background-color: rgba(253, 235, 130, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(253, 235, 130, 0.5);
+  animation: twinkle 2s infinite ease-in-out;
+}
+
+/* 반짝이는 애니메이션 */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+

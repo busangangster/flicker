@@ -1,11 +1,26 @@
 // frontend/src/pages/auth/PasswordResetPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "../../apis/axios";
-import UsAndThem from "../../assets/background/UsAndThem.png";
+
+const backgrounds = [
+  "/assets/background/background1.png",
+  "/assets/background/background2.png",
+  "/assets/background/background3.png",
+  "/assets/background/background4.png",
+  "/assets/background/background5.png",
+  "/assets/background/background6.png",
+];
 
 const PasswordResetPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState(""); // 랜덤 배경 이미지 상태
+
+  useEffect(() => {
+    // 랜덤한 배경 이미지 선택
+    const randomIndex = Math.floor(Math.random() * backgrounds.length);
+    setBackgroundImage(backgrounds[randomIndex]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -30,7 +45,7 @@ const PasswordResetPage: React.FC = () => {
   return (
     <div
       className="min-h-screen w-screen bg-black flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${UsAndThem})` }}
+      style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <form onSubmit={handleSubmit} className="w-full max-w-xl p-8">
         <h2 className="text-3xl font-bold mb-6 text-white text-center">
