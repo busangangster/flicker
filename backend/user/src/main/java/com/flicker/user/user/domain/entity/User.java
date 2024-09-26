@@ -40,11 +40,11 @@ public class User {
     private String profilePhotoUrl;
 
     // 선호 영화 관련
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteMovie> favoriteMovies;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookmarkMovie> bookmarkMovies;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UnlikeMovie> unlikeMovies;
 
     private LocalDateTime createdAt;
@@ -101,6 +101,7 @@ public class User {
                 }
             }
             if(!isDuplicate){
+                System.out.println("저장 완료");
                 FavoriteMovie favoriteMovie = new FavoriteMovie(movieSeq);
                 favoriteMovie.updateUser(this);
                 this.favoriteMovies.add(favoriteMovie);
