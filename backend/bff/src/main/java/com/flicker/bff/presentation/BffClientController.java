@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +74,9 @@ public class BffClientController {
                 "엄청 좋았던 영화 톰 크루즈 미모는 여전히 잘생겼다 1편을 보고 가야되는 질문에서 답을 하자면 \n" +
                 "1편 보고 가는게 더 좋다 감동도 2배 더 느낄 수 있음";
         reviewDto.isSpoiler = false;
-        reviewDto.likeCount = 12333;
-        reviewDto.likedReview = true;
+        reviewDto.likes = 12333;
+        reviewDto.liked = true;
+        reviewDto.createdAt = LocalDateTime.now();
         reviewList.add(reviewDto);
 
         reviewDto = new ReviewDto();
@@ -82,8 +84,9 @@ public class BffClientController {
         reviewDto.reviewRating = 4.5;
         reviewDto.content = "감동을 2배 더 느낄 수 있음";
         reviewDto.isSpoiler = true;
-        reviewDto.likeCount = 345;
-        reviewDto.likedReview = false;
+        reviewDto.likes = 345;
+        reviewDto.liked = false;
+        reviewDto.createdAt = LocalDateTime.now();
         reviewList.add(reviewDto);
         
         boardingPageDto.setReviewList(reviewList);
