@@ -1,5 +1,7 @@
 package com.flicker.bff.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
@@ -18,6 +20,8 @@ import java.util.List;
 public class BffMovieService {
 
     private final Util util; // Util 클래스 의존성 주입
+
+    private final ObjectMapper objectMapper; // ObjectMapper 클래스 의존성 주입
 
     @Value("${movie.baseurl}")
     private String movieBaseUrl; // 영화 서버 API의 기본 URL
@@ -119,7 +123,14 @@ public class BffMovieService {
                                     movieDetailResponseDto.getData()
                             ));
                         }
-                        MovieDetailResponse movieDetailResponse = (MovieDetailResponse) movieDetailResponseDto.getData();
+                        // ObjectMapper를 이용하여 JSON 데이터를 MovieDetailResponse로 역직렬화
+                        String movieDetailResponseJson = movieDetailResponseDto.getData().toString();  // JSON 데이터를 String으로 가져옴
+                        MovieDetailResponse movieDetailResponse = null;
+                        try {
+                            movieDetailResponse = objectMapper.readValue(movieDetailResponseJson, MovieDetailResponse.class);
+                        } catch (Exception e) {
+                            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 상세정보를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                        }
                         movieDetailReviewRecommendResponse.setMovieDetail(movieDetailResponse);
 
                         // 2. 연관 영화 추천 가져오기
@@ -134,6 +145,10 @@ public class BffMovieService {
                                                 movieSeqListResponseDto.getData()
                                         ));
                                     }
+                                    // TODO
+                                    String movieSeqListJSON = movieSeqListResponseDto.getData().toString();
+
+
                                     List<Integer> movieSeqList = (List<Integer>) movieSeqListResponseDto.getData();
                                     String unlikeMoviePath = util.getUri("/list/unlike/" + userSeq);
                                     return util.sendGetRequestAsync(movieBaseUrl, unlikeMoviePath)

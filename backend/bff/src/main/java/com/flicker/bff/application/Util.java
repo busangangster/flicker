@@ -22,11 +22,6 @@ public class Util {
 
     private final ObjectMapper objectMapper;
 
-    // WebClient.Builder를 생성자 주입으로 받아옴
-//    public Util(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
-//        this.webClientBuilder = webClientBuilder;
-//    }
-
     // URI를 생성하는 메서드
     public String getUri(String path) {
         try {
