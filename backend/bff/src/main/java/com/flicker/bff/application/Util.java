@@ -2,6 +2,7 @@ package com.flicker.bff.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
@@ -37,7 +38,10 @@ public class Util {
     public Mono<ResponseEntity<ResponseDto>> sendGetRequestAsync(String baseUrl, String path) {
         try {
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
-            ObjectMapper objectMapper = new ObjectMapper();  // ObjectMapper 인스턴스 생성
+            // ObjectMapper 인스턴스 생성 및 JavaTimeModule 등록
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule()); // LocalDateTime 처리를 위한 모듈 등록
+
 //            return webClient.get()
 //                    .uri(path)
 //                    .retrieve()
