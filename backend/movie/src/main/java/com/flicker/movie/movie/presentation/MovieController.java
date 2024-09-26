@@ -91,8 +91,8 @@ public class MovieController {
     // 전체 영화 목록 조회
     @GetMapping("/list/{page}/{size}")
     public ResponseEntity<ResponseDto> getAllMovieList(@PathVariable int page, @PathVariable int size) {
-        System.out.println("전체 영화 목록 컨트롤러 호출됨");
         List<MovieListResponse> response = movieService.getAllMovieList(page, size);
+        System.out.println("response: " + response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
