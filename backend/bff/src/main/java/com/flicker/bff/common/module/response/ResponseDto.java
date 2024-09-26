@@ -1,6 +1,8 @@
 package com.flicker.bff.common.module.response;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flicker.bff.common.module.status.StatusCode;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,21 @@ public class ResponseDto {
     private final int httpStatus;
     private final int serviceStatus;
 
-    public ResponseDto(StatusCode statusCode, Object data) {
-        this.httpStatus = statusCode.getHttpStatus().value();
-        this.serviceStatus = statusCode.getServiceStatus();
-        this.message = statusCode.getMessage();
+    @JsonCreator
+    public ResponseDto(
+            @JsonProperty("data") Object data,
+            @JsonProperty("message") String message,
+            @JsonProperty("httpStatus") int httpStatus,
+            @JsonProperty("serviceStatus") int serviceStatus) {
         this.data = data;
+        this.message = message;
+        this.httpStatus = httpStatus;
+        this.serviceStatus = serviceStatus;
+    }
+
+    // StatusCode를 처리하는 생성자
+    public ResponseDto(StatusCode statusCode, Object data) {
+        this(data, statusCode.getMessage(), statusCode.getHttpStatus().value(), statusCode.getServiceStatus());
     }
 
     public static ResponseEntity<ResponseDto> response(StatusCode statusCode, Object data) {
