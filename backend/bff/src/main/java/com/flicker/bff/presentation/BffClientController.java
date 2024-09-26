@@ -28,7 +28,8 @@ public class BffClientController {
 
         BoardingPageDto boardingPageDto = new BoardingPageDto();
 
-        boardingPageDto.isLikeMovie = true;
+        boardingPageDto.bookMarkedMovie = true;
+        boardingPageDto.unlikedMovie = false;
 
         MovieDto movieDto = new MovieDto();
         movieDto.setMovieSeq(1);
@@ -48,6 +49,7 @@ public class BffClientController {
         movieDto.setMovieDetail(movieDetail);
 
         movieDto.setMovieRating(4.1);
+
         List<ActorDto> actors = new ArrayList<>();
         actors.add(new ActorDto("송강호", "(주연 | 김만섭)"));
         actors.add(new ActorDto("토머스 크레치만", "(주연 | 위르겐 힌츠페터)"));
