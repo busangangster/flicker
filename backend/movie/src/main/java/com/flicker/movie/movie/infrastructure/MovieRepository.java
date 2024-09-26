@@ -28,6 +28,9 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>, MovieRep
     // DEL_YN이 N이고, 영화 고유 식별자 목록을 기준으로 영화 목록 조회
     List<Movie> findByMovieSeqInAndDelYN(List<Integer> movieSeqList, String delYN);
 
+    // DEL_YN이 N이고, 영화 고유 식별자 목록을 기준으로 영화 목록 조회 (비선호 영화 필터)
+    List<Movie> findByMovieSeqInAndMovieSeqNotInAndDelYN(List<Integer> movieSeqList, List<Integer> dislikeMovieSeqList, String delYN);
+
     // 영화 제목이 같은 것 중에서 DEL_YN이 'N'이고, 영화 연도가 최신인 영화 한 건만 조회
     Optional<Movie> findFirstByMovieDetail_MovieTitleAndDelYNOrderByMovieDetail_MovieYearDesc(String movieTitle, String delYN);
 }
