@@ -1,8 +1,10 @@
 package com.flicker.logger.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.logger.dto.MovieReviewEvent;
 import com.flicker.logger.dto.SentimentReviewEvent;
+import com.flicker.logger.dto.UserAction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,7 +20,7 @@ public class ReviewConsumer {
     @Qualifier("dataDbJdbcTemplate")
     private final JdbcTemplate jdbcTemplate;
 
-    @KafkaListener(topics = "movie_info", groupId = "review-group")
+    @KafkaListener(topics = "movie-info", groupId = "review-group")
     public void listenMovieInfo(String message) {
 
         log.info("Received MovieInfo message {}", message);
@@ -55,7 +57,7 @@ public class ReviewConsumer {
             ObjectMapper mapper = new ObjectMapper();
             SentimentReviewEvent reviewLog = mapper.readValue(message, SentimentReviewEvent.class);
 
-            String sql = "INSERT INTO review_logs (review_seq, content, timestamp) " +
+            String sql = "INSERT INTO sentiment_review_logs (review_seq, content, timestamp) " +
                     "VALUES (?, ?, ?)";
 
             jdbcTemplate.update(sql,
@@ -64,6 +66,32 @@ public class ReviewConsumer {
                     reviewLog.getTimeStamp());
 
             log.info("Saved SReview {}", reviewLog);
+        } catch (Exception e) {
+            log.error("Error processing message: {}", message, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @KafkaListener(topics = "user-action", groupId = "review-group")
+    public void listenUserAction(String message) {
+
+        log.info("Received UserAction message {}", message);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            UserAction userAction = objectMapper.readValue(message, UserAction.class);
+
+            String sql = "INSERT INTO user_action_logs (user_seq, keyword, action, timestamp) " +
+                    "VALUES(?,?,?,?)";
+
+            jdbcTemplate.update(sql,
+                    userAction.getUserSeq(),
+                    userAction.getKeyword(),
+                    userAction.getAction(),
+                    userAction.getTimestamp());
+
+            log.info("Saved UserAction {}", userAction);
         } catch (Exception e) {
             log.error("Error processing message: {}", message, e);
             throw new RuntimeException(e);

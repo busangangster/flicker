@@ -31,4 +31,16 @@ public class MainController {
 
         return "ok";
     }
+
+    @GetMapping("/rating2")
+    public String startBatchJob2() throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(jobRegistry.getJob("SentimentScoreJob"), jobParameters);
+
+        return "ok";
+    }
 }
