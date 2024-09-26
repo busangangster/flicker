@@ -26,7 +26,7 @@ public class Util {
                     .build()
                     .toUriString();
         } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "URI 생성에 실패했습니다.");
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "URI 생성에 실패했습니다.: " + e.getMessage());
         }
     }
 
@@ -39,7 +39,7 @@ public class Util {
                     .retrieve()
                     .toEntity(ResponseDto.class);  // 비동기 처리: Mono<ResponseEntity<ResponseDto>> 반환
         } catch (Exception e) {
-            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생"));
+            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생: " + e.getMessage()));
         }
     }
 
@@ -53,7 +53,7 @@ public class Util {
                     .retrieve()
                     .toEntity(ResponseDto.class);  // 비동기 처리: Mono<ResponseEntity<ResponseDto>> 반환
         } catch (Exception e) {
-            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생"));
+            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
         }
     }
 
@@ -67,7 +67,7 @@ public class Util {
                     .retrieve()
                     .toEntity(ResponseDto.class);  // 비동기 처리: Mono<ResponseEntity<ResponseDto>> 반환
         } catch (Exception e) {
-            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient PUT 요청 중 오류 발생"));
+            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient PUT 요청 중 오류 발생: " + e.getMessage()));
         }
     }
 
@@ -80,7 +80,7 @@ public class Util {
                     .retrieve()
                     .toEntity(ResponseDto.class);  // 비동기 처리: Mono<ResponseEntity<ResponseDto>> 반환
         } catch (Exception e) {
-            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient DELETE 요청 중 오류 발생"));
+            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "WebClient DELETE 요청 중 오류 발생: " + e.getMessage()));
         }
     }
 
