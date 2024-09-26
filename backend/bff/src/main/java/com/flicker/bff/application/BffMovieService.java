@@ -25,9 +25,6 @@ public class BffMovieService {
     @Value("${user-review.baseurl}")
     private String userBaseUrl; // 사용자-리뷰 서버 API의 기본 URL
 
-    @Value("${batch.baseurl}")
-    private String batchBaseUrl; // 배치서버 API의 기본 URL
-
     @Value("${recommend.baseurl}")
     private String recommendBaseUrl; // 추천서버 API의 기본 URL
 
@@ -316,8 +313,8 @@ public class BffMovieService {
 
                                             // 4. 추천 서버로 사용자의 리뷰 목록과 Top-N 사용자의 리뷰 감성 점수 목록을 전송하고, 추천 영화 목록을 가져옴
                                             String recommendationListPath = util.getUri("/list/recommendation/review");
-                                            RecommendByReviewReqeust recommendByReviewReqeust = new RecommendByReviewReqeust(recommendReviews, sentimentReviews);
-                                            return util.sendPostRequestAsync(recommendBaseUrl, recommendationListPath, recommendByReviewReqeust)
+                                            RecommendByReviewRequest recommendByReviewRequest = new RecommendByReviewRequest(recommendReviews, sentimentReviews);
+                                            return util.sendPostRequestAsync(recommendBaseUrl, recommendationListPath, recommendByReviewRequest)
                                                     .flatMap(recommendResponse -> {
                                                         ResponseDto recommendResponseDto = recommendResponse.getBody();
                                                         if (recommendResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {

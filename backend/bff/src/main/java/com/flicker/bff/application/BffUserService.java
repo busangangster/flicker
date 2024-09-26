@@ -10,6 +10,6 @@ public class BffUserService {
 
     private final Util util; // Util 클래스 의존성 주입
 
-    @Value("${user.baseurl}")
-    private String userBaseUrl; // 외부 API의 기본 URL
+    @Value("${user-review.baseurl}")
+    private String userReviewBaseUrl; // 외부 API의 기본 URL
 }

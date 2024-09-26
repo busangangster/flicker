@@ -1,13 +1,11 @@
 package com.flicker.bff.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-public class RecommendByReviewReqeust {
+public class RecommendByReviewRequest {
 
     private int ownUserSeq;
 
@@ -15,7 +13,7 @@ public class RecommendByReviewReqeust {
 
     private List<RecommendSentimentReviewResponse> OtherSentimentList;
 
-    public RecommendByReviewReqeust(List<RecommendReviewResponse> ownSentimentList, List<RecommendSentimentReviewResponse> OtherSentimentList) {
+    public RecommendByReviewRequest(List<RecommendReviewResponse> ownSentimentList, List<RecommendSentimentReviewResponse> OtherSentimentList) {
         this.ownSentimentList = ownSentimentList;
         this.OtherSentimentList = OtherSentimentList;
     }
