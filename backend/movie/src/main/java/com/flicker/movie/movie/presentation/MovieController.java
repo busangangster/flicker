@@ -92,7 +92,6 @@ public class MovieController {
     @GetMapping("/list/{page}/{size}")
     public ResponseEntity<ResponseDto> getAllMovieList(@PathVariable int page, @PathVariable int size) {
         List<MovieListResponse> response = movieService.getAllMovieList(page, size);
-        System.out.println("response: " + response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
