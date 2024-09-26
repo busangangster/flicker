@@ -43,10 +43,10 @@ public class JWTUtil {
     public Boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
-            System.out.println("Token validation successful");
+//            System.out.println("Token validation successful");
             return true;
         } catch (Exception e) {
-            System.out.println("Token validation failed: " + e.getMessage());
+//            System.out.println("Token validation failed: " + e.getMessage());
             return false;
         }
     }
@@ -55,7 +55,7 @@ public class JWTUtil {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // LocalDate를 문자열로 변환할 포맷터
 
-        System.out.println("dto 를 변환 = " + dto);
+//        System.out.println("dto 를 변환 = " + dto);
 
         String token = Jwts.builder()
                 .claim("category", category)
@@ -71,7 +71,7 @@ public class JWTUtil {
                 .signWith(secretKey)
                 .compact();
 
-        System.out.println("JWT 토큰이 생성 됨 : " + token);
+//        System.out.println("JWT 토큰이 생성 됨 : " + token);
 
         return token;
     }
