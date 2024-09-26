@@ -4,12 +4,16 @@ import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.review.application.ReviewService;
+import com.flicker.user.review.domain.entity.Review;
 import com.flicker.user.review.dto.AddLikeReviewReqDto;
 import com.flicker.user.review.dto.DeleteReviewReqDto;
 import com.flicker.user.review.dto.RegisterReviewReqDto;
+import com.flicker.user.review.dto.RemoveLikeReviewReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users/review")
@@ -18,7 +22,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    // 리뷰 등록
+    // 리뷰 등록 TODO Kafka 메시지 발행
     @PostMapping()
     public ResponseEntity<ResponseDto> registerReview(@RequestBody RegisterReviewReqDto dto){
         if(dto.getReviewRating() == null ||
@@ -36,7 +40,7 @@ public class ReviewController {
         return ResponseDto.response(StatusCode.SUCCESS, "리뷰가 등록 되었습니다.");
     }
 
-    // 리뷰 삭제
+    // 리뷰 삭제 TODO Kafka 메시지 발행
     @DeleteMapping()
     public ResponseEntity<ResponseDto> deleteReview(@RequestBody DeleteReviewReqDto dto){
         if(dto.getReviewSeq() == null || dto.getUserSeq() == null){
@@ -53,11 +57,47 @@ public class ReviewController {
     // 리뷰 좋아요 등록
     @PostMapping("/{reviewSeq}")
     public ResponseEntity<ResponseDto> addLikeReview(@RequestBody AddLikeReviewReqDto dto) {
-        if(dto.get)
+        if(dto.getLikeReviewSeq() == null || dto.getUserSeq() == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+        if(!reviewService.addLikeReview(dto)){
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
+        }
+
+        return ResponseDto.response(StatusCode.SUCCESS,"리뷰 좋아요 성공");
     }
     // 리뷰 좋아요 삭제
+    @DeleteMapping("/{reviewSeq}")
+    public ResponseEntity<ResponseDto> removeLikeReview(@RequestBody RemoveLikeReviewReqDto dto) {
+        if(dto.getLikeReviewSeq() == null || dto.getUserSeq() == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
 
-    // 전체 평점 및 리뷰 조회
+        if(!reviewService.removeLikeReview(dto)){
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
+        }
 
-    // 포토카드 조회
+        return ResponseDto.response(StatusCode.SUCCESS,"리뷰 좋아요 취소 성공");
+    }
+
+    // 영화별 리뷰 조회
+    @GetMapping("/movies/{movieSeq}")
+    public ResponseEntity<ResponseDto> getMovieReviews(@PathVariable("movieSeq") Integer movieSeq) {
+        if(movieSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+        List<Review> movieReviews = reviewService.getMovieReviews(movieSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
+    }
+
+    // 사용자 별 리뷰 조회
+    @GetMapping()
+    public ResponseEntity<ResponseDto> getUserReviews(@RequestParam Integer userSeq) {
+        if(userSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+        List<Review> userReviews = reviewService.getUserReviews(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, userReviews);
+    }
 }
