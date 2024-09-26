@@ -29,59 +29,65 @@ public class UserServiceImpl implements UserService{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public MovieSeqListDto getBookmarkMovies(Long userSeq) {
+    public MovieSeqListDto getBookmarkMovies(Integer userSeq) {
         User user = findUserSeqToUser(userSeq);
-        List<Long> movieSeqList = user.getBookmarkMovies().stream()
+        List<Integer> movieSeqList = user.getBookmarkMovies().stream()
                 .map(BookmarkMovie::getBookmarkMovieSeq)
                 .toList();
         return new MovieSeqListDto(movieSeqList);
     }
 
     @Override
-    public MovieSeqListDto getFavoriteMovies(Long userSeq) {
+    public MovieSeqListDto getFavoriteMovies(Integer userSeq) {
         User user = findUserSeqToUser(userSeq);
-        List<Long> movieSeqList = user.getFavoriteMovies().stream()
+        List<Integer> movieSeqList = user.getFavoriteMovies().stream()
                 .map(FavoriteMovie::getMovieSeq)
                 .toList();
         return new MovieSeqListDto(movieSeqList);
     }
 
     @Override
-    public MovieSeqListDto getUnlikeMovies(Long userSeq) {
+    @Transactional
+    public MovieSeqListDto getUnlikeMovies(Integer userSeq) {
         User user = findUserSeqToUser(userSeq);
-        List<Long> movieSeqList = user.getUnlikeMovies().stream()
+        List<Integer> movieSeqList = user.getUnlikeMovies().stream()
                 .map(UnlikeMovie::getMovieSeq)
                 .toList();
         return new MovieSeqListDto(movieSeqList);
     }
 
     @Override
-    public boolean deleteBookmarkMovie(Long userSeq, Long movieSeq) {
+    @Transactional
+    public boolean deleteBookmarkMovie(Integer userSeq, Integer movieSeq) {
         User user = findUserSeqToUser(userSeq);
         return user.deleteBookmarkMovie(movieSeq);
     }
 
     @Override
-    public boolean deleteUnlikeMovie(Long userSeq, Long movieSeq) {
+    @Transactional
+    public boolean deleteUnlikeMovie(Integer userSeq, Integer movieSeq) {
         User user = findUserSeqToUser(userSeq);
 
         return user.deleteUnlikeMovie(movieSeq);
     }
 
     @Override
-    public boolean registerBookmarkMovie(Long userSeq, Long movieSeq) {
+    @Transactional
+    public boolean registerBookmarkMovie(Integer userSeq, Integer movieSeq) {
         User user = findUserSeqToUser(userSeq);
         return user.addBookmarkMovie(movieSeq);
     }
 
     @Override
-    public boolean registerUnlikeMovie(Long userSeq, Long movieSeq) {
+    @Transactional
+    public boolean registerUnlikeMovie(Integer userSeq, Integer movieSeq) {
         User user = findUserSeqToUser(userSeq);
         return user.addUnlikeMovie(movieSeq);
     }
 
     @Override
-    public boolean registerFavoriteMovie(Long userSeq, MovieSeqListDto dto) {
+    @Transactional
+    public boolean registerFavoriteMovie(Integer userSeq, MovieSeqListDto dto) {
         User user = findUserSeqToUser(userSeq);
         user.addFavoriteMovie(dto);
         return true;
@@ -101,14 +107,14 @@ public class UserServiceImpl implements UserService{
         System.out.println("저장 완료");
         userRepository.save(user);
 
-        return false;
+        return true;
     }
 
 
 
     @Override
     @Transactional
-    public boolean delete(Long userSeq) {
+    public boolean delete(Integer userSeq) {
 
         Optional<User> byId = userRepository.findById(userSeq);
         if(byId.isPresent()) {
@@ -119,8 +125,12 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
-    public User findUserSeqToUser(Long userSeq){
-        return userRepository.findById(userSeq)
+    public User findUserSeqToUser(Integer userSeq){
+        User user = userRepository.findById(userSeq)
                 .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_USER));
+        if(user.getIsActive() == 0){
+            throw new RestApiException(StatusCode.INACTIVE_USER);
+        }
+        return user;
     }
 }

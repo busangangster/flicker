@@ -15,11 +15,12 @@ import java.util.Objects;
 public class FavoriteMovie {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long favoriteMovieSeq;
+    private Integer favoriteMovieSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_seq")
     private User user;
-    private Long movieSeq;
+    private Integer movieSeq;
     private LocalDateTime createdAt;
     private Integer isActive;
 
@@ -29,7 +30,7 @@ public class FavoriteMovie {
 
     protected FavoriteMovie() {}
 
-    public FavoriteMovie(Long movieSeq) {
+    public FavoriteMovie(Integer movieSeq) {
         this.movieSeq = movieSeq;
         this.createdAt = LocalDateTime.now();
         this.isActive = 1;

@@ -26,7 +26,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSeq;
+    private Integer userSeq;
 
     @Embedded
     private UserInfo userInfo;
@@ -53,15 +53,15 @@ public class User {
 
     // 리뷰 관련
 
-    public boolean deleteBookmarkMovie(Long movieSeq){
+    public boolean deleteBookmarkMovie(Integer movieSeq){
         return this.bookmarkMovies.removeIf(bookmarkMovie -> bookmarkMovie.getMovieSeq().equals(movieSeq));
     }
 
-    public boolean deleteUnlikeMovie(Long movieSeq){
+    public boolean deleteUnlikeMovie(Integer movieSeq){
         return this.unlikeMovies.removeIf(unlikeMovie -> unlikeMovie.getMovieSeq().equals(movieSeq));
     }
 
-    public boolean addBookmarkMovie(Long movieSeq){
+    public boolean addBookmarkMovie(Integer movieSeq){
 
         for(BookmarkMovie bookmarkMovie : this.bookmarkMovies){
             if(bookmarkMovie.getMovieSeq().equals(movieSeq)){
@@ -75,7 +75,7 @@ public class User {
         return true;
     }
 
-    public boolean addUnlikeMovie(Long movieSeq){
+    public boolean addUnlikeMovie(Integer movieSeq){
 
         for(UnlikeMovie unlikeMovie : this.unlikeMovies){
             if(unlikeMovie.getMovieSeq().equals(movieSeq)){
@@ -91,7 +91,7 @@ public class User {
     }
 
     public void addFavoriteMovie(MovieSeqListDto dto){
-        for(Long movieSeq : dto.getMovieSeqList()){
+        for(Integer movieSeq : dto.getMovieSeqList()){
 
             boolean isDuplicate = false;
             for(FavoriteMovie favoriteMovie : favoriteMovies){

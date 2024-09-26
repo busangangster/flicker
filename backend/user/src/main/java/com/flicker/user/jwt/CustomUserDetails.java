@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
         return Collections.singleton(() -> "ROLE_USER");
     }
 
-    public Long getUserSeq(){
+    public Integer getUserSeq(){
         return user.getUserSeq();
     }
 

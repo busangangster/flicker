@@ -7,16 +7,16 @@ import java.util.List;
 public interface UserService {
 
     public boolean register(UserRegisterDto dto);
-    public boolean delete(Long userSeq);
+    public boolean delete(Integer userSeq);
 
-    public MovieSeqListDto getFavoriteMovies(Long userSeq);
-    public MovieSeqListDto getUnlikeMovies(Long userSeq);
-    public MovieSeqListDto getBookmarkMovies(Long userSeq);
+    public MovieSeqListDto getFavoriteMovies(Integer userSeq);
+    public MovieSeqListDto getUnlikeMovies(Integer userSeq);
+    public MovieSeqListDto getBookmarkMovies(Integer userSeq);
 
-    public boolean registerFavoriteMovie(Long userSeq, MovieSeqListDto dto);
-    public boolean registerUnlikeMovie(Long userSeq, Long movieSeq);
-    public boolean registerBookmarkMovie(Long userSeq, Long movieSeq);
+    public boolean registerFavoriteMovie(Integer userSeq, MovieSeqListDto dto);
+    public boolean registerUnlikeMovie(Integer userSeq, Integer movieSeq);
+    public boolean registerBookmarkMovie(Integer userSeq, Integer movieSeq);
 
-    public boolean deleteUnlikeMovie(Long userSeq, Long movieSeq);
-    public boolean deleteBookmarkMovie(Long userSeq, Long movieSeq);
+    public boolean deleteUnlikeMovie(Integer userSeq, Integer movieSeq);
+    public boolean deleteBookmarkMovie(Integer userSeq, Integer movieSeq);
 }

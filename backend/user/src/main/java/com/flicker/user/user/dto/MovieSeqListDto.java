@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieSeqListDto {
-    private List<Long> movieSeqList;
+    private List<Integer> movieSeqList;
 }
