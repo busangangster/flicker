@@ -45,7 +45,7 @@ public class BffClientController {
         movieDetail.runningTime = "2시간 17분";
         movieDetail.moviePosterUrl = "https://an2-img.amz.wtchn.net/image/v2/Phee2kOFCGVU-DciofgxFg.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKdmNIUnpJanBiSW1SZk5Ea3dlRGN3TUhFNE1DSmRMQ0p3SWpvaUwzWXhMMjkyTnpSNmRUQnFhamhtYVRGb1pIUjVjM0YwSW4wLnp2MkVDS3dpYWdGa09CQVZkSEVXX1daYm11YWxFLWYtLUVCX1E4Q0FfYUk";
         movieDetail.backgroundUrl = "https://an2-img.amz.wtchn.net/image/v2/y3sqhEoHKDyfEqwpMytU2Q.jpg?jwt=ZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKdmNIUnpJanBiSW1SZk1Ua3lNSGd4TURnd2NUZ3dJbDBzSW5BaU9pSXZkakV2Wm1rMU9EZDZkVE5oWVhwd01YUjBkamhqZVdraWZRLmxyUWpPeVIzU2FoZXBFYnA4NVFzVWNuZXJqckFnY3kxVjdwZkk3TmtuVEU";
-        movieDetail.trailerUrl = "https://redirect.watcha.com/galaxy/aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g_dj1QMFVmVmZBU2tfVQ";
+        movieDetail.trailerUrl = "https://www.youtube.com/watch?v=CF1rtd8_pxA";
         movieDto.setMovieDetail(movieDetail);
 
         movieDto.setMovieRating(4.1);
