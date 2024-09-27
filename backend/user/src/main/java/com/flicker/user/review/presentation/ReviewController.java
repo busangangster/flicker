@@ -5,10 +5,7 @@ import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.review.application.ReviewService;
 import com.flicker.user.review.domain.entity.Review;
-import com.flicker.user.review.dto.AddLikeReviewReqDto;
-import com.flicker.user.review.dto.DeleteReviewReqDto;
-import com.flicker.user.review.dto.RegisterReviewReqDto;
-import com.flicker.user.review.dto.RemoveLikeReviewReqDto;
+import com.flicker.user.review.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -87,17 +84,17 @@ public class ReviewController {
         if(movieSeq == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
-        List<Review> movieReviews = reviewService.getMovieReviews(movieSeq);
+        List<ReviewDto> movieReviews = reviewService.getMovieReviews(movieSeq);
         return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
     }
 
-    // 사용자 별 리뷰 조회
-    @GetMapping()
-    public ResponseEntity<ResponseDto> getUserReviews(@RequestParam Integer userSeq) {
+    // 사용자 별 리뷰 조회 
+    @GetMapping("/{userSeq}")
+    public ResponseEntity<ResponseDto> getUserReviews(@PathVariable Integer userSeq) {
         if(userSeq == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
-        List<Review> userReviews = reviewService.getUserReviews(userSeq);
+        List<ReviewDto> userReviews = reviewService.getUserReviews(userSeq);
         return ResponseDto.response(StatusCode.SUCCESS, userReviews);
     }
 }

@@ -2,11 +2,9 @@ package com.flicker.user.review.application;
 
 import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.status.StatusCode;
+import com.flicker.user.review.domain.ReviewConverter;
 import com.flicker.user.review.domain.entity.Review;
-import com.flicker.user.review.dto.AddLikeReviewReqDto;
-import com.flicker.user.review.dto.DeleteReviewReqDto;
-import com.flicker.user.review.dto.RegisterReviewReqDto;
-import com.flicker.user.review.dto.RemoveLikeReviewReqDto;
+import com.flicker.user.review.dto.*;
 import com.flicker.user.review.infrastructure.ReviewRepository;
 import com.flicker.user.user.domain.entity.User;
 import jakarta.transaction.Transactional;
@@ -21,6 +19,7 @@ import java.util.Optional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewConverter reviewConverter;
 
     @Transactional
     public boolean registerReview(RegisterReviewReqDto dto){
@@ -61,13 +60,21 @@ public class ReviewService {
         return review.removeLikeReview(dto.getUserSeq());
     }
 
-    public List<Review> getMovieReviews(Integer movieSeq){
+    public List<ReviewDto> getMovieReviews(Integer movieSeq){
+
         List<Review> allByMovieSeq = reviewRepository.findAllByMovieSeq(movieSeq);
-        System.out.println("allByMovieSeq = " + allByMovieSeq);
-        return reviewRepository.findAllByMovieSeq(movieSeq);
+        List<ReviewDto> reviewDtos = reviewConverter.reviewListToReviewDtoList(allByMovieSeq);
+
+        System.out.println(reviewDtos);
+        return reviewDtos;
     }
 
-    public List<Review> getUserReviews(Integer userSeq){
-        return reviewRepository.findAllByUserSeq(userSeq);
+    public List<ReviewDto> getUserReviews(Integer userSeq){
+
+        List<Review> allByUserSeq = reviewRepository.findAllByUserSeq(userSeq);
+        List<ReviewDto> reviewDtos = reviewConverter.reviewListToReviewDtoList(allByUserSeq);
+        System.out.println(reviewDtos);
+
+        return reviewDtos;
     }
 }
