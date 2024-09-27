@@ -3,6 +3,7 @@ package com.flicker.user.review.domain.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,6 +16,7 @@ public class Review {
     private Integer userSeq;
     private Integer movieSeq;
     private Double reviewRating;
+
     private String content;
     private LocalDateTime createdAt;
     private Boolean isSpoiler;
@@ -59,6 +61,8 @@ public class Review {
         this.reviewRating = reviewRating;
         this.userSeq = userSeq;
 
+        this.likeReviews = new ArrayList<>();
+        this.likes = 0;
         this.createdAt = LocalDateTime.now();
         this.isActive = 1;
     }

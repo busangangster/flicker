@@ -25,12 +25,12 @@ public class ReviewService {
     @Transactional
     public boolean registerReview(RegisterReviewReqDto dto){
 
-        Review review = reviewRepository.findByUserSeqAndMovieSeq(dto.getUserSeq(), dto.getMovieSeq());
-        if(review != null){
+        Review find = reviewRepository.findByUserSeqAndMovieSeq(dto.getUserSeq(), dto.getMovieSeq());
+        if(find != null){
             throw new RestApiException(StatusCode.DUPLICATED_REVIEW);
         }
 
-        new Review()
+        Review review = new Review(dto.getContent(), dto.getIsSpoiler(),dto.getMovieSeq(), dto.getReviewRating(), dto.getUserSeq());
         reviewRepository.save(review);
         return true;
     }
