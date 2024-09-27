@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SwiperSlide, Swiper } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules"; // Autoplay 모듈 추가
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
-import exit from "/assets/movie/exit.jpg";
+import exit from "/assets/movie/exit.png";
 
 // 목업 포스터 이미지 임의 설정
 const movieImg = [
@@ -100,7 +100,7 @@ const RecommandListPage: React.FC = () => {
           : "scale-110 opacity-50 bg-black"
       }`}
       style={{
-        backgroundColor: "black", 
+        backgroundColor: "black",
         backgroundImage: isLoaded
           ? `url(src/assets/movie/theater3.jpg)`
           : "none",
@@ -109,25 +109,31 @@ const RecommandListPage: React.FC = () => {
       }}
     >
       {/* 영화관 스타일 화면 */}
-      <div className="relative w-[75%] h-[60vh] rounded-md overflow-hidden">
+      <div className="relative w-[73%] h-[75vh] rounded-md overflow-hidden">
         <img
           src={exit}
           alt="exit"
-          className="w-24 mt-4 opacity-75"
+          className="w-24 opacity-75 absolute top-0"
           onClick={goToRecommend}
         />
-        <h2 className="text-center text-3xl font-bold text-black mb-[80px] mt-2">
+        <h2 className="text-center text-3xl font-bold text-black mb-[80px] mt-24">
           My own movie theater
         </h2>
         <Swiper
-          slidesPerView={6}
+          slidesPerView={6} // 6개의 슬라이드가 한 번에 보이도록 설정
           spaceBetween={10}
           onSwiper={handleSwiper}
           navigation={{
             nextEl: nextRef.current,
             prevEl: prevRef.current,
           }}
-          modules={[Navigation, Pagination]}
+          autoplay={{
+            delay: 0, // 슬라이드 간 지연 없이 계속 이동
+            disableOnInteraction: false, // 사용자 상호작용 이후에도 자동 슬라이드 유지
+          }}
+          speed={10000} // 15초 동안 슬라이드가 부드럽게 계속 이동
+          loop={true} // 루프 설정
+          modules={[Navigation, Pagination, Autoplay]} // Autoplay 모듈 포함
         >
           {movieImg.map((img, index) => (
             <SwiperSlide

@@ -93,7 +93,7 @@ const RecommendPage: React.FC = () => {
         <img
           src={left_left_door}
           alt="left_left_door"
-          className={`absolute h-[54.5vh] w-[8.5vw] door ${
+          className={`absolute h-[54.5vh] w-[8.5vw] door left-door-hover ${
             isLeftOpen ? "open-left" : ""
           }`}
           style={{
@@ -119,7 +119,7 @@ const RecommendPage: React.FC = () => {
         <img
           src={right_left_door}
           alt="right_left_door"
-          className={`absolute h-[54.5vh] w-[8.3vw] door ${
+          className={`absolute h-[54.5vh] w-[8.3vw] door left-door-hover ${
             isRightOpen ? "open-left" : ""
           }`}
           style={{
