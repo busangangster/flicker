@@ -12,7 +12,6 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer reviewSeq;
-
     private Integer userSeq;
     private Integer movieSeq;
     private Double reviewRating;
@@ -21,6 +20,8 @@ public class Review {
     private LocalDateTime createdAt;
     private Boolean isSpoiler;
     private Integer isActive;
+
+    private Double sentimentScore;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikeReview> likeReviews;

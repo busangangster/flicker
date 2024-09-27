@@ -51,13 +51,13 @@ public class ReviewController {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
         }
 
-        return ResponseDto.response(StatusCode.SUCCESS, "리뷰가 삭젠 되었습니다.");
+        return ResponseDto.response(StatusCode.SUCCESS, "리뷰가 삭제 되었습니다.");
     }
 
     // 리뷰 좋아요 등록
-    @PostMapping("/{reviewSeq}")
+    @PostMapping("/likeReview")
     public ResponseEntity<ResponseDto> addLikeReview(@RequestBody AddLikeReviewReqDto dto) {
-        if(dto.getLikeReviewSeq() == null || dto.getUserSeq() == null){
+        if(dto.getUserSeq() == null || dto.getReviewSeq() == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
 
@@ -68,14 +68,14 @@ public class ReviewController {
         return ResponseDto.response(StatusCode.SUCCESS,"리뷰 좋아요 성공");
     }
     // 리뷰 좋아요 삭제
-    @DeleteMapping("/{reviewSeq}")
+    @DeleteMapping("/likeReview")
     public ResponseEntity<ResponseDto> removeLikeReview(@RequestBody RemoveLikeReviewReqDto dto) {
-        if(dto.getLikeReviewSeq() == null || dto.getUserSeq() == null){
+        if(dto.getUserSeq() == null || dto.getReviewSeq() == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
 
         if(!reviewService.removeLikeReview(dto)){
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
+            throw new RestApiException(StatusCode.UNAUTHORIZED_REQUEST,"자신의 리뷰 좋아요만 삭제할 수 있습니다.");
         }
 
         return ResponseDto.response(StatusCode.SUCCESS,"리뷰 좋아요 취소 성공");

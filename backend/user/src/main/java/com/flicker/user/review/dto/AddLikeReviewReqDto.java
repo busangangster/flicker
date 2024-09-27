@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class AddLikeReviewReqDto {
-    private Integer likeReviewSeq;
+    private Integer reviewSeq;
     private Integer userSeq;
 }

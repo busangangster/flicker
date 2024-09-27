@@ -48,7 +48,7 @@ public class ReviewService {
 
     @Transactional
     public boolean addLikeReview(AddLikeReviewReqDto dto){
-        Review review = reviewRepository.findById(dto.getLikeReviewSeq())
+        Review review = reviewRepository.findById(dto.getReviewSeq())
                 .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_REVIEW));
 
         return review.addLikeReview(dto.getUserSeq());
@@ -56,12 +56,14 @@ public class ReviewService {
 
     @Transactional
     public boolean removeLikeReview(RemoveLikeReviewReqDto dto){
-        Review review = reviewRepository.findById(dto.getLikeReviewSeq())
+        Review review = reviewRepository.findById(dto.getReviewSeq())
                 .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_REVIEW));
         return review.removeLikeReview(dto.getUserSeq());
     }
 
     public List<Review> getMovieReviews(Integer movieSeq){
+        List<Review> allByMovieSeq = reviewRepository.findAllByMovieSeq(movieSeq);
+        System.out.println("allByMovieSeq = " + allByMovieSeq);
         return reviewRepository.findAllByMovieSeq(movieSeq);
     }
 
