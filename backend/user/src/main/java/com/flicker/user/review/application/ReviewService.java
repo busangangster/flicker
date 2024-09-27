@@ -6,11 +6,16 @@ import com.flicker.user.review.domain.ReviewConverter;
 import com.flicker.user.review.domain.entity.Review;
 import com.flicker.user.review.dto.*;
 import com.flicker.user.review.infrastructure.ReviewRepository;
-import com.flicker.user.user.domain.entity.User;
+import com.flicker.user.user.application.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReviewService {
 
+    private final UserService userService;
     private final ReviewRepository reviewRepository;
     private final ReviewConverter reviewConverter;
 
@@ -60,19 +66,54 @@ public class ReviewService {
         return review.removeLikeReview(dto.getUserSeq());
     }
 
-    public List<ReviewDto> getMovieReviews(Integer movieSeq){
+    public List<ReviewDto> getMovieReviews(Integer movieSeq, Integer myUserSeq, String option, Pageable pageable) {
 
-        List<Review> allByMovieSeq = reviewRepository.findAllByMovieSeq(movieSeq);
-        List<ReviewDto> reviewDtos = reviewConverter.reviewListToReviewDtoList(allByMovieSeq);
+        Pageable sortedPageable;
+        if ("like".equals(option)) {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes"));
+        } else {
+            // 생성일 기준으로 최신순
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
 
-        System.out.println(reviewDtos);
-        return reviewDtos;
+        Page<Review> allByMovieSeq = reviewRepository.findAllByMovieSeq(movieSeq, sortedPageable);
+
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
+
+        for (Review review : allByMovieSeq.getContent()) {
+    //        System.out.println("review.getUserSeq() = " + review.getUserSeq());
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            reviewDtoList.add(reviewDto);
+        }
+
+        return reviewDtoList;
     }
 
-    public List<ReviewDto> getUserReviews(Integer userSeq){
+    public List<ReviewDto> getPopularMovieReviews(Integer movieSeq, Integer myUserSeq) {
+        List<Review> result = reviewRepository.findTop3ByMovieSeqAndIsSpoilerFalseOrderByLikesDesc(movieSeq);
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
+        for(Review review : result){
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            reviewDtoList.add(reviewDto);
+        }
+        return reviewDtoList;
+    }
+
+
+
+    public List<ReviewDto> getUserReviews(Integer userSeq, Integer myUserSeq){
 
         List<Review> allByUserSeq = reviewRepository.findAllByUserSeq(userSeq);
-        List<ReviewDto> reviewDtos = reviewConverter.reviewListToReviewDtoList(allByUserSeq);
+        List<ReviewDto> reviewDtos = new ArrayList<>();
+
+        for(Review review : allByUserSeq){
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            reviewDtos.add(reviewDto);
+        }
+
         System.out.println(reviewDtos);
 
         return reviewDtos;

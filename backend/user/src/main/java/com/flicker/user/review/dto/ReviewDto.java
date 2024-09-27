@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 public class ReviewDto {
     private Integer reviewSeq;
     private Integer userSeq;
+    private String nickname;
     private Integer movieSeq;
     private Double reviewRating;
 
     private String content;
     private LocalDateTime createdAt;
-    private Boolean isSpoiler;
-    private Integer isActive;
+    private Boolean spoiler;
+    private Integer likes;
+    private boolean liked;
 }

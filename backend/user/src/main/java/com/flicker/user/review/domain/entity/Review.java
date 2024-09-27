@@ -18,7 +18,7 @@ public class Review {
     private Integer movieSeq;
     private Double reviewRating;
 
-    @Column(length = 65535)
+    @Column(length = 5000)
     private String content;
     private LocalDateTime createdAt;
     private Boolean isSpoiler;
@@ -35,6 +35,7 @@ public class Review {
         for(LikeReview likeReview : likeReviews){
             if(likeReview.getUserSeq().equals(userSeq)){
                 likeReviews.remove(likeReview);
+                this.likes--;
                 return true;
             }
         }
@@ -52,6 +53,7 @@ public class Review {
         LikeReview likeReview = new LikeReview(userSeq);
         likeReview.updateReview(this);
         likeReviews.add(likeReview);
+        this.likes++;
 
         return true;
     }

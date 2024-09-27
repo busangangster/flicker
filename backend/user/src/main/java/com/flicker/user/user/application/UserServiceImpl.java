@@ -110,7 +110,21 @@ public class UserServiceImpl implements UserService{
         return true;
     }
 
+    @Override
+    public String getNicknameByUserSeq(Integer userSeq) {
 
+
+        Optional<User> byId = userRepository.findById(userSeq);
+
+//        System.out.println("byId.isPresent() = " + byId.isPresent());
+        
+        if(byId.isPresent()) {
+            User user = byId.get();
+            return user.getNickname();
+        }
+
+        throw new RestApiException(StatusCode.NOT_FOUND);
+    }
 
     @Override
     @Transactional
