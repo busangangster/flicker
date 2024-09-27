@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -753,8 +754,11 @@ public class BffMovieService {
                                     return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 선호 영화 제목 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                 }
                                 // 3. 추천 서버로 사용자 선호 영화 제목들을 전송
+                                List<MovieTitlesResponse> movieTitlesResponse = likeMovieTitles.stream()
+                                        .map(MovieTitlesResponse::new)
+                                        .collect(Collectors.toList());
                                 String recommendationPath = util.getUri("/list/recommendation/like");
-                                return util.sendPostRequestAsync(recommendBaseUrl, recommendationPath, likeMovieTitles)
+                                return util.sendPostRequestAsync(recommendBaseUrl, recommendationPath, movieTitlesResponse)
                                         .flatMap(recommendResponse -> {
                                             String recommendResponseDtoJson;
                                             try {
