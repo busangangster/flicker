@@ -89,7 +89,18 @@ public class BffClientController {
         reviewDto.liked = false;
         reviewDto.createdAt = LocalDateTime.now();
         reviewList.add(reviewDto);
-        
+
+        reviewDto = new ReviewDto();
+        reviewDto.reviewSeq = 4;
+        reviewDto.nickname = "jaechan";
+        reviewDto.reviewRating = 4.5;
+        reviewDto.content = "감동을 2배 더 느낄 수 있음";
+        reviewDto.spoiler = true;
+        reviewDto.likes = 345;
+        reviewDto.liked = false;
+        reviewDto.createdAt = LocalDateTime.now();
+        reviewList.add(reviewDto);
+
         boardingPageDto.setReviewList(reviewList);
 
         List<RecommendMovieDto> recommendMovieDtos = new ArrayList<>();
@@ -190,6 +201,17 @@ public class BffClientController {
 
         reviewDto = new ReviewDto();
         reviewDto.reviewSeq = 23;
+        reviewDto.nickname = "jaechan";
+        reviewDto.reviewRating = 4.5;
+        reviewDto.content = "감동을 2배 더 느낄 수 있음";
+        reviewDto.spoiler = true;
+        reviewDto.likes = 345;
+        reviewDto.liked = false;
+        reviewDto.createdAt = LocalDateTime.now();
+        reviewList.add(reviewDto);
+
+        reviewDto = new ReviewDto();
+        reviewDto.reviewSeq = 4;
         reviewDto.nickname = "jaechan";
         reviewDto.reviewRating = 4.5;
         reviewDto.content = "감동을 2배 더 느낄 수 있음";
