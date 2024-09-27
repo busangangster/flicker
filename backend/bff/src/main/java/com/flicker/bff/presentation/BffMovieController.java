@@ -84,7 +84,7 @@ public class BffMovieController {
     }
 
     // 행동 기반 추천 영화 목록 조회
-    @GetMapping("/list/recommendation/{userSeq}")
+    @GetMapping("/list/recommendation/action/{userSeq}")
     public Mono<ResponseEntity<ResponseDto>> getActionRecommendationList(@PathVariable int userSeq) {
         return bffMovieService.getActionRecommendationListAsync(userSeq);
     }
@@ -94,6 +94,7 @@ public class BffMovieController {
     public Mono<ResponseEntity<ResponseDto>> getReviewRecommendationList(@PathVariable int userSeq) {
         return bffMovieService.getReviewRecommendationList(userSeq);
     }
+
 
     // 1일 기준 TOP 10 영화 목록 조회
     @GetMapping("/list/top10")

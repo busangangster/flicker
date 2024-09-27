@@ -492,7 +492,7 @@ public class BffMovieService {
                     }
                     // 사용자의 리뷰가 없을 경우 처리
                     if (recommendReviews == null || recommendReviews.isEmpty()) {
-                        return Mono.just(ResponseDto.response(StatusCode.NO_CONTENT, "사용자의 리뷰가 없습니다."));
+                        return getLikeRecommendationList(userSeq);
                     }
                     // 2. 추천 서버로 사용자의 리뷰 목록을 전송하고, Top-N 사용자 리스트를 가져옴
                     String recommendationPath = util.getUri("/list/recommendation/rating");
@@ -528,7 +528,7 @@ public class BffMovieService {
                                 }
                                 // Top-N 사용자가 없을 경우 처리
                                 if (topNUserSeqs == null || topNUserSeqs.isEmpty()) {
-                                    return Mono.just(ResponseDto.response(StatusCode.NO_CONTENT, "Top-N 사용자가 없습니다."));
+                                    return getLikeRecommendationList(userSeq);
                                 }
                                 // 3. 유저-리뷰 서버에서 Top-N 사용자의 리뷰 감성 점수 목록을 가져옴
                                 String userReviewListPath = util.getUri("/list/review/sentiment");
@@ -684,4 +684,186 @@ public class BffMovieService {
         // 2. GET 요청 메서드를 사용하여 외부 API에 요청을 보냅니다.
         return util.sendGetRequestAsync(movieBaseUrl, path);
     }
+
+
+    // TODO: 선호 기반 영화 추천 ( 경로 수정 )
+    private Mono<ResponseEntity<ResponseDto>> getLikeRecommendationList(int userSeq) {
+        // 1. 사용자 선호 영화 목록 조회
+        String likeMoviePath = util.getUri("/list/like/" + userSeq);
+        return util.sendGetRequestAsync(userBaseUrl, likeMoviePath)
+                .flatMap(likeResponse -> {
+                    String likeResponseDtoJson;
+                    try {
+                        // likeResponse.getBody()가 null인지 확인하고 toString() 처리
+                        likeResponseDtoJson = Objects.requireNonNull(likeResponse.getBody()).toString();
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "LikeResponseDtoJson: likeResponse.getBody()가 null입니다." + e.getMessage()));
+                    }
+                    ResponseDto likeResponseDto;
+                    try {
+                        // JSON 데이터를 ResponseDto로 역직렬화
+                        likeResponseDto = objectMapper.readValue(likeResponseDtoJson, ResponseDto.class);
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 선호 영화 번호 목록 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                    }
+                    // 상태 코드가 성공이 아닌 경우 처리
+                    if (likeResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                        return Mono.error(new RestApiException(
+                                StatusCode.of(likeResponseDto.getHttpStatus(), likeResponseDto.getServiceStatus(), likeResponseDto.getMessage()),
+                                likeResponseDto.getData()
+                        ));
+                    }
+                    List<Integer> likeMovieSeqs;
+                    try {
+                        // likeResponseDto의 데이터 필드를 List<Integer>로 변환
+                        likeMovieSeqs = objectMapper.convertValue(likeResponseDto.getData(), new TypeReference<List<Integer>>() {});
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                    }
+
+                    // 2. 영화서버에서 선호 영화 목록의 제목리스트를 조회
+                    String likeMovieListPath = util.getUri("/list/movieId");
+                    return util.sendPostRequestAsync(movieBaseUrl, likeMovieListPath, likeMovieSeqs)
+                            .flatMap(likeMovieListResponse -> {
+                                String likeMovieListResponseDtoJson;
+                                try {
+                                    // movieListResponse.getBody()가 null인지 확인하고 toString() 처리
+                                    likeMovieListResponseDtoJson = Objects.requireNonNull(likeMovieListResponse.getBody()).toString();
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MovieListResponseDtoJson: movieListResponse.getBody()가 null입니다." + e.getMessage()));
+                                }
+                                ResponseDto likeMovieListResponseDto;
+                                try {
+                                    // JSON 데이터를 ResponseDto로 역직렬화
+                                    likeMovieListResponseDto = objectMapper.readValue(likeMovieListResponseDtoJson, ResponseDto.class);
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 선호 영화 제목 목록 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                }
+                                // 상태 코드가 성공이 아닌 경우 처리
+                                if (likeMovieListResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                                    return Mono.error(new RestApiException(
+                                            StatusCode.of(likeMovieListResponseDto.getHttpStatus(), likeMovieListResponseDto.getServiceStatus(), likeMovieListResponseDto.getMessage()),
+                                            likeMovieListResponseDto.getData()
+                                    ));
+                                }
+                                List<MovieListResponse> likeMovieTitles;
+                                try {
+                                    likeMovieTitles = objectMapper.convertValue(likeMovieListResponseDto.getData(), new TypeReference<List<MovieListResponse>>() {});
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 선호 영화 제목 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                }
+                                // 3. 추천 서버로 사용자 선호 영화 제목들을 전송
+                                String recommendationPath = util.getUri("/list/recommendation/like");
+                                return util.sendPostRequestAsync(recommendBaseUrl, recommendationPath, likeMovieTitles)
+                                        .flatMap(recommendResponse -> {
+                                            String recommendResponseDtoJson;
+                                            try {
+                                                // recommendResponse.getBody()가 null인지 확인하고 toString() 처리
+                                                recommendResponseDtoJson = Objects.requireNonNull(recommendResponse.getBody()).toString();
+                                            } catch (Exception e) {
+                                                return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "RecommendResponseDtoJson: recommendResponse.getBody()가 null입니다." + e.getMessage()));
+                                            }
+                                            ResponseDto recommendResponseDto;
+                                            try {
+                                                // JSON 데이터를 ResponseDto로 역직렬화
+                                                recommendResponseDto = objectMapper.readValue(recommendResponseDtoJson, ResponseDto.class);
+                                            } catch (Exception e) {
+                                                return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "선호 영화 기반 추천 영화 목록 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                            }
+                                            // 상태 코드가 성공이 아닌 경우 처리
+                                            if (recommendResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                                                return Mono.error(new RestApiException(
+                                                        StatusCode.of(recommendResponseDto.getHttpStatus(), recommendResponseDto.getServiceStatus(), recommendResponseDto.getMessage()),
+                                                        recommendResponseDto.getData()
+                                                ));
+                                            }
+                                            List<Integer> movieSeqList;
+                                            try {
+                                                // recommendResponseDto의 데이터 필드를 List<Integer>로 변환
+                                                movieSeqList = objectMapper.convertValue(recommendResponseDto.getData(), new TypeReference<List<Integer>>() {});
+                                            } catch (Exception e) {
+                                                return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "선호 영화 기반 추천 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                            }
+                                            // 4. 사용자 비선호 영화 목록 조회
+                                            String unlikeMoviePath = util.getUri("/list/unlike/" + userSeq);
+                                            return util.sendGetRequestAsync(userBaseUrl, unlikeMoviePath)
+                                                    .flatMap(unlikeResponse -> {
+                                                        String unlikeResponseDtoJson;
+                                                        try {
+                                                            // unlikeResponse.getBody()가 null인지 확인하고 toString() 처리
+                                                            unlikeResponseDtoJson = Objects.requireNonNull(unlikeResponse.getBody()).toString();
+                                                        } catch (Exception e) {
+                                                            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "UnlikeResponseDtoJson: unlikeResponse.getBody()가 null입니다." + e.getMessage()));
+                                                        }
+                                                        ResponseDto unlikeResponseDto;
+                                                        try {
+                                                            // JSON 데이터를 ResponseDto로 역직렬화
+                                                            unlikeResponseDto = objectMapper.readValue(unlikeResponseDtoJson, ResponseDto.class);
+                                                        } catch (Exception e) {
+                                                            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 번호 목록 Body을 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                                        }
+                                                        // 상태 코드가 성공이 아닌 경우 처리
+                                                        if (unlikeResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                                                            return Mono.error(new RestApiException(
+                                                                    StatusCode.of(unlikeResponseDto.getHttpStatus(), unlikeResponseDto.getServiceStatus(), unlikeResponseDto.getMessage()),
+                                                                    unlikeResponseDto.getData()
+                                                            ));
+                                                        }
+                                                        List<Integer> unlikeMovieSeqs;
+                                                        try {
+                                                            // unlikeResponseDto의 데이터 필드를 List<Integer>로 변환
+                                                            unlikeMovieSeqs = objectMapper.convertValue(unlikeResponseDto.getData(), new TypeReference<List<Integer>>() {
+                                                            });
+                                                        } catch (Exception e) {
+                                                            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                                        }
+                                                        // 5. 영화 서버에서 영화 목록 조회 후 반환
+                                                        RecommendMovieListRequest recommendMovieListRequest = new RecommendMovieListRequest(movieSeqList, unlikeMovieSeqs);
+                                                        String movieListPath = util.getUri("/list/recommendation");
+                                                        return util.sendPostRequestAsync(movieBaseUrl, movieListPath, recommendMovieListRequest)
+                                                                .flatMap(movieListResponse -> {
+                                                                    String movieListResponseDtoJson;
+                                                                    try {
+                                                                        // movieListResponse.getBody()가 null인지 확인하고 toString() 처리
+                                                                        movieListResponseDtoJson = Objects.requireNonNull(movieListResponse.getBody()).toString();
+                                                                    } catch (Exception e) {
+                                                                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MovieListResponseDtoJson: movieListResponse.getBody()가 null입니다." + e.getMessage()));
+                                                                    }
+                                                                    ResponseDto movieListResponseDto;
+                                                                    try {
+                                                                        // JSON 데이터를 ResponseDto로 역직렬화
+                                                                        movieListResponseDto = objectMapper.readValue(movieListResponseDtoJson, ResponseDto.class);
+                                                                    } catch (Exception e) {
+                                                                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "선호 영화 기반 추천 영화 목록 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                                                    }
+                                                                    // 상태 코드가 성공이 아닌 경우 처리
+                                                                    if (movieListResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                                                                        return Mono.error(new RestApiException(
+                                                                                StatusCode.of(movieListResponseDto.getHttpStatus(), movieListResponseDto.getServiceStatus(), movieListResponseDto.getMessage()),
+                                                                                movieListResponseDto.getData()
+                                                                        ));
+                                                                    }
+                                                                    List<MovieListResponse> movieListResponses;
+                                                                    try {
+                                                                        // movieListResponseDto의 데이터 필드를 List<MovieListResponse>로 변환
+                                                                        movieListResponses = objectMapper.convertValue(movieListResponseDto.getData(), new TypeReference<List<MovieListResponse>>() {
+                                                                        });
+                                                                    } catch (Exception e) {
+                                                                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "선호 영화 기반 추천 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                                                    }
+                                                                    // 변환된 목록을 반환
+                                                                    return Mono.just(ResponseDto.response(StatusCode.SUCCESS, movieListResponses));
+                                                                });
+                                            });
+                                });
+                    });
+        }).onErrorResume(e -> {
+            if (e instanceof RestApiException ex) {
+                return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
+            } else {
+                return Mono.just(ResponseDto.response(StatusCode.UNKNOW_ERROR, "선호 영화 기반 추천을 가져오는데 알 수 없는 오류 발생: " + e.getMessage()));
+            }
+        });
+    }
+
 }
