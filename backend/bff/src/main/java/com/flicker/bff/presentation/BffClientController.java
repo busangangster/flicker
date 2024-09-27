@@ -66,23 +66,25 @@ public class BffClientController {
 
         List<ReviewDto> reviewList = new ArrayList<>();
         ReviewDto reviewDto = new ReviewDto();
+        reviewDto.reviewSeq = 1;
         reviewDto.nickname = "busangangstar";
         reviewDto.reviewRating = 5.0;
         reviewDto.content = "탑건1(1986년)의 36년만의 나온 속편. \n" +
                 "매우 만족 스러웠고 매우 재밌었다 무조건 특별관에서 봐야되는 영화 2022년 개봉작 영화중에서 범죄도시2 이후 2번째로 \n" +
                 "엄청 좋았던 영화 톰 크루즈 미모는 여전히 잘생겼다 1편을 보고 가야되는 질문에서 답을 하자면 \n" +
                 "1편 보고 가는게 더 좋다 감동도 2배 더 느낄 수 있음";
-        reviewDto.isSpoiler = false;
+        reviewDto.spoiler = false;
         reviewDto.likes = 12333;
         reviewDto.liked = true;
         reviewDto.createdAt = LocalDateTime.now();
         reviewList.add(reviewDto);
 
         reviewDto = new ReviewDto();
+        reviewDto.reviewSeq = 3;
         reviewDto.nickname = "jaechan";
         reviewDto.reviewRating = 4.5;
         reviewDto.content = "감동을 2배 더 느낄 수 있음";
-        reviewDto.isSpoiler = true;
+        reviewDto.spoiler = true;
         reviewDto.likes = 345;
         reviewDto.liked = false;
         reviewDto.createdAt = LocalDateTime.now();
@@ -153,6 +155,7 @@ public class BffClientController {
 
         List<ReviewDto> reviewList = new ArrayList<>();
         ReviewDto reviewDto = new ReviewDto();
+        reviewDto.reviewSeq = 7;
         reviewDto.nickname = "busangangstar";
         reviewDto.reviewRating = 5.0;
         reviewDto.content = "나도 3000만큼 사랑해\n" +
@@ -179,17 +182,18 @@ public class BffClientController {
                 "# Whatever it takes\n" +
                 "# Avengers 4 : End Game\n" +
                 "   어벤져스 4 : 가망없음";
-        reviewDto.isSpoiler = false;
+        reviewDto.spoiler = false;
         reviewDto.likes = 12333;
         reviewDto.liked = true;
         reviewDto.createdAt = LocalDateTime.now();
         reviewList.add(reviewDto);
 
         reviewDto = new ReviewDto();
+        reviewDto.reviewSeq = 23;
         reviewDto.nickname = "jaechan";
         reviewDto.reviewRating = 4.5;
         reviewDto.content = "감동을 2배 더 느낄 수 있음";
-        reviewDto.isSpoiler = true;
+        reviewDto.spoiler = true;
         reviewDto.likes = 345;
         reviewDto.liked = false;
         reviewDto.createdAt = LocalDateTime.now();
