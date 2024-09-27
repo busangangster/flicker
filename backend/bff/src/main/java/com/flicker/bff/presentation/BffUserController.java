@@ -2,7 +2,6 @@ package com.flicker.bff.presentation;
 
 import com.flicker.bff.application.BffUserService;
 import com.flicker.bff.common.module.response.ResponseDto;
-import com.flicker.bff.dto.MovieCreateRequest;
 import com.flicker.bff.dto.user.MovieReviewReqDto;
 import com.flicker.bff.dto.user.UserRegisterReqDto;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,7 @@ public class BffUserController {
     @PostMapping()
     public Mono<ResponseEntity<ResponseDto>> registerUser(@RequestBody UserRegisterReqDto request) {
 //        return userService.(request);
+        System.out.println("회원가입 요청");
         return userService.registerUser(request);
     }
     // 2. 로그인
@@ -31,6 +31,9 @@ public class BffUserController {
     // 5. 리뷰 목록
     @GetMapping("/movies/{movieSeq}")
     public Mono<ResponseEntity<ResponseDto>> getMovieReview(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq) {
+        System.out.println("리뷰 목록 요청");
+        System.out.println("movieSeq = " + movieSeq);
+        System.out.println("myUserSeq = " + myUserSeq);
         MovieReviewReqDto dto = new MovieReviewReqDto();
         dto.setMovieSeq(movieSeq);
         dto.setUserSeq(myUserSeq);
