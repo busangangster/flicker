@@ -18,6 +18,7 @@ public class Review {
     private Integer movieSeq;
     private Double reviewRating;
 
+    @Column(length = 65535)
     private String content;
     private LocalDateTime createdAt;
     private Boolean isSpoiler;
