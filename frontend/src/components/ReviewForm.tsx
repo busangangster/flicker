@@ -65,15 +65,14 @@ const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
     }
     const newReview = {
       reviewSeq: Date.now(),
-      userSeq: 999,
-      movieId: 101,
       reviewRating: rating,
       content: content,
       createdAt: new Date().toISOString(),
-      isSpoiler: isSpoiler,
+      spoiler: isSpoiler,
       likes: 0,
       liked: false,
       nickname: currentUserNickname,
+      top: false,
     };
     onSubmit(newReview);
     setIsFormSubmitted(true); // 폼이 제출되면 폼을 숨김

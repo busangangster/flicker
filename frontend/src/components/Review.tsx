@@ -5,20 +5,24 @@ import starHalf from "../assets/review/star_half.png";
 import star_outline from "../assets/review/star_outline.png";
 import thumbUpOutline from "../assets/review/thumb_up_outline.png";
 import thumbUp from "../assets/review/thumb_up.png";
-import { ReviewType } from "../type";
-
-interface ReviewProps {
-  review: ReviewType;
-  onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
-}
+import { ReviewProps } from "../type";
 
 const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {
-  const [showContent, setShowContent] = React.useState(!review.isSpoiler); // 스포일러 여부에 따른 내용 표시 여부
+  const [showContent, setShowContent] = React.useState(!review.spoiler); // 스포일러 여부에 따른 내용 표시 여부
+  const MAX_LENGTH = 250; // 최대 길이 설정
+  const isLongContent = review.content.length > MAX_LENGTH;
+  const [showMore, setShowMore] = React.useState(false); // '더보기' 버튼을 눌렀는지 여부
 
   const toggleContent = () => {
-    if (review.isSpoiler) {
+    console.log("스포일러 토글 클릭됨"); // 함수가 호출되는지 확인
+    if (review.spoiler) {
       setShowContent((prev) => !prev);
+      console.log("showContent 상태:", !showContent); // 상태가 잘 변경되는지 확인
     }
+  };
+
+  const toggleShowMore = () => {
+    setShowMore((prev) => !prev);
   };
 
   return (
@@ -80,9 +84,21 @@ const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {
           </div>
           {/* 리뷰 내용 표시 */}
           {showContent ? (
-            <p className="text-white mt-1 mb-1" onClick={toggleContent}>
-              {review.content}
-            </p>
+            <>
+              <p className="text-white mt-1 mb-1" onClick={toggleContent}>
+                {showMore || !isLongContent
+                  ? review.content
+                  : review.content.slice(0, MAX_LENGTH)}
+                {isLongContent && (
+                  <button
+                    className="text-gray-400 ml-2 underline"
+                    onClick={toggleShowMore}
+                  >
+                    {showMore ? "접기" : "더보기"}
+                  </button>
+                )}
+              </p>
+            </>
           ) : (
             <p
               className="text-gray-400 cursor-pointer mt-1 mb-1"

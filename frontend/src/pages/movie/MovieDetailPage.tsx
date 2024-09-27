@@ -7,55 +7,20 @@ import MoviesList from "../../components/MoviesList";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMovieDetail } from "../../apis/axios";
-
-// API에서 반환되는 데이터 타입 정의
-interface MovieDetail {
-  bookMarkedMovie: boolean;
-  movie: {
-    movieSeq: number;
-    movieDetail: {
-      movieTitle: string;
-      director: string;
-      genre: string;
-      country: string;
-      moviePlot: string;
-      audienceRating: string;
-      movieYear: number;
-      runningTime: string;
-      moviePosterUrl: string;
-      trailerUrl: string;
-      backgroundUrl: string;
-    };
-    movieRating: number;
-    actors: {
-      actorName: string;
-      role: string;
-    }[];
-  };
-  reviewList: {
-    nickname: string;
-    reviewRating: number;
-    content: string;
-    isSpoiler: boolean;
-    likes: number;
-    liked: boolean;
-  }[];
-  recommendedMovieList: {
-    movieSeq: number;
-    moviePosterUrl: string;
-  }[];
-  likeMovie: boolean;
-}
+import PlotModal from "../../components/PlotModal";
+import { MovieDetail } from "../../type";
+import Review from "../../components/Review";
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [interestOption, setInterestOption] = useState("관심 없음");
   const [isLiked, setIsLiked] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("배우");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const movieId = 1;
+  const movieId = 2;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,11 +57,37 @@ const MovieDetailPage: React.FC = () => {
   if (!data) return null; // data가 undefined일 경우를 처리
 
   const {
-    isLikeMovie,
     movie: { movieDetail, movieRating, actors },
     reviewList,
     recommendedMovieList,
   } = data;
+
+  console.log(reviewList);
+
+  const MAX_LENGTH = 250;
+  const isLongText = movieDetail.moviePlot.length > MAX_LENGTH;
+  const displayedText = movieDetail.moviePlot.slice(0, MAX_LENGTH);
+
+  const extractVideoId = (url: string) => {
+    const videoIdMatch = url.match(
+      /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
+    );
+    return videoIdMatch ? videoIdMatch[1] : null;
+  };
+
+  const videoId = extractVideoId(movieDetail.trailerUrl);
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const toggleHeart = () => {
     setIsLiked((prev) => !prev);
@@ -117,6 +108,40 @@ const MovieDetailPage: React.FC = () => {
     setIsDropdownOpen(false);
   };
 
+  const renderCategoryContent = () => {
+    switch (selectedCategory) {
+      case "배우":
+        return (
+          <div className="flex flex-wrap gap-2 mt-6">
+            {actors.map((actor, index) => (
+              <span
+                key={index}
+                className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10"
+              >
+                {actor.actorName}
+              </span>
+            ))}
+          </div>
+        );
+      case "감독":
+        return (
+          <div className="flex flex-wrap gap-2 mt-6">
+            <span className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10">
+              {movieDetail.director}
+            </span>
+          </div>
+        );
+      case "장르":
+        return (
+          <div className="flex flex-wrap gap-2 mt-6">
+            <span className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10">
+              {movieDetail.genre}
+            </span>
+          </div>
+        );
+    }
+  };
+
   // 드롭다운 외부 클릭 시 닫히도록 설정
 
   return (
@@ -134,7 +159,7 @@ const MovieDetailPage: React.FC = () => {
           <Navbar />
         </header>
         {/* Top section */}
-        <div className="relative flex items-end text-white p-3 w-[1100px] h-[480px] bg-transparent ml-[50px] mt-[100px] overflow-hidden">
+        <div className="relative flex items-end text-white p-3 w-[1100px] h-[480px] bg-transparent ml-[50px] mt-[120px] overflow-hidden">
           {/* Left Section: Movie Poster and Details */}
           <div className="flex flex-col lg:flex-row">
             <img
@@ -143,16 +168,19 @@ const MovieDetailPage: React.FC = () => {
               className="w-[270px] h-[410px] shadow-md border"
             />
             <div className="mt-4 ml-[60px] flex-1">
-              <div className="flex">
-                <h2 className="text-4xl font-bold flex items-center">
-                  {movieDetail.movieTitle}
-                  <span className="flex items-end ml-4">
+              <div className="flex items-center justify-between w-full">
+                <h2 className="text-4xl font-bold flex-1 flex items-center overflow-hidden">
+                  {/* 제목 영역 확장 및 텍스트 줄임표 처리 */}
+                  <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                    {movieDetail.movieTitle}
+                  </span>
+                  <span className="flex items-end ml-4 flex-shrink-0">
                     <span className="text-blue-500 text-2xl">⭐</span>
                     <span className="text-2xl">{movieRating}</span>
                   </span>
                 </h2>
                 <div
-                  className="flex items-end ml-[400px] relative"
+                  className="flex items-end ml-auto relative flex-shrink-0" // 오른쪽 끝으로 정렬 및 고정 위치
                   ref={dropdownRef}
                 >
                   <svg
@@ -184,24 +212,49 @@ const MovieDetailPage: React.FC = () => {
                   </button>
                 </div>
               </div>
-
-              <p className="mt-6 text-lg">{movieDetail.moviePlot}</p>
-
-              <div className="flex w-full h-[40px] bg-transparent border-b border-opacity-50 border-white text-white justify-start items-center space-x-4 mt-4">
-                <div className="font-bold text-[18px]">배우</div>
-                <div className="font-bold text-[18px]">감독</div>
-                <div className="font-bold text-[18px]">장르</div>
+              <div className="flex mt-4 text-white text-[16px]">
+                <div lang="ko" className="lang=ko flex items-center ">
+                  <span>{movieDetail.movieYear}</span>
+                  <span className="px-4 text-gray-200">|</span>
+                </div>
+                <div lang="ko" className=" flex items-center">
+                  <span>{movieDetail.runningTime}</span>
+                  <span className="px-4 text-gray-200">|</span>
+                </div>
+                <div lang="ko" className="lang=ko flex items-center">
+                  <span>{movieDetail.audienceRating}</span>
+                </div>
               </div>
-
-              <div className="flex flex-wrap gap-2 mt-6">
-                {actors.map((actor, index) => (
-                  <span
-                    key={index}
-                    className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10" // z-index: 10, 네비게이션 바보다 낮음
-                  >
-                    {actor.actorName}
-                  </span>
-                ))}
+              <p className="mt-4 text-lg">
+                {displayedText}
+                {isLongText && (
+                  <button className="text-gray-400 ml-2" onClick={openModal}>
+                    더보기
+                  </button>
+                )}
+              </p>
+              <PlotModal
+                isopen={isModalOpen}
+                onClose={closeModal}
+                movieDetail={data}
+              />
+              <div>
+                <div className="flex w-full h-[40px] bg-transparent border-b border-opacity-50 border-white text-white justify-start items-center space-x-4 mt-4 cursor-pointer">
+                  {["배우", "감독", "장르"].map((category) => (
+                    <div
+                      key={category}
+                      onClick={() => handleCategorySelect(category)}
+                      className={`font-bold text-[18px] mt-[10px] *:cursor-pointer ${
+                        selectedCategory === category
+                          ? "border-b-2 border-white"
+                          : ""
+                      }`}
+                    >
+                      {category}
+                    </div>
+                  ))}
+                </div>
+                {renderCategoryContent()}
               </div>
             </div>
           </div>
@@ -210,30 +263,26 @@ const MovieDetailPage: React.FC = () => {
 
       {/* 리뷰 섹션 */}
       <div className="flex">
-        <div className="p-4 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
-          <div className="flex w-[800px] justify-between">
+        <div className="p-1 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
+          <div className="flex w-full justify-between items-center">
             <h3 className="text-2xl font-bold text-white">Reviews</h3>
             <div
-              className="text-white flex ml-auto items-end cursor-pointer italic underline"
+              className="text-white flex ml-auto items-center cursor-pointer italic underline"
               onClick={goToReview}
             >
               more
             </div>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
-            {reviewList.map((review, index) => (
-              <div key={index} className="flex items-start space-x-2">
-                <div className="bg-gray-800 w-8 h-8 flex items-center justify-center rounded-full">
-                  <span className="text-white font-bold">
-                    {review.nickname[0]}
-                  </span>
-                </div>
-                <p className="flex-1">
-                  <strong>{review.nickname}</strong> • {review.reviewRating} ⭐️
-                  <br />
-                  {review.content}
-                </p>
-              </div>
+            {reviewList.map((review) => (
+              <Review
+                key={review.reviewSeq}
+                review={review}
+                liked={review.liked}
+                likes={review.likes}
+                nickname={review.nickname}
+                // onLikeToggle={handleLikeToggle}
+              />
             ))}
           </div>
         </div>
@@ -242,7 +291,7 @@ const MovieDetailPage: React.FC = () => {
         <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
           <div className="relative w-full max-w-4xl h-full">
             <iframe
-              src={movieDetail.trailerUrl}
+              src={`${movieDetail.trailerUrl}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
               title="YouTube video player"
               className="w-full h-full rounded-lg shadow-md"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
