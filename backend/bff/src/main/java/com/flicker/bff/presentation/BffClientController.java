@@ -1,12 +1,10 @@
 package com.flicker.bff.presentation;
 
-import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
 import com.flicker.bff.dto.client.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,6 +75,7 @@ public class BffClientController {
         reviewDto.likes = 12333;
         reviewDto.liked = true;
         reviewDto.createdAt = LocalDateTime.now();
+        reviewDto.top = true;
         reviewList.add(reviewDto);
 
         reviewDto = new ReviewDto();
@@ -88,6 +87,7 @@ public class BffClientController {
         reviewDto.likes = 345;
         reviewDto.liked = false;
         reviewDto.createdAt = LocalDateTime.now();
+        reviewDto.top = true;
         reviewList.add(reviewDto);
 
         reviewDto = new ReviewDto();
@@ -99,6 +99,7 @@ public class BffClientController {
         reviewDto.likes = 345;
         reviewDto.liked = false;
         reviewDto.createdAt = LocalDateTime.now();
+        reviewDto.top = true;
         reviewList.add(reviewDto);
 
         boardingPageDto.setReviewList(reviewList);
@@ -197,6 +198,7 @@ public class BffClientController {
         reviewDto.likes = 12333;
         reviewDto.liked = true;
         reviewDto.createdAt = LocalDateTime.now();
+        reviewDto.top = true;
         reviewList.add(reviewDto);
 
         reviewDto = new ReviewDto();
@@ -208,6 +210,7 @@ public class BffClientController {
         reviewDto.likes = 345;
         reviewDto.liked = false;
         reviewDto.createdAt = LocalDateTime.now();
+        reviewDto.top = true;
         reviewList.add(reviewDto);
 
         reviewDto = new ReviewDto();
@@ -219,6 +222,7 @@ public class BffClientController {
         reviewDto.likes = 345;
         reviewDto.liked = false;
         reviewDto.createdAt = LocalDateTime.now();
+        reviewDto.top = true;
         reviewList.add(reviewDto);
 
         boardingPageDto.setReviewList(reviewList);
