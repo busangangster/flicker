@@ -14,4 +14,5 @@ public class ReviewDto {
     public Integer likes;
     public boolean liked;
     public LocalDateTime createdAt;
+    public boolean top;
 }
