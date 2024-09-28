@@ -34,12 +34,14 @@ public class BffUserService {
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
         return util.sendPostRequestAsync(userReviewBaseUrl, path, request);
     }
+
     // 2. 로그인 쿠키 없이 되는 버전
-    public Mono<ResponseEntity<ResponseDto>> loginUser(UserLoginReqDto request, ServerHttpResponse response) {
+    public Mono<ResponseEntity<ResponseDto>> loginUser(UserLoginReqDto request) {
+        System.out.println("loginService");
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/login");
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
-        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, request,response);
+        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, request);
     }
 
 

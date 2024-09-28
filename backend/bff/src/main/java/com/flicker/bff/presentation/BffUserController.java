@@ -35,8 +35,9 @@ public class BffUserController {
 //    }
     // 로그인 처리
     @PostMapping("/login")
-    public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserLoginReqDto request, ServerHttpResponse response) {
-        return userService.loginUser(request,response);
+    public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserLoginReqDto request) {
+        System.out.println("login");
+        return userService.loginUser(request);
     }
 
     // 3. 회원수정(LOW)
