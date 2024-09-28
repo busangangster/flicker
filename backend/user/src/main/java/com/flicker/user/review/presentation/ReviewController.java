@@ -69,10 +69,14 @@ public class ReviewController {
     }
     // 리뷰 좋아요 삭제
     @DeleteMapping("/likeReview")
-    public ResponseEntity<ResponseDto> removeLikeReview(@RequestBody RemoveLikeReviewReqDto dto) {
-        if(dto.getUserSeq() == null || dto.getReviewSeq() == null){
+    public ResponseEntity<ResponseDto> removeLikeReview(@RequestParam Integer userSeq, @RequestParam Integer reviewSeq) {
+        if(userSeq == null || reviewSeq == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
+
+        RemoveLikeReviewReqDto dto = new RemoveLikeReviewReqDto();
+        dto.setUserSeq(userSeq);
+        dto.setReviewSeq(reviewSeq);
 
         if(!reviewService.removeLikeReview(dto)){
             throw new RestApiException(StatusCode.UNAUTHORIZED_REQUEST,"자신의 리뷰 좋아요만 삭제할 수 있습니다.");
