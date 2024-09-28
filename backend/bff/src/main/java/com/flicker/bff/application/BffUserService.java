@@ -74,8 +74,8 @@ public class BffUserService {
     }
     // 6. 리뷰 삭제
     public Mono<ResponseEntity<ResponseDto>> deleteReview(DeleteReviewReqDto dto) {
-        String path = util.getUri("/review");
-        return util.sendPostRequestAsync(userReviewBaseUrl, path, dto);
+        String path = util.getUri("/review?reviewSeq="+dto.getReviewSeq()+"&userSeq="+dto.getUserSeq());
+        return util.sendDeleteRequestAsync(userReviewBaseUrl, path);
     }
 
     // 7. 포토 리뷰 조회
