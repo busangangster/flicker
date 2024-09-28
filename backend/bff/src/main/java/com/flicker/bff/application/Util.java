@@ -5,13 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 @Component
 @RequiredArgsConstructor
@@ -96,10 +102,54 @@ public class Util {
         }
     }
 
-    // 로그인 처리용 토큰 포함 응답 생성
-    public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody) {
+    // 로그인 처리용 토큰 포함 응답 생성  액세스 토큰은 잘 오는데 쿠키가 안오는 버전
+//    public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody) {
+//        try {
+//            // WebClient 인스턴스 생성
+//            WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+//            return webClient.post()
+//                    .uri(path)
+//                    .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
+//                    .retrieve()
+//                    .toEntity(String.class)  // 응답을 ResponseEntity로 받음
+//                    .flatMap(responseEntity -> {
+//                        // 응답 헤더에서 JWT 토큰 읽기 (Authorization 헤더에 있다고 가정)
+//                        String jwtToken = responseEntity.getHeaders().getFirst("Authorization");
+//
+//                        if (jwtToken != null) {
+//                            ResponseDto emptyResponseDto = new ResponseDto(
+//                                    null,  // data는 필요 없으므로 null
+//                                    "Success",  // 성공 메시지
+//                                    200,  // HTTP 상태 코드
+//                                    StatusCode.SUCCESS.getServiceStatus()  // 서비스 상태 코드
+//                            );
+//
+//                            // ResponseEntity에 JWT 토큰을 포함하여 ResponseDto와 함께 반환
+//                            return Mono.just(ResponseEntity.ok()
+//                                    .header("Authorization", jwtToken)  // JWT 토큰을 헤더에 포함
+//                                    .body(emptyResponseDto));  // 빈 ResponseDto 본문 포함
+//                        } else {
+//                            return Mono.error(new RestApiException(StatusCode.UNAUTHORIZED_REQUEST, "JWT 토큰이 응답에 포함되지 않았습니다."));
+//                        }
+//                    })
+//                    .onErrorResume(e -> {
+//                        if (e instanceof RestApiException ex) {
+//                            // ResponseEntity<ResponseDto>를 생성하여 반환 (중첩을 피하기 위해 그대로 반환)
+//                            return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
+//                        } else {
+//                            // ResponseEntity<ResponseDto>를 생성하여 반환 (중첩을 피하기 위해 그대로 반환)
+//                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
+//                        }
+//                    });
+//        } catch (Exception e) {
+//            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+//        }
+//    }
+
+
+
+    public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody, ServerHttpResponse response) {
         try {
-            // WebClient 인스턴스 생성
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
             return webClient.post()
                     .uri(path)
@@ -109,8 +159,21 @@ public class Util {
                     .flatMap(responseEntity -> {
                         // 응답 헤더에서 JWT 토큰 읽기 (Authorization 헤더에 있다고 가정)
                         String jwtToken = responseEntity.getHeaders().getFirst("Authorization");
+                        String refreshToken = responseEntity.getHeaders().getFirst("Set-Cookie");
 
                         if (jwtToken != null) {
+                            // 쿠키 설정 (WebFlux 기반)
+                            if (refreshToken != null) {
+                                ResponseCookie cookie = ResponseCookie.from("refresh", refreshToken)
+                                        .httpOnly(true)
+                                        .path("/")
+                                        .maxAge(Duration.ofDays(1)) // 1일 동안 쿠키 유효
+                                        .build();
+
+                                // 쿠키를 ServerHttpResponse에 추가
+                                response.addCookie(cookie);
+                            }
+
                             ResponseDto emptyResponseDto = new ResponseDto(
                                     null,  // data는 필요 없으므로 null
                                     "Success",  // 성공 메시지
@@ -128,10 +191,8 @@ public class Util {
                     })
                     .onErrorResume(e -> {
                         if (e instanceof RestApiException ex) {
-                            // ResponseEntity<ResponseDto>를 생성하여 반환 (중첩을 피하기 위해 그대로 반환)
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            // ResponseEntity<ResponseDto>를 생성하여 반환 (중첩을 피하기 위해 그대로 반환)
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
@@ -139,6 +200,7 @@ public class Util {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
+
 
 
 

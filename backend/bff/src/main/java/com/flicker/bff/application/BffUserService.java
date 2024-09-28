@@ -7,6 +7,7 @@ import com.flicker.bff.dto.user.UserLoginReqDto;
 import com.flicker.bff.dto.user.UserRegisterReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Mono;
@@ -33,13 +34,17 @@ public class BffUserService {
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
         return util.sendPostRequestAsync(userReviewBaseUrl, path, request);
     }
-    // 2. 로그인
-    public Mono<ResponseEntity<ResponseDto>> loginUser(UserLoginReqDto request) {
+    // 2. 로그인 쿠키 없이 되는 버전
+    public Mono<ResponseEntity<ResponseDto>> loginUser(UserLoginReqDto request, ServerHttpResponse response) {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/login");
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
-        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, request);
+        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, request,response);
     }
+
+
+    // 2. 쿠키 넣으려고 시도중인 버전
+
 
     // 3. 회원수정(LOW)
     // 4. 회원탈퇴(LOW)
