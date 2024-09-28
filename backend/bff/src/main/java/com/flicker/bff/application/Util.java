@@ -96,6 +96,7 @@ public class Util {
         }
     }
 
+    // 로그인 처리용 토큰 포함 응답 생성
     public <T> Mono<ResponseEntity<ResponseEntity<ResponseDto>>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody) {
         try {
             // WebClient 인스턴스 생성
@@ -134,6 +135,7 @@ public class Util {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
+
 
 
 

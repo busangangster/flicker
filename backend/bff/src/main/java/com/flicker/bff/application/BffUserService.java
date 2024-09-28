@@ -2,7 +2,6 @@ package com.flicker.bff.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.response.ResponseDto;
-import com.flicker.bff.dto.MovieCreateRequest;
 import com.flicker.bff.dto.user.MovieReviewReqDto;
 import com.flicker.bff.dto.user.UserLoginReqDto;
 import com.flicker.bff.dto.user.UserRegisterReqDto;
@@ -35,11 +34,11 @@ public class BffUserService {
         return util.sendPostRequestAsync(userReviewBaseUrl, path, request);
     }
     // 2. 로그인
-    public Mono<ResponseEntity<ResponseDto>> loginUser(UserLoginReqDto request) {
+    public Mono<ResponseEntity<ResponseEntity<ResponseDto>>> loginUser(UserLoginReqDto request) {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/login");
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
-        return util.sendPostRequestAsync(userReviewBaseUrl, path, request);
+        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, request);
     }
 
     // 3. 회원수정(LOW)
