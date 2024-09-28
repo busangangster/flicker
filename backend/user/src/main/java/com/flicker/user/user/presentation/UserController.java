@@ -67,9 +67,9 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody UserLoginReqDto dto, HttpServletRequest request){
+    public ResponseEntity<ResponseDto> login(@RequestBody UserLoginReqDto dto){
 
-        String username = request.getParameter("username");
+        System.out.println("dto = " + dto);
 
         return ResponseDto.response(StatusCode.SUCCESS, "OK");
     }

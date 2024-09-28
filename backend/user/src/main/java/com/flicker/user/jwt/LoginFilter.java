@@ -85,11 +85,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String refresh = jwtUtil.createToken("refresh", dto, role, 86400000L);
 
             // TODO : Refresh Token 저장 로직 구현
-//            System.out.println("액세스 토큰 발급 : "+ access);
-//            System.out.println("리프레시 토큰 발급 :"+refresh);
+            System.out.println("액세스 토큰 발급 : "+ access);
+            System.out.println("리프레시 토큰 발급 :"+refresh);
 
             response.addHeader("Authorization", "Bearer " + access);
             response.addCookie(createCookie("refresh", refresh));
+
 
             // 응답 본문에 간단하게 "OK" 메시지 전송
             response.setContentType("text/plain");
@@ -124,7 +125,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/api/users/login");
+        setFilterProcessesUrl("/api/user/login");
     }
 
 }
