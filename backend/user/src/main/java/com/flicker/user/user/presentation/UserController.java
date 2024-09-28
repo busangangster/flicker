@@ -181,7 +181,7 @@ public class UserController {
         return ResponseDto.response(StatusCode.SUCCESS, "OK");
     }
     // 찜한 영화 해제
-    @DeleteMapping("/{userId}/bookmark-movie/{movieSeq}")
+    @DeleteMapping("/{userSeq}/bookmark-movie/{movieSeq}")
     public ResponseEntity<ResponseDto> deleteBookmarkMovie(@PathVariable Integer userSeq, @PathVariable Integer movieSeq){
         if(userSeq == null || movieSeq == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
