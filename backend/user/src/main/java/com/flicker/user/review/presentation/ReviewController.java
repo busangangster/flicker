@@ -116,11 +116,11 @@ public class ReviewController {
 
     // 사용자 별 리뷰 조회 
     @GetMapping("/{userSeq}")
-    public ResponseEntity<ResponseDto> getUserReviews(@PathVariable Integer userSeq, @RequestParam(value = "userSeq") Integer myUserSeq) {
+    public ResponseEntity<ResponseDto> getUserReviews(@PathVariable Integer userSeq) {
         if(userSeq == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
-        List<ReviewDto> userReviews = reviewService.getUserReviews(userSeq,myUserSeq);
+        List<ReviewDto> userReviews = reviewService.getUserReviews(userSeq);
         return ResponseDto.response(StatusCode.SUCCESS, userReviews);
     }
 }

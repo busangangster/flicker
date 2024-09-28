@@ -103,14 +103,14 @@ public class ReviewService {
 
 
 
-    public List<ReviewDto> getUserReviews(Integer userSeq, Integer myUserSeq){
+    public List<ReviewDto> getUserReviews(Integer userSeq){
 
         List<Review> allByUserSeq = reviewRepository.findAllByUserSeq(userSeq);
         List<ReviewDto> reviewDtos = new ArrayList<>();
 
         for(Review review : allByUserSeq){
             String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
-            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, userSeq);
             reviewDtos.add(reviewDto);
         }
 
