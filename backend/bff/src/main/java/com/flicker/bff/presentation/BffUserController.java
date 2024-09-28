@@ -123,12 +123,12 @@ public class BffUserController {
         return userService.getBookmarkMovie(userSeq);
     }
     // 16. 리뷰 좋아요 등록
-    @PostMapping("/likeReview")
+    @PostMapping("/review/likeReview")
     public Mono<ResponseEntity<ResponseDto>> addLikeReview(@RequestBody AddLikeReviewReqDto dto) {
         return userService.addLikeReview(dto);
     }
     // 17. 리뷰 좋아요 삭제
-    @DeleteMapping("/likeReview")
+    @DeleteMapping("/review/likeReview")
     public Mono<ResponseEntity<ResponseDto>> removeLikeReview(@RequestParam Integer userSeq, @RequestParam Integer reviewSeq){
         return userService.removeLikeReview(userSeq,reviewSeq);
     }
