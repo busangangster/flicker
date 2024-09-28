@@ -42,7 +42,12 @@ public class ReviewController {
 
     // 리뷰 삭제 TODO Kafka 메시지 발행
     @DeleteMapping()
-    public ResponseEntity<ResponseDto> deleteReview(@RequestBody DeleteReviewReqDto dto){
+    public ResponseEntity<ResponseDto> deleteReview(@RequestParam Integer reviewSeq, @RequestParam Integer userSeq){
+
+        DeleteReviewReqDto dto = new DeleteReviewReqDto();
+        dto.setReviewSeq(reviewSeq);
+        dto.setUserSeq(userSeq);
+
         if(dto.getReviewSeq() == null || dto.getUserSeq() == null){
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
