@@ -62,7 +62,7 @@ public class BffUserService {
     // 4. 리뷰 등록
     public Mono<ResponseEntity<ResponseDto>> registerReview(RegisterReviewReqDto dto) {
         String path = util.getUri("/review");
-        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, dto);
+        return util.sendPostRequestAsync(userReviewBaseUrl, path, dto);
     }
 
     // 5. 리뷰 목록
