@@ -3,6 +3,7 @@ package com.flicker.bff.presentation;
 import com.flicker.bff.application.BffUserService;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.dto.user.MovieReviewReqDto;
+import com.flicker.bff.dto.user.UserLoginReqDto;
 import com.flicker.bff.dto.user.UserRegisterReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,10 @@ public class BffUserController {
 
     // 2. 로그인
     @PostMapping("/login")
-    public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserRegisterReqDto request) {
+    public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserLoginReqDto request) {
 //        return userService.(request);
         System.out.println("로그인 요청");
-        return userService.registerUser(request);
+        return userService.loginUser(request);
     }
 
     // 3. 회원수정(LOW)
