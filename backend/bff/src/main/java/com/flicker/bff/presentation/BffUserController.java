@@ -27,7 +27,7 @@ public class BffUserController {
 
     // 2. 로그인
     @PostMapping("/login")
-    public Mono<ResponseEntity<ResponseEntity<ResponseDto>>> loginUser(@RequestBody UserLoginReqDto request) {
+    public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserLoginReqDto request) {
 //        return userService.(request);
         System.out.println("로그인 요청");
         return userService.loginUser(request);
