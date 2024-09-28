@@ -23,7 +23,15 @@ public class BffUserController {
         System.out.println("회원가입 요청");
         return userService.registerUser(request);
     }
+
     // 2. 로그인
+    @PostMapping("/login")
+    public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserRegisterReqDto request) {
+//        return userService.(request);
+        System.out.println("로그인 요청");
+        return userService.registerUser(request);
+    }
+
     // 3. 회원수정(LOW)
     // 4. 회원탈퇴(LOW)
     // 3. 영화 디테일 페이지의 대표 리뷰 조회

@@ -2,12 +2,10 @@ package com.flicker.bff.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -97,6 +95,47 @@ public class Util {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
+
+    public <T> Mono<ResponseEntity<ResponseEntity<ResponseDto>>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody) {
+        try {
+            // WebClient 인스턴스 생성
+            WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+            return webClient.post()
+                    .uri(path)
+                    .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
+                    .retrieve()
+                    .toEntity(String.class)  // 응답을 ResponseEntity로 받음
+                    .flatMap(responseEntity -> {
+                        // 응답 헤더에서 JWT 토큰 읽기 (Authorization 헤더에 있다고 가정)
+                        String jwtToken = responseEntity.getHeaders().getFirst("Authorization");
+
+                        try {
+                            // 받은 응답 본문을 ResponseDto로 변환
+                            ResponseDto responseDto = objectMapper.readValue(responseEntity.getBody(), ResponseDto.class);
+
+                            // ResponseEntity에 JWT 토큰을 포함하여 반환
+                            return Mono.just(ResponseEntity.ok()
+                                    .header("Authorization", jwtToken)  // 토큰을 헤더에 포함
+                                    .body(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData())));
+                        } catch (JsonProcessingException e) {
+                            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
+                        }
+                    })
+                    .onErrorResume(e -> {
+                        if (e instanceof RestApiException ex) {
+                            // ResponseEntity<ResponseDto>를 생성하여 반환
+                            return Mono.just(ResponseEntity.ok(ResponseDto.response(ex.getStatusCode(), ex.getData())));
+                        } else {
+                            // ResponseEntity<ResponseDto>를 생성하여 반환
+                            return Mono.just(ResponseEntity.ok(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage())));
+                        }
+                    });
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+        }
+    }
+
+
 
     // 공통으로 사용할 WebClient PUT 요청 메서드 (비동기 처리)
     public <T> Mono<ResponseEntity<ResponseDto>> sendPutRequestAsync(String baseUrl, String path, T requestBody) {
