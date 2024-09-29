@@ -7,11 +7,11 @@ import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
-public class SentimentReviewSerializer implements Serializer<SentimentReview> {
+public class WordCloudReviewSerializer implements Serializer<WordCloudReview> {
 
     private final ObjectMapper objectMapper;
 
-    public SentimentReviewSerializer() {
+    public WordCloudReviewSerializer() {
         this.objectMapper = new ObjectMapper();
         // Java 8 시간 처리를 위한 모듈 등록
         this.objectMapper.registerModule(new JavaTimeModule());
@@ -23,7 +23,7 @@ public class SentimentReviewSerializer implements Serializer<SentimentReview> {
     }
 
     @Override
-    public byte[] serialize(String topic, SentimentReview data) {
+    public byte[] serialize(String topic, WordCloudReview data) {
         try {
             // Log 객체를 JSON으로 직렬화
             return objectMapper.writeValueAsBytes(data);

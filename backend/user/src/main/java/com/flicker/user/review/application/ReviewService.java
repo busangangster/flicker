@@ -1,6 +1,9 @@
 package com.flicker.user.review.application;
 
 import com.flicker.user.common.exception.RestApiException;
+import com.flicker.user.common.kafka.dto.SentimentReview;
+import com.flicker.user.common.kafka.dto.WordCloudReview;
+import com.flicker.user.common.kafka.producer.CustomerProducer;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.review.domain.ReviewConverter;
 import com.flicker.user.review.domain.entity.Review;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +30,7 @@ public class ReviewService {
     private final UserService userService;
     private final ReviewRepository reviewRepository;
     private final ReviewConverter reviewConverter;
+    private final CustomerProducer kafkaProducer;
 
     @Transactional
     public boolean registerReview(RegisterReviewReqDto dto){
@@ -36,7 +41,23 @@ public class ReviewService {
         }
 
         Review review = new Review(dto.getContent(), dto.getIsSpoiler(),dto.getMovieSeq(), dto.getReviewRating(), dto.getUserSeq());
-        reviewRepository.save(review);
+        Review save = reviewRepository.save(review);
+
+        //kafka 발행
+        SentimentReview sentimentReview = new SentimentReview();
+        sentimentReview.setReviewSeq(save.getReviewSeq());
+        sentimentReview.setTimestamp(LocalDateTime.now());
+        sentimentReview.setContent(save.getContent());
+        System.out.println("sentimentReview = " + sentimentReview);
+        kafkaProducer.sendSentimentLog(sentimentReview);
+
+        WordCloudReview wordCloudReview = new WordCloudReview();
+        wordCloudReview.setMovieSeq(save.getMovieSeq());
+        wordCloudReview.setTimestamp(LocalDateTime.now());
+        wordCloudReview.setContent(save.getContent());
+        System.out.println("wordCloudReview = " + wordCloudReview);
+        kafkaProducer.sendWordCloudLog(wordCloudReview);
+
         return true;
     }
 
