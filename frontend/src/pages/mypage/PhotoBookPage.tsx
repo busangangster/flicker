@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import photobook from "../../assets/photobook/photobook.png";
 import "../../css/photobook.css";
 import { useUserQuery } from "../../hooks/useUserQuery";
+import photobookmain from "/assets/background/photobookmain.png";
 
 const PhotoBookPage: React.FC = () => {
   const navigate = useNavigate();
@@ -47,7 +48,6 @@ const PhotoBookPage: React.FC = () => {
     }, 400);
   };
 
-  
   return (
     <div className="bg-black p-8 rounded-lg w-[1200px] relative">
       {/* 클릭 가능한 전체 영역 */}
@@ -65,9 +65,10 @@ const PhotoBookPage: React.FC = () => {
             made by {data.userId}
           </p>
           <img
-            src="https://via.placeholder.com/600x400"
+            // src="https://via.placeholder.com/600x400"
+            src={photobookmain}
             alt="Cover Image"
-            className="cover-image mt-6"
+            className="cover-image w-[600px] h-[400px] mt-6"
           />
         </div>
       </div>

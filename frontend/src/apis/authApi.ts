@@ -7,7 +7,7 @@ import { SignUpParams, SignInParams, SignInResponse } from "../type";
 // 회원가입 API
 export const signUp = async (params: SignUpParams) => {
   try {
-    const response = await axios.post("/api/users", params);
+    const response = await axios.post("/api/bff/user", params);
     return response.data;
   } catch (error) {
     handleApiError(error as any);
@@ -23,7 +23,7 @@ export const signin = async (
     console.log("로그인 요청 데이터:", params);
 
     const response = await axios.post<SignInResponse>(
-      "/api/users/login",
+      "/api/bff/user/login",
       params
     );
 

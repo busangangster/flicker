@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom"; // useNavigate import 추가
 import thumbUpOutline from "../../assets/review/thumb_up_outline.png"; // 좋아요 버튼 이미지 import
 import starFull from "../../assets/review/star.png"; // 채워진 별 이미지 import
 import starHalf from "../../assets/review/star_half.png"; // 반쪽 별 이미지 import
-import closeIcon from "../../assets/common/x.png"; // 닫기 버튼 이미지 import
 import "../../css/photocard.css";
 
 const movieData = {
@@ -31,8 +30,8 @@ const PhotoCardDetailPage: React.FC = () => {
     setIsFlipped(!isFlipped); // 클릭 시 상태를 변경하여 회전
   };
 
-  // 닫기 버튼 클릭 시 이전 페이지로 이동하는 함수
-  const handleClose = () => {
+  // 뒤로가기 버튼 클릭 시 이전 페이지로 이동하는 함수
+  const handleGoBack = () => {
     navigate(-1); // 이전 경로로 이동
   };
 
@@ -50,6 +49,14 @@ const PhotoCardDetailPage: React.FC = () => {
       {/* 검정색 그라데이션 오버레이 */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-white/30" />
 
+      {/* 뒤로가기 버튼 */}
+      <button
+        className="absolute bottom-24 left-8 bg-white opacity-70 text-black py-2 px-4 rounded-lg shadow-md hover:bg-gray-400 font-bold italic"
+        onClick={handleGoBack}
+      >
+        PhotoBook
+      </button>
+
       {/* 포토카드 컨테이너 */}
       <div
         className="photo-card-container w-[450px] h-[650px] photo-card-animation"
@@ -63,22 +70,13 @@ const PhotoCardDetailPage: React.FC = () => {
               alt="Front"
               className="w-full h-[550px] object-cover rounded-md"
             />
-            <h2 className="text-center text-xl font-bold mt-4">
-              {movieData.movie_title}
+            <h2 className="text-right text-xl mr-2 mt-4 text-black">
+              {movieData.review.created_at}
             </h2>
-            <p className="text-center text-sm">{movieData.movie_year}</p>
           </div>
 
           {/* 뒷면 */}
           <div className="photo-card-back bg-white p-10 opacity-95 shadow-xl rounded-lg">
-            {/* 닫기 버튼 */}
-            <img
-              src={closeIcon}
-              alt="Close"
-              className="absolute top-4 right-4 w-3 h-3 cursor-pointer"
-              onClick={handleClose}
-            />
-
             <h2 className="text-center text-xl italic mb-3 text-black">
               My Photo Card
             </h2>

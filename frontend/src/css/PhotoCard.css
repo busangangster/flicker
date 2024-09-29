@@ -1,11 +1,10 @@
 @keyframes photoCardZoomIn {
   0% {
-    transform: translateZ(-1000px) rotateY(0deg) scale(0.1);
+    transform: translateZ(-1000px) rotateY(180deg) scale(0.1);
     opacity: 0;
   }
   100% {
-    transform: translateZ(0) rotateY(360deg) scale(1); /* 4바퀴 회전 */
-    opacity: 0.95;
+    transform: translateZ(0) rotateY(360deg) scale(1);
   }
 }
 
@@ -39,7 +38,7 @@
 
 .photo-card-front {
   background-color: #fff;
-  transform: rotateY(180deg); 
+  transform: rotateY(180deg);
 }
 
 .photo-card-back {
@@ -47,6 +46,19 @@
 }
 
 /* 클릭 시 회전 애니메이션 */
-.photo-card.flipped {
+/* .photo-card.flipped {
   transform: rotateY(180deg);
+} */
+
+/* 호버 시 회전 애니메이션 */
+.photo-card-container:hover .photo-card {
+  transform: rotateY(180deg);
+}
+
+.photo-card-hover {
+  transition: transform 0.3s ease-in-out;
+}
+
+.photo-card-hover:hover {
+  transform: translateY(-10px); /* 호버 시 위로 10px 이동 */
 }

@@ -6,6 +6,7 @@ import Filter from "../../components/Filter";
 import ReviewForm from "../../components/ReviewForm";
 import Navbar from "../../components/common/Navbar";
 import { ReviewType } from "../../type";
+import { useUserQuery } from "../../hooks/useUserQuery";
 
 // 목업 데이터
 const mockReviews: ReviewType[] = [
@@ -128,6 +129,7 @@ const mockReviews: ReviewType[] = [
 const ReviewPage: React.FC = () => {
   const [reviews, setReviews] = useState<ReviewType[]>(mockReviews); // 초기 리뷰 데이터
   const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
+  const { data } = useUserQuery(); // 유저 정보 가져오기
 
   // 정렬 조건이 변경될 때마다 리뷰를 정렬
   useEffect(() => {
@@ -205,9 +207,10 @@ const ReviewPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 리뷰 작성 폼 추가 */}
-            <ReviewForm onSubmit={handleAddReview} />
-            {/* 여러 개의 리뷰를 불러오는 부분 */}
+            {/* 로그인한 유저만 ReviewForm을 볼 수 있음 */}
+            {data ? <ReviewForm onSubmit={handleAddReview} /> : ""}
+
+            {/* 리뷰 목록 */}
             {reviews.map((review) => (
               <Review
                 key={review.reviewSeq}
