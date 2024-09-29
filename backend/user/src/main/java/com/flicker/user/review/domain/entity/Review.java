@@ -31,6 +31,10 @@ public class Review {
 
     private Integer likes;
 
+    public void updateSentimentScore(Double sentimentScore) {
+        this.sentimentScore = sentimentScore;
+    }
+
     public boolean removeLikeReview(Integer userSeq){
         for(LikeReview likeReview : likeReviews){
             if(likeReview.getUserSeq().equals(userSeq)){

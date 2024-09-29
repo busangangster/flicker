@@ -139,4 +139,13 @@ public class ReviewService {
 
         return reviewDtos;
     }
+
+    @Transactional
+    public boolean updateSentimentScore(UpdateSentimentScoreDto dto){
+
+        Review review = reviewRepository.findById(dto.getReviewSeq())
+                .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_REVIEW));
+        review.updateSentimentScore(dto.getSentimentScore());
+        return true;
+    }
 }
