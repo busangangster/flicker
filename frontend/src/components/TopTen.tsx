@@ -4,12 +4,11 @@ import { Navigation } from "swiper/modules";
 import "swiper/css"; // Swiper 기본 CSS
 import "swiper/css/navigation"; // 네비게이션 모듈 사용 시 필요한 CSS
 import "../css/TopTen.css";
-import { TopTenMovie } from "../type"
+import { TopTenMovie } from "../type";
 
 // Font import for Rubik Doodle Shadow
 const GOOGLE_FONT_LINK =
   "https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap";
-
 
 const TopTen: React.FC = () => {
   const [movies, setMovies] = useState<TopTenMovie[]>([]);
@@ -47,7 +46,7 @@ const TopTen: React.FC = () => {
       </div>
 
       {/* Right Side: Movie posters with Swiper */}
-      <div className="movie-swiper-container relative w-[1800px]">
+      <div className="movie-swiper-container relative w-[1500px]">
         {/* Swiper Navigation Buttons */}
         <div ref={prevRef} className="swiper-button-prev-custom2">
           {/* SVG for Left Arrow */}

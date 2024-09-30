@@ -219,7 +219,7 @@ const ReviewPage: React.FC = () => {
         className="material-symbols-outlined bg-gray-200 text-black w-[42px] h-[42px] border rounded-[10px] cursor-pointer justify-center flex items-center fixed right-[85px] bottom-[30px] z-10"
         onClick={scrollToTop}
       >
-        arrow_upward
+        <img src="/assets/review/arrow_upward.png" alt="arrow_upward" />
       </div>
     </div>
   );

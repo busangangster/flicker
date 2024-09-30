@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUserQuery } from "../hooks/useUserQuery";
 import Cookies from "js-cookie";
-import { useQueryClient } from "react-query"; // react-query 캐시 무효화용
+import { useQueryClient } from "@tanstack/react-query"; // react-query 캐시 무효화용
 
 const Sidebar: React.FC = () => {
   const { data, error, isLoading } = useUserQuery();
