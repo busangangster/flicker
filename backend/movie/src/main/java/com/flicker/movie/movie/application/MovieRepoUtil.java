@@ -2,21 +2,18 @@ package com.flicker.movie.movie.application;
 
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
-import com.flicker.movie.movie.domain.entity.MongoMovieList;
-import com.flicker.movie.movie.domain.entity.MongoUserAction;
-import com.flicker.movie.movie.domain.entity.Movie;
-import com.flicker.movie.movie.domain.entity.RedisSearchResult;
+import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
-import com.flicker.movie.movie.infrastructure.MongoMovieListRepository;
-import com.flicker.movie.movie.infrastructure.MongoUserActionRepository;
-import com.flicker.movie.movie.infrastructure.MovieRepository;
-import com.flicker.movie.movie.infrastructure.RedisSearchResultRepository;
+import com.flicker.movie.movie.infrastructure.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +35,7 @@ public class MovieRepoUtil {
     private final MongoMovieListRepository mongoMovieListRepository;
     private final MongoUserActionRepository mongoUserActionRepository;
     private final MovieBuilderUtil movieBuilderUtil;
+    private final RedisTopMovieRepository redisTopMovieRepository;
 
     /**
      * 영화 ID(movieSeq)를 사용하여 영화 정보를 조회하는 메서드입니다.
@@ -73,7 +71,7 @@ public class MovieRepoUtil {
      * @throws RestApiException 중복된 영화가 존재할 경우 발생
      */
     public void isDuplicatedMovie(String movieTitle, int movieYear) {
-        Optional<Movie> movie = movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYear(movieTitle, movieYear);
+        Optional<Movie> movie = movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
         if (movie.isPresent()) {
             throw new RestApiException(StatusCode.DUPLICATE_MOVIE, "중복된 영화 정보가 존재합니다.");
         }
@@ -190,15 +188,30 @@ public class MovieRepoUtil {
     }
 
     /**
+     * 영화 목록을 조회하는 메서드입니다.
+     *
+     * @param movieSeqs 조회할 영화의 ID 목록
+     * @return 조회된 영화 목록
+     * @throws RestApiException 영화 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public List<Movie> findBySeqIn(List<Integer> movieSeqs) {
+        try {
+            return movieRepository.findByMovieSeqInAndDelYN(movieSeqs, "N");
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
      * 추천된 영화 목록을 조회하는 메서드입니다.
      *
      * @param movieSeqList 조회할 영화의 ID 목록
      * @return 조회된 영화 목록
      * @throws RestApiException 추천된 영화 목록 조회 중 오류가 발생할 경우 발생
      */
-    public List<Movie> findBySeqIn(List<Integer> movieSeqList) {
+    public List<Movie> findBySeqInAndFilterUnlike(List<Integer> movieSeqList, List<Integer> unlikeMovieSeqList) {
         try {
-            return movieRepository.findByMovieSeqIn(movieSeqList);
+            return movieRepository.findByMovieSeqInAndMovieSeqNotInAndDelYN(movieSeqList, unlikeMovieSeqList, "N");
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천된 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -248,19 +261,6 @@ public class MovieRepoUtil {
         }
     }
 
-    /**
-     * MongoDB에서 사용자 행동 로그를 삭제하는 메서드입니다.
-     *
-     * @param id 삭제할 사용자 행동 로그의 ID
-     * @throws RestApiException 사용자 행동 로그 삭제 중 오류가 발생할 경우 발생
-     */
-    public void deleteUserActionForMongoDB(String id) {
-        try {
-            mongoUserActionRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 가장 오래된 행동 로그를 삭제하는 중 오류가 발생했습니다.");
-        }
-    }
 
     /**
      * Redis에 저장된 검색 결과를 모두 삭제하는 메서드입니다.
@@ -285,6 +285,84 @@ public class MovieRepoUtil {
             mongoMovieListRepository.deleteAll();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에 저장된 검색 결과를 초기화하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * MongoDB에서 모든 사용자의  최근 행동 로그를 조회하는 메서드입니다.
+     *
+     * @return 조회된 사용자 행동 로그 목록
+     * @throws RestApiException 사용자 행동 로그 조회 중 오류가 발생할 경우 발생
+     */
+    public List<MongoUserAction> findUserActionsForMongoDB() {
+        try {
+            // 현재 시간에서 24시간 전 시간 계산
+            LocalDateTime twentyFourHoursAgo = LocalDateTime.now().minusDays(1);
+            // 레포지토리를 통해 24시간 내의 사용자 행동 로그 조회
+            return mongoUserActionRepository.findByTimestampAfterAndActionOrderByTimestampDesc(twentyFourHoursAgo, "DETAIL");
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 모든 사용자의 최근 행동 로그를 조회하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 키워드로 영화 정보를 조회하는 메서드입니다.
+     *
+     * @param movieTitle 영화 제목
+     * @return 조회된 영화 객체
+     * @throws RestApiException 영화 정보 조회 중 오류가 발생할 경우 발생
+     */
+    public Movie findByMovieTitle(String movieTitle) {
+        try {
+            return movieRepository.findFirstByMovieDetail_MovieTitleAndDelYNOrderByMovieDetail_MovieYearDesc(movieTitle, "N")
+                    .orElseThrow(() -> new RestApiException(StatusCode.NOT_FOUND, movieTitle + ": 해당 영화 정보를 찾을 수 없습니다."));
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "제목으로 영화 정보 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Redis에 Top10 영화 번호 목록을 저장하는 메서드입니다.
+     *
+     * @param redisTopMovie 저장할 Top10 영화 번호 목록
+     * @throws RestApiException Top10 영화 번호 목록 저장 중 오류가 발생할 경우 발생
+     */
+    public void saveTopMovieForRedis(RedisTopMovie redisTopMovie) {
+        try {
+            redisTopMovieRepository.save(redisTopMovie);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 Top10 영화 번호 목록을 저장하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Redis에 저장된 Top10 영화 번호 목록을 조회하는 메서드입니다.
+     *
+     * @return 조회된 Top10 영화 번호 목록
+     * @throws RestApiException Top10 영화 번호 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public RedisTopMovie findTopMovieListForRedis() {
+        try {
+            return redisTopMovieRepository.findById("TopMovieList")
+                    .orElseThrow(() -> new RestApiException(StatusCode.NOT_FOUND, "Redis에서 Top10 영화 목록을 찾을 수 없습니다."));
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 저장된 Top10 영화 목록을 조회하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * MongoDB에서 오래된 사용자 행동 로그를 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException 사용자 행동 로그 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteUserActionsForMongoDB() {
+        try {
+            // 현재 시간에서 7일 전 시간 계산
+            LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+            // 레포지토리를 통해 7일 전의 사용자 행동 로그 삭제
+            mongoUserActionRepository.deleteByTimestampBefore(sevenDaysAgo);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 오래된 사용자 행동 로그를 삭제하는 중 오류가 발생했습니다.");
         }
     }
 }

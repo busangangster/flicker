@@ -55,8 +55,9 @@ public class CustomProducer {
         try {
             if (topic.equals("movieInfo")) {
                 topic = config.getTemplate().getMovieInfoTopic();
+            } else {
+                throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 발행 토픽이 올바르지 않습니다.");
             }
-
             // 객체를 JSON으로 직렬화
             String jsonMessage = objectMapper.writeValueAsString(event);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, jsonMessage);
@@ -76,6 +77,7 @@ public class CustomProducer {
         }
     }
 
+    // KafkaProducer 객체 종료
     @PreDestroy
     public void closeProducer() {
         if (producer != null) {

@@ -26,8 +26,10 @@ import java.util.List;
     * getMovieListByActor() 메서드는 배우별 영화 리스트를 조회한다.
     * getMovieListByKeyword() 메서드는 키워드를 포함하는 영화 리스트를 조회한다.
     * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
+    * getMovieListByMovieSeqList() 메서드는 영화 ID 리스트로 영화 리스트를 조회한다.
     * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
     * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
+    * getTopMovieList() 메서드는 Top10 영화 리스트를 조회한다.
  */
 @RequiredArgsConstructor
 @RestController
@@ -121,10 +123,17 @@ public class MovieController {
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
+    // 영화 ID 리스트로 영화 목록 조회
+    @PostMapping("/list/movieId")
+    public ResponseEntity<ResponseDto> getMovieListByMovieSeqList(@RequestBody List<Integer> request) {
+        List<MovieListResponse> response = movieService.getMovieListByMovieSeqList(request);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
     // 추천된 영화 목록 조회
     @PostMapping("/list/recommendation")
-    public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody List<Integer> movieSeqList) {
-        List<MovieListResponse> response = movieService.getRecommendationList(movieSeqList);
+    public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody RecommendMovieListRequest request) {
+        List<MovieListResponse> response = movieService.getRecommendationList(request);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
@@ -135,4 +144,17 @@ public class MovieController {
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
+    // Top10 영화 목록 조회
+    @GetMapping("/list/top10")
+    public ResponseEntity<ResponseDto> getTopMovieList() {
+        List<MovieListResponse> response = movieService.getTopMovieList();
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
+    // 영화 워드클라우드 조회
+    @GetMapping("/wordCloud/{movieSeq}")
+    public ResponseEntity<ResponseDto> getWordCloud(@PathVariable int movieSeq) {
+        List<WordCloudResponse> response = movieService.getWordCloud(movieSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
 }
