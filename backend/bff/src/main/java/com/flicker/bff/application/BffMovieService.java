@@ -252,6 +252,7 @@ public class BffMovieService {
                         }
                     });
 
+
             // 6. 유저-리뷰 서버에서 좋아요 높은 리뷰 조회 (비동기로 병렬 처리)
             String userReviewPath = util.getUri("/list/review/top/" + movieSeq);
             Mono<ResponseEntity<ResponseDto>> reviewMono = util.sendGetRequestAsync(userBaseUrl, userReviewPath)

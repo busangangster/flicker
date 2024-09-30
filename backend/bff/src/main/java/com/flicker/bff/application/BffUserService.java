@@ -1,15 +1,21 @@
 package com.flicker.bff.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
+import com.flicker.bff.common.module.status.StatusCode;
+import com.flicker.bff.dto.MovieDetailResponse;
 import com.flicker.bff.dto.user.*;
+import com.flicker.bff.dto.user.photocard.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -136,4 +142,116 @@ public class BffUserService {
         return util.sendDeleteRequestAsync(userReviewBaseUrl, path);
     }
 
+    // 18. 포토 카드 조회
+    public Mono<ResponseEntity<ResponseDto>> getPhotoCard(Integer userSeq) {
+
+        PhotoCardListDto result = new PhotoCardListDto();
+
+        // 0. 응답 객체 생성
+        ReviewListDto dto = new ReviewListDto();
+
+        // 1. 리류 서버에서 자신의 리뷰 가졍기
+        UserReviewReqDto reqDto = new UserReviewReqDto(userSeq,userSeq);
+
+        Mono<ResponseEntity<ResponseDto>> photoCard =
+                getUserReviews(reqDto).flatMap(getResponse -> {
+
+                    // 응답을 String으로 받는다.
+                    String reviewResponseDtoJson;
+                    try {
+                        reviewResponseDtoJson = Objects.requireNonNull(getResponse.getBody()).toString();
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "reviewResponseDtoJson: getResponse.getBody()가 null입니다." + e.getMessage()));
+                    }
+
+                    // String을 responseDto로 변환한다/
+                    ResponseDto reviewResponseDto;
+                    try {
+                        reviewResponseDto = objectMapper.readValue(reviewResponseDtoJson, ResponseDto.class);
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                    }
+                    // ResponseDto의 상태 코드가 성공이 아닌 경우 처리
+                    if (reviewResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                        return Mono.error(new RestApiException(
+                                StatusCode.of(reviewResponseDto.getHttpStatus(), reviewResponseDto.getServiceStatus(), reviewResponseDto.getMessage()),
+                                reviewResponseDto.getData()
+                        ));
+                    }
+
+                    // ObjectMapper를 이용하여 JSON 데이터를 REviewListDto로 역직렬화
+                    ReviewListDto reviewListDto;
+                    try {
+                        reviewListDto = objectMapper.convertValue(reviewResponseDto.getData(), ReviewListDto.class);
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                    }
+
+                    List<Integer> movieSeqList = new ArrayList<>();
+                    for (ReviewDto item : reviewListDto.getReviews()) {
+                        movieSeqList.add(item.getMovieSeq());
+                    }
+
+
+
+
+
+
+                    String path = util.getUri("/list/movieId");
+                    Mono<ResponseEntity<ResponseDto>> responseEntityMono = util.sendPostRequestAsync(movieBaseUrl, path, movieSeqList);
+                    responseEntityMono.flatMap(getResponseTwo -> {
+
+                                // 응답을 String으로 받는다.
+                                String movieUrlJson;
+                                try {
+                                    movieUrlJson = Objects.requireNonNull(getResponseTwo.getBody()).toString();
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "movieUrlJson: getResponse.getBody()가 null입니다." + e.getMessage()));
+                                }
+
+                                // String을 responseDto로 변환한다/
+                                ResponseDto movieDto;
+                                try {
+                                    movieDto = objectMapper.readValue(movieUrlJson, ResponseDto.class);
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 이미지 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                }
+                                // ResponseDto의 상태 코드가 성공이 아닌 경우 처리
+                                if (movieDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                                    return Mono.error(new RestApiException(
+                                            StatusCode.of(movieDto.getHttpStatus(), movieDto.getServiceStatus(), movieDto.getMessage()),
+                                            movieDto.getData()
+                                    ));
+                                }
+
+                                // ObjectMapper를 이용하여 JSON 데이터를 REviewListDto로 역직렬화
+                                MovieImageListDto movieImageListDto;
+                                try {
+                                    movieImageListDto = objectMapper.convertValue(reviewResponseDto.getData(), MovieImageListDto.class);
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                }
+
+
+                                ArrayList<PhotoCardDto> list = new ArrayList<>();
+                                for(int i=0;i<movieImageListDto.getMovieImages().size();i++){
+                                    PhotoCardDto photoCardDto = new PhotoCardDto();
+                                    photoCardDto.setReviewDto(reviewListDto.getReviews().get(i));
+                                    photoCardDto.setMovieImageDto(movieImageListDto.getMovieImages().get(i));
+                                }
+
+                        return Mono.just(ResponseDto.response(StatusCode.SUCCESS, "영화 포스터 조회 성공"));
+                    });
+                    return Mono.just(ResponseDto.response(StatusCode.SUCCESS, "영화 상세 조회 및 연관 영화 조회 성공"));
+                })
+                .onErrorResume(e -> {
+                    if (e instanceof RestApiException ex) {
+                        return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
+                    } else {
+                        return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "영화 서버에서 상세조회, 추천 서버에서 연관영화를 가져오는데 알 수 없는 오류 발생: " + e.getMessage()));
+                    }
+                });
+
+        return photoCard;
+    }
 }
