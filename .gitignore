@@ -1,3 +1,4 @@
+# Help and Gradle directories
 HELP.md
 .gradle
 build/
@@ -5,7 +6,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
+# Eclipse and STS directories
 .apt_generated
 .classpath
 .factorypath
@@ -17,7 +18,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### IntelliJ IDEA ###
+# IntelliJ IDEA settings
 .idea
 *.iws
 *.iml
@@ -26,20 +27,18 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
+# NetBeans settings
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+# VS Code settings
 .vscode/
 
-
-# Python 가상 환경
+# Python virtual environments
 venv/
 
-# Spring boot 설정
-application.properties
-
+# Spring Boot settings (depending on your use case)
+application.properties  # 무시가 필요 없으면 삭제
