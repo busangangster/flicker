@@ -23,16 +23,17 @@ const ContactPage: React.FC = () => {
           {/* 팀 설명 */}
           <div className="text-left">
             <h1 className="text-[45px] font-bold">
-              Wasssup! <br /> We are "
+              Wassup! <br /> We are "
               <span className="text-[#4D7FFF]">6 CAN DO IT !</span>"
             </h1>
             <p className="mt-6 text-2xl leading-relaxed">
               {/* We made movie recommendation service called by Flicker. We always
               do our best to make sure our users can be 100% satisfied. Blah
               blah blah (we have to add more explanation !!) */}
-              저희는 빅데이터를 활용하여 영화를 추천해주는 "Flicker"라는 서비스를 개발했습니다.
-              든든한 팀장을 필두로하여, 뛰어난 팀원들과 끈끈한 팀워크로 협업을 진행했습니다.
-              </p>
+              저희는 빅데이터를 활용하여 영화를 추천해주는 "Flicker"라는
+              서비스를 개발했습니다. 든든한 팀장을 필두로하여, 뛰어난 팀원들과
+              끈끈한 팀워크로 협업을 진행했습니다.
+            </p>
           </div>
         </div>
       </section>
@@ -50,6 +51,7 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/busangangster"
             emailUrl="gkgbf1034@gmail.com"
+            imgSrc="/assets/team/hyulKim.jpg"
           />
           <Member
             name="HyunJeong Cho"
@@ -57,6 +59,7 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/hyunjeongg11"
             emailUrl="guswjd4585@gmail.com"
+            imgSrc="/assets/team/hyulKim.jpg"
           />
           <Member
             name="JiHwan Gong"
@@ -64,20 +67,23 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/izgnok"
             emailUrl="rinch12332@gmail.com"
-          />{" "}
+            imgSrc="/assets/team/hyulKim.jpg"
+          />
           <Member
             name="DongGyu Oh"
             role="Backend"
             description="담당했던 작업"
             githubUrl="https://github.com/Eastplanet"
             emailUrl="ehdrb1645@gmail.com"
-          />{" "}
+            imgSrc="/assets/team/hyulKim.jpg"
+          />
           <Member
             name="JaeChan Lee"
             role="Infra"
             description="담당했던 작업"
             githubUrl="https://github.com/jaechanjj"
             emailUrl="jaechanjj@gmail.com"
+            imgSrc="/assets/team/hyulKim.jpg"
           />
           <Member
             name="JaeYoung Choi"
@@ -85,7 +91,8 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/wodyddldl333"
             emailUrl="wodyddldl333@naver.com"
-          />{" "}
+            imgSrc="/assets/team/hyulKim.jpg"
+          />
         </div>
       </section>
     </div>

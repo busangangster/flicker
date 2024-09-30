@@ -8,6 +8,7 @@ interface MemberProps {
   description: string;
   githubUrl: string;
   emailUrl: string;
+  imgSrc: string;
 }
 
 const Member: React.FC<MemberProps> = ({
@@ -16,12 +17,13 @@ const Member: React.FC<MemberProps> = ({
   description,
   githubUrl,
   emailUrl,
+  imgSrc,
 }) => {
   return (
     <div className="flex items-center space-x-6 p-6 rounded-lg shadow-lg">
       {/* 프로필 이미지 */}
       <img
-        src="https://via.placeholder.com/100x100"
+        src={imgSrc}
         alt="Profile"
         className="w-48 h-48 object-cover rounded-full"
       />
