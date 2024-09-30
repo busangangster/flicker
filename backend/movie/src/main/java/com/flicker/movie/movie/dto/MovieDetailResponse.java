@@ -25,9 +25,8 @@ public class MovieDetailResponse {
     private String backgroundUrl;
     private double movieRating;
     private List<ActorResponse> actors;
-    private List<WordCloudResponse> wordClouds;
 
-    public MovieDetailResponse(Movie movie, MovieDetail movieDetail, List<Actor> actors, List<WordCloud> wordClouds) {
+    public MovieDetailResponse(Movie movie, MovieDetail movieDetail, List<Actor> actors) {
         this.movieSeq = movie.getMovieSeq();
         this.movieTitle = movieDetail.getMovieTitle();
         this.director = movieDetail.getDirector();
@@ -44,10 +43,6 @@ public class MovieDetailResponse {
         // Actor -> ActorResponse 변환
         this.actors = actors.stream()
                 .map(ActorResponse::new)  // Actor -> ActorResponse 변환
-                .collect(Collectors.toList());
-        // WordCloud -> WordCloudResponse 변환
-        this.wordClouds = wordClouds.stream()
-                .map(WordCloudResponse::new)  // WordCloud -> WordCloudResponse 변환
                 .collect(Collectors.toList());
     }
 }
