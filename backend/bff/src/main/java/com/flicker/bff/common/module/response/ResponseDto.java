@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flicker.bff.common.module.status.StatusCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
 @Getter
+@ToString
 public class ResponseDto {
 
     private final Object data;

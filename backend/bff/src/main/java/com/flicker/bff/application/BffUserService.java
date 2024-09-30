@@ -164,6 +164,8 @@ public class BffUserService {
                         return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "reviewResponseDtoJson: getResponse.getBody()가 null입니다." + e.getMessage()));
                     }
 
+                    
+
                     // String을 responseDto로 변환한다/
                     ResponseDto reviewResponseDto;
                     try {

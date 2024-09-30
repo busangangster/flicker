@@ -133,6 +133,7 @@ public class BffUserController {
         return userService.removeLikeReview(userSeq,reviewSeq);
     }
 
+    // 포토 카드 조회
     @GetMapping("/{userSeq}/photocard")
     public Mono<ResponseEntity<ResponseDto>> getPhotoCard(@PathVariable(value = "userSeq")Integer userSeq){
         return userService.getPhotoCard(userSeq);
