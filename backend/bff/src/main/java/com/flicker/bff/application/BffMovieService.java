@@ -871,4 +871,10 @@ public class BffMovieService {
         });
     }
 
+    public Mono<ResponseEntity<ResponseDto>> getMovieWordCloud(int movieSeq) {
+        // 1. 외부 API의 경로를 설정합니다.
+        String path = util.getUri("/wordCloud/" + movieSeq);
+        // 2. 비동기 방식으로 POST 요청을 외부 API에 보냅니다.
+        return util.sendGetRequestAsync(movieBaseUrl, path);
+    }
 }
