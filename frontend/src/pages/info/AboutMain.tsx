@@ -9,15 +9,18 @@ const splitWords = () => {
   const text = textNode.textContent;
   const newDomElements = text.split(" ").map((word) => {
     const highlighted =
-      word.startsWith(`"Flicker"`) || word.startsWith(`CTO`) || word.startsWith(`Mythrill`);
-    return `<span class="word ${highlighted ? "highlighted" : ""}">${word}</span>`;
+      word.startsWith(`"Flicker"`) || word.startsWith(`Mythrill`);
+    return `<span class="word ${
+      highlighted ? "highlighted" : ""
+    }">${word}</span>`;
   });
   textNode.innerHTML = newDomElements.join("");
 };
 
 const renderCanvas = () => {
-  const { Engine, Render, World, Bodies, Runner, Mouse, MouseConstraint } = Matter;
-  
+  const { Engine, Render, World, Bodies, Runner, Mouse, MouseConstraint } =
+    Matter;
+
   const params = {
     isStatic: true,
     render: {
@@ -28,7 +31,7 @@ const renderCanvas = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   };
-  
+
   const engine = Engine.create({});
   const render = Render.create({
     element: document.body,
@@ -40,10 +43,34 @@ const renderCanvas = () => {
     },
   });
 
-  const floor = Bodies.rectangle(canvasSize.width / 2, canvasSize.height, canvasSize.width, 50, params);
-  const wall1 = Bodies.rectangle(0, canvasSize.height / 2, 50, canvasSize.height, params);
-  const wall2 = Bodies.rectangle(canvasSize.width, canvasSize.height / 2, 50, canvasSize.height, params);
-  const top = Bodies.rectangle(canvasSize.width / 2, 0, canvasSize.width, 50, params);
+  const floor = Bodies.rectangle(
+    canvasSize.width / 2,
+    canvasSize.height,
+    canvasSize.width,
+    50,
+    params
+  );
+  const wall1 = Bodies.rectangle(
+    0,
+    canvasSize.height / 2,
+    50,
+    canvasSize.height,
+    params
+  );
+  const wall2 = Bodies.rectangle(
+    canvasSize.width,
+    canvasSize.height / 2,
+    50,
+    canvasSize.height,
+    params
+  );
+  const top = Bodies.rectangle(
+    canvasSize.width / 2,
+    0,
+    canvasSize.width,
+    50,
+    params
+  );
 
   const wordElements = document.querySelectorAll(".word");
   const wordBodies = [...wordElements].map((elemRef) => {
@@ -115,7 +142,7 @@ const AboutMain = () => {
         recognized as one of the "Flicker" Armenians in Tech and am constantly
         driven to push boundaries and make a positive impact in the industry.
         When I'm not coding, I enjoy exploring my creative side through art,
-        music, and nature.
+        music,
       </div>
     </div>
   );

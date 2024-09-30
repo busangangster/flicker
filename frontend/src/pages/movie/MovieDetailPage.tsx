@@ -195,9 +195,14 @@ const MovieDetailPage: React.FC = () => {
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
                   <button
-                    className="text-white text-3xl ml-2 relative"
+                    className="text-white text-3xl ml-2 relative z-20"
                     onClick={toggleDropdown}
                   >
+                    {/* {isDropdownOpen && (
+                      <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-40 bg-gray-800 text-white text-sm p-2 rounded-md shadow-lg z-50">
+                        여기에 툴팁 설명을 입력하세요.
+                      </div>
+                    )} */}
                     ⋮
                     {isDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-40 bg-gray-200 text-black bg-opacity-90 rounded-md shadow-lg z-50 font-bold text-left">

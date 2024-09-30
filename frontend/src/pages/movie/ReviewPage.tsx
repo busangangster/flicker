@@ -36,7 +36,7 @@ const ReviewPage: React.FC = () => {
     try {
       console.log("Fetching reviews for page:", page);
       const newReviews = await fetchMovieReviews(
-        23428,
+        26301,
         181368,
         "like",
         page,
@@ -50,16 +50,21 @@ const ReviewPage: React.FC = () => {
           !reviews.some((review) => review.reviewSeq === newReview.reviewSeq)
       );
 
-      console.log("Filtered unique reviews:", uniqueNewReviews);
-
-      // 새로운 리뷰만 상태에 추가
       if (uniqueNewReviews.length > 0) {
-        setReviews((prevReviews) => [...prevReviews, ...uniqueNewReviews]);
+        setReviews((prevReviews) => {
+          const updatedReviews = [...prevReviews, ...uniqueNewReviews];
+          console.log("Updated reviews:", updatedReviews);
+          return updatedReviews;
+        });
+      } else {
+        console.log("No new unique reviews fetched.");
       }
 
-      // 페이지를 계속 증가시켜 더 많은 리뷰를 불러오게 함
-      if (newReviews.length < 10) {
+      // 만약 필터링된 리뷰가 10개 미만이면 더 이상 불러올 데이터가 없다고 판단
+      if (uniqueNewReviews.length < 10) {
         setHasMore(false); // 불러온 데이터가 10개 미만이면 더 이상 데이터 없음
+        console.log(hasMore);
+        console.log("done");
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
