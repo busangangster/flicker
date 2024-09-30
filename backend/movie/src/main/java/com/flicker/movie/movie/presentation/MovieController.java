@@ -150,4 +150,11 @@ public class MovieController {
         List<MovieListResponse> response = movieService.getTopMovieList();
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
+
+    // 영화 워드클라우드 조회
+    @GetMapping("/wordCloud/{movieSeq}")
+    public ResponseEntity<ResponseDto> getWordCloud(@PathVariable int movieSeq) {
+        List<WordCloudResponse> response = movieService.getWordCloud(movieSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
 }

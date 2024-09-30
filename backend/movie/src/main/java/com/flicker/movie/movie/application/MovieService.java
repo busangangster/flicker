@@ -182,7 +182,7 @@ public class MovieService {
         // 3. MongoDB에 행동 로그 저장
         movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
         // 4. MovieDetailResponse 생성
-        return new MovieDetailResponse(movie, movie.getMovieDetail(), movie.getActors(), movie.getWordClouds());
+        return new MovieDetailResponse(movie, movie.getMovieDetail(), movie.getActors());
     }
 
     @Transactional
@@ -230,6 +230,16 @@ public class MovieService {
         // 2. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
+    @Transactional
+    public List<WordCloudResponse> getWordCloud(int movieSeq) {
+        // 1. 영화 정보 조회
+        Movie movie = movieRepoUtil.findById(movieSeq);
+        // 2. WordCloud 조회
+        return movie.getWordClouds().stream()
+                .map(WordCloudResponse::new)
                 .toList();
     }
 
