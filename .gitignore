@@ -1,12 +1,41 @@
-# IDE 설정 파일
-.idea/
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
 *.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
-# 로그 파일
-*.log
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-# Node.js modules
-node_modules/
+### VS Code ###
+.vscode/
+
 
 # Python 가상 환경
 venv/
@@ -14,8 +43,4 @@ venv/
 # Spring boot 설정
 application.properties
 
-#gradle 파일 삭제
-backend/bff/.gradle/
 
-# Gradle build files
-.gradle/
