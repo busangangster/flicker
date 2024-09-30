@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
                   className="text-white font-semibold whitespace-nowrap"
                 >
                   For Me
-                </NavLink>
+                </button>
                 <NavLink
                   to="/movies"
                   className="text-white font-semibold whitespace-nowrap"
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
                   className="text-white font-semibold whitespace-nowrap"
                 >
                   Contact
-                </NavLink> 
+                </NavLink>
                 <div>
                   {data ? (
                     <button

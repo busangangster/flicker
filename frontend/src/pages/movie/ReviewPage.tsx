@@ -28,40 +28,45 @@ const ReviewPage: React.FC = () => {
   }, [isLoading]);
 
   // 데이터를 가져오는 함수
-const loadReviews = useCallback(async () => {
-  if (isLoading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 중단
+  const loadReviews = useCallback(async () => {
+    if (isLoading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 중단
 
-  setIsLoading(true); // 로딩 시작
+    setIsLoading(true); // 로딩 시작
 
-  try {
-    console.log("Fetching reviews for page:", page);
-    const newReviews = await fetchMovieReviews(23428, 181368, "like", page, 10);
-    console.log("Fetched reviews:", newReviews);
+    try {
+      console.log("Fetching reviews for page:", page);
+      const newReviews = await fetchMovieReviews(
+        23428,
+        181368,
+        "like",
+        page,
+        10
+      );
+      console.log("Fetched reviews:", newReviews);
 
-    // 중복된 reviewSeq가 없도록 필터링
-    const uniqueNewReviews = newReviews.filter(
-      (newReview) =>
-        !reviews.some((review) => review.reviewSeq === newReview.reviewSeq)
-    );
+      // 중복된 reviewSeq가 없도록 필터링
+      const uniqueNewReviews = newReviews.filter(
+        (newReview) =>
+          !reviews.some((review) => review.reviewSeq === newReview.reviewSeq)
+      );
 
-    if (uniqueNewReviews.length > 0) {
-      setReviews((prevReviews) => {
-        const updatedReviews = [...prevReviews, ...uniqueNewReviews];
-        console.log("Updated reviews:", updatedReviews);
-        return updatedReviews;
-      });
+      if (uniqueNewReviews.length > 0) {
+        setReviews((prevReviews) => {
+          const updatedReviews = [...prevReviews, ...uniqueNewReviews];
+          console.log("Updated reviews:", updatedReviews);
+          return updatedReviews;
+        });
+      }
+
+      if (uniqueNewReviews.length < 10) {
+        setHasMore(false); // 불러온 데이터가 10개 미만이면 더 이상 데이터 없음
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setIsLoading(false); // 로딩 완료 후
     }
-
-    if (uniqueNewReviews.length < 10) {
-      setHasMore(false); // 불러온 데이터가 10개 미만이면 더 이상 데이터 없음
-    }
-  } catch (error) {
-    console.error("Error fetching reviews:", error);
-  } finally {
-    setIsLoading(false); // 로딩 완료 후
-  }
-}, [page, hasMore, isLoading, reviews]);
-
+  }, [page, hasMore, isLoading, reviews]);
 
   // 페이지 변경 시 새로운 데이터를 가져옴
   useEffect(() => {
@@ -121,8 +126,6 @@ const loadReviews = useCallback(async () => {
       return sortedReviews.sort((a, b) => b.likes - a.likes);
     }
 
-    setReviews(sortedReviews); // 정렬된 리뷰 설정
-  }, [sortOption]); // sortOption이 변경될 때마다 실행
     return sortedReviews;
   };
 
@@ -213,7 +216,7 @@ const loadReviews = useCallback(async () => {
       </div>
 
       <div
-        className="material-icons bg-gray-200 text-black w-[42px] h-[42px] border rounded-[10px] cursor-pointer justify-center flex items-center fixed right-[85px] bottom-[30px] z-10"
+        className="material-symbols-outlined bg-gray-200 text-black w-[42px] h-[42px] border rounded-[10px] cursor-pointer justify-center flex items-center fixed right-[85px] bottom-[30px] z-10"
         onClick={scrollToTop}
       >
         arrow_upward

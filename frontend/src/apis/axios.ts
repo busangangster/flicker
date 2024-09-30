@@ -3,6 +3,11 @@ import Cookies from "js-cookie";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true, // for cross-origin requests
+});
 
 
 const apiClient = axios.create({
