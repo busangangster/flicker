@@ -20,5 +20,4 @@ public class MovieDetailResponse {
     private String backgroundUrl;
     private double movieRating;
     private List<ActorResponse> actors;
-    private List<WordCloudResponse> wordClouds;
 }

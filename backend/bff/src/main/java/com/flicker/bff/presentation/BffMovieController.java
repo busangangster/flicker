@@ -101,4 +101,10 @@ public class BffMovieController {
     public Mono<ResponseEntity<ResponseDto>> getTopMovieList() {
         return bffMovieService.getTopMovieList();
     }
+
+    // 영화 워드 클라우드 조회
+    @GetMapping("/wordCloud/{movieSeq}")
+    public Mono<ResponseEntity<ResponseDto>> getMovieWordCloud(@PathVariable int movieSeq) {
+        return bffMovieService.getMovieWordCloud(movieSeq);
+    }
 }

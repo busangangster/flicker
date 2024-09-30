@@ -21,7 +21,6 @@ public class MovieDetailReviewRecommendResponse {
     private String backgroundUrl;
     private double movieRating;
     private List<ActorResponse> actors;
-    private List<WordCloudResponse> wordClouds;
 
     @Setter
     private List<ReviewResponse> reviews;
@@ -45,6 +44,5 @@ public class MovieDetailReviewRecommendResponse {
         this.backgroundUrl = movieDetailResponse.getBackgroundUrl();
         this.movieRating = movieDetailResponse.getMovieRating();
         this.actors = movieDetailResponse.getActors();
-        this.wordClouds = movieDetailResponse.getWordClouds();
     }
 }
