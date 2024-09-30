@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 
 @Getter
+@ToString
 public class ResponseDto {
 
     private final Object data;
