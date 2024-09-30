@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.logger.dto.SentimentResult;
 import com.flicker.logger.dto.SentimentReviewEvent;
+import com.flicker.logger.service.SentimentAnalysisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -12,6 +13,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -27,7 +29,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -37,6 +42,7 @@ public class SentimentBatchScoreConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final SentimentAnalysisService sentimentAnalysisService;
     @Qualifier("dataDBSource") private final DataSource dataSource;
 
     @Bean
@@ -56,10 +62,10 @@ public class SentimentBatchScoreConfig {
         log.info("Sentiment batch score step started");
 
         return new StepBuilder("SentimentBatchScoreStep", jobRepository)
-                .<SentimentReviewEvent, SentimentResult> chunk(10, transactionManager)
+                .<SentimentReviewEvent, SentimentReviewEvent> chunk(100, transactionManager)
                 .reader(sentimentBatchScoreReader())
                 .processor(sentimentBatchScoreProcessor())
-                .writer(sentimentScoreWriter())
+                .writer(sentimentScoreWriter(sentimentAnalysisService, jdbcBatchItemWriter(dataSource)))
                 .build();
     }
 
@@ -108,18 +114,19 @@ public class SentimentBatchScoreConfig {
 
     @Bean
     @StepScope
-    public ItemProcessor<SentimentReviewEvent, SentimentResult> sentimentBatchScoreProcessor() {
+    public ItemProcessor<SentimentReviewEvent, SentimentReviewEvent> sentimentBatchScoreProcessor() {
 
-        return item -> {
+        return items -> {
             // 여기서 감성분석 모델을 분석 API를 호춣하는 코드
             // score <- API 호출
             // 테스트를 위해 0.5점 주입
-            Double score = 0.5;
-
-            return SentimentResult.builder()
-                    .reviewSeq(item.getReviewSeq())
-                    .sentimentScore(score)
-                    .build();
+//            Double score = 0.5;
+//
+//            return SentimentResult.builder()
+//                    .reviewSeq(item.getReviewSeq())
+//                    .sentimentScore(score)
+//                    .build();
+            return items;
         };
     }
 
@@ -135,16 +142,36 @@ public class SentimentBatchScoreConfig {
 
     @Bean
     @StepScope
-    public JdbcBatchItemWriter<SentimentResult> sentimentScoreWriter() {
+    public JdbcBatchItemWriter<SentimentResult> jdbcBatchItemWriter(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<SentimentResult>()
                 .dataSource(dataSource)
                 .sql("UPDATE data_db.sentiment_review_logs " +
                         "SET sentiment_score = :sentimentScore, " +
-                        "is_processed = 1," +
-                        "updated_at = :timeStamp " +
+                        "is_processed = 1, " +
+                        "updated_at = CURRENT_TIMESTAMP " +  // 현재 시간 설정
                         "WHERE review_seq = :reviewSeq")
                 .beanMapped()
                 .build();
+    }
+
+    @Bean
+    @StepScope
+    public ItemWriter<SentimentReviewEvent> sentimentScoreWriter(SentimentAnalysisService sentimentAnalysisService, JdbcBatchItemWriter<SentimentResult> jdbcBatchItemWriter) {
+        return items -> {
+            List<SentimentReviewEvent> reviewEventList = new ArrayList<>();
+            items.forEach(sentimentReviewEvent -> {
+                SentimentReviewEvent reviewEvent = new SentimentReviewEvent();
+                reviewEvent.setReviewSeq(sentimentReviewEvent.getReviewSeq());
+                reviewEvent.setContent(sentimentReviewEvent.getContent());
+                reviewEventList.add(reviewEvent);
+            });
+            List<SentimentResult> results = sentimentAnalysisService.batchAnalyze(reviewEventList);
+
+            // 감정 분석 결과를 DB에 저장하기 위해 Chunk로 변환
+            Chunk<SentimentResult> chunk = new Chunk<>(results);
+
+            jdbcBatchItemWriter.write(chunk);
+        };
     }
 
     @Bean
