@@ -35,3 +35,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+# Spring boot 설정
+application.properties
+
+
+backend/recommend/main.py
