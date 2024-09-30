@@ -1,8 +1,9 @@
-// RecommandListPage.tsx
 import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SwiperSlide, Swiper } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules"; // Autoplay 모듈 추가
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
+import exit from "/assets/movie/exit.png";
 
 // 목업 포스터 이미지 임의 설정
 const movieImg = [
@@ -29,8 +30,18 @@ const RecommandListPage: React.FC = () => {
   );
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+  const navigate = useNavigate();
 
-  // Swiper 인스턴스가 생성되면 navigation 설정 및 이벤트 리스너 등록
+  // 페이지 진입 애니메이션 상태
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // 페이지 로드 시 애니메이션을 시작
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 0); // 약간의 지연을 두고 애니메이션 시작
+  }, []);
+
   useEffect(() => {
     if (swiperInstance && prevRef.current && nextRef.current) {
       swiperInstance.params.navigation = {
@@ -43,19 +54,16 @@ const RecommandListPage: React.FC = () => {
       swiperInstance.navigation.init();
       swiperInstance.navigation.update();
 
-      // 현재 슬라이드 상태에 따라 화살표 버튼 상태 설정
       swiperInstance.on("slideChange", () => {
         setIsBeginning(swiperInstance.isBeginning);
         setIsEnd(swiperInstance.isEnd);
       });
 
-      // 초기 상태 설정
       setIsBeginning(swiperInstance.isBeginning);
       setIsEnd(swiperInstance.isEnd);
     }
   }, [swiperInstance]);
 
-  // Swiper 인스턴스를 설정하고 초기 상태를 업데이트
   const handleSwiper = (swiper: SwiperInstance) => {
     setSwiperInstance(swiper);
 
@@ -64,48 +72,68 @@ const RecommandListPage: React.FC = () => {
       setIsEnd(swiper.isEnd);
     });
 
-    // 초기 상태 설정
     setIsBeginning(swiper.isBeginning);
     setIsEnd(swiper.isEnd);
   };
 
-  // 이전 버튼 클릭 시
   const handlePrevClick = () => {
     if (swiperInstance && !isBeginning) {
       swiperInstance.slidePrev();
     }
   };
 
-  // 다음 버튼 클릭 시
   const handleNextClick = () => {
     if (swiperInstance && !isEnd) {
       swiperInstance.slideNext();
     }
   };
 
+  const goToRecommend = () => {
+    navigate("/recommend");
+  };
+
   return (
     <div
-      className="relative bg-black text-white min-h-screen flex items-center justify-center"
+      className={`relative bg-black text-white min-h-screen flex items-center justify-center transition-all duration-700 ${
+        isLoaded
+          ? "scale-100 opacity-100 bg-transparent "
+          : "scale-110 opacity-50 bg-black"
+      }`}
       style={{
-        backgroundImage: `url(src/assets/movie/theater3.jpg)`,
+        backgroundColor: "black",
+        backgroundImage: isLoaded
+          ? `url(src/assets/movie/theater3.jpg)`
+          : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
       {/* 영화관 스타일 화면 */}
-      <div className="relative w-[75%] h-[60vh] rounded-md overflow-hidden">
-        <h2 className="text-center text-2xl font-bold text-black mb-[80px] mt-[70px]">
+      <div className="relative w-[73%] h-[75vh] rounded-md overflow-hidden">
+        <img
+          src={exit}
+          alt="exit"
+          className="w-24 opacity-75 absolute top-0"
+          onClick={goToRecommend}
+        />
+        <h2 className="text-center text-3xl font-bold text-black mb-[80px] mt-24">
           My own movie theater
         </h2>
         <Swiper
-          slidesPerView={6}
+          slidesPerView={6} // 6개의 슬라이드가 한 번에 보이도록 설정
           spaceBetween={10}
           onSwiper={handleSwiper}
           navigation={{
             nextEl: nextRef.current,
             prevEl: prevRef.current,
           }}
-          modules={[Navigation, Pagination]}
+          autoplay={{
+            delay: 0, // 슬라이드 간 지연 없이 계속 이동
+            disableOnInteraction: false, // 사용자 상호작용 이후에도 자동 슬라이드 유지
+          }}
+          speed={10000} // 15초 동안 슬라이드가 부드럽게 계속 이동
+          loop={true} // 루프 설정
+          modules={[Navigation, Pagination, Autoplay]} // Autoplay 모듈 포함
         >
           {movieImg.map((img, index) => (
             <SwiperSlide
@@ -122,7 +150,6 @@ const RecommandListPage: React.FC = () => {
         </Swiper>
       </div>
 
-      {/* 외부 화살표 버튼 - 슬라이드 컨테이너 밖에 배치 */}
       {!isBeginning && (
         <div
           ref={prevRef}

@@ -6,6 +6,7 @@ import Filter from "../../components/Filter";
 import ReviewForm from "../../components/ReviewForm";
 import Navbar from "../../components/common/Navbar";
 import { ReviewType } from "../../type";
+import { useUserQuery } from "../../hooks/useUserQuery";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { fetchMovieReviews } from "../../apis/axios"; // 서버 API 호출 함수
@@ -16,6 +17,7 @@ gsap.registerPlugin(ScrollToPlugin);
 const ReviewPage: React.FC = () => {
   const [reviews, setReviews] = useState<ReviewType[]>([]); // 서버에서 가져온 리뷰 데이터
   const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
+  const { data } = useUserQuery(); // 유저 정보 가져오기
   const [page, setPage] = useState(0); // 페이지 번호
   const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
@@ -119,6 +121,8 @@ const loadReviews = useCallback(async () => {
       return sortedReviews.sort((a, b) => b.likes - a.likes);
     }
 
+    setReviews(sortedReviews); // 정렬된 리뷰 설정
+  }, [sortOption]); // sortOption이 변경될 때마다 실행
     return sortedReviews;
   };
 
@@ -176,7 +180,7 @@ const loadReviews = useCallback(async () => {
                 />
               </div>
             </div>
-            <ReviewForm onSubmit={handleAddReview} />
+            {data ? <ReviewForm onSubmit={handleAddReview} /> : ""}
             {reviews.length > 0 ? (
               getSortedReviews().map((review) => (
                 <Review

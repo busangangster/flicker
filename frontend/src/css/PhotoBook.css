@@ -1,7 +1,7 @@
 /* 책이 확대되는 애니메이션 */
 @keyframes zoomIn {
   0% {
-    transform: scale(0.9); 
+    transform: scale(0.9);
     opacity: 0;
   }
   100% {
@@ -46,10 +46,12 @@
 
 .left-page {
   border-right: 1px solid #b1b1b1;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.25) 0%, transparent 7%);
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  box-shadow: 0px 0 50px rgba(0, 0, 0, 0.5); /* 왼쪽 그림자 추가 */
 }
 
 .right-page {
   border-left: 1px solid #b1b1b1;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.25) 0%, transparent 7%);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.5); /* 오른쪽 그림자 추가 */
 }

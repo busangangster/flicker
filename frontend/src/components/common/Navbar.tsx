@@ -1,11 +1,14 @@
 // Navbar.js
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useUserQuery } from "../../hooks/useUserQuery";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [animateMenu, setAnimateMenu] = useState(false);
   const [buttonText, setButtonText] = useState("MENU");
+  const { data } = useUserQuery();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     if (menuOpen) {
@@ -19,6 +22,25 @@ const Navbar: React.FC = () => {
       setTimeout(() => setAnimateMenu(true), 10);
       setButtonText("CLOSE");
     }
+  };
+
+  const handleForMeClick = () => {
+    if (data) {
+      // 로그인된 경우 /recommend 페이지로 이동
+      navigate("/recommend");
+    } else {
+      // 로그인되지 않은 경우 /signin 페이지로 이동
+      alert("로그인한 사용자만 접근 가능합니다 !");
+      navigate("/signin");
+    }
+  };
+
+  const goToSignin = () => {
+    navigate("/signin");
+  };
+
+  const goToMyPage = () => {
+    navigate("/mypage/myinformation");
   };
 
   return (
@@ -74,8 +96,8 @@ const Navbar: React.FC = () => {
                 >
                   About
                 </NavLink>
-                <NavLink
-                  to="/recommend"
+                <button
+                  onClick={handleForMeClick}
                   className="text-white font-semibold whitespace-nowrap"
                 >
                   For Me
@@ -91,13 +113,24 @@ const Navbar: React.FC = () => {
                   className="text-white font-semibold whitespace-nowrap"
                 >
                   Contact
-                </NavLink>
-                <NavLink
-                  to="/signin"
-                  className="text-white font-semibold whitespace-nowrap"
-                >
-                  Login
-                </NavLink>
+                </NavLink> 
+                <div>
+                  {data ? (
+                    <button
+                      onClick={goToMyPage}
+                      className="text-white font-semibold whitespace-nowrap"
+                    >
+                      Mypage
+                    </button>
+                  ) : (
+                    <button
+                      onClick={goToSignin}
+                      className="text-white font-semibold whitespace-nowrap"
+                    >
+                      Login
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 

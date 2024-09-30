@@ -93,21 +93,21 @@ const Home: React.FC = () => {
       const screenCenterY = app.screen.height / 2;
 
       const images = [
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
+        "/assets/landing/landing1.jpg",
+        "/assets/landing/landing2.jpg",
+        "/assets/landing/landing3.jpg",
+        "/assets/landing/landing4.jpg",
+        "/assets/landing/landing5.jpg",
+        "/assets/landing/landing6.jpg",
+        "/assets/landing/landing7.jpg",
         "/assets/landing/flick.mp4",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
+        "/assets/landing/landing1.jpg",
+        "/assets/landing/landing2.jpg",
+        "/assets/landing/landing3.jpg",
+        "/assets/landing/landing4.jpg",
+        "/assets/landing/landing5.jpg",
+        "/assets/landing/landing6.jpg",
+        "/assets/landing/landing7.jpg",
       ];
 
       const middleIndex = Math.floor(images.length / 2);

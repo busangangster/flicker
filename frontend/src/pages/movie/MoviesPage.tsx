@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import Navbar from "../../components/common/Navbar";
 import "../../css/MoviesPage.css";
 import MoviesList from "../../components/MoviesList";
 import SearchBar from "../../components/SearchBar";
 import Filter from "../../components/Filter"; // Filter 컴포넌트 추가
+import TopTen from "../../components/TopTen";
 
 const MoviesPage: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false); // 검색창 상태 관리
   const [selectedGenre, setSelectedGenre] = useState(""); // 선택된 장르 관리
+  const navigate = useNavigate(); // useNavigate 사용
 
   const movieImg = [
     "/assets/survey/image1.jpg",
@@ -57,6 +60,12 @@ const MoviesPage: React.FC = () => {
     { value: "판타지", label: "판타지" },
   ];
 
+  // 장르 선택 시 해당 페이지로 이동
+  const handleGenreChange = (value: string) => {
+    setSelectedGenre(value);
+    navigate(`/movies/genre/${value}`); // MovieGenrePage로 이동
+  };
+
   return (
     <div className="flex flex-col bg-black h-screen overflow-y-auto">
       <header className="sticky top-0 bg-transparent z-10">
@@ -66,17 +75,16 @@ const MoviesPage: React.FC = () => {
       <div className="mt-[100px] flex justify-between items-end w-[1800px] pl-10">
         {/* Filter 컴포넌트 추가 */}
         <div className="mb-3 mt-1">
-          {/* {" "} */}
           <Filter
             options={genres}
-            onChange={(value) => setSelectedGenre(value)}
+            onChange={handleGenreChange} // 선택된 장르 변경 시 페이지 이동
             defaultValue={selectedGenre || "장르"}
             customClass="grid grid-cols-3 gap-2 w-96" // MoviesPage에서만 3열 적용
           />
         </div>
         <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
       </div>
-
+      <TopTen />
       <MoviesList category="한국 영화" movieImg={movieImg} />
       <MoviesList category="액션 & 어드벤처 시리즈" movieImg={movieImg} />
       <MoviesList category="진심이 느껴지는 영화" movieImg={movieImg} />

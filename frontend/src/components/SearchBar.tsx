@@ -1,12 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
-
-interface SearchBarProps {
-  initialSearchQuery?: string;
-  isExpanded: boolean;
-  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { SearchBarProps } from "../type"
 
 const SearchBar: React.FC<SearchBarProps> = ({
   initialSearchQuery = "",
