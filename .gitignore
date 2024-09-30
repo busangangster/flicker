@@ -14,3 +14,8 @@ venv/
 # Spring boot 설정
 application.properties
 
+#gradle 파일 삭제
+backend/bff/.gradle/
+
+# Gradle build files
+.gradle/
