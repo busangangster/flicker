@@ -4,17 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="0e4ec9e7-efe3-4f85-8ee2-f97795cbf6b9" name="변경" comment="" />
+=======
     <list default="true" id="bf86bd6c-0d68-4a86-be30-e1c333044b81" name="Changes" comment="" />
+>>>>>>> e7ba9f2f46ed49416c5facc424db675f12e5095d
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
+=======
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
   </component>
+>>>>>>> e7ba9f2f46ed49416c5facc424db675f12e5095d
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
@@ -27,6 +34,20 @@
       </state>
     </system>
   </component>
+<<<<<<< HEAD
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+=======
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
@@ -84,4 +105,5 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+>>>>>>> e7ba9f2f46ed49416c5facc424db675f12e5095d
 </project>
