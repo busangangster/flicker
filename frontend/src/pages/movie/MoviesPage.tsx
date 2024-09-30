@@ -5,6 +5,7 @@ import "../../css/MoviesPage.css";
 import MoviesList from "../../components/MoviesList";
 import SearchBar from "../../components/SearchBar";
 import Filter from "../../components/Filter"; // Filter 컴포넌트 추가
+import TopTen from "../../components/TopTen";
 
 const MoviesPage: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false); // 검색창 상태 관리
@@ -83,7 +84,7 @@ const MoviesPage: React.FC = () => {
         </div>
         <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
       </div>
-
+      <TopTen />
       <MoviesList category="한국 영화" movieImg={movieImg} />
       <MoviesList category="액션 & 어드벤처 시리즈" movieImg={movieImg} />
       <MoviesList category="진심이 느껴지는 영화" movieImg={movieImg} />

@@ -122,3 +122,9 @@ export interface ServiceContentProps {
   tags: string[];
   imageUrl: string;
 }
+
+export interface TopTenMovie {
+  movieSeq: number;
+  movieTitle: string;
+  moviePosterUrl: string;
+}
