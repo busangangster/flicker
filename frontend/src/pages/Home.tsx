@@ -35,28 +35,28 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (animationFinished) {
-      // 애니메이션이 완료된 후 CircleCarousel에 페이드 인 효과 적용
-      const timeline = gsap.timeline();
-      timeline
-        .fromTo(
-          ".circle-carousel",
-          { opacity: 0 },
-          { opacity: 0.3, duration: 0.5, ease: "power2.out" } // 처음 0에서 0.3까지 서서히 증가
-        )
-        .to(".circle-carousel", {
-          opacity: 0.5,
-          duration: 0.5,
-          ease: "power2.out",
-        }) // 0.3에서 0.6까지 증가
-        .to(".circle-carousel", {
-          opacity: 1,
-          duration: 1,
-          ease: "power2.out",
-        }); // 0.6에서 1까지 최종 증가
-    }
-  }, [animationFinished]);
+  // useEffect(() => {
+  //   if (animationFinished) {
+  //     // 애니메이션이 완료된 후 CircleCarousel에 페이드 인 효과 적용
+  //     const timeline = gsap.timeline();
+  //     timeline
+  //       .fromTo(
+  //         ".circle-carousel",
+  //         { opacity: 0 },
+  //         { opacity: 0.3, duration: 0.5, ease: "power2.out" } // 처음 0에서 0.3까지 서서히 증가
+  //       )
+  //       .to(".circle-carousel", {
+  //         opacity: 0.5,
+  //         duration: 0.5,
+  //         ease: "power2.out",
+  //       }) // 0.3에서 0.6까지 증가
+  //       .to(".circle-carousel", {
+  //         opacity: 1,
+  //         duration: 1,
+  //         ease: "power2.out",
+  //       }); // 0.6에서 1까지 최종 증가
+  //   }
+  // }, [animationFinished]);
 
   useEffect(() => {
     if (!showLanding) return;

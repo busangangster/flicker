@@ -9,8 +9,8 @@ import { ReviewType } from "../../type";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { fetchMovieReviews } from "../../apis/axios"; // 서버 API 호출 함수
-import { throttle } from "lodash"; // lodash에서 throttle 가져오기
+import { fetchMovieReviews } from "../../apis/axios";
+import { throttle } from "lodash";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -31,7 +31,7 @@ const ReviewPage: React.FC = () => {
   const loadReviews = useCallback(async () => {
     if (isLoading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 중단
 
-    setIsLoading(true); // 로딩 시작
+    setIsLoading(true);
 
     try {
       console.log("Fetching reviews for page:", page);
@@ -46,19 +46,19 @@ const ReviewPage: React.FC = () => {
 
       // 중복된 reviewSeq가 없도록 필터링
       const uniqueNewReviews = newReviews.filter(
-        (newReview) =>
+        (newReview: { reviewSeq: number }) =>
           !reviews.some((review) => review.reviewSeq === newReview.reviewSeq)
       );
 
+      console.log("Filtered unique reviews:", uniqueNewReviews);
+
+      // 새로운 리뷰만 상태에 추가
       if (uniqueNewReviews.length > 0) {
-        setReviews((prevReviews) => {
-          const updatedReviews = [...prevReviews, ...uniqueNewReviews];
-          console.log("Updated reviews:", updatedReviews);
-          return updatedReviews;
-        });
+        setReviews((prevReviews) => [...prevReviews, ...uniqueNewReviews]);
       }
 
-      if (uniqueNewReviews.length < 10) {
+      // 페이지를 계속 증가시켜 더 많은 리뷰를 불러오게 함
+      if (newReviews.length < 10) {
         setHasMore(false); // 불러온 데이터가 10개 미만이면 더 이상 데이터 없음
       }
     } catch (error) {
@@ -110,7 +110,7 @@ const ReviewPage: React.FC = () => {
   // 리뷰 데이터를 정렬하는 함수
   const getSortedReviews = () => {
     const sortedReviews = [...reviews];
-    console.log("Sorted reviews before rendering:", sortedReviews); // 디버깅 로그 추가
+    console.log("Sorted reviews before rendering:", sortedReviews);
 
     if (sortOption === "최신순") {
       return sortedReviews.sort(
@@ -198,7 +198,7 @@ const ReviewPage: React.FC = () => {
             ) : (
               <div>리뷰가 없습니다</div> // 리뷰가 없는 경우 처리
             )}
-            {isLoading && <div>Loading...</div>} {/* 로딩 중일 때 표시 */}
+            {isLoading && <div>Loading...</div>}
           </div>
           <div className="w-1/4 pl-4">
             <div className="mb-6">
