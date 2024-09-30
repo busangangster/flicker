@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class ReviewDto {
 
+    private Integer userSeq;
     private Integer movieSeq;
     private Integer reviewSeq;
     private String nickname;
