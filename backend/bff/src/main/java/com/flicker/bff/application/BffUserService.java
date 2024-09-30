@@ -74,7 +74,7 @@ public class BffUserService {
     // 5. 리뷰 목록
     public Mono<ResponseEntity<ResponseDto>> getMovieReview(MovieReviewReqDto request) {
         // 1. 외부 API의 경로를 설정합니다.
-        String path = util.getUri("/review/movies/"+request.getMovieSeq()+"?userSeq="+request.getUserSeq());
+        String path = util.getUri("/review/movies/"+request.getMovieSeq()+"?userSeq="+request.getUserSeq()+"&page="+request.getPage())+"&size="+request.getSize()+"&option="+request.getOption();
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
         return util.sendGetRequestAsync(userReviewBaseUrl,path);
     }

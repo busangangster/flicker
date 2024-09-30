@@ -56,13 +56,20 @@ public class BffUserController {
 
     // 5. 리뷰 목록
     @GetMapping("/movies/{movieSeq}")
-    public Mono<ResponseEntity<ResponseDto>> getMovieReview(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq) {
+    public Mono<ResponseEntity<ResponseDto>> getMovieReview(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "10")Integer size, @RequestParam(value = "option", defaultValue = "like")String option) {
         System.out.println("리뷰 목록 요청");
         System.out.println("movieSeq = " + movieSeq);
         System.out.println("myUserSeq = " + myUserSeq);
+
+
+
         MovieReviewReqDto dto = new MovieReviewReqDto();
         dto.setMovieSeq(movieSeq);
         dto.setUserSeq(myUserSeq);
+        dto.setPage(page);
+        dto.setSize(size);
+        dto.setOption(option);
+
         return userService.getMovieReview(dto);
     }
 

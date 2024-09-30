@@ -6,4 +6,7 @@ import lombok.Data;
 public class MovieReviewReqDto {
     private Integer movieSeq;
     private Integer userSeq;
+    private Integer page;
+    private Integer size;
+    private String option;
 }
