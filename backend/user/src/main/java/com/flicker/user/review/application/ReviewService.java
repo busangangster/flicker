@@ -91,10 +91,9 @@ public class ReviewService {
 
         Pageable sortedPageable;
         if ("like".equals(option)) {
-            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes"));
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
         } else {
-            // 생성일 기준으로 최신순
-            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
         }
 
         Page<Review> allByMovieSeq = reviewRepository.findAllByMovieSeq(movieSeq, sortedPageable);
