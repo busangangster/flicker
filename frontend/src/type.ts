@@ -12,6 +12,11 @@ export interface ReviewType {
   top: boolean;
 }
 
+export interface ReviewProps {
+  review: ReviewType;
+  onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
+}
+
 export interface FilterOptions {
   value: string; // 드롭다운 옵션 값
   label: string; // 드롭다운 옵션 레이블
@@ -61,7 +66,6 @@ export interface ExtendedSprite extends Sprite {
     angle: number;
     rotationOffset: number;
     yOffset: number;
-    // initialY: number; // 초기 y 위치를 추가
   };
 }
 

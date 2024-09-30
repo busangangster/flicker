@@ -452,6 +452,18 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 
   return (
     <div className="relative w-full h-full">
+      {carouselOpacity === 1 && (
+        <div
+          className="fixed flex top-[200px] left-[600px]"
+          style={{
+            color: "#fff",
+            // backgroundColor: "rgba(0, 0, 0, 1)",
+            zIndex: 10,
+          }} // 검은색 반투명 배경
+        >
+          <p className="text-[57px] italic ">FIND YOUR OWN TASTE !</p>
+        </div>
+      )}
       <div
         ref={pixiContainerRef}
         className={`w-full h-full ${className}`}

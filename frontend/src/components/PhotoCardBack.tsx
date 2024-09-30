@@ -1,7 +1,7 @@
 import React from "react";
 
-function PhotoCardBack() {
+const PhotoCardBack: React.FC = () => {
   return <div>PhotoCardBack</div>;
-}
+};
 
 export default PhotoCardBack;
