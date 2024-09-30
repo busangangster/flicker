@@ -229,18 +229,16 @@ const Home: React.FC = () => {
               ? "opacity-0 transition-opacity duration-1000"
               : ""
           }`}
-          style={{ zIndex: -1 }} // z-index 추가 확인
+          style={{ zIndex: -1 }}
         ></div>
       )}
 
       {animationFinished && (
         <div className="min-h-screen flex flex-col relative z-20">
-          {/* z-index를 20으로 유지 */}
           <header className="sticky top-0 bg-black z-30">
             <Navbar />
           </header>
           <main className="w-full h-screen ">
-            {/* 투명도를 낮춰 비디오가 보이게 함 */}
             <div className="circle-carousel">
               <CircleCarousel onCardClick={handleCardClick} />
             </div>
@@ -249,10 +247,7 @@ const Home: React.FC = () => {
       )}
 
       {backgroundVideoUrl && (
-        <div
-          className="absolute top-0 left-0 w-full h-full z-10" // z-index 수정
-          // style={{ pointerEvents: "none" }} // 투명도 및 배경 확인
-        >
+        <div className="absolute top-0 left-0 w-full h-full z-10">
           <iframe
             src={`https://www.youtube.com/embed/${backgroundVideoUrl}?autoplay=1&mute=1&loop=1&playlist=${backgroundVideoUrl}`}
             title="YouTube video player"

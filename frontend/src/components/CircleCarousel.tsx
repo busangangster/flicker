@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Application, Sprite, Assets, Texture } from "pixi.js";
 import { ExtendedSprite } from "../type";
+import gsap from "gsap";
 
 interface CircleCarouselProps {
   onCardClick: (videoUrl: string) => void; // 외부에서 사용하는 함수
@@ -16,6 +17,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
   const cardsRef = useRef<ExtendedSprite[]>([]); // 카드들을 참조하기 위한 ref
   const isCarouselMovedRef = useRef(false); // useRef로 상태 관리
   const isMovingRef = useRef(false); // 이동 중 여부 상태
+  const rotationOffsetRef = useRef({ value: 0 });
 
   // Refs for cleanup
   const updateCardsRef = useRef<() => void>(() => {});
@@ -24,55 +26,53 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
   const pointerMoveHandlerRef = useRef<(event: PointerEvent) => void>();
   const [carouselOpacity, setCarouselOpacity] = useState(1);
 
+  // 카드 이동시키는 함수
   const moveCards = (distance: number) => {
     cardsRef.current.forEach((card) => {
       if (!card.userData.yOffset) {
-        card.userData.yOffset = 0; // yOffset 초기화
+        card.userData.yOffset = 0;
       }
-      card.userData.yOffset += distance; // yOffset 증가 또는 감소
-      // console.log(
-      //   `After Move - Card ${index}: yOffset = ${card.userData.yOffset}`
-      // );
+      card.userData.yOffset += distance;
     });
-    updateCardsRef.current(); // 위치 갱신
+    updateCardsRef.current();
   };
 
   // Carousel을 아래로 이동시키는 함수
   const moveCardsDown = (distance: number) => {
     if (isMovingRef.current) {
-      return; // 이동 중일 때는 다른 이동 방지
+      return;
     }
-    isMovingRef.current = true; // 이동 중 상태 설정
+    isMovingRef.current = true;
     moveCards(distance);
-    isCarouselMovedRef.current = true; // 이동 완료 후 상태 업데이트
+    isCarouselMovedRef.current = true;
     setCarouselOpacity(0.25);
-    isMovingRef.current = false; // 이동 완료 후 이동 상태 해제
+    isMovingRef.current = false;
     console.log("moveCardsDown: Carousel moved down");
   };
 
   // Carousel을 원래 위치로 되돌리는 함수
   const moveCardsUp = (distance: number) => {
     if (isMovingRef.current) {
-      return; // 이동 중일 때는 다른 이동 방지
+      return;
     }
-    isMovingRef.current = true; // 이동 중 상태 설정
-    moveCards(-distance); // 음수로 이동
-    isCarouselMovedRef.current = false; // 원래 위치로 돌아온 상태 설정
+    isMovingRef.current = true;
+    moveCards(-distance);
+    isCarouselMovedRef.current = false;
     setCarouselOpacity(1);
-    isMovingRef.current = false; // 이동 완료 후 이동 상태 해제
+    isMovingRef.current = false;
     console.log("moveCardsUp: Carousel moved up");
   };
 
   // 카드 클릭 이벤트 핸들러
   const handleCardClick = (videoUrl: string) => {
     if (isMovingRef.current) {
-      return; // 이동 중에는 클릭 이벤트 무시
+      return;
     }
     if (isCarouselMovedRef.current) {
-      moveCardsUp(430); // 원래 위치로 되돌림
+      moveCardsUp(430);
     } else {
-      onCardClick(videoUrl); // 비디오 재생 이벤트 발생
-      moveCardsDown(430); // Carousel을 아래로 이동
+      onCardClick(videoUrl);
+      moveCardsDown(430);
     }
   };
 
@@ -275,7 +275,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           });
 
           cards.push(cardContainer);
-          cardsRef.current.push(cardContainer); // cardsRef.current에 추가
+          cardsRef.current.push(cardContainer);
           app.stage.addChild(cardContainer);
         }
 
@@ -302,33 +302,41 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 
         // Update cards function
         const updateCards = () => {
+          const rotationOffset = rotationOffsetRef.current.value; // rotationOffsetRef에서 값 가져오기
           cards.forEach((card, i) => {
             if (card) {
               const angle =
                 (i / cardCount) * Math.PI * 2 * spacingFactor + rotationOffset;
 
-              // 기본 원형 배열 위치
               const baseY = centerY + radiusY * Math.sin(angle);
-
-              // moveCardsDown에서 추가된 yOffset을 반영
               const yOffset = card.userData.yOffset || 0;
-
-              // 최종 y 위치 계산
               card.x = centerX + radiusX * Math.cos(angle);
-              card.y = baseY + yOffset; // 원래 위치에 yOffset 추가
-
+              card.y = baseY + yOffset;
               card.rotation = 0;
               card.userData.angle = angle;
             }
           });
 
-          bringCenterCardToFront();
-
           if (appRef.current) {
-            appRef.current.renderer.render(appRef.current.stage); // Pixi.js 화면 갱신
+            appRef.current.renderer.render(appRef.current.stage);
           }
         };
         updateCardsRef.current = updateCards; // Store reference for cleanup
+
+        const rotateAnimation = () => {
+          gsap.to(rotationOffsetRef.current, {
+            value: Math.PI * 2, // 한 바퀴 회전
+            duration: 2,
+            ease: "power2.inOut",
+            onUpdate: () => {
+              updateCards(); // rotationOffsetRef.current.value 값을 사용
+            },
+            onComplete: () => {
+              // 애니메이션이 끝난 후 마우스 이벤트도 계속 동작하도록 설정
+              setupMouseEvents();
+            },
+          });
+        };
 
         // Function to bring the center card to the front
         function bringCenterCardToFront() {
@@ -354,47 +362,39 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
         }
 
         // Event handlers
-        const pointerDownHandler = (event: PointerEvent) => {
-          dragging = true;
-          previousPosition = { x: event.clientX, y: event.clientY };
+        const setupMouseEvents = () => {
+          const pointerDownHandler = (event: PointerEvent) => {
+            dragging = true;
+            previousPosition = { x: event.clientX, y: event.clientY };
+          };
+          pointerDownHandlerRef.current = pointerDownHandler;
+
+          const pointerUpHandler = () => {
+            dragging = false;
+          };
+          pointerUpHandlerRef.current = pointerUpHandler;
+
+          const pointerMoveHandler = (event: PointerEvent) => {
+            if (!dragging) return;
+
+            const currentPosition = { x: event.clientX, y: event.clientY };
+            const deltaX = currentPosition.x - previousPosition.x;
+
+            // 마우스 드래그에 따라 회전 값 조정
+            rotationOffsetRef.current.value += deltaX * 0.002; // 회전 속도 조정
+            updateCards();
+
+            previousPosition = currentPosition;
+          };
+          pointerMoveHandlerRef.current = pointerMoveHandler;
+
+          // Add event listeners
+          app.view.addEventListener("pointerdown", pointerDownHandler);
+          app.view.addEventListener("pointerup", pointerUpHandler);
+          app.view.addEventListener("pointermove", pointerMoveHandler);
         };
-        pointerDownHandlerRef.current = pointerDownHandler;
 
-        const pointerUpHandler = () => {
-          dragging = false;
-        };
-        pointerUpHandlerRef.current = pointerUpHandler;
-
-        const pointerMoveHandler = (event: PointerEvent) => {
-          if (!dragging) return;
-
-          const currentPosition = { x: event.clientX, y: event.clientY };
-          const prevAngle = calculateAngle(
-            previousPosition.x,
-            previousPosition.y,
-            centerX,
-            centerY
-          );
-          const currentAngle = calculateAngle(
-            currentPosition.x,
-            currentPosition.y,
-            centerX,
-            centerY
-          );
-
-          const angleDiff = currentAngle - prevAngle;
-          rotationOffset += angleDiff;
-
-          previousPosition = currentPosition;
-
-          updateCards();
-        };
-        pointerMoveHandlerRef.current = pointerMoveHandler;
-
-        // Add event listeners
-        app.view.addEventListener("pointerdown", pointerDownHandler);
-        app.view.addEventListener("pointerup", pointerUpHandler);
-        app.view.addEventListener("pointermove", pointerMoveHandler);
+        rotateAnimation();
 
         // Use app.ticker instead of Ticker.shared
         app.ticker.add(updateCards);
@@ -457,9 +457,8 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           className="fixed flex top-[200px] left-[600px]"
           style={{
             color: "#fff",
-            // backgroundColor: "rgba(0, 0, 0, 1)",
             zIndex: 10,
-          }} // 검은색 반투명 배경
+          }}
         >
           <p className="text-[57px] italic ">FIND YOUR OWN TASTE !</p>
         </div>
