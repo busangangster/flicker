@@ -8,9 +8,15 @@ import thumbUp from "../assets/review/thumb_up.png";
 import { ReviewProps } from "../type";
 
 const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {
+
+    // console.log("Rendering review:", review);
+
   const [showContent, setShowContent] = React.useState(!review.spoiler); // 스포일러 여부에 따른 내용 표시 여부
   const MAX_LENGTH = 250; // 최대 길이 설정
-  const isLongContent = review.content.length > MAX_LENGTH;
+
+  const content = review.content || "";
+
+  const isLongContent = content.length > MAX_LENGTH;
   const [showMore, setShowMore] = React.useState(false); // '더보기' 버튼을 눌렀는지 여부
 
   const toggleContent = () => {

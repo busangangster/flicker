@@ -72,31 +72,31 @@ const Navbar: React.FC = () => {
                   to="/servicedetail"
                   className="text-white font-semibold whitespace-nowrap"
                 >
-                  about
+                  About
                 </NavLink>
                 <NavLink
                   to="/recommend"
                   className="text-white font-semibold whitespace-nowrap"
                 >
-                  for me
+                  For Me
                 </NavLink>
                 <NavLink
                   to="/movies"
                   className="text-white font-semibold whitespace-nowrap"
                 >
-                  movies
+                  Movies
                 </NavLink>
                 <NavLink
                   to="/contact"
                   className="text-white font-semibold whitespace-nowrap"
                 >
-                  contact
+                  Contact
                 </NavLink>
                 <NavLink
                   to="/signin"
                   className="text-white font-semibold whitespace-nowrap"
                 >
-                  login
+                  Login
                 </NavLink>
               </div>
             )}

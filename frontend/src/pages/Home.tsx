@@ -100,7 +100,7 @@ const Home: React.FC = () => {
         "/assets/landing/fastand.jpg",
         "/assets/landing/firstandF.jpg",
         "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
+        "/assets/landing/flick.mp4",
         "/assets/landing/firstandF.jpg",
         "/assets/landing/avengers1.jpg",
         "/assets/landing/fastand.jpg",
@@ -172,7 +172,7 @@ const Home: React.FC = () => {
                   ease: "power2.inOut",
                   onComplete: () => {
                     gsap.to(middleSprite, {
-                      duration: 2,
+                      duration: 3,
                       alpha: 0,
                       ease: "power2.inOut",
                       onComplete: () => {
