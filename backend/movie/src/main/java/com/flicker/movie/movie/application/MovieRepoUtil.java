@@ -85,7 +85,7 @@ public class MovieRepoUtil {
      */
     public List<Movie> findAll(Pageable pageable) {
         try {
-            return movieRepository.findByDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc("N", pageable).getContent();
+            return movieRepository.findByDelYNOrderByMovieDetail_MovieYearDescMovieSeqAsc("N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 전체 목록 조회 중 오류가 발생했습니다.");
         }
@@ -100,7 +100,7 @@ public class MovieRepoUtil {
      */
     public List<Movie> findByGenre(String genre, Pageable pageable) {
         try {
-            return movieRepository.findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(genre, "N", pageable).getContent();
+            return movieRepository.findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqAsc(genre, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "장르별 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -130,7 +130,7 @@ public class MovieRepoUtil {
      */
     public List<Movie> findByCountry(String country, Pageable pageable) {
         try {
-            return movieRepository.findByMovieDetail_CountryContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(country, "N", pageable).getContent();
+            return movieRepository.findByMovieDetail_CountryContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqAsc(country, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "국가별 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -145,7 +145,7 @@ public class MovieRepoUtil {
      */
     public List<Movie> findByYear(int year, Pageable pageable) {
         try {
-            return movieRepository.findByMovieDetail_MovieYearAndDelYNOrderByMovieSeqDesc(year, "N", pageable).getContent();
+            return movieRepository.findByMovieDetail_MovieYearAndDelYNOrderByMovieSeqAsc(year, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "연도별 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -287,22 +287,6 @@ public class MovieRepoUtil {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 최근 행동 로그를 조회하는 중 오류가 발생했습니다.");
         }
     }
-
-    /**
-     * MongoDB에서 사용자 행동 로그를 조회하는 메서드입니다.
-     *
-     * @param userSeq 사용자의 ID
-     * @return 조회된 사용자 행동 로그 목록
-     * @throws RestApiException 사용자 행동 로그 조회 중 오류가 발생할 경우 발생
-     */
-    public List<MongoUserAction> findUserActionAllForMongoDB(int userSeq) {
-        try {
-            return mongoUserActionRepository.findByUserSeq(userSeq);
-        } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 모든 행동 로그를 조회하는 중 오류가 발생했습니다.");
-        }
-    }
-
 
     /**
      * Redis에 저장된 검색 결과를 모두 삭제하는 메서드입니다.
