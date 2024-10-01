@@ -1,9 +1,11 @@
-package com.flicker.bff.dto;
+package com.flicker.bff.dto.movie;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class MovieUpdateRequest implements MovieRequest {
+public class MovieDetailResponse {
     private int movieSeq;
     private String movieTitle;
     private String director;
@@ -16,4 +18,6 @@ public class MovieUpdateRequest implements MovieRequest {
     private String moviePosterUrl;
     private String trailerUrl;
     private String backgroundUrl;
+    private double movieRating;
+    private List<ActorResponse> actors;
 }

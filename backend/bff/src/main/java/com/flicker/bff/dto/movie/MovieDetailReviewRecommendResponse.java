@@ -1,4 +1,4 @@
-package com.flicker.bff.dto;
+package com.flicker.bff.dto.movie;
 
 import lombok.Data;
 import lombok.Setter;
@@ -20,6 +20,8 @@ public class MovieDetailReviewRecommendResponse {
     private String trailerUrl;
     private String backgroundUrl;
     private double movieRating;
+    private boolean bookMarkedMovie;
+    private boolean unlikedMovie;
     private List<ActorResponse> actors;
 
     @Setter
