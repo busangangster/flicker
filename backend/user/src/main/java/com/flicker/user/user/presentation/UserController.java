@@ -3,6 +3,8 @@ package com.flicker.user.user.presentation;
 import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
+import com.flicker.user.review.application.ReviewService;
+import com.flicker.user.review.dto.ReviewDto;
 import com.flicker.user.user.application.UserService;
 import com.flicker.user.user.domain.entity.User;
 import com.flicker.user.user.dto.MovieDetail;
@@ -17,12 +19,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
+    private final ReviewService reviewService;
     private final UserService userService;
     private final UserRepository userRepository;
 
@@ -203,6 +208,10 @@ public class UserController {
         }
 
         MovieDetail movieDetail = userService.getMovieDetail(userSeq, movieSeq);
+
+        List<ReviewDto> popularMovieReviews = reviewService.getPopularMovieReviews(movieSeq, userSeq);
+        movieDetail.setReviews(popularMovieReviews);
+
         return ResponseDto.response(StatusCode.SUCCESS, movieDetail);
     }
 
