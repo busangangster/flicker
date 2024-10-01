@@ -73,6 +73,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
 
             UserLoginResDto dto = UserLoginResDto.builder()
+                    .userSeq(userDetails.getUserSeq())
                     .userId(userDetails.getUserId())
                     .email(userDetails.getEmail())
                     .nickname(userDetails.getNickname())

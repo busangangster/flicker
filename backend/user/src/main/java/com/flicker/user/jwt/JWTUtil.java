@@ -54,6 +54,7 @@ public class JWTUtil {
 //        System.out.println("dto 를 변환 = " + dto);
 
         String token = Jwts.builder()
+                .claim("userSeq", dto.getUserSeq())
                 .claim("category", category)
                 .claim("userId", dto.getUserId())
                 .claim("email", dto.getEmail())
