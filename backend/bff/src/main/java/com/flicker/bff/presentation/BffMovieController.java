@@ -3,6 +3,7 @@ package com.flicker.bff.presentation;
 import com.flicker.bff.application.BffMovieService;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.dto.movie.ActorAddRequest;
+import com.flicker.bff.dto.movie.ActorUpdateRequest;
 import com.flicker.bff.dto.movie.MovieCreateRequest;
 import com.flicker.bff.dto.movie.MovieUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ public class BffMovieController {
 
     // 영화 배우 수정
     @PutMapping("/admin/update/actor")
-    public Mono<ResponseEntity<ResponseDto>> updateActor(@RequestBody ActorAddRequest request) {
+    public Mono<ResponseEntity<ResponseDto>> updateActor(@RequestBody ActorUpdateRequest request) {
         return bffMovieService.updateActor(request);
     }
 
