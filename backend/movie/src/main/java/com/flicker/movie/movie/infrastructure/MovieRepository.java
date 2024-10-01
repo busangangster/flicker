@@ -17,19 +17,19 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>, MovieRep
     Optional<Movie> findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(String movieTitle, int movieYear, String delYN);
 
     // DEL_YN이 N인 영화 전체 목록 조회 (영화 제작 연도 내림차순)
-    Page<Movie> findByDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(String delYN, Pageable pageable);
+    Page<Movie> findByDelYNOrderByMovieDetail_MovieYearDescMovieSeqAsc(String delYN, Pageable pageable);
 
     // DEL_YN이 N이고, 영화 장르별 영화 목록 조회 (영화 제작 연도 내림차순)
-    Page<Movie> findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(String genre, String delYN, Pageable pageable);
+    Page<Movie> findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqAsc(String genre, String delYN, Pageable pageable);
 
     // DEL_YN이 N이고, 해당 배우가 출연한 영화 조회 (영화 제작 연도 내림차순)
     Page<Movie> findByActors_ActorNameAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(String actorName, String delYN, Pageable pageable);
 
     // DEL_YN이 N이고, 국가별 영화 조회 (영화 제작 연도 내림차순)
-    Page<Movie> findByMovieDetail_CountryContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(String country, String n, Pageable pageable);
+    Page<Movie> findByMovieDetail_CountryContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqAsc(String country, String n, Pageable pageable);
 
     // DEL_YN이 N이고, 연도별 영화 조회
-    Page<Movie> findByMovieDetail_MovieYearAndDelYNOrderByMovieSeqDesc(int year, String delYN, Pageable pageable);
+    Page<Movie> findByMovieDetail_MovieYearAndDelYNOrderByMovieSeqAsc(int year, String delYN, Pageable pageable);
 
     // DEL_YN이 N이고, 영화 고유 식별자 목록을 기준으로 영화 목록 조회
     List<Movie> findByMovieSeqInAndDelYN(List<Integer> movieSeqList, String delYN);
