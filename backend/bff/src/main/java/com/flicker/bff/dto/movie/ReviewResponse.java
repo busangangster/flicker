@@ -11,10 +11,11 @@ public class ReviewResponse {
     private String nickname;
     private Integer movieSeq;
     private Double reviewRating;
-
+    private String profilePhotoUrl;
     private String content;
     private LocalDateTime createdAt;
     private Boolean spoiler;
     private Integer likes;
     private boolean liked;
+    private boolean top;
 }

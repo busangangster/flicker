@@ -203,7 +203,7 @@ public class BffMovieService {
 //                                    } catch (Exception e) {
 //                                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "연관 추천 영화 번호 목록 데이터을 역직렬화하는데 오류 발생: " + e.getMessage()));
 //                                    }
-                                    // 3. 사용자의 찜/비선호 여부, 비선호 영화 목록을 가져옴
+                                    // 3. 사용자의 찜/비선호 여부, 비선호 영화 목록, 탑 리뷰 목록을 가져옴
                                     // TODO: 임시로 movieSeqList를 설정 (추후 제거)
                                     List<Integer> movieSeqList = new ArrayList<>(Arrays.asList(26038, 26053, 26078, 26099, 26159, 25867, 25871, 25875, 24128, 24252));
                                     String userMovieDetailPath = util.getUri("/movie-detail?userSeq=" + userSeq + "&movieSeq=" + movieSeq);
