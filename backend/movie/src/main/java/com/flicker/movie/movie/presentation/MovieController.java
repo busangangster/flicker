@@ -137,6 +137,7 @@ public class MovieController {
     @GetMapping("/detail/{movieSeq}/{userSeq}")
     public ResponseEntity<ResponseDto> getMovieDetail(@PathVariable int movieSeq, @PathVariable int userSeq) {
         MovieDetailResponse response = movieService.getMovieDetail(movieSeq, userSeq);
+        log.info("response: {}", response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
