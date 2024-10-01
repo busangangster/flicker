@@ -147,7 +147,7 @@ public class Util {
 //    }
 
 
-
+    // 로그인 처리용 토큰 포함 응답 생성  액세스 토큰과 쿠키가 모두 오는 버전
     public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody) {
         try {
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();

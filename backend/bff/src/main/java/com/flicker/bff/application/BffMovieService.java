@@ -207,7 +207,7 @@ public class BffMovieService {
                                     // TODO: 임시로 movieSeqList를 설정 (추후 제거)
                                     List<Integer> movieSeqList = new ArrayList<>(Arrays.asList(26038, 26053, 26078, 26099, 26159, 25867, 25871, 25875, 24128, 24252));
                                     String userMovieDetailPath = util.getUri("/movie-detail?userSeq=" + userSeq + "&movieSeq=" + movieSeq);
-                                    return util.sendGetRequestAsync(movieBaseUrl, userMovieDetailPath)
+                                    return util.sendGetRequestAsync(userBaseUrl, userMovieDetailPath)
                                             .flatMap(userMovieDetailResponse -> {
                                                 ResponseDto userMovieDetailDto;
                                                 try {
@@ -337,7 +337,7 @@ public class BffMovieService {
                                 }
                                 // 3. 사용자의 비선호 영화 목록을 가져옴
                                 String unlikeMoviePath = util.getUri("/" + userSeq + "/unlike-movie");
-                                return util.sendGetRequestAsync(movieBaseUrl, unlikeMoviePath)
+                                return util.sendGetRequestAsync(userBaseUrl, unlikeMoviePath)
                                         .flatMap(unlikeResponse -> {
                                             ResponseDto unlikeResponseDto;
                                             try {
@@ -429,7 +429,7 @@ public class BffMovieService {
                     }
                     // 2. 사용자 서버에서 비선호 영화 목로 가져옴
                     String unlikeMoviePath = util.getUri("/" + userSeq + "/unlike-movie");
-                    return util.sendGetRequestAsync(movieBaseUrl, unlikeMoviePath)
+                    return util.sendGetRequestAsync(userBaseUrl, unlikeMoviePath)
                             .flatMap(unlikeResponse -> {
                                 ResponseDto unlikeResponseDto;
                                 try {
