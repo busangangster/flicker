@@ -20,4 +20,6 @@ public interface UserService {
 
     public boolean deleteUnlikeMovie(Integer userSeq, Integer movieSeq);
     public boolean deleteBookmarkMovie(Integer userSeq, Integer movieSeq);
+
+    public MovieDetail getMovieDetail(Integer userSeq, Integer movieSeq);
 }
