@@ -4,7 +4,8 @@ import { Navigation } from "swiper/modules";
 import "swiper/css"; // Swiper 기본 CSS
 import "swiper/css/navigation"; // 네비게이션 모듈 사용 시 필요한 CSS
 import "../css/TopTen.css";
-import { TopTenMovie } from "../type";
+import { getTopTenMovies } from "../apis/movieApi";
+import { TopTenMovie } from "../type"; // 타입 정의
 
 // Font import for Rubik Doodle Shadow
 const GOOGLE_FONT_LINK =
@@ -15,18 +16,17 @@ const TopTen: React.FC = () => {
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
 
-  // Simulate fetching movie data from assets
-  useEffect(() => {
+  // Fetch top 10 movies from backend
+  useEffect(() => { 
     const getMovies = async () => {
-      // Hardcoded movie data with 10 poster images from assets
-      const movieData = Array.from({ length: 10 }, (_, index) => ({
-        movieSeq: index,
-        movieTitle: `Movie ${index + 1}`,
-        moviePosterUrl: `/assets/survey/image${index + 1}.jpg`,
-      }));
-
-      setMovies(movieData);
+      try {
+        const response = await getTopTenMovies(); // API 호출
+        setMovies(response.data); // API 응답 데이터 설정
+      } catch (error) {
+        console.error("영화 목록을 불러오는 데 실패했습니다.", error);
+      }
     };
+
     getMovies();
 
     // Load the Google font for Rubik Doodle Shadow

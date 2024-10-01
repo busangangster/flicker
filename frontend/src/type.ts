@@ -132,3 +132,46 @@ export interface TopTenMovie {
   movieTitle: string;
   moviePosterUrl: string;
 }
+
+// Photocard Review 데이터 타입
+export interface PhotoCardReviewDto {
+  userSeq: number;
+  movieSeq: number;
+  reviewSeq: number;
+  nickname: string;
+  reviewRating: number;
+  content: string;
+  spoiler: boolean;
+  likes: number;
+  liked: boolean;
+  createdAt: string;
+  top: null | string;
+}
+
+// Movie Image DTO 데이터 타입
+export interface MovieImageDto {
+  moviePosterUrl: string;
+}
+
+// Photocard 데이터 타입
+export interface PhotocardData {
+  reviewDto: PhotoCardReviewDto;
+  movieImageDto: MovieImageDto;
+}
+
+// Photocard API 응답 데이터 타입
+export interface PhotocardResponse {
+  data: PhotocardData[];
+}
+
+// IFlipBook = 포토북
+export interface IFlipBook {
+  flipNext: () => void;
+  flipPrev: () => void;
+  pageFlip: () => { flipNext: () => void; flipPrev: () => void };
+}
+
+export interface PhotoCardFrontProps {
+  images: { src: string; alt: string }[];
+  pageIndex: number;
+}

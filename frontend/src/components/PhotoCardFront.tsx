@@ -1,11 +1,6 @@
-// src/components/PhotoCardFront.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
-interface PhotoCardFrontProps {
-  images: { src: string; alt: string }[];
-  pageIndex: number;
-}
+import { PhotoCardFrontProps } from "../type";
 
 const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
   images,
@@ -13,7 +8,7 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const goTophotocarddetail = () => {
+  const goToPhotoCardDetail = () => {
     navigate("/mypage/photocarddetail");
   };
 
@@ -26,8 +21,9 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
         >
           <img
             src={image.src}
+            alt={image.alt}
             className="border rounded-md object-cover w-full h-[320px]"
-            onClick={goTophotocarddetail}
+            onClick={goToPhotoCardDetail}
           />
         </div>
       ))}
