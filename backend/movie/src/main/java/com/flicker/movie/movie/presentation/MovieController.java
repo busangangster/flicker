@@ -141,7 +141,9 @@ public class MovieController {
     // 영화 ID 리스트로 영화 목록 조회
     @PostMapping("/list/movieId")
     public ResponseEntity<ResponseDto> getMovieListByMovieSeqList(@RequestBody List<Integer> request) {
+        System.out.println("request: " + request);
         List<MovieListResponse> response = movieService.getMovieListByMovieSeqList(request);
+        System.out.println("response: " + response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
