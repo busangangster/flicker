@@ -155,10 +155,14 @@ public class UserServiceImpl implements UserService{
         MovieSeqListDto bookmarkMovies = getBookmarkMovies(userSeq);
         MovieSeqListDto unlikeMovies = getUnlikeMovies(userSeq);
 
+
+
         MovieDetail movieDetail = new MovieDetail();
         movieDetail.setBookMarkedMovie(bookmarkMovies.getMovieSeqList().contains(movieSeq));
         movieDetail.setUnlikedMovie(unlikeMovies.getMovieSeqList().contains(movieSeq));
         movieDetail.setUnlikedMovies(unlikeMovies.getMovieSeqList());
+
+
         return movieDetail;
     }
 }

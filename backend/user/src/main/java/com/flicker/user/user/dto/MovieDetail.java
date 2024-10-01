@@ -10,6 +10,6 @@ public class MovieDetail {
 
     private boolean bookMarkedMovie;
     private boolean unlikedMovie;
-    private ReviewDto reviews;
+    private List<ReviewDto> reviews;
     private List<Integer> unlikedMovies;
 }
