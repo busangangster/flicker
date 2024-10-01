@@ -161,7 +161,9 @@ public class UserController {
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
         MovieSeqListDto favoriteMovies = userService.getUnlikeMovies(userSeq);
-        return ResponseDto.response(StatusCode.SUCCESS, favoriteMovies);
+        List<Integer> movieSeqList = favoriteMovies.getMovieSeqList();
+
+        return ResponseDto.response(StatusCode.SUCCESS,movieSeqList );
     }
 
     // 찜한 영화 목록
