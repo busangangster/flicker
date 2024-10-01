@@ -226,6 +226,9 @@ public class MovieRepoUtil {
      */
     public List<Movie> findBySeqIn(List<Integer> movieSeqs) {
         try {
+            if(movieSeqs == null || movieSeqs.isEmpty()) {
+                return Collections.emptyList();
+            }
             return movieRepository.findByMovieSeqInAndDelYN(movieSeqs, "N");
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 목록 조회 중 오류가 발생했습니다.");
@@ -241,7 +244,16 @@ public class MovieRepoUtil {
      */
     public List<Movie> findBySeqInAndFilterUnlike(List<Integer> movieSeqList, List<Integer> unlikeMovieSeqList) {
         try {
-            return movieRepository.findByMovieSeqInAndMovieSeqNotInAndDelYN(movieSeqList, unlikeMovieSeqList, "N");
+            if(movieSeqList == null || movieSeqList.isEmpty()) {
+                return Collections.emptyList();
+            }
+            if (unlikeMovieSeqList == null || unlikeMovieSeqList.isEmpty()) {
+                // unlikeMovieSeqList가 비어 있을 때, NOT IN 조건을 제거하고 실행
+                return movieRepository.findByMovieSeqInAndDelYN(movieSeqList, "N");
+            } else {
+                // unlikeMovieSeqList가 비어 있지 않을 때, 원래 메서드를 실행
+                return movieRepository.findByMovieSeqInAndMovieSeqNotInAndDelYN(movieSeqList, unlikeMovieSeqList, "N");
+            }
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천된 영화 목록 조회 중 오류가 발생했습니다.");
         }
