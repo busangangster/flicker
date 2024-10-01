@@ -86,7 +86,7 @@ const ReviewPage: React.FC = () => {
       if (scrollableElement) {
         if (
           scrollableElement.scrollTop + scrollableElement.clientHeight >=
-            scrollableElement.scrollHeight - 100 &&
+            scrollableElement.scrollHeight - 20 &&
           !isLoading &&
           hasMore
         ) {

@@ -41,7 +41,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/servicedetail" element={<ServiceDetailPage />} />
-      <Route path="/moviedetail" element={<MovieDetailPage />} />
+      <Route path="/moviedetail/:movieSeq" element={<MovieDetailPage />} />
       <Route
         path="/recommendlist"
         element={
@@ -61,7 +61,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/review" element={<ReviewPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/movies" element={<MoviesPage />} />{" "}
-      <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />{" "}
+      <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />
       {/* 장르별 페이지 추가 */}
       <Route
         path="/mypage/*"

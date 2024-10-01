@@ -59,7 +59,7 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/hyunjeongg11"
             emailUrl="guswjd4585@gmail.com"
-            imgSrc="/assets/team/hyulKim.jpg"
+            imgSrc="/assets/team/jeong.jpg"
           />
           <Member
             name="JiHwan Gong"
@@ -67,7 +67,7 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/izgnok"
             emailUrl="rinch12332@gmail.com"
-            imgSrc="/assets/team/hyulKim.jpg"
+            imgSrc="/assets/team/jihwan.jpg"
           />
           <Member
             name="DongGyu Oh"
@@ -75,7 +75,7 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/Eastplanet"
             emailUrl="ehdrb1645@gmail.com"
-            imgSrc="/assets/team/hyulKim.jpg"
+            imgSrc="/assets/team/dong.png"
           />
           <Member
             name="JaeChan Lee"
@@ -83,7 +83,7 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/jaechanjj"
             emailUrl="jaechanjj@gmail.com"
-            imgSrc="/assets/team/hyulKim.jpg"
+            imgSrc="/assets/team/chan.jpg"
           />
           <Member
             name="JaeYoung Choi"
@@ -91,7 +91,7 @@ const ContactPage: React.FC = () => {
             description="담당했던 작업"
             githubUrl="https://github.com/wodyddldl333"
             emailUrl="wodyddldl333@naver.com"
-            imgSrc="/assets/team/hyulKim.jpg"
+            imgSrc="/assets/team/jae.jpg"
           />
         </div>
       </section>

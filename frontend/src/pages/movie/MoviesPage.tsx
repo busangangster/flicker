@@ -1,32 +1,33 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import "../../css/MoviesPage.css";
 import MoviesList from "../../components/MoviesList";
 import SearchBar from "../../components/SearchBar";
-import Filter from "../../components/Filter"; // Filter 컴포넌트 추가
+import Filter from "../../components/Filter";
 import TopTen from "../../components/TopTen";
+import { fetchMovieGenre } from "../../apis/axios";
+
+interface Movie {
+  movieSeq: number;
+  moviePosterUrl: string;
+}
 
 const MoviesPage: React.FC = () => {
-  const [isExpanded, setIsExpanded] = useState(false); // 검색창 상태 관리
-  const [selectedGenre, setSelectedGenre] = useState(""); // 선택된 장르 관리
-  const navigate = useNavigate(); // useNavigate 사용
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedGenre, setSelectedGenre] = useState("");
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const movieImg = [
-    "/assets/survey/image1.jpg",
-    "/assets/survey/image2.jpg",
-    "/assets/survey/image3.jpg",
-    "/assets/survey/image4.jpg",
-    "/assets/survey/image5.jpg",
-    "/assets/survey/image6.jpg",
-    "/assets/survey/image7.jpg",
-    "/assets/survey/image8.jpg",
-    "/assets/survey/image9.jpg",
-    "/assets/survey/image10.jpg",
-    "/assets/survey/image11.jpg",
-    "/assets/survey/image12.jpg",
-    "/assets/survey/image13.jpg",
-  ];
+  // 각 장르별 영화 데이터 관리
+  const [fantasyMovies, setFantasyMovies] = useState<Movie[]>([]);
+  const [familyMovies, setFamilyMovies] = useState<Movie[]>([]);
+  const [sfMovies, setSfMovies] = useState<Movie[]>([]);
+  const [horrorMovies, setHorrorMovies] = useState<Movie[]>([]);
+  const [romanceMovies, setRomanceMovies] = useState<Movie[]>([]);
+  const [animeMovies, setAnimeMovies] = useState<Movie[]>([]);
+  const [historyMovies, setHistoryMovies] = useState<Movie[]>([]);
+  const [adventureMovies, setAdventureMovies] = useState<Movie[]>([]);
 
   const genres = [
     { value: "SF", label: "SF" },
@@ -60,10 +61,46 @@ const MoviesPage: React.FC = () => {
     { value: "판타지", label: "판타지" },
   ];
 
+  // 장르별 영화 데이터를 가져오는 함수
+  const fetchMovies = async (
+    genre: string,
+    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+  ) => {
+    setLoading(true);
+    try {
+      const encodedGenre = encodeURIComponent(genre);
+      const response = await fetchMovieGenre(encodedGenre, 1, 15);
+      // console.log(response);
+
+      // movieSeq와 moviePosterUrl을 함께 받아옴
+      const movies = response.map((movie: Movie) => ({
+        movieSeq: movie.movieSeq,
+        moviePosterUrl: movie.moviePosterUrl,
+      }));
+      setMovies(movies);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // 각 장르에 맞는 영화 데이터를 가져옴
+    fetchMovies("판타지", setFantasyMovies);
+    fetchMovies("가족", setFamilyMovies);
+    fetchMovies("SF", setSfMovies);
+    fetchMovies("공포", setHorrorMovies);
+    fetchMovies("로맨스", setRomanceMovies);
+    fetchMovies("애니", setAnimeMovies);
+    fetchMovies("역사", setHistoryMovies);
+    fetchMovies("모험", setAdventureMovies);
+  }, []);
+
   // 장르 선택 시 해당 페이지로 이동
   const handleGenreChange = (value: string) => {
     setSelectedGenre(value);
-    navigate(`/movies/genre/${value}`); // MovieGenrePage로 이동
+    navigate(`/movies/genre/${value}`);
   };
 
   return (
@@ -73,21 +110,38 @@ const MoviesPage: React.FC = () => {
       </header>
 
       <div className="mt-[100px] flex justify-between items-end w-[1800px] pl-10">
-        {/* Filter 컴포넌트 추가 */}
         <div className="mb-3 mt-1">
           <Filter
             options={genres}
-            onChange={handleGenreChange} // 선택된 장르 변경 시 페이지 이동
+            onChange={handleGenreChange}
             defaultValue={selectedGenre || "장르"}
-            customClass="grid grid-cols-3 gap-2 w-96" // MoviesPage에서만 3열 적용
+            customClass="grid grid-cols-3 gap-2 w-96"
           />
         </div>
         <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
       </div>
       <TopTen />
-      <MoviesList category="한국 영화" movieImg={movieImg} />
-      <MoviesList category="액션 & 어드벤처 시리즈" movieImg={movieImg} />
-      <MoviesList category="진심이 느껴지는 영화" movieImg={movieImg} />
+      {loading ? (
+        <p className="text-white">로딩 중...</p>
+      ) : (
+        <>
+          {/* 장르별로 영화 목록을 렌더링 */}
+          <MoviesList category="판타지 영화" movies={fantasyMovies} />
+          <MoviesList category="진심이 느껴지는 영화" movies={familyMovies} />
+          <MoviesList category="SF 영화" movies={sfMovies} />
+          <MoviesList
+            category="심장 떨리게 무섭게 해줄게"
+            movies={horrorMovies}
+          />
+          <MoviesList category="사탕같은 영화" movies={romanceMovies} />
+          <MoviesList category="애니 좋아하는 사람 ~?" movies={animeMovies} />
+          <MoviesList
+            category="OO을 잊은 민족에게 미래란 없다"
+            movies={historyMovies}
+          />
+          <MoviesList category="모험 떠나볼래 ?" movies={adventureMovies} />
+        </>
+      )}
     </div>
   );
 };

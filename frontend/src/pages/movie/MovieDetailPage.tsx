@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // useParams 사용
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Navbar from "../../components/common/Navbar";
-import MoviesList from "../../components/MoviesList";
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMovieDetail } from "../../apis/axios";
 import PlotModal from "../../components/PlotModal";
 import { MovieDetail } from "../../type";
 import Review from "../../components/Review";
+import MoviesList from "../../components/MoviesList";
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
+  const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq를 가져옴
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [interestOption, setInterestOption] = useState("관심 없음");
   const [isLiked, setIsLiked] = useState(false);
@@ -20,7 +21,9 @@ const MovieDetailPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("배우");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const movieId = 2;
+  // movieSeq가 없으면 바로 return
+
+  const userSeq = 2; // 예시로 userSeq 고정값 사용
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,18 +41,21 @@ const MovieDetailPage: React.FC = () => {
     };
   }, []);
 
+  // useQuery를 통해 movieDetail API 호출
   const { data, error, isLoading } = useQuery<MovieDetail, Error>({
-    queryKey: ["movieDetail", movieId], // queryKey 객체 형식으로 설정
-    queryFn: () => fetchMovieDetail(movieId), // queryFn 설정
+    queryKey: ["movieDetail", movieSeq], // queryKey에 movieSeq 포함
+    queryFn: () => {
+      console.log(`Fetching movie details for movieSeq: ${movieSeq}`);
+      return fetchMovieDetail(Number(movieSeq), userSeq); // movieSeq와 userSeq를 넘겨줌
+    },
   });
+  console.log(data);
 
   useEffect(() => {
     if (data) {
       setIsLiked(data.bookMarkedMovie); // 초기 상태 설정
     }
   }, [data]);
-
-  useEffect(() => {}, [isLiked]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading movie details.</div>;
@@ -139,25 +145,27 @@ const MovieDetailPage: React.FC = () => {
             </span>
           </div>
         );
+      default:
+        return null;
     }
   };
 
-  // 드롭다운 외부 클릭 시 닫히도록 설정
-
   return (
     <div className="flex flex-col bg-black h-screen overflow-y-auto">
+      {/* 영화 세부 정보 */}
       <div className="relative h-auto">
-        {/* 배경 이미지 영역 */}
         <div
           className="absolute inset-0 h-[650px] w-full bg-cover bg-center"
           style={{ backgroundImage: `url(${movieDetail.backgroundUrl})` }}
         >
           <div className="absolute inset-0 bg-black opacity-70"></div>
         </div>
+
         {/* Header with Navbar */}
         <header className="sticky top-0 bg-transparent z-20">
           <Navbar />
         </header>
+
         {/* Top section */}
         <div className="relative flex items-end text-white p-3 w-[1100px] h-[480px] bg-transparent ml-[50px] mt-[120px] overflow-hidden">
           {/* Left Section: Movie Poster and Details */}
@@ -170,7 +178,6 @@ const MovieDetailPage: React.FC = () => {
             <div className="mt-4 ml-[60px] flex-1">
               <div className="flex items-center justify-between w-full">
                 <h2 className="text-4xl font-bold flex-1 flex items-center overflow-hidden">
-                  {/* 제목 영역 확장 및 텍스트 줄임표 처리 */}
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                     {movieDetail.movieTitle}
                   </span>
@@ -179,17 +186,19 @@ const MovieDetailPage: React.FC = () => {
                     <span className="text-2xl">{movieRating}</span>
                   </span>
                 </h2>
+
+                {/* Heart icon */}
                 <div
-                  className="flex items-end ml-auto relative flex-shrink-0" // 오른쪽 끝으로 정렬 및 고정 위치
+                  className="flex items-end ml-auto relative flex-shrink-0"
                   ref={dropdownRef}
                 >
                   <svg
                     className="w-6 h-6 cursor-pointer"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
-                    onClick={toggleHeart} // 하트를 클릭할 때 상태 변경
-                    fill={isLiked ? "red" : "none"} // 채워진 상태에 따라 fill 속성 변경
-                    stroke={isLiked ? "none" : "red"} // 비워진 상태일 때 경계선 색상
+                    onClick={toggleHeart}
+                    fill={isLiked ? "red" : "none"}
+                    stroke={isLiked ? "none" : "red"}
                     strokeWidth="2"
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -198,11 +207,6 @@ const MovieDetailPage: React.FC = () => {
                     className="text-white text-3xl ml-2 relative z-20"
                     onClick={toggleDropdown}
                   >
-                    {/* {isDropdownOpen && (
-                      <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-40 bg-gray-800 text-white text-sm p-2 rounded-md shadow-lg z-50">
-                        여기에 툴팁 설명을 입력하세요.
-                      </div>
-                    )} */}
                     ⋮
                     {isDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-40 bg-gray-200 text-black bg-opacity-90 rounded-md shadow-lg z-50 font-bold text-left">
@@ -217,18 +221,14 @@ const MovieDetailPage: React.FC = () => {
                   </button>
                 </div>
               </div>
+
+              {/* Movie details */}
               <div className="flex mt-4 text-white text-[16px]">
-                <div lang="ko" className="lang=ko flex items-center ">
-                  <span>{movieDetail.movieYear}</span>
-                  <span className="px-4 text-gray-200">|</span>
-                </div>
-                <div lang="ko" className=" flex items-center">
-                  <span>{movieDetail.runningTime}</span>
-                  <span className="px-4 text-gray-200">|</span>
-                </div>
-                <div lang="ko" className="lang=ko flex items-center">
-                  <span>{movieDetail.audienceRating}</span>
-                </div>
+                <span>{movieDetail.movieYear}</span>
+                <span className="px-4 text-gray-200">|</span>
+                <span>{movieDetail.runningTime}</span>
+                <span className="px-4 text-gray-200">|</span>
+                <span>{movieDetail.audienceRating}</span>
               </div>
               <p className="mt-4 text-lg">
                 {displayedText}
@@ -249,7 +249,7 @@ const MovieDetailPage: React.FC = () => {
                     <div
                       key={category}
                       onClick={() => handleCategorySelect(category)}
-                      className={`font-bold text-[18px] mt-[10px] *:cursor-pointer ${
+                      className={`font-bold text-[18px] mt-[10px] cursor-pointer ${
                         selectedCategory === category
                           ? "border-b-2 border-white"
                           : ""
@@ -266,7 +266,7 @@ const MovieDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 리뷰 섹션 */}
+      {/* Reviews */}
       <div className="flex">
         <div className="p-1 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
           <div className="flex w-full justify-between items-center">
@@ -286,13 +286,12 @@ const MovieDetailPage: React.FC = () => {
                 liked={review.liked}
                 likes={review.likes}
                 nickname={review.nickname}
-                // onLikeToggle={handleLikeToggle}
               />
             ))}
           </div>
         </div>
 
-        {/* 트레일러 섹션 */}
+        {/* Trailer */}
         <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
           <div className="relative w-full max-w-4xl h-full">
             <iframe
@@ -312,10 +311,11 @@ const MovieDetailPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Recommended movies */}
       <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
           category="탑건: 매버릭과 유사한 장르 작품들"
-          movieImg={recommendedMovieList.map((movie) => movie.moviePosterUrl)}
+          movies={recommendedMovieList} // recommendedMovieList를 movies prop으로 전달
         />
       </div>
     </div>
