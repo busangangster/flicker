@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /*
@@ -140,6 +141,31 @@ public class MovieService {
                 .toList();
     }
 
+    @Transactional
+    public List<MovieListResponse> getMovieListByCountry(String country, int page, int size) {
+        // 1. Pageable 객체 생성
+        Pageable pageable = PageRequest.of(page, size);
+        // 2. 국가별 영화 리스트 조회
+        List<Movie> movieList = movieRepoUtil.findByCountry(country, pageable);
+        // 3. MovieListResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
+    @Transactional
+    public List<MovieListResponse> getMovieListByYear(int year, int page, int size) {
+        // 1. Pageable 객체 생성
+        Pageable pageable = PageRequest.of(page, size);
+        // 2. 연도별 영화 리스트 조회
+        List<Movie> movieList = movieRepoUtil.findByYear(year, pageable);
+        // 3. MovieListResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+
+    }
+
     // TODO: ElasticSearch 활용 ( 검색 속도 개선 필요 )
     @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq, int page, int size) {
@@ -218,8 +244,18 @@ public class MovieService {
         List<Integer> movieSeqs = redisTopMovie.getMovieSeqs();
         // 3. TopMovieList 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
-        // 4. MovieListResponse 리스트 생성
-        return movieList.stream()
+        // 4. movieSeq를 키로 하는 Map으로 변환 (Movie 객체 매핑)
+        Map<Integer, Movie> movieMap = movieList.stream()
+                .collect(Collectors.toMap(Movie::getMovieSeq, Function.identity()));
+        // 5. movieSeqs 순서에 맞춰 movieMap에서 Movie 객체를 가져와 List 생성
+        List<Movie> orderedMovieList = new ArrayList<>();
+        for (Integer seq : movieSeqs) {
+            if (movieMap.containsKey(seq)) {
+                orderedMovieList.add(movieMap.get(seq));
+            }
+        }
+        // 6. MovieListResponse 리스트 생성
+        return orderedMovieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
     }
