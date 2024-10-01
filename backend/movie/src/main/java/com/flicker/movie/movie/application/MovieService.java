@@ -286,5 +286,4 @@ public class MovieService {
         RedisTopMovie redisTopMovie = movieBuilderUtil.redisTopMovieBuilder("TopMovieList", movieSeqs);
         movieRepoUtil.saveTopMovieForRedis(redisTopMovie);
     }
-
 }
