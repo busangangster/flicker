@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -73,7 +70,7 @@ public class BffMovieService {
     }
 
 
-    public Mono<ResponseEntity<ResponseDto>> updateActor(ActorAddRequest request) {
+    public Mono<ResponseEntity<ResponseDto>> updateActor(ActorUpdateRequest request) {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/admin/update/actor");
         // 2. 비동기 방식으로 PUT 요청을 외부 API에 보냅니다.
@@ -149,7 +146,7 @@ public class BffMovieService {
     public Mono<ResponseEntity<ResponseDto>> getMovieDetail(int movieSeq, int userSeq) {
         try {
             // 0. 응답 객체 생성
-            MovieDetailReviewRecommendResponse movieDetailReviewRecommendResponse = new MovieDetailReviewRecommendResponse();
+            MovieDetailAndReviewAndRecommendResponse movieDetailAndReviewAndRecommendResponse = new MovieDetailAndReviewAndRecommendResponse();
             // 1. 영화 서버에서 영화 상세 조회 결과 가져오기
             String movieDetailPath = util.getUri("/detail/" + movieSeq + "/" + userSeq);
             return util.sendGetRequestAsync(movieBaseUrl, movieDetailPath)
@@ -174,7 +171,7 @@ public class BffMovieService {
                         } catch (Exception e) {
                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 상세정보 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                         }
-                        movieDetailReviewRecommendResponse.setMovieDetail(movieDetailResponse);
+                        movieDetailAndReviewAndRecommendResponse.setMovieDetailResponse(movieDetailResponse);
                         // 2. 추천 서버에서 연관 영화 추천 가져오기 TODO: 경로 수정
 //                        String recommendationPath = util.getUri("/list/recommendation/similar/" + movieDetailResponse.getMovieTitle());
 //                        return util.sendGetRequestAsync(recommendBaseUrl, recommendationPath)
@@ -231,13 +228,13 @@ public class BffMovieService {
                                                     return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 영화 상세 정보 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                                 }
                                                 // 가져온 목록을 movieDetailReviewRecommendResponse에 설정
-                                                movieDetailReviewRecommendResponse.setBookMarkedMovie(userMovieDetail.isBookMarkedMovie());
-                                                movieDetailReviewRecommendResponse.setUnlikedMovie(userMovieDetail.isUnlikedMovie());
-                                                movieDetailReviewRecommendResponse.setReviews(userMovieDetail.getReviews());
+                                                movieDetailAndReviewAndRecommendResponse.setBookMarkedMovie(userMovieDetail.isBookMarkedMovie());
+                                                movieDetailAndReviewAndRecommendResponse.setUnlikedMovie(userMovieDetail.isUnlikedMovie());
+                                                movieDetailAndReviewAndRecommendResponse.setReviews(userMovieDetail.getReviews());
                                                 // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
-                                                RecommendMovieListRequest recommendMovieListRequest = new RecommendMovieListRequest(movieSeqList, userMovieDetail.getUnlikedMovies());
+                                                MovieListRequest movieListRequest = new MovieListRequest(movieSeqList, userMovieDetail.getUnlikedMovies());
                                                 String movieListPath = util.getUri("/list/recommendation");
-                                                return util.sendPostRequestAsync(movieBaseUrl, movieListPath, recommendMovieListRequest)
+                                                return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                         .flatMap(movieListResponse -> {
                                                             ResponseDto movieListResponseDto;
                                                             try {
@@ -261,8 +258,8 @@ public class BffMovieService {
                                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 상세 조회 연관 추천 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                                             }
                                                             // 변환된 목록을 movieDetailReviewRecommendResponse에 설정
-                                                            movieDetailReviewRecommendResponse.setSimilarMovies(movieListResponses);
-                                                            return Mono.just(ResponseDto.response(StatusCode.SUCCESS, movieDetailReviewRecommendResponse));
+                                                            movieDetailAndReviewAndRecommendResponse.setSimilarMovies(movieListResponses);
+                                                            return Mono.just(ResponseDto.response(StatusCode.SUCCESS, movieDetailAndReviewAndRecommendResponse));
                                                         });
                                             });
 //                                });
@@ -312,7 +309,12 @@ public class BffMovieService {
                     }
                     // 2. 추천 서버로 사용자의 최근 행동 목록을 전송하고, 추천 영화 목록을 가져옴  TODO: 경로 수정
                     String recommendationPath = util.getUri("/list/recommendation/action");
-                    return util.sendPostRequestAsync(recommendBaseUrl, recommendationPath, userActions)
+                    // 추천 서버에 요청할 때 사용자의 최근 행동 키워드만 추출하여 전송
+                    List<String> keywords = userActions.stream()
+                            .sorted(Comparator.comparing(UserActionResponse::getTimestamp).reversed()) // Sort by timestamp descending
+                            .map(UserActionResponse::getKeyword) // Extract keyword field
+                            .collect(Collectors.toList()); // Collect as a list
+                    return util.sendPostRequestAsync(recommendBaseUrl, recommendationPath, keywords)
                             .flatMap(postResponse -> {
                                 ResponseDto movieSeqListDto;
                                 try {
@@ -361,9 +363,9 @@ public class BffMovieService {
                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                             }
                                             // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
-                                            RecommendMovieListRequest recommendMovieListRequest = new RecommendMovieListRequest(movieSeqList, unlikeMovieSeqs);
+                                            MovieListRequest movieListRequest = new MovieListRequest(movieSeqList, unlikeMovieSeqs);
                                             String movieListpath = util.getUri("/list/recommendation");
-                                            return util.sendPostRequestAsync(movieBaseUrl, movieListpath, recommendMovieListRequest)
+                                            return util.sendPostRequestAsync(movieBaseUrl, movieListpath, movieListRequest)
                                                     .flatMap(movieListResponse -> {
                                                         ResponseDto movieListResponseDto;
                                                         try {
@@ -454,9 +456,9 @@ public class BffMovieService {
                                     return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                 }
                                 // 3. 추천 영화 목록을 가져와서 영화 서버에 요청
-                                RecommendMovieListRequest recommendMovieListRequest = new RecommendMovieListRequest(movieSeqList, unlikeMovieSeqs);
+                                MovieListRequest movieListRequest = new MovieListRequest(movieSeqList, unlikeMovieSeqs);
                                 String movieListPath = util.getUri("/list/recommendation");
-                                return util.sendPostRequestAsync(movieBaseUrl, movieListPath, recommendMovieListRequest)
+                                return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                         .flatMap(movieListResponse -> {
                                             ResponseDto movieListResponseDto;
                                             try {
@@ -475,8 +477,7 @@ public class BffMovieService {
                                             List<MovieListResponse> movieListResponses;
                                             try {
                                                 // movieListResponseDto의 데이터 필드를 List<MovieListResponse>로 변환
-                                                movieListResponses = objectMapper.convertValue(movieListResponseDto.getData(), new TypeReference<List<MovieListResponse>>() {
-                                                });
+                                                movieListResponses = objectMapper.convertValue(movieListResponseDto.getData(), new TypeReference<List<MovieListResponse>>() {});
                                             } catch (Exception e) {
                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 기반 추천 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                             }

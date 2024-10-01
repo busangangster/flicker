@@ -5,11 +5,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class RecommendMovieListRequest {
+public class MovieListRequest {
     List<Integer> movieSeqList;
     List<Integer> unlikeMovieSeqList;
 
-    public RecommendMovieListRequest(List<Integer> movieSeqList, List<Integer> unlikeMovieSeqList) {
+    public MovieListRequest(List<Integer> movieSeqList, List<Integer> unlikeMovieSeqList) {
         this.movieSeqList = movieSeqList;
         this.unlikeMovieSeqList = unlikeMovieSeqList;
     }
