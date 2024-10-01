@@ -40,9 +40,24 @@ const TopTen: React.FC = () => {
     <div className="flex items-center">
       {/* Left Side: Static text "TODAY TOP 10" */}
       <div className="today-top-10 flex flex-col justify-center text-right mr-8 text-white ml-10">
-        <h1 className="text-[60px] mb-4 mt-14">TODAY</h1>
-        <h1 className="text-[70px] mr-1 mb-2">TOP</h1>
-        <h1 className="text-[70px] mr-2">10</h1>
+        <h1
+          className="text-[60px] mb-4 mt-14"
+          style={{ fontFamily: "Rubik Doodle Shadow, cursive" }}
+        >
+          TODAY
+        </h1>
+        <h1
+          className="text-[70px] mr-1 mb-2"
+          style={{ fontFamily: "Rubik Doodle Shadow, cursive" }}
+        >
+          TOP
+        </h1>
+        <h1
+          className="text-[70px] mr-2"
+          style={{ fontFamily: "Rubik Doodle Shadow, cursive" }}
+        >
+          10
+        </h1>
       </div>
 
       {/* Right Side: Movie posters with Swiper */}
@@ -113,7 +128,11 @@ const TopTen: React.FC = () => {
                 {/* Number Overlay */}
                 <span
                   className="movie-number text-white text-[70px] mb-4 relative"
-                  style={{ left: "-75px", top: "30px" }}
+                  style={{
+                    left: "-75px",
+                    top: "30px",
+                    fontFamily: "Rubik Doodle Shadow, cursive",
+                  }}
                 >
                   {index + 1}
                 </span>
