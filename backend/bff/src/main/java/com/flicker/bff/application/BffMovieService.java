@@ -311,7 +311,6 @@ public class BffMovieService {
                     String recommendationPath = util.getUri("/list/recommendation/action");
                     // 추천 서버에 요청할 때 사용자의 최근 행동 키워드만 추출하여 전송
                     List<String> keywords = userActions.stream()
-                            .sorted(Comparator.comparing(UserActionResponse::getTimestamp).reversed()) // Sort by timestamp descending
                             .map(UserActionResponse::getKeyword) // Extract keyword field
                             .collect(Collectors.toList()); // Collect as a list
                     return util.sendPostRequestAsync(recommendBaseUrl, recommendationPath, keywords)
