@@ -143,16 +143,16 @@ public class MovieController {
     // 영화 ID 리스트로 영화 목록 조회
     @PostMapping("/list/movieId")
     public ResponseEntity<ResponseDto> getMovieListByMovieSeqList(@RequestBody List<Integer> request) {
-        log.info("request: {}", request);
         List<MovieListResponse> response = movieService.getMovieListByMovieSeqList(request);
-        log.info("response: {}", response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
     // 추천된 영화 목록 조회
     @PostMapping("/list/recommendation")
     public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody RecommendMovieListRequest request) {
+        log.info("Recommendation Request: {}", request);
         List<MovieListResponse> response = movieService.getRecommendationList(request);
+        log.info("Recommendation Response: {}", response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
