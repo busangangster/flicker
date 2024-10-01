@@ -2,15 +2,14 @@ package com.flicker.bff.presentation;
 
 import com.flicker.bff.application.BffMovieService;
 import com.flicker.bff.common.module.response.ResponseDto;
-import com.flicker.bff.dto.ActorAddRequest;
-import com.flicker.bff.dto.MovieCreateRequest;
-import com.flicker.bff.dto.MovieUpdateRequest;
+import com.flicker.bff.dto.movie.ActorAddRequest;
+import com.flicker.bff.dto.movie.MovieCreateRequest;
+import com.flicker.bff.dto.movie.MovieUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/bff/movie")
@@ -123,8 +122,8 @@ public class BffMovieController {
     }
 
     // 임의로 Top10 영화 생성 (테스트용)
-    @PostMapping("/admin/set/top10")
-    public Mono<ResponseEntity<ResponseDto>> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
-        return bffMovieService.setTopMovieList(movieSeqs);
-    }
+//    @PostMapping("/admin/set/top10")
+//    public Mono<ResponseEntity<ResponseDto>> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
+//        return bffMovieService.setTopMovieList(movieSeqs);
+//    }
 }

@@ -1,4 +1,4 @@
-package com.flicker.bff.dto;
+package com.flicker.bff.dto.movie;
 
 import lombok.Data;
 

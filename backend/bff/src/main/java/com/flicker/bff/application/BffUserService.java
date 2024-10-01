@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
-import com.flicker.bff.dto.MovieDetailResponse;
 import com.flicker.bff.dto.user.*;
 import com.flicker.bff.dto.user.photocard.*;
 import lombok.RequiredArgsConstructor;

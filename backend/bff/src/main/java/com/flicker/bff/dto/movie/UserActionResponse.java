@@ -1,4 +1,4 @@
-package com.flicker.bff.dto;
+package com.flicker.bff.dto.movie;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
