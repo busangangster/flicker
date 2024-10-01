@@ -6,6 +6,7 @@ import com.flicker.movie.movie.application.ActorService;
 import com.flicker.movie.movie.application.MovieService;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 @RequestMapping("/api/movie")
 public class MovieController {
 
@@ -141,9 +143,9 @@ public class MovieController {
     // 영화 ID 리스트로 영화 목록 조회
     @PostMapping("/list/movieId")
     public ResponseEntity<ResponseDto> getMovieListByMovieSeqList(@RequestBody List<Integer> request) {
-        System.out.println("request: " + request);
+        log.info("request: {}", request);
         List<MovieListResponse> response = movieService.getMovieListByMovieSeqList(request);
-        System.out.println("response: " + response);
+        log.info("response: {}", response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
