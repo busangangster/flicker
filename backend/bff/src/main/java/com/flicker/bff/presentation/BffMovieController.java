@@ -73,6 +73,18 @@ public class BffMovieController {
         return bffMovieService.getMovieListByActor(actorName, page, size);
     }
 
+    // 국가별 영화 목록 조회
+    @GetMapping("/list/country/{country}/{page}/{size}")
+    public Mono<ResponseEntity<ResponseDto>> getMovieListByCountry(@PathVariable String country, @PathVariable int page, @PathVariable int size) {
+        return bffMovieService.getMovieListByCountry(country, page, size);
+    }
+
+    // 연도별 영화 목록 조회
+    @GetMapping("/list/year/{year}/{page}/{size}")
+    public Mono<ResponseEntity<ResponseDto>> getMovieListByYear(@PathVariable int year, @PathVariable int page, @PathVariable int size) {
+        return bffMovieService.getMovieListByYear(year, page, size);
+    }
+
     // 검색 영화 목록 조회
     @GetMapping("/list/search/{keyword}/{userSeq}/{page}/{size}")
     public Mono<ResponseEntity<ResponseDto>> getMovieListBySearch(@PathVariable String keyword, @PathVariable int userSeq, @PathVariable int page, @PathVariable int size) {
@@ -110,7 +122,7 @@ public class BffMovieController {
         return bffMovieService.getMovieWordCloud(movieSeq);
     }
 
-    // 임의로 Top10 영화 생성
+    // 임의로 Top10 영화 생성 (테스트용)
     @PostMapping("/admin/set/top10")
     public Mono<ResponseEntity<ResponseDto>> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
         return bffMovieService.setTopMovieList(movieSeqs);

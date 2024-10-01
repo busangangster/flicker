@@ -99,6 +99,20 @@ public class BffMovieService {
         return util.sendGetRequestAsync(movieBaseUrl, path);
     }
 
+    public Mono<ResponseEntity<ResponseDto>> getMovieListByCountry(String country, int page, int size) {
+        // 1. 외부 API의 경로를 설정합니다.
+        String path = util.getUri("/list/country/" + country + "/" + page + "/" + size);
+        // 2. 비동기 방식으로 GET 요청을 외부 API에 보냅니다.
+        return util.sendGetRequestAsync(movieBaseUrl, path);
+    }
+
+    public Mono<ResponseEntity<ResponseDto>> getMovieListByYear(int year, int page, int size) {
+        // 1. 외부 API의 경로를 설정합니다.
+        String path = util.getUri("/list/year/" + year + "/" + page + "/" + size);
+        // 2. 비동기 방식으로 GET 요청을 외부 API에 보냅니다.
+        return util.sendGetRequestAsync(movieBaseUrl, path);
+    }
+
     public Mono<ResponseEntity<ResponseDto>> getMovieListBySearch(String keyword, int userSeq, int page, int size) {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/list/search/" + keyword + "/" + userSeq + "/" + page + "/" + size);
