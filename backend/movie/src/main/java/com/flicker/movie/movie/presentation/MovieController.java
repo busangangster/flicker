@@ -102,6 +102,21 @@ public class MovieController {
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
+    // 국가별 영화 목록 조회
+    @GetMapping("/list/country/{country}/{page}/{size}")
+    public ResponseEntity<ResponseDto> getMovieListByCountry(@PathVariable String country, @PathVariable int page, @PathVariable int size) {
+        List<MovieListResponse> response = movieService.getMovieListByCountry(country, page, size);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
+    // 연도별 영화 목록 조회
+    @GetMapping("/list/year/{year}/{page}/{size}")
+    public ResponseEntity<ResponseDto> getMovieListByYear(@PathVariable int year, @PathVariable int page, @PathVariable int size) {
+        List<MovieListResponse> response = movieService.getMovieListByYear(year, page, size);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
+
     // 배우별 영화 목록 조회
     @GetMapping("/list/actor/{actorName}/{page}/{size}")
     public ResponseEntity<ResponseDto> getMovieListByActor(@PathVariable String actorName, @PathVariable int page, @PathVariable int size) {

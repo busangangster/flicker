@@ -85,7 +85,7 @@ public class MovieRepoUtil {
      */
     public List<Movie> findAll(Pageable pageable) {
         try {
-            return movieRepository.findByDelYNOrderByMovieDetail_MovieYearDesc("N", pageable).getContent();
+            return movieRepository.findByDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc("N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "영화 전체 목록 조회 중 오류가 발생했습니다.");
         }
@@ -100,7 +100,7 @@ public class MovieRepoUtil {
      */
     public List<Movie> findByGenre(String genre, Pageable pageable) {
         try {
-            return movieRepository.findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDesc(genre, "N", pageable).getContent();
+            return movieRepository.findByMovieDetail_GenreContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(genre, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "장르별 영화 목록 조회 중 오류가 발생했습니다.");
         }
@@ -115,9 +115,39 @@ public class MovieRepoUtil {
      */
     public List<Movie> findByActor(String actorName, Pageable pageable) {
         try {
-            return movieRepository.findByActors_ActorNameAndDelYNOrderByMovieDetail_MovieYearDesc(actorName, "N", pageable).getContent();
+            return movieRepository.findByActors_ActorNameAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(actorName, "N", pageable).getContent();
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "배우별 영화 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 특정 국가의 영화 목록을 조회하는 메서드입니다.
+     *
+     * @param country 조회할 영화의 국가
+     * @return 조회된 영화 목록
+     * @throws RestApiException 국가별 영화 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public List<Movie> findByCountry(String country, Pageable pageable) {
+        try {
+            return movieRepository.findByMovieDetail_CountryContainingAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(country, "N", pageable).getContent();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "국가별 영화 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 특정 연도의 영화 목록을 조회하는 메서드입니다.
+     *
+     * @param year 조회할 영화의 연도
+     * @return 조회된 영화 목록
+     * @throws RestApiException 연도별 영화 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public List<Movie> findByYear(int year, Pageable pageable) {
+        try {
+            return movieRepository.findByMovieDetail_MovieYearAndDelYNOrderByMovieSeqDesc(year, "N", pageable).getContent();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "연도별 영화 목록 조회 중 오류가 발생했습니다.");
         }
     }
 
@@ -314,7 +344,7 @@ public class MovieRepoUtil {
      */
     public Movie findByMovieTitle(String movieTitle) {
         try {
-            return movieRepository.findFirstByMovieDetail_MovieTitleAndDelYNOrderByMovieDetail_MovieYearDesc(movieTitle, "N")
+            return movieRepository.findFirstByMovieDetail_MovieTitleAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(movieTitle, "N")
                     .orElseThrow(() -> new RestApiException(StatusCode.NOT_FOUND, movieTitle + ": 해당 영화 정보를 찾을 수 없습니다."));
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "제목으로 영화 정보 조회 중 오류가 발생했습니다.");
