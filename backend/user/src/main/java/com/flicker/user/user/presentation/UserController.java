@@ -5,6 +5,7 @@ import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.user.application.UserService;
 import com.flicker.user.user.domain.entity.User;
+import com.flicker.user.user.dto.MovieDetail;
 import com.flicker.user.user.dto.MovieSeqListDto;
 import com.flicker.user.user.dto.UserLoginReqDto;
 import com.flicker.user.user.dto.UserRegisterDto;
@@ -192,8 +193,18 @@ public class UserController {
         return ResponseDto.response(StatusCode.SUCCESS, "OK");
     }
 
-    // 추천 영화 조회 ?
+    // 영화 디테일 페이지에 필요한 내용 전달
 
+    // 찜한 영화인지, 비선호영화인지, 비선호영화 목록, 대표 리뷰3건
+    @GetMapping("/movie-detail")
+    public ResponseEntity<ResponseDto> getMovieDetail(@RequestParam(value = "userSeq")Integer userSeq, @RequestParam(value = "movieSeq")Integer movieSeq){
+        if(userSeq == null || movieSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+        MovieDetail movieDetail = userService.getMovieDetail(userSeq, movieSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, movieDetail);
+    }
 
 
 

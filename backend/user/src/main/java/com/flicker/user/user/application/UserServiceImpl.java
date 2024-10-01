@@ -7,6 +7,7 @@ import com.flicker.user.user.domain.entity.BookmarkMovie;
 import com.flicker.user.user.domain.entity.FavoriteMovie;
 import com.flicker.user.user.domain.entity.UnlikeMovie;
 import com.flicker.user.user.domain.entity.User;
+import com.flicker.user.user.dto.MovieDetail;
 import com.flicker.user.user.dto.MovieSeqListDto;
 import com.flicker.user.user.dto.UserRegisterDto;
 import com.flicker.user.user.infrastructure.UserRepository;
@@ -47,7 +48,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional
     public MovieSeqListDto getUnlikeMovies(Integer userSeq) {
         User user = findUserSeqToUser(userSeq);
         List<Integer> movieSeqList = user.getUnlikeMovies().stream()
@@ -144,5 +144,21 @@ public class UserServiceImpl implements UserService{
             throw new RestApiException(StatusCode.INACTIVE_USER);
         }
         return user;
+    }
+
+
+    // 찜한 영화인지, 비선호영화인지, 비선호영화 목록, 대표 리뷰3건
+    @Override
+    public MovieDetail getMovieDetail(Integer userSeq, Integer movieSeq) {
+
+
+        MovieSeqListDto bookmarkMovies = getBookmarkMovies(userSeq);
+        MovieSeqListDto unlikeMovies = getUnlikeMovies(userSeq);
+
+        MovieDetail movieDetail = new MovieDetail();
+        movieDetail.setBookMarkedMovie(bookmarkMovies.getMovieSeqList().contains(movieSeq));
+        movieDetail.setUnlikedMovie(unlikeMovies.getMovieSeqList().contains(movieSeq));
+        movieDetail.setUnlikedMovies(unlikeMovies.getMovieSeqList());
+        return movieDetail;
     }
 }
