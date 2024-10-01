@@ -157,4 +157,12 @@ public class MovieController {
         List<WordCloudResponse> response = movieService.getWordCloud(movieSeq);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
+
+
+    // 임의로 TOP10 영화 목록 저장하는 메서드
+    @PostMapping("/admin/set/top10")
+    public ResponseEntity<ResponseDto> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
+        movieService.saveTopMovieForRedis(movieSeqs);
+        return ResponseDto.response(StatusCode.SUCCESS, "Top10 영화 목록 저장 성공");
+    }
 }
