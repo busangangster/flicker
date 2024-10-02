@@ -15,7 +15,7 @@ public class SentimentAnalysisService {
     private final WebClient webClient;
 
     public SentimentAnalysisService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://70.12.130.131:8000").build();
+        this.webClient = webClientBuilder.baseUrl("http://222.107.238.75:8000").build();
     }
 
     public List<SentimentResult> batchAnalyze(List<SentimentReviewEvent> reviews) {
