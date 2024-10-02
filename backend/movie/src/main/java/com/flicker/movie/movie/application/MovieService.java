@@ -9,13 +9,11 @@ import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -286,14 +284,14 @@ public class MovieService {
     }
 
     @Transactional
-    public List<Integer> getMovieSeqsByTitleAndYear(MovieSeqsRequest request) {
+    public List<Integer> getMovieSeqsByTitleAndYear(List<MovieSeqListRequest> request) {
         // 1. 영화 제목, 년도로 영화 번호 조회
-        List<Integer> movieSeqs = new ArrayList<>();
-        for (int i = 0; i < request.getMovieTitle().size(); i++) {
-            Movie movie = movieRepoUtil.findByMovieTitleAndYear(request.getMovieTitle().get(i), request.getMovieYear().get(i));
-            movieSeqs.add(movie.getMovieSeq());
+        List<Integer> movieSeqList = new ArrayList<>();
+        for (MovieSeqListRequest movieSeqListRequest : request) {
+            Movie movie = movieRepoUtil.findByMovieTitleAndYear(movieSeqListRequest.getMovieTitle(), movieSeqListRequest.getMovieYear());
+            movieSeqList.add(movie.getMovieSeq());
         }
-        return movieSeqs;
+        return movieSeqList;
     }
 
 
