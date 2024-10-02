@@ -20,6 +20,7 @@ const MovieDetailPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  // const [localReviews, setLocalReviews] = useState<ReviewType[]>([]); // 로컬 상태 변수 이름 변경
 
   // movieSeq가 없으면 바로 return
 
@@ -68,7 +69,7 @@ const MovieDetailPage: React.FC = () => {
       movieTitle,
       director,
       genre,
-      country,
+      // country,
       moviePlot,
       audienceRating,
       movieYear,
@@ -80,7 +81,7 @@ const MovieDetailPage: React.FC = () => {
       actors,
     } = {}, // movieDetailResponse가 없을 경우를 대비해 기본값으로 빈 객체 설정
     bookMarkedMovie = false,
-    unlikedMovie = false,
+    // unlikedMovie = false,
     reviews = [],
     similarMovies = [],
   } = data;
@@ -88,12 +89,8 @@ const MovieDetailPage: React.FC = () => {
   console.log(data);
 
   const MAX_LENGTH = 250;
-  const isLongText =
-    moviePlot &&
-    moviePlot.length > MAX_LENGTH;
-  const displayedText = moviePlot
-    ? moviePlot.slice(0, MAX_LENGTH)
-    : ""; // movieDetailResponse가 없으면 빈 문자열 반환
+  const isLongText = moviePlot && moviePlot.length > MAX_LENGTH;
+  const displayedText = moviePlot ? moviePlot.slice(0, MAX_LENGTH) : ""; // movieDetailResponse가 없으면 빈 문자열 반환
   const extractVideoId = (url: string) => {
     const videoIdMatch = url.match(
       /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
@@ -101,7 +98,7 @@ const MovieDetailPage: React.FC = () => {
     return videoIdMatch ? videoIdMatch[1] : null;
   };
 
-const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
+  const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -120,7 +117,7 @@ const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
   };
 
   const goToReview = () => {
-    navigate("/review");
+    navigate(`/review/${movieSeq}`);
   };
 
   const toggleDropdown = () => {
@@ -304,11 +301,8 @@ const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
             {reviews.map((review) => (
               <Review
                 key={review.reviewSeq}
-                review={review}
-                liked={review.liked}
-                likes={review.likes}
-                nickname={review.nickname}
-                top={false} // 기본값 설정
+                review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
+                // onLikeToggle={handleLikeToggle}
               />
             ))}
           </div>
@@ -337,7 +331,7 @@ const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
       {/* Recommended movies */}
       <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
-          category="탑건: 매버릭과 유사한 장르 작품들"
+          category={`${movieTitle}과 유사한 장르 작품들`}
           movies={similarMovies} // recommendedMovieList를 movies prop으로 전달
         />
       </div>

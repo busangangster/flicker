@@ -58,7 +58,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/review" element={<ReviewPage />} />
+      <Route path="/review/:movieSeq" element={<ReviewPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/movies" element={<MoviesPage />} />{" "}
       <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />

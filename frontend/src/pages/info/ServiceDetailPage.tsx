@@ -5,7 +5,7 @@ import photocard from "/assets/service/photocard.png";
 import favorite from "/assets/service/favorite2.png";
 import serviceImage from "/assets/service/serviceImage.png";
 import ServiceContent from "../../components/SeviceContent";
-import AboutMain from "./AboutMain";
+// import AboutMain from "./AboutMain";
 
 const ServiceDetailPage: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const ServiceDetailPage: React.FC = () => {
 
       {/* AboutMain 컴포넌트 - 전체 화면을 차지 */}
       <div className="h-screen">
-        <AboutMain />
+        {/* <AboutMain /> */}
       </div>
 
       {/* AboutMain 아래의 컨텐츠 스크롤 가능 */}

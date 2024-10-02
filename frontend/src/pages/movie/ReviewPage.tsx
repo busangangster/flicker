@@ -11,16 +11,20 @@ import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { fetchMovieReviews } from "../../apis/axios";
 import { throttle } from "lodash";
+import { useParams } from "react-router-dom";
 
 gsap.registerPlugin(ScrollToPlugin);
 
 const ReviewPage: React.FC = () => {
+  const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq 받아오기
   const [reviews, setReviews] = useState<ReviewType[]>([]); // 서버에서 가져온 리뷰 데이터
   const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
-  const { data } = useUserQuery(); // 유저 정보 가져오기
+  const { data:userData } = useUserQuery(); // 유저 정보 가져오기
   const [page, setPage] = useState(0); // 페이지 번호
   const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
+
+  const userSeq = userData?.userSeq || 0;
 
   // isLoading 상태가 변경될 때마다 로그 출력
   useEffect(() => {
@@ -36,8 +40,8 @@ const ReviewPage: React.FC = () => {
     try {
       console.log("Fetching reviews for page:", page);
       const newReviews = await fetchMovieReviews(
-        26301,
-        181368,
+        Number(movieSeq),
+        userSeq || 0,
         "like",
         page,
         10
@@ -71,7 +75,7 @@ const ReviewPage: React.FC = () => {
     } finally {
       setIsLoading(false); // 로딩 완료 후
     }
-  }, [page, hasMore, isLoading, reviews]);
+  }, [movieSeq, userSeq, page, hasMore, isLoading, reviews]);
 
   // 페이지 변경 시 새로운 데이터를 가져옴
   useEffect(() => {
@@ -148,19 +152,19 @@ const ReviewPage: React.FC = () => {
     setReviews((prev: ReviewType[]) => [newReview, ...prev]);
   };
 
-  const handleLikeToggle = (reviewSeq: number) => {
-    setReviews((prevReviews) =>
-      prevReviews.map((review) =>
-        review.reviewSeq === reviewSeq
-          ? {
-              ...review,
-              liked: !review.liked,
-              likes: review.liked ? review.likes - 1 : review.likes + 1,
-            }
-          : review
-      )
-    );
-  };
+  // const handleLikeToggle = (reviewSeq: number) => {
+  //   setReviews((prevReviews) =>
+  //     prevReviews.map((review) =>
+  //       review.reviewSeq === reviewSeq
+  //         ? {
+  //             ...review,
+  //             liked: !review.liked,
+  //             likes: review.liked ? review.likes - 1 : review.likes + 1,
+  //           }
+  //         : review
+  //     )
+  //   );
+  // };
 
   const scrollToTop = () => {
     const scrollableElement = document.querySelector(".scroll-container");
@@ -188,16 +192,13 @@ const ReviewPage: React.FC = () => {
                 />
               </div>
             </div>
-            {data ? <ReviewForm onSubmit={handleAddReview} /> : ""}
+            {userData ? <ReviewForm onSubmit={handleAddReview} /> : ""}
             {reviews.length > 0 ? (
               getSortedReviews().map((review) => (
                 <Review
                   key={review.reviewSeq}
-                  review={review}
-                  liked={review.liked}
-                  likes={review.likes}
-                  nickname={review.nickname}
-                  onLikeToggle={handleLikeToggle}
+                  review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
+                  // onLikeToggle={handleLikeToggle}
                 />
               ))
             ) : (

@@ -1,3 +1,4 @@
+// Sidebar.tsx
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUserQuery } from "../hooks/useUserQuery";
@@ -22,9 +23,11 @@ const Sidebar: React.FC = () => {
     Cookies.remove("refreshToken");
 
     // react-query 캐시 무효화 (유저 정보 초기화)
-    queryClient.removeQueries("user");
+    queryClient.removeQueries({
+      queryKey: ["user"], // queryKey는 필터 객체로 전달해야 함
+    });
 
-    alert("로그아웃되었습니다."); 
+    alert("로그아웃되었습니다.");
 
     // 로그아웃 후 로그인 페이지로 리다이렉트
     navigate("/home");

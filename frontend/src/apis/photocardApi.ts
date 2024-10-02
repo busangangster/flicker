@@ -1,12 +1,9 @@
 import axios from "./axios";
-import { PhotocardResponse } from "../type";
+import { PhotocardData } from "../type";
 
-
-export const getPhotocard = async (
-  userSeq: number
-): Promise<PhotocardResponse> => {
+export const getPhotocard = async (userSeq: number): Promise<PhotocardData> => {
   try {
-    const response = await axios.get<PhotocardResponse>(
+    const response = await axios.get<PhotocardData>(
       `/api/bff/user/${userSeq}/photocard`
     );
     return response.data;

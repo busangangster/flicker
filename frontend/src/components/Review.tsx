@@ -7,7 +7,9 @@ import thumbUpOutline from "../assets/review/thumb_up_outline.png";
 import thumbUp from "../assets/review/thumb_up.png";
 import { ReviewProps } from "../type";
 
-const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {
+// const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {
+const Review: React.FC<ReviewProps> = ({ review }) => {
+
   // console.log("Rendering review:", review);
 
   const [showContent, setShowContent] = React.useState(!review.spoiler); // 스포일러 여부에 따른 내용 표시 여부
@@ -77,7 +79,7 @@ const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {
             {/* 좋아요 버튼 */}
             <button
               className="flex items-center p-0 bg-transparent border-none outline-none"
-              onClick={() => onLikeToggle(review.reviewSeq)} // 좋아요 토글 함수 호출
+              // onClick={() => onLikeToggle(review.reviewSeq)} // 좋아요 토글 함수 호출
             >
               <img
                 src={review.liked ? thumbUp : thumbUpOutline}

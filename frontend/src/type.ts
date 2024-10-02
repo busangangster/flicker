@@ -9,12 +9,12 @@ export interface ReviewType {
   spoiler: boolean;
   likes: number;
   liked: boolean;
-  top: boolean;
+  top?: boolean;
 }
 
 export interface ReviewProps {
   review: ReviewType;
-  onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
+  // onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
 }
 
 export interface FilterOptions {
@@ -156,9 +156,14 @@ export interface MovieImageDto {
 }
 
 // Photocard 데이터 타입
-export interface PhotocardData {
+export interface PhotocardDataItem {
   reviewDto: PhotoCardReviewDto;
   movieImageDto: MovieImageDto;
+}
+
+// PhotocardData 내에 data라는 배열을 가진 타입
+export interface PhotocardData {
+  data: PhotocardDataItem[];
 }
 
 // IFlipBook = 포토북

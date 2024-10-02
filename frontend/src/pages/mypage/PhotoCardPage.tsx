@@ -4,11 +4,11 @@ import "../../css/photobook.css";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { getPhotocard } from "../../apis/photocardApi"; // 포토카드 API 호출 추가
 import PhotoCardFront from "../../components/PhotoCardFront";
-import { IFlipBook, PhotocardData } from "../../type";
+import { IFlipBook, PhotocardDataItem } from "../../type";
 
 const PhotoCardPage: React.FC = () => {
   const book = useRef<IFlipBook | null>(null);
-  const [photocardData, setPhotocardData] = useState<PhotocardData[]>([]);
+  const [photocardData, setPhotocardData] = useState<PhotocardDataItem[]>([]);
 
   const {
     data: userData,
@@ -31,21 +31,21 @@ const PhotoCardPage: React.FC = () => {
   useEffect(() => {
     const fetchPhotocardData = async () => {
       try {
-        const response = await getPhotocard(userSeq); // 임시로 하드코딩된 userSeq 사용
-        setPhotocardData(response.data); // 응답 데이터에서 PhotocardData[] 설정
+        const response = await getPhotocard(userSeq); // API 호출
+        setPhotocardData(response.data); // 응답 데이터에서 PhotocardDataItem[] 설정
       } catch (error) {
         console.error("포토카드 데이터를 불러오는데 실패했습니다.", error);
       }
     };
     fetchPhotocardData();
-  }, [userSeq]); // userSeq가 있을 때만 실행
+  }, [userSeq]);
 
   // 유저 정보가 로딩 중이거나 에러일 경우 처리
   if (isUserLoading) return <p>로딩 중...</p>;
   if (userError) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
   // 포토카드 데이터를 기반으로 페이지 생성
-  const createPages = (photocardData: PhotocardData[]) => {
+  const createPages = (photocardData: PhotocardDataItem[]) => {
     const imagesPerPage = 4; // 한 페이지에 보여줄 이미지 수
     const pages = [];
 

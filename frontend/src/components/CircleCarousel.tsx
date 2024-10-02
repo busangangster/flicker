@@ -195,7 +195,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
         const cardCount = 20; // Number of cards
         const cards: ExtendedSprite[] = [];
         const spacingFactor = 1; // Card spacing adjustment
-        let lastClosestCard: ExtendedSprite | null = null;
+        // let lastClosestCard: ExtendedSprite | null = null;
 
         // Load textures
         const textures = await Promise.all(
@@ -288,17 +288,16 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 
         let dragging = false;
         let previousPosition = { x: 0, y: 0 };
-        let rotationOffset = 0;
 
         // Function to calculate angle
-        function calculateAngle(
-          x1: number,
-          y1: number,
-          x2: number,
-          y2: number
-        ) {
-          return Math.atan2(y2 - y1, x2 - x1);
-        }
+        // function calculateAngle(
+        //   x1: number,
+        //   y1: number,
+        //   x2: number,
+        //   y2: number
+        // ) {
+        //   return Math.atan2(y2 - y1, x2 - x1);
+        // }
 
         // Update cards function
         const updateCards = () => {
@@ -339,27 +338,27 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
         };
 
         // Function to bring the center card to the front
-        function bringCenterCardToFront() {
-          let closestCard: ExtendedSprite | null = null;
-          let minAngleDiff = Infinity;
+        // function bringCenterCardToFront() {
+        //   let closestCard: ExtendedSprite | null = null;
+        //   let minAngleDiff = Infinity;
 
-          cards.forEach((card) => {
-            const angleDiff = Math.abs(card.userData.angle - Math.PI / 2);
-            if (angleDiff < minAngleDiff) {
-              minAngleDiff = angleDiff;
-              closestCard = card;
-            }
-          });
+        //   cards.forEach((card) => {
+        //     const angleDiff = Math.abs(card.userData.angle - Math.PI / 2);
+        //     if (angleDiff < minAngleDiff) {
+        //       minAngleDiff = angleDiff;
+        //       closestCard = card;
+        //     }
+        //   });
 
-          if (
-            closestCard &&
-            closestCard !== lastClosestCard &&
-            minAngleDiff < 0.01
-          ) {
-            lastClosestCard = closestCard;
-            app.stage.setChildIndex(closestCard, app.stage.children.length - 1);
-          }
-        }
+        //   if (
+        //     closestCard &&
+        //     closestCard !== lastClosestCard &&
+        //     minAngleDiff < 0.01
+        //   ) {
+        //     lastClosestCard = closestCard;
+        //     app.stage.setChildIndex(closestCard, app.stage.children.length - 1);
+        //   }
+        // }
 
         // Event handlers
         const setupMouseEvents = () => {
