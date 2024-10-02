@@ -1,16 +1,20 @@
 import { Sprite } from "pixi.js";
 
 export interface ReviewType {
-  reviewSeq: number; // 영화리뷰 시퀀스
-  userSeq: number; // 작성자 시쿼스
-  movieId: number; // 영화 id
-  reviewRating: number; // 평점
-  content: string; // 리뷰 내용
-  createdAt: string; // 리뷰 작성일시
-  isSpoiler: boolean; // 스포일러 유무
-  likes: number; // 좋아요 개수 (ERD에 추가할 예쩡)
-  liked: boolean; // 좋아요 여부 (ERD에 추가할 예정)
-  nickname: string; // 사용자 닉네임 (일단 넣음)
+  reviewSeq: number;
+  createdAt: string;
+  nickname: string;
+  reviewRating: number;
+  content: string;
+  spoiler: boolean;
+  likes: number;
+  liked: boolean;
+  top?: boolean;
+}
+
+export interface ReviewProps {
+  review: ReviewType;
+  // onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
 }
 
 export interface FilterOptions {
@@ -23,10 +27,153 @@ export interface RatingData {
   count: number; // 평점 개수
 }
 
+export interface SignUpParams {
+  userId: string;
+  email: string;
+  password: string;
+  passCheck: string;
+  nickname: string;
+  birthDate: string;
+  gender: "M" | "F" | "";
+}
+
+export interface SignInParams {
+  userId: string;
+  password: string;
+}
+
+export interface SignInResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface JwtPayload {
+  userId: string;
+  email: string;
+  nickname: string;
+  birthDate: string;
+  gender: "M" | "F" | "";
+  userSeq: number;
+}
+
+export interface ApiErrorResponse {
+  status: number;
+  message: string;
+  //   data?: any; // 만약 응답 데이터 구조가 복잡하다면, 여기서 구체적인 타입을 추가할 수 있음
+}
+
 export interface ExtendedSprite extends Sprite {
   userData: {
     angle: number;
     rotationOffset: number;
     yOffset: number;
   };
+}
+
+export interface MovieDetail {
+  movieDetailResponse: {
+    // movieSeq: number;
+    movieTitle: string;
+    director: string;
+    genre: string;
+    country: string;
+    moviePlot: string;
+    audienceRating: string;
+    movieYear: number;
+    runningTime: string;
+    moviePosterUrl: string;
+    trailerUrl: string;
+    backgroundUrl: string;
+    movieRating: number;
+    actors: {
+      actorSeq: number;
+      actorName: string;
+      role: string;
+    }[];
+  };
+  bookMarkedMovie: boolean;
+  unlikedMovie: boolean;
+  reviews: {
+    reviewSeq: number;
+    userSeq: number;
+    nickname: string;
+    movieSeq: number;
+    reviewRating: number;
+    content: string;
+    createdAt: string;
+    spoiler: boolean;
+    likes: number;
+    liked: boolean;
+  }[];
+  similarMovies: {
+    movieSeq: number;
+    movieTitle: string;
+    moviePosterUrl: string;
+  }[];
+}
+
+export interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+export interface SearchBarProps {
+  initialSearchQuery?: string;
+  isExpanded: boolean;
+  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface ServiceContentProps {
+  title: string;
+  description: string;
+  tags: string[];
+  imageUrl: string;
+}
+
+export interface TopTenMovie {
+  movieSeq: number;
+  movieTitle: string;
+  moviePosterUrl: string;
+}
+
+// Photocard Review 데이터 타입
+export interface PhotoCardReviewDto {
+  userSeq: number;
+  movieSeq: number;
+  reviewSeq: number;
+  nickname: string;
+  reviewRating: number;
+  content: string;
+  spoiler: boolean;
+  likes: number;
+  liked: boolean;
+  createdAt: string;
+  top: null | string;
+}
+
+// Movie Image DTO 데이터 타입
+export interface MovieImageDto {
+  moviePosterUrl: string;
+}
+
+// Photocard 데이터 타입
+export interface PhotocardDataItem {
+  reviewDto: PhotoCardReviewDto;
+  movieImageDto: MovieImageDto;
+}
+
+// PhotocardData 내에 data라는 배열을 가진 타입
+export interface PhotocardData {
+  data: PhotocardDataItem[];
+}
+
+// IFlipBook = 포토북
+export interface IFlipBook {
+  flipNext: () => void;
+  flipPrev: () => void;
+  pageFlip: () => { flipNext: () => void; flipPrev: () => void };
+}
+
+export interface PhotoCardFrontProps {
+  images: { src: string; alt: string }[];
+  pageIndex: number;
 }

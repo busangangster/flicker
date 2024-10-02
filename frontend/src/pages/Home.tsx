@@ -35,6 +35,29 @@ const Home: React.FC = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (animationFinished) {
+  //     // 애니메이션이 완료된 후 CircleCarousel에 페이드 인 효과 적용
+  //     const timeline = gsap.timeline();
+  //     timeline
+  //       .fromTo(
+  //         ".circle-carousel",
+  //         { opacity: 0 },
+  //         { opacity: 0.3, duration: 0.5, ease: "power2.out" } // 처음 0에서 0.3까지 서서히 증가
+  //       )
+  //       .to(".circle-carousel", {
+  //         opacity: 0.5,
+  //         duration: 0.5,
+  //         ease: "power2.out",
+  //       }) // 0.3에서 0.6까지 증가
+  //       .to(".circle-carousel", {
+  //         opacity: 1,
+  //         duration: 1,
+  //         ease: "power2.out",
+  //       }); // 0.6에서 1까지 최종 증가
+  //   }
+  // }, [animationFinished]);
+
   useEffect(() => {
     if (!showLanding) return;
 
@@ -70,26 +93,21 @@ const Home: React.FC = () => {
       const screenCenterY = app.screen.height / 2;
 
       const images = [
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
-        "/assets/landing/firstandF.jpg",
-        "/assets/landing/avengers1.jpg",
-        "/assets/landing/fastand.jpg",
+        "/assets/landing/landing1.jpg",
+        "/assets/landing/landing2.jpg",
+        "/assets/landing/landing3.jpg",
+        "/assets/landing/landing4.jpg",
+        "/assets/landing/landing5.jpg",
+        "/assets/landing/landing6.jpg",
+        "/assets/landing/landing7.jpg",
+        "/assets/landing/flick.mp4",
+        "/assets/landing/landing1.jpg",
+        "/assets/landing/landing2.jpg",
+        "/assets/landing/landing3.jpg",
+        "/assets/landing/landing4.jpg",
+        "/assets/landing/landing5.jpg",
+        "/assets/landing/landing6.jpg",
+        "/assets/landing/landing7.jpg",
       ];
 
       const middleIndex = Math.floor(images.length / 2);
@@ -154,7 +172,7 @@ const Home: React.FC = () => {
                   ease: "power2.inOut",
                   onComplete: () => {
                     gsap.to(middleSprite, {
-                      duration: 2,
+                      duration: 3,
                       alpha: 0,
                       ease: "power2.inOut",
                       onComplete: () => {
@@ -177,6 +195,7 @@ const Home: React.FC = () => {
         timeline.to(sprites, {
           y: -sprites[0].height,
           stagger: 0.15,
+          duration: 0.7,
           onStart: () => {
             animationStopped.current = false;
             middleSprite.y = app.screen.height + middleSprite.height;
@@ -210,28 +229,25 @@ const Home: React.FC = () => {
               ? "opacity-0 transition-opacity duration-1000"
               : ""
           }`}
-          style={{ zIndex: -1 }} // z-index 추가 확인
+          style={{ zIndex: -1 }}
         ></div>
       )}
 
       {animationFinished && (
         <div className="min-h-screen flex flex-col relative z-20">
-          {/* z-index를 20으로 유지 */}
           <header className="sticky top-0 bg-black z-30">
             <Navbar />
           </header>
-          <main className="w-full h-screen">
-            {/* 투명도를 낮춰 비디오가 보이게 함 */}
-            <CircleCarousel onCardClick={handleCardClick} />
+          <main className="w-full h-screen ">
+            <div className="circle-carousel">
+              <CircleCarousel onCardClick={handleCardClick} />
+            </div>
           </main>
         </div>
       )}
 
       {backgroundVideoUrl && (
-        <div
-          className="absolute top-0 left-0 w-full h-full z-10" // z-index 수정
-          // style={{ pointerEvents: "none" }} // 투명도 및 배경 확인
-        >
+        <div className="absolute top-0 left-0 w-full h-full z-10">
           <iframe
             src={`https://www.youtube.com/embed/${backgroundVideoUrl}?autoplay=1&mute=1&loop=1&playlist=${backgroundVideoUrl}`}
             title="YouTube video player"

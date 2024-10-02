@@ -65,15 +65,14 @@ const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
     }
     const newReview = {
       reviewSeq: Date.now(),
-      userSeq: 999,
-      movieId: 101,
       reviewRating: rating,
       content: content,
       createdAt: new Date().toISOString(),
-      isSpoiler: isSpoiler,
+      spoiler: isSpoiler,
       likes: 0,
       liked: false,
       nickname: currentUserNickname,
+      top: false,
     };
     onSubmit(newReview);
     setIsFormSubmitted(true); // 폼이 제출되면 폼을 숨김
@@ -131,17 +130,17 @@ const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
         className="p-2 w-full border border-white rounded-sm bg-black text-white mb-1 mt-4"
       />
       <div className="flex items-center mb-2 mt-4 ml-1">
-        <div
-          className="mr-2 cursor-pointer"
+        <label
+          className="text-gray-200 flex cursor-pointer"
           onClick={() => setIsSpoiler(!isSpoiler)}
         >
-          {isSpoiler ? (
-            <IoMdCheckboxOutline className="text-gray-200" size={22} />
-          ) : (
-            <IoMdSquareOutline className="text-gray-200" size={22} />
-          )}
-        </div>
-        <label className="text-gray-200">
+          <div className="mr-2">
+            {isSpoiler ? (
+              <IoMdCheckboxOutline className="text-gray-200" size={22} />
+            ) : (
+              <IoMdSquareOutline className="text-gray-200" size={22} />
+            )}
+          </div>
           스포일러 내용이 포함되어 있어요!
         </label>
         <button

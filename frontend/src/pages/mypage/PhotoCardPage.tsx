@@ -1,42 +1,78 @@
-// PhotoCardPage.tsx
-import React, { useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useEffect, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
-import "../../css/PhotoBook.css";
-
-// IFlipBook 인터페이스 정의
-interface IFlipBook {
-  flipNext: () => void;
-  flipPrev: () => void;
-  pageFlip: () => { flipNext: () => void; flipPrev: () => void };
-}
+import "../../css/photobook.css";
+import { useUserQuery } from "../../hooks/useUserQuery";
+import { getPhotocard } from "../../apis/photocardApi"; // 포토카드 API 호출 추가
+import PhotoCardFront from "../../components/PhotoCardFront";
+import { IFlipBook, PhotocardDataItem } from "../../type";
 
 const PhotoCardPage: React.FC = () => {
   const book = useRef<IFlipBook | null>(null);
-  const navigate = useNavigate();
+  const [photocardData, setPhotocardData] = useState<PhotocardDataItem[]>([]);
+
+  const {
+    data: userData,
+    error: userError,
+    isLoading: isUserLoading,
+  } = useUserQuery(); // 유저 정보
 
   useEffect(() => {
-    // 컴포넌트가 마운트되면 첫 페이지를 자동으로 넘겨 두 번째 페이지부터 시작
     if (book.current) {
       setTimeout(() => {
         book.current?.pageFlip().flipNext();
-      }, 10); // 페이지 넘김 딜레이 (0.1초 후 넘김)
+      }, 10);
     }
   }, []);
 
-  const goTophotocarddetail = () => {
-    navigate("/mypage/photocarddetail"); // photocarddetail 페이지로 이동
+  // **나중에 userSeq를 동적으로 가져오도록 수정해야 함**
+  const userSeq = 181368; // 임시로 userSeq를 하드코딩하여 데이터 확인
+
+  // 포토카드 데이터를 가져오는 함수
+  useEffect(() => {
+    const fetchPhotocardData = async () => {
+      try {
+        const response = await getPhotocard(userSeq); // API 호출
+        setPhotocardData(response.data); // 응답 데이터에서 PhotocardDataItem[] 설정
+      } catch (error) {
+        console.error("포토카드 데이터를 불러오는데 실패했습니다.", error);
+      }
+    };
+    fetchPhotocardData();
+  }, [userSeq]);
+
+  // 유저 정보가 로딩 중이거나 에러일 경우 처리
+  if (isUserLoading) return <p>로딩 중...</p>;
+  if (userError) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
+
+  // 포토카드 데이터를 기반으로 페이지 생성
+  const createPages = (photocardData: PhotocardDataItem[]) => {
+    const imagesPerPage = 4; // 한 페이지에 보여줄 이미지 수
+    const pages = [];
+
+    for (let i = 0; i < photocardData.length; i += imagesPerPage) {
+      const imageSlice = photocardData
+        .slice(i, i + imagesPerPage)
+        .map((photocard, index) => {
+          return {
+            src: photocard.movieImageDto.moviePosterUrl,
+            alt: `Movie ${index + 1}`,
+          };
+        });
+
+      pages.push({
+        id: i / imagesPerPage + 2, // 페이지 ID는 2부터 시작
+        content: (
+          <PhotoCardFront
+            images={imageSlice}
+            pageIndex={i / imagesPerPage + 2}
+          />
+        ),
+        className: i % 2 === 0 ? "left-page" : "right-page", // 짝수 페이지는 왼쪽, 홀수 페이지는 오른쪽
+      });
+    }
+
+    return pages;
   };
-  const images = [
-    { src: "/assets/survey/image3.jpg", alt: "Movie 1" },
-    { src: "/assets/survey/image5.jpg", alt: "Movie 2" },
-    { src: "/assets/survey/image7.jpg", alt: "Movie 3" },
-    { src: "/assets/survey/image10.jpg", alt: "Movie 4" },
-    { src: "/assets/survey/image8.jpg", alt: "Movie 5" },
-    { src: "/assets/survey/image14.jpg", alt: "Movie 6" },
-    { src: "/assets/survey/image17.jpg", alt: "Movie 7" },
-    { src: "/assets/survey/image20.jpg", alt: "Movie 8" },
-  ];
 
   const pages = [
     {
@@ -49,7 +85,7 @@ const PhotoCardPage: React.FC = () => {
           <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
           <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
           <p className="text-lg italic mt-2 text-gray-700 self-end mr-16 mb-10">
-            made by nickname
+            made by {userData?.userId}
           </p>
           <img
             src="https://via.placeholder.com/500x300"
@@ -59,132 +95,7 @@ const PhotoCardPage: React.FC = () => {
         </div>
       ),
     },
-    {
-      id: 2,
-      content: (
-        <div className="grid grid-cols-2 grid-row-2 gap-4 p-4 bg-white h-full w-full page-content left-page">
-          {images.slice(0, 4).map((image, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg border border-gray-700 pl-3 pr-3 pt-3 pb-10 flex justify-center items-center shadow-lg"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="border rounded-md object-cover w-full h-[320px]"
-                onClick={goTophotocarddetail}
-              />
-            </div>
-          ))}
-          <p className="text-lg text-gray-700 mt-1 text-right w-full">2</p>
-        </div>
-      ),
-    },
-    {
-      id: 3,
-      content: (
-        <div className="grid grid-cols-2 grid-row-2 gap-4 p-4 bg-white h-full w-full page-content right-page">
-          {images.slice(4, 8).map((image, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg border border-gray-700 pl-3 pr-3 pt-3 pb-10 flex justify-center items-center shadow-lg"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="border rounded-md object-cover w-full h-[320px]"
-                onClick={goTophotocarddetail}
-              />
-            </div>
-          ))}
-          <p className="text-lg text-gray-700 mt-1 text-right w-full">3</p>
-        </div>
-      ),
-    },
-    {
-      id: 4,
-      content: (
-        <div className="grid grid-cols-2 grid-row-2 gap-4 p-4 bg-white h-full page-content left-page">
-          {images.slice(0, 4).map((image, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg border border-gray-700 pl-3 pr-3 pt-3 pb-10 flex justify-center items-center shadow-lg"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="border rounded-md object-cover w-full h-[320px]"
-                onClick={goTophotocarddetail}
-              />
-            </div>
-          ))}
-          <p className="text-lg text-gray-700 mt-1 text-right w-full">4</p>
-        </div>
-      ),
-    },
-    {
-      id: 5,
-      content: (
-        <div className="grid grid-cols-2 grid-row-2 gap-4 p-4 bg-white h-full page-content right-page">
-          {images.slice(2, 6).map((image, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg border border-gray-700 pl-3 pr-3 pt-3 pb-10 flex justify-center items-center shadow-lg"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="border rounded-md object-cover w-full h-[320px]"
-                onClick={goTophotocarddetail}
-              />
-            </div>
-          ))}
-          <p className="text-lg text-gray-700 mt-1 text-right w-full">5</p>
-        </div>
-      ),
-    },
-    {
-      id: 6,
-      content: (
-        <div className="grid grid-cols-2 grid-row-2 gap-4 p-4 bg-white h-full page-content left-page">
-          {images.slice(1, 5).map((image, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg border border-gray-700 pl-3 pr-3 pt-3 pb-10 flex justify-center items-center shadow-lg"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="border rounded-md object-cover w-full h-[320px]"
-                onClick={goTophotocarddetail}
-              />
-            </div>
-          ))}
-          <p className="text-lg text-gray-700 mt-1 text-right w-full">6</p>
-        </div>
-      ),
-    },
-    {
-      id: 7,
-      content: (
-        <div className="grid grid-cols-2 grid-row-2 gap-4 p-4 bg-white h-full page-content right-page">
-          {images.slice(4, 8).map((image, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg border border-gray-700 pl-3 pr-3 pt-3 pb-10 flex justify-center items-center shadow-lg"
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="border rounded-md object-cover w-full h-[320px]"
-                onClick={goTophotocarddetail}
-              />
-            </div>
-          ))}
-          <p className="text-lg text-gray-700 mt-1 text-right w-full">7</p>
-        </div>
-      ),
-    },
+    ...createPages(photocardData), // 포토카드 데이터를 기반으로 페이지 생성
   ];
 
   return (
@@ -200,26 +111,26 @@ const PhotoCardPage: React.FC = () => {
           maxHeight={1380}
           showCover={true}
           mobileScrollSupport={true}
-          className="shadow-2xl book-animation-in"
+          className="book-animation-in"
           ref={book}
           drawShadow={true}
           flippingTime={700}
           useMouseEvents={true}
           startPage={0}
-          usePortrait={true} // 세로 모드 지원
-          startZIndex={0} // 기본 z-index 설정
-          autoSize={true} // 자동 크기 조정
-          style={{}} // 필요시 스타일 추가
-          maxShadowOpacity={0.5} // 그림자의 최대 투명도
-          clickEventForward={true} // 클릭 이벤트를 페이지 안쪽으로 전달
-          swipeDistance={30} // 스와이프 감지 거리
-          showPageCorners={true} // 페이지 모서리 표시
-          disableFlipByClick={false} // 클릭을 통한 페이지 넘김 비활성화 여부
+          usePortrait={true}
+          startZIndex={0}
+          autoSize={true}
+          style={{}}
+          maxShadowOpacity={0.5}
+          clickEventForward={true}
+          swipeDistance={30}
+          showPageCorners={true}
+          disableFlipByClick={false}
         >
-          {pages.map((page, index) => (
+          {pages.map((page) => (
             <div
               key={page.id}
-              className={`page ${index % 2 === 0 ? "left-page" : "right-page"}`}
+              className={`page ${"className" in page ? page.className : ""}`}
             >
               {page.content}
             </div>

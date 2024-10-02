@@ -1,4 +1,4 @@
-import React, { useRef }  from "react";
+import React, { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import SideBar from "../../components/SideBar";
@@ -8,7 +8,6 @@ const MyPage: React.FC = () => {
   const sidebarRef = useRef<HTMLDivElement>(null); // 사이드바에 대한 ref 설정
   const isPhotoCardPage = location.pathname === "/mypage/photocard";
   const isPhotoCardDetailPage = location.pathname === "/mypage/photocarddetail";
-
 
   return (
     <div className="min-h-screen flex flex-col">

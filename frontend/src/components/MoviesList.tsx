@@ -6,10 +6,15 @@ import { useNavigate } from "react-router-dom";
 
 interface MoviesListProps {
   category: string;
-  movieImg: string[];
+  movies: Movie[]; // movieSeq와 moviePosterUrl을 포함하는 배열
 }
 
-const MoviesList: React.FC<MoviesListProps> = ({ category, movieImg }) => {
+interface Movie {
+  movieSeq: number;
+  moviePosterUrl: string;
+}
+
+const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
   const [swiperInstance, setSwiperInstance] = useState<SwiperInstance | null>(
@@ -72,8 +77,8 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movieImg }) => {
     }
   };
 
-  const goToDetail = () => {
-    navigate("/moviedetail");
+  const goToDetail = (movieSeq: number) => {
+    navigate(`/moviedetail/${movieSeq}`);
   };
 
   return (
@@ -138,19 +143,22 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movieImg }) => {
         onSwiper={handleSwiper}
         modules={[Navigation, Pagination]}
       >
-        {movieImg.map((img, index) => (
-          <SwiperSlide
-            key={index}
-            className="flex justify-center items-center transition-transform duration-300 transform hover:-translate-y-2 mt-4" // mb-4를 추가하여 아래에 여유 공간 확보
-          >
-            <img
-              src={img}
-              alt={`Movie ${index + 1}`}
-              onClick={goToDetail}
-              className="rounded-lg shadow-md object-cover w-full h-[306px] cursor-pointer"
-            />
-          </SwiperSlide>
-        ))}
+        {movies.map((movie) => {
+          // console.log("Movie Seq:", movie.movieSeq); // movieSeq가 고유한지 확인
+          return (
+            <SwiperSlide
+              key={movie.movieSeq} // movieSeq를 고유한 key로 사용
+              className="flex justify-center items-center transition-transform duration-300 transform hover:-translate-y-2 mt-4"
+            >
+              <img
+                src={movie.moviePosterUrl}
+                alt={`Movie ${movie.movieSeq}`}
+                onClick={() => goToDetail(movie.movieSeq)}
+                className="rounded-lg shadow-md object-cover w-full h-[306px] cursor-pointer"
+              />
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );

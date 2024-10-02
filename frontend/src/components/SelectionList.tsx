@@ -1,15 +1,9 @@
-// src/components/SearchList.tsx
 import React from "react";
 
-interface SearchListProps {
-  searchQuery: string;
-}
-
-const SearchList: React.FC<SearchListProps> = () => {
-  // 검색 결과로 임시 포스터 이미지 리스트 생성
+const SelectionList: React.FC = () => {
   const movieImages = Array.from(
     { length: 30 },
-    (_, index) => `/assets/survey/image${index + 1}.jpg`
+    (_, index) => `/assets/survey/image${(index % 13) + 1}.jpg` // 예시 이미지 13개 반복
   );
 
   return (
@@ -19,7 +13,7 @@ const SearchList: React.FC<SearchListProps> = () => {
           <img
             src={imgSrc}
             alt={`Movie Poster ${index + 1}`}
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-full object-cover rounded-md photo-card-hover"
           />
         </div>
       ))}
@@ -27,4 +21,4 @@ const SearchList: React.FC<SearchListProps> = () => {
   );
 };
 
-export default SearchList;
+export default SelectionList;

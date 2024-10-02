@@ -1,7 +1,7 @@
 // src/pages/movie/SearchPage.tsx
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import SelectionList from "../../components/SelectionList";
+// import SelectionList from "../../components/SelectionList";
 import Navbar from "../../components/common/Navbar";
 import SearchBar from "../../components/SearchBar";
 
@@ -30,7 +30,7 @@ const SearchPage: React.FC = () => {
       <h1 className="text-2xl font-bold text-gray-300 mt-8 mb-4 ml-16">
         "{searchQuery}" 검색 결과
       </h1>
-      <SelectionList searchQuery={searchQuery} />
+      {/* <SelectionList searchQuery={searchQuery} /> */}
     </div>
   );
 };

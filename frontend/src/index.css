@@ -8,6 +8,15 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-family: "Nanum Gothic", sans-serif;
+}
+
+:lang(en) {
+  font-family: "Raleway", sans-serif;
+}
+
+:lang(ko) {
+  font-family: "Nanum Gothic", sans-serif;
 }
 
 /* input의 자동 완성 시 배경색을 검정으로 유지 */

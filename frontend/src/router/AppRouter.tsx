@@ -24,6 +24,8 @@ import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
 import Home from "../pages/Home";
 import MoviesPage from "../pages/movie/MoviesPage";
+import ProtectedRoute from "../components/ProtectedRoute";
+import MovieGenrePage from "../pages/movie/MovieGenrePage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -32,7 +34,6 @@ const AppRoutes: React.FC = () => {
       <Route path="/home" element={<Home />} />
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/landing" element={<LandingPage />} />
-      {/*렌딩페이지, 메인페이지 하나로 합쳐서 보여줄까 ? */}
       <Route path="/survey" element={<SurveyPage />} />
       <Route path="/passwordreset" element={<PasswordResetPage />} />
       <Route path="/passwordreset/:token" element={<PasswordChangePage />} />
@@ -40,14 +41,36 @@ const AppRoutes: React.FC = () => {
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/servicedetail" element={<ServiceDetailPage />} />
-      <Route path="/moviedetail" element={<MovieDetailPage />} />
-      <Route path="/recommendlist" element={<RecommendListPage />} />
-      <Route path="/recommend" element={<RecommendPage />} />
-      <Route path="/review" element={<ReviewPage />} />
+      <Route path="/moviedetail/:movieSeq" element={<MovieDetailPage />} />
+      <Route
+        path="/recommendlist"
+        element={
+          <ProtectedRoute>
+            <RecommendListPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recommend"
+        element={
+          <ProtectedRoute>
+            <RecommendPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/review/:movieSeq" element={<ReviewPage />} />
       <Route path="/search" element={<SearchPage />} />
-      <Route path="/movies" element={<MoviesPage />} />
-      {/* 경로 검색어 수정 해야함!*/}
-      <Route path="/mypage" element={<Mypage />}>
+      <Route path="/movies" element={<MoviesPage />} />{" "}
+      <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />
+      {/* 장르별 페이지 추가 */}
+      <Route
+        path="/mypage/*"
+        element={
+          <ProtectedRoute>
+            <Mypage />
+          </ProtectedRoute>
+        }
+      >
         <Route path="favorite" element={<FavoritePage />} />
         <Route path="myinformation" element={<MyInformaitonPage />} />
         <Route path="photobook" element={<PhotoBookPage />} />
