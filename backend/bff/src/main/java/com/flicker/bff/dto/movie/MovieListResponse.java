@@ -7,6 +7,4 @@ public class MovieListResponse {
     private int movieSeq;
     private String movieTitle;
     private String moviePosterUrl;
-    private Integer movieYear;
-    private String backgroundUrl;
 }

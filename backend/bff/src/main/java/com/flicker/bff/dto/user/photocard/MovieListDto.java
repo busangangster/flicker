@@ -9,5 +9,5 @@ public class MovieListDto {
     private String movieTitle;
     private Integer movieYear;
     private String moviePosterUrl;
-
+    private String backgroundUrl;
 }
