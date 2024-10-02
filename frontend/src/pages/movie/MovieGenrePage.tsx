@@ -9,15 +9,15 @@ const MovieGenrePage: React.FC = () => {
   const { genre } = useParams<{ genre: string }>();
   const [movies, setMovies] = useState<Movie[]>([]); // 영화 데이터를 저장할 상태
   const [loading, setLoading] = useState(false); // 로딩 상태 관리
-  const [page, setPage] = useState<number>(() => Math.floor(Math.random() * 6)); // 0 ~ 5 중 랜덤으로 시작
+  const [page, setPage] = useState<number>(Math.floor(Math.random() * 6)); // 0~5 중 랜덤으로 시작
   const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부 관리
   const navigate = useNavigate();
 
-  // 최대 페이지는 5로 제한
-  const maxPage = 5;
+  // 최대 5번까지만 API 호출하는 로직 추가
+  const MAX_PAGE = page + 4; // 시작 페이지 +4까지만 API 호출
 
   const loadMoreMovies = async () => {
-    if (loading || !hasMore || page > maxPage) return; // 페이지가 5 이상이면 더 이상 요청하지 않음
+    if (loading || !hasMore || page > MAX_PAGE) return; // MAX_PAGE 이상이면 종료
 
     setLoading(true);
     try {
@@ -29,12 +29,11 @@ const MovieGenrePage: React.FC = () => {
         setMovies((prevMovies) => [...prevMovies, ...response]);
 
         // 만약 가져온 영화 데이터가 30개 미만이라면 더 이상 데이터가 없다고 판단
-        if (response.length < 30 || page === maxPage) {
+        if (response.length < 30 || page >= MAX_PAGE) {
           setHasMore(false);
         }
 
-        // 페이지 증가
-        setPage((prevPage) => prevPage + 1);
+        setPage((prevPage) => prevPage + 1); // 다음 페이지로 이동
       }
     } catch (error) {
       console.error("Error fetching more movies:", error);
