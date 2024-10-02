@@ -7,10 +7,7 @@ import com.flicker.movie.movie.config.KafkaConfig;
 import com.flicker.movie.movie.domain.entity.MongoUserAction;
 import com.flicker.movie.movie.domain.entity.Movie;
 import com.flicker.movie.movie.domain.entity.WordCloud;
-import com.flicker.movie.movie.dto.AlarmMovieEvent;
-import com.flicker.movie.movie.dto.KeywordCount;
-import com.flicker.movie.movie.dto.MovieRatingEvent;
-import com.flicker.movie.movie.dto.WordCloudEvent;
+import com.flicker.movie.movie.dto.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -126,6 +123,38 @@ public class CustomConsumer {
         }
     }
 
+    // Kafka 메시지 수신 ( 사용자 행동 로그-리뷰 평점 4점 이상 등록 추가 )
+    @RetryableTopic(
+            attempts = "5",
+            backoff = @Backoff(delay = 2000)
+    )
+    @KafkaListener(topics = "${spring.kafka.template.wordcloud-review-topic}")
+    @Transactional
+    public void consumeReviewAction(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
+        try {
+            // 1. 역직렬화: payload를 ReviewActionEvent 객체로 변환
+            ReviewActionEvent reviewActionEvent = objectMapper.readValue(payload, ReviewActionEvent.class);
+            // 2. 리뷰 액션을 사용자 액션으로 매핑
+            // 평점 4점 이상인지 체크
+            if(reviewActionEvent.getRating() < 4.0) {
+                log.info("평점이 4점 미만인 리뷰는 사용자 행동 로그로 추가하지 않습니다.");
+                return;
+            }
+            Movie movie = movieRepoUtil.findById(reviewActionEvent.getMovieSeq());
+            String movieTitle = movie.getMovieDetail().getMovieTitle();
+            MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(reviewActionEvent.getUserSeq(), movieTitle, "REVIEW", reviewActionEvent.getTimestamp());
+            // 3. 사용자 행동 로그 추가
+            movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
+            // 4. 오프셋 커밋
+            consumer.commitSync();
+            log.info("Kafka 메시지 처리 완료 - 토픽: {}", topic);
+        } catch (Exception e) {
+            log.error("Kafka 이벤트 수신 중 오류 발생 - 토픽: {}, 에러: {}", topic, e.getMessage());
+            throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");
+        }
+    }
+
+
     // Kafka 메시지 수신 ( 주기적 이벤트 처리 ( 1일 TOP10 영화, 사용자 행동 제거 ) )
     @RetryableTopic(
             attempts = "5",
@@ -141,7 +170,7 @@ public class CustomConsumer {
             if(alarmMovieEvent.getType().equals("Today")) {
                 // 1. 모든 사용자의 최근 행동 로그 조회 ( 1일 )
                 List<MongoUserAction> userActions = movieRepoUtil.findUserActionsForMongoDB();
-                // 2. 사용자 행동 로그 중 영화조회이면서, 가장 빈도 수가 높은 키워드 TOP10 추출
+                // 2. 사용자 행동 로그 중 영화조회/리뷰작성이면서, 가장 빈도 수가 높은 키워드 TOP10 추출
                 List<String> topKeywords = movieService.findTopKeywords(userActions);
                 // 3. 해당 키워드의 영화 번호 추출
                 List<Integer> movieSeqs = movieService.findMovieSeqsByKeywords(topKeywords);

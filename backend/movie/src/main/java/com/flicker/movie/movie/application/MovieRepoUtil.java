@@ -13,10 +13,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * MovieRepoUtil은 MovieRepository를 감싸서 영화 정보를 조회하고 저장하는
@@ -282,7 +279,7 @@ public class MovieRepoUtil {
     public List<MongoUserAction> findUserActionListForMongoDB(int userSeq) {
         try {
             Pageable pageable = PageRequest.of(0, 10);
-            return mongoUserActionRepository.findByUserSeqOrderByTimestampDesc(userSeq, pageable);
+            return mongoUserActionRepository.findByUserSeqAndActionInOrderByTimestampDesc(userSeq, Arrays.asList("DETAIL", "REVIEW"), pageable);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 사용자의 최근 행동 로그를 조회하는 중 오류가 발생했습니다.");
         }
@@ -325,7 +322,7 @@ public class MovieRepoUtil {
             // 현재 시간에서 24시간 전 시간 계산
             LocalDateTime twentyFourHoursAgo = LocalDateTime.now().minusDays(1);
             // 레포지토리를 통해 24시간 내의 사용자 행동 로그 조회
-            return mongoUserActionRepository.findByTimestampAfterAndActionOrderByTimestampDesc(twentyFourHoursAgo, "DETAIL");
+            return mongoUserActionRepository.findByTimestampAfterAndActionInOrderByTimestampDesc(twentyFourHoursAgo, Arrays.asList("DETAIL", "REVIEW"));
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 모든 사용자의 최근 행동 로그를 조회하는 중 오류가 발생했습니다.");
         }
