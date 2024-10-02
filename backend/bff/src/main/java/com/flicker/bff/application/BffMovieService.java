@@ -230,6 +230,9 @@ public class BffMovieService {
                                                 // 가져온 목록을 movieDetailReviewRecommendResponse에 설정
                                                 movieDetailAndReviewAndRecommendResponse.setBookMarkedMovie(userMovieDetail.isBookMarkedMovie());
                                                 movieDetailAndReviewAndRecommendResponse.setUnlikedMovie(userMovieDetail.isUnlikedMovie());
+                                                for(ReviewResponse review : userMovieDetail.getReviews()) {
+                                                    review.setTop(true);
+                                                }
                                                 movieDetailAndReviewAndRecommendResponse.setReviews(userMovieDetail.getReviews());
                                                 // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
                                                 MovieListRequest movieListRequest = new MovieListRequest(movieSeqList, userMovieDetail.getUnlikedMovies());
