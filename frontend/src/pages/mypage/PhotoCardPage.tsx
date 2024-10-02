@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
-import "../../css/photobook.css";
+import "../../css/PhotoBook.css";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { getPhotocard } from "../../apis/photocardApi"; // 포토카드 API 호출 추가
 import PhotoCardFront from "../../components/PhotoCardFront";

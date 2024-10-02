@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // useNavigate import 추가
 import thumbUpOutline from "../../assets/review/thumb_up_outline.png"; // 좋아요 버튼 이미지 import
 import starFull from "../../assets/review/star.png"; // 채워진 별 이미지 import
 import starHalf from "../../assets/review/star_half.png"; // 반쪽 별 이미지 import
-import "../../css/photocard.css";
+import "../../css/PhotoCard.css";
 
 const movieData = {
   movie_title: "탑건 : 매버릭",
