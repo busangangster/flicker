@@ -23,14 +23,16 @@ public class ReviewConsumer {
     @Qualifier("dataDbJdbcTemplate")
     private final JdbcTemplate jdbcTemplate;
 
-    @KafkaListener(topics = "movie-info", groupId = "review-group")
-    public void listenMovieInfo(String message) {
+    @KafkaListener(topics = "movie-info")
+    public void listenMovieInfo(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
 
-        log.info("Received MovieInfo message {}", message);
+        log.info("Received MovieInfo message {}", payload);
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            MovieReviewEvent reviewEvent = mapper.readValue(message, MovieReviewEvent.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            MovieReviewEvent reviewEvent = objectMapper.readValue(payload, MovieReviewEvent.class);
 
             String sql = "INSERT INTO movie_review_info(user_seq, review_seq, movie_seq, rating, type, action) " +
                     "VALUES(?,?,?,?,?,?)";
@@ -46,7 +48,7 @@ public class ReviewConsumer {
             log.info("Saved MovieReviewEvent {}", reviewEvent);
 
         } catch (Exception e) {
-            log.error("Error processing message: {}", message, e);
+            log.error("Error processing message: {}", payload, e);
             throw new RuntimeException(e);
         }
     }
@@ -77,15 +79,16 @@ public class ReviewConsumer {
         }
     }
 
-    @KafkaListener(topics = "user-action", groupId = "review-group")
-    public void listenUserAction(String message) {
+    @KafkaListener(topics = "user-action")
+    public void listenUserAction(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
 
-        log.info("Received UserAction message {}", message);
+        log.info("Received UserAction message {}", payload);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
-            UserAction userAction = objectMapper.readValue(message, UserAction.class);
+
+            UserAction userAction = objectMapper.readValue(payload, UserAction.class);
 
             String sql = "INSERT INTO user_action_logs (user_seq, keyword, action, timestamp) " +
                     "VALUES(?,?,?,?)";
@@ -98,7 +101,7 @@ public class ReviewConsumer {
 
             log.info("Saved UserAction {}", userAction);
         } catch (Exception e) {
-            log.error("Error processing message: {}", message, e);
+            log.error("Error processing message: {}", payload, e);
             throw new RuntimeException(e);
         }
     }
