@@ -7,11 +7,8 @@ import SearchBar from "../../components/SearchBar";
 import Filter from "../../components/Filter";
 import TopTen from "../../components/TopTen";
 import { fetchMovieGenre } from "../../apis/axios";
+import { Movie } from "../../type"
 
-interface Movie {
-  movieSeq: number;
-  moviePosterUrl: string;
-}
 
 const MoviesPage: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -110,7 +107,7 @@ const MoviesPage: React.FC = () => {
       </header>
 
       <div className="mt-[100px] flex justify-between items-end w-[1800px] pl-10">
-        <div className="mb-3 mt-1">
+        <div className=" mt-10">
           <Filter
             options={genres}
             onChange={handleGenreChange}

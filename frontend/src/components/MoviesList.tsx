@@ -3,16 +3,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
 import { useNavigate } from "react-router-dom";
+import { MoviesListProps } from "../type";
 
-interface MoviesListProps {
-  category: string;
-  movies: Movie[]; // movieSeq와 moviePosterUrl을 포함하는 배열
-}
 
-interface Movie {
-  movieSeq: number;
-  moviePosterUrl: string;
-}
 
 const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   const prevRef = useRef<HTMLDivElement | null>(null);
@@ -83,7 +76,9 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
 
   return (
     <div className="relative h-[300px] w-[1800px] flex-shrink-0 mb-[100px]">
-      <h3 className="text-white mb-[20px] text-[27px] ml-[50px]">{category}</h3>
+      <h3 className="text-white mb-[10px] text-[27px] ml-[50px] mt-[20px]">
+        {category}
+      </h3>
 
       {/* 커스텀 네비게이션 버튼 */}
       {!isBeginning && (

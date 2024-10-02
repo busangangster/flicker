@@ -153,6 +153,9 @@ export interface PhotoCardReviewDto {
 // Movie Image DTO 데이터 타입
 export interface MovieImageDto {
   moviePosterUrl: string;
+  movieTitle: string;
+  movieYear: number;
+  backgroundUrl: string;
 }
 
 // Photocard 데이터 타입
@@ -174,6 +177,36 @@ export interface IFlipBook {
 }
 
 export interface PhotoCardFrontProps {
-  images: { src: string; alt: string }[];
+  images: {
+    src: string;
+    alt: string;
+    movieSeq: number;
+    movieTitle: string;
+    movieYear: number;
+    reviewRating: number;
+    createdAt: string;
+    content: string;
+    likes: number;
+    backgroundUrl: string;
+  }[];
   pageIndex: number;
 }
+
+export interface Movie {
+  movieSeq: number;
+  moviePosterUrl: string;
+}
+
+export interface SelectionListProps {
+  movies: Movie[];
+  loadMoreMovies: () => void; // loadMoreMovies 함수 추가
+  hasMore: boolean; // hasMore 값 추가
+}
+
+export interface MoviesListProps {
+  category: string;
+  movies: Movie[]; // movieSeq와 moviePosterUrl을 포함하는 배열
+}
+
+
+

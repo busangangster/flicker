@@ -9,7 +9,7 @@ import { ReviewType } from "../../type";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { fetchMovieReviews } from "../../apis/axios";
+import { fetchMovieDetail, fetchMovieReviews } from "../../apis/axios";
 import { throttle } from "lodash";
 import { useParams } from "react-router-dom";
 
@@ -23,8 +23,26 @@ const ReviewPage: React.FC = () => {
   const [page, setPage] = useState(0); // 페이지 번호
   const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
+  const [moviePosterUrl, setMoviePosterUrl] = useState<string>(""); // 영화 포스터 URL 상태 추가
+
 
   const userSeq = userData?.userSeq || 0;
+
+  useEffect(() => {
+    const fetchMovieData = async () => {
+      try {
+        const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq); // 영화 상세 정보 API 호출
+        if (movieDetail?.movieDetailResponse?.moviePosterUrl) {
+          setMoviePosterUrl(movieDetail.movieDetailResponse.moviePosterUrl); // 포스터 URL 설정
+        }
+      } catch (error) {
+        console.error("Error fetching movie details:", error);
+      }
+    };
+
+    fetchMovieData(); // 영화 상세 정보를 호출해서 포스터 URL 설정
+  }, [movieSeq, userSeq]);
+
 
   // isLoading 상태가 변경될 때마다 로그 출력
   useEffect(() => {
@@ -209,7 +227,7 @@ const ReviewPage: React.FC = () => {
           <div className="w-1/4 pl-4">
             <div className="mb-6">
               <img
-                src="assets/survey/image20.jpg"
+                src={moviePosterUrl || "default_poster_url"}
                 alt="Movie Poster"
                 className="w-full rounded-sm mb-4"
               />
