@@ -7,6 +7,7 @@ import com.flicker.user.review.application.ReviewService;
 import com.flicker.user.review.domain.entity.Review;
 import com.flicker.user.review.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -131,5 +132,19 @@ public class ReviewController {
         }
         List<ReviewDto> userReviews = reviewService.getUserReviews(userSeq);
         return ResponseDto.response(StatusCode.SUCCESS, userReviews);
+    }
+
+    @GetMapping("/movies/{movieSeq}/distribute")
+    public ResponseEntity<ResponseDto> getMovieReviewRatingDistribute(@PathVariable Integer movieSeq){
+        System.out.println("요청 들어옴");
+        if(movieSeq == null){
+            
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+        List<ReviewRatingCountDto> movieReviewRatingDistribute = reviewService.getMovieReviewRatingDistribute(movieSeq);
+        System.out.println("movieReviewRatingDistribute = " + movieReviewRatingDistribute);
+        return ResponseDto.response(StatusCode.SUCCESS, movieReviewRatingDistribute);
+
     }
 }
