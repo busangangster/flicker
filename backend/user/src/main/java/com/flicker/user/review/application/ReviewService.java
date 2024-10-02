@@ -55,6 +55,8 @@ public class ReviewService {
         wordCloudReview.setMovieSeq(save.getMovieSeq());
         wordCloudReview.setTimestamp(LocalDateTime.now());
         wordCloudReview.setContent(save.getContent());
+        wordCloudReview.setUserSeq(save.getUserSeq());
+        wordCloudReview.setRating(save.getReviewRating());
         System.out.println("wordCloudReview = " + wordCloudReview);
         kafkaProducer.sendWordCloudLog(wordCloudReview);
 
@@ -111,8 +113,9 @@ public class ReviewService {
     }
 
     public List<ReviewDto> getPopularMovieReviews(Integer movieSeq, Integer myUserSeq) {
-        List<Review> result = reviewRepository.findTop3ByMovieSeqAndIsSpoilerFalseOrderByLikesDesc(movieSeq);
+        List<Review> result = reviewRepository.findTop3ByMovieSeqAndIsSpoilerFalseAndContentIsNotNullOrderByLikesDesc(movieSeq);
         List<ReviewDto> reviewDtoList = new ArrayList<>();
+
         for(Review review : result){
             String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
             ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
