@@ -185,7 +185,7 @@ public class MovieController {
 
     // 영화 제목, 년도로 movieSeqs 조회
     @PostMapping("/list/movieSeqs")
-    public ResponseEntity<ResponseDto> getMovieSeqsByTitleAndYear(@RequestBody MovieSeqsRequest request) {
+    public ResponseEntity<ResponseDto> getMovieSeqsByTitleAndYear(@RequestBody List<MovieSeqListRequest> request) {
         List<Integer> response = movieService.getMovieSeqsByTitleAndYear(request);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
