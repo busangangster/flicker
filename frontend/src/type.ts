@@ -48,11 +48,12 @@ export interface SignInResponse {
 }
 
 export interface JwtPayload {
-  userId: string; 
+  userId: string;
   email: string;
   nickname: string;
   birthDate: string;
   gender: "M" | "F" | "";
+  userSeq: number;
 }
 
 export interface ApiErrorResponse {
@@ -159,10 +160,6 @@ export interface PhotocardData {
   movieImageDto: MovieImageDto;
 }
 
-// Photocard API 응답 데이터 타입
-export interface PhotocardResponse {
-  data: PhotocardData[];
-}
 
 // IFlipBook = 포토북
 export interface IFlipBook {
