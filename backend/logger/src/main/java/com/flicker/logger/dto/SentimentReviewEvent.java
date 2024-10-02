@@ -12,5 +12,5 @@ public class SentimentReviewEvent {
     private Long reviewSeq;
     private String content;
     private Double sentimentScore;
-    private LocalDateTime timeStamp;
+    private LocalDateTime timestamp;
 }

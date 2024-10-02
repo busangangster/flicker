@@ -51,13 +51,15 @@ public class ReviewConsumer {
         }
     }
 
-    @KafkaListener(topics = "sentiment-review", groupId = "review-group")
+    @KafkaListener(topics = "sentiment-review")
     public void listenReviewSentiment(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
 
         log.info("Received ReviewSentiment message {}", payload);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
             SentimentReviewEvent reviewLog = objectMapper.readValue(payload, SentimentReviewEvent.class);
 
             String sql = "INSERT INTO sentiment_review_logs (review_seq, content, timestamp) " +
@@ -66,7 +68,7 @@ public class ReviewConsumer {
             jdbcTemplate.update(sql,
                     reviewLog.getReviewSeq(),
                     reviewLog.getContent(),
-                    reviewLog.getTimeStamp());
+                    reviewLog.getTimestamp());
 
             log.info("Saved SReview {}", reviewLog);
         } catch (Exception e) {
