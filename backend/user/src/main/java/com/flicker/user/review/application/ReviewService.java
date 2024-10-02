@@ -1,6 +1,7 @@
 package com.flicker.user.review.application;
 
 import com.flicker.user.common.exception.RestApiException;
+import com.flicker.user.common.kafka.dto.MovieInfo;
 import com.flicker.user.common.kafka.dto.SentimentReview;
 import com.flicker.user.common.kafka.dto.WordCloudReview;
 import com.flicker.user.common.kafka.producer.CustomerProducer;
@@ -57,6 +58,17 @@ public class ReviewService {
         wordCloudReview.setRating(save.getReviewRating());
         System.out.println("wordCloudReview = " + wordCloudReview);
         kafkaProducer.sendWordCloudLog(wordCloudReview);
+
+        MovieInfo movieInfo = new MovieInfo();
+        movieInfo.setUserSeq(dto.getUserSeq());
+        movieInfo.setMovieSeq(save.getMovieSeq());
+        movieInfo.setReviewSeq(save.getReviewSeq());
+        movieInfo.setRating(save.getReviewRating());
+        movieInfo.setType("REVIEW");
+        movieInfo.setAction("CREATE");
+        movieInfo.setTimestamp(LocalDateTime.now());
+        System.out.println("movieInfo = " + movieInfo);
+        kafkaProducer.sendMovieInfo(movieInfo);
 
         return true;
     }
