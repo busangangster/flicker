@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class WordCloudReview {
+    private Integer userSeq;
+    private Double rating;
     private Integer movieSeq;
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
