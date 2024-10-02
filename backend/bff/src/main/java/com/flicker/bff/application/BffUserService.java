@@ -246,6 +246,6 @@ public class BffUserService {
 
     public Mono<ResponseEntity<ResponseDto>> getMovieReviewRatingDistribute(Integer movieSeq) {
         String path = util.getUri("/review/movies/"+movieSeq+"/distribute");
-        return util.sendGetRequestAsync(movieBaseUrl, path);
+        return util.sendGetRequestAsync(userReviewBaseUrl, path);
     }
 }
