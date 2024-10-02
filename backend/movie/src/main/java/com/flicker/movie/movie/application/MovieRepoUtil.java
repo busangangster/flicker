@@ -4,6 +4,7 @@ import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
+import com.flicker.movie.movie.dto.MovieSeqListRequest;
 import com.flicker.movie.movie.infrastructure.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -245,30 +246,6 @@ public class MovieRepoUtil {
             return movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "제목,년도로 영화 정보 조회 중 오류가 발생했습니다.");
-        }
-    }
-
-    /**
-     * 추천된 영화 목록을 조회하는 메서드입니다.
-     *
-     * @param movieSeqList 조회할 영화의 ID 목록
-     * @return 조회된 영화 목록
-     * @throws RestApiException 추천된 영화 목록 조회 중 오류가 발생할 경우 발생
-     */
-    public List<Movie> findBySeqInAndFilterUnlike(List<Integer> movieSeqList, List<Integer> unlikeMovieSeqList) {
-        try {
-            if(movieSeqList == null || movieSeqList.isEmpty()) {
-                return Collections.emptyList();
-            }
-            if (unlikeMovieSeqList == null || unlikeMovieSeqList.isEmpty()) {
-                // unlikeMovieSeqList가 비어 있을 때, NOT IN 조건을 제거하고 실행
-                return movieRepository.findByMovieSeqInAndDelYN(movieSeqList, "N");
-            } else {
-                // unlikeMovieSeqList가 비어 있지 않을 때, 원래 메서드를 실행
-                return movieRepository.findByMovieSeqInAndMovieSeqNotInAndDelYN(movieSeqList, unlikeMovieSeqList, "N");
-            }
-        } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천된 영화 목록 조회 중 오류가 발생했습니다.");
         }
     }
 

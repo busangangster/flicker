@@ -212,12 +212,15 @@ public class MovieService {
 
     @Transactional
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
-        // 1. 추천된 영화 리스트 조회
-        List<Movie> movieList = movieRepoUtil.findBySeqInAndFilterUnlike(request.getMovieSeqList(), request.getUnlikeMovieSeqList());
-        // 2. MovieListResponse 리스트 생성
+        // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
+        List<Movie> movieList = request.getMovieSeqListRequest().stream()
+                .map(seqRequest -> movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear()))
+                .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
+                .toList();
+        // 2. MovieListResponse 리스트 생성 및 반환
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -282,18 +285,6 @@ public class MovieService {
                 .map(WordCloudResponse::new)
                 .toList();
     }
-
-    @Transactional
-    public List<Integer> getMovieSeqsByTitleAndYear(List<MovieSeqListRequest> request) {
-        // 1. 영화 제목, 년도로 영화 번호 조회
-        List<Integer> movieSeqList = new ArrayList<>();
-        for (MovieSeqListRequest movieSeqListRequest : request) {
-            Movie movie = movieRepoUtil.findByMovieTitleAndYear(movieSeqListRequest.getMovieTitle(), movieSeqListRequest.getMovieYear());
-            movieSeqList.add(movie.getMovieSeq());
-        }
-        return movieSeqList;
-    }
-
 
     // redis , mongoDB (키워드 검색결과 ) 초기화
     private void initSearchResultForRedisAndMongoDB() {
