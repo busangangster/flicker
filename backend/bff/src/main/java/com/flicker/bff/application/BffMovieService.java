@@ -194,15 +194,32 @@ public class BffMovieService {
 //                                                movieSeqListResponseDto.getData()
 //                                        ));
 //                                    }
-//                                    List<Integer> movieSeqList;
+//                                    List<MovieSeqListRequest> movieSeqListRequest;
 //                                    try {
-//                                        movieSeqList = objectMapper.convertValue(movieSeqListResponseDto.getData(), new TypeReference<List<Integer>>() {});
+//                                        movieSeqListRequest = objectMapper.convertValue(movieSeqListResponseDto.getData(), new TypeReference<List<MovieSeqListRequest>>() {});
 //                                    } catch (Exception e) {
 //                                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "연관 추천 영화 번호 목록 데이터을 역직렬화하는데 오류 발생: " + e.getMessage()));
 //                                    }
+
                                     // 3. 사용자의 찜/비선호 여부, 비선호 영화 목록, 탑 리뷰 목록을 가져옴
-                                    // TODO: 임시로 movieSeqList를 설정 (추후 제거)
-                                    List<Integer> movieSeqList = new ArrayList<>(Arrays.asList(26038, 26053, 26078, 26099, 26159, 25867, 25871, 25875, 24128, 24252));
+                                    // TODO: 임시로 movieSeqList 설정 (추후 제거)
+                                    List<MovieSeqListRequest> movieSeqListRequest = Arrays.asList(
+                                            new MovieSeqListRequest("혹성탈출: 새로운 시대", "2024"),
+                                            new MovieSeqListRequest("에이리언: 로물루스", "2024"),
+                                            new MovieSeqListRequest("듄: 파트 2", "2024"),
+                                            new MovieSeqListRequest("크로스", "2024"),
+                                            new MovieSeqListRequest("베놈: 라스트 댄스", "2024"),
+                                            new MovieSeqListRequest("베테랑 2", "2024"),
+                                            new MovieSeqListRequest("1947 보스톤", "2023"),
+                                            new MovieSeqListRequest("밀수", "2023"),
+                                            new MovieSeqListRequest("오펜하이머", "2023"),
+                                            new MovieSeqListRequest("범죄도시2", "2022"),
+                                            new MovieSeqListRequest("007 노 타임 투 다이", "2021"),
+                                            new MovieSeqListRequest("고질라 VS. 콩", "2021"),
+                                            new MovieSeqListRequest("귀멸의 칼날: 아사쿠사 편", "2021"),
+                                            new MovieSeqListRequest("1984 최동원", "2020"),
+                                            new MovieSeqListRequest("가장 보통의 연애", "2019")
+                                    );
                                     String userMovieDetailPath = util.getUri("/movie-detail?userSeq=" + userSeq + "&movieSeq=" + movieSeq);
                                     return util.sendGetRequestAsync(userBaseUrl, userMovieDetailPath)
                                             .flatMap(userMovieDetailResponse -> {
@@ -235,7 +252,7 @@ public class BffMovieService {
                                                 }
                                                 movieDetailAndReviewAndRecommendResponse.setReviews(userMovieDetail.getReviews());
                                                 // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
-                                                MovieListRequest movieListRequest = new MovieListRequest(movieSeqList, userMovieDetail.getUnlikedMovies());
+                                                MovieListRequest movieListRequest = new MovieListRequest(movieSeqListRequest, userMovieDetail.getUnlikedMovies());
                                                 String movieListPath = util.getUri("/list/recommendation");
                                                 return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                         .flatMap(movieListResponse -> {
@@ -323,7 +340,7 @@ public class BffMovieService {
                                     // JSON 데이터를 ResponseDto로 역직렬화
                                     movieSeqListDto = Objects.requireNonNull(postResponse.getBody());
                                 } catch (Exception e) {
-                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "행동 기반 추천 영화 시퀀스 데이터 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "행동 기반 추천 영화 응답 데이터 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                 }
                                 // 상태 코드가 성공이 아닌 경우 처리
                                 if (movieSeqListDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
@@ -332,12 +349,12 @@ public class BffMovieService {
                                             movieSeqListDto.getData()
                                     ));
                                 }
-                                List<Integer> movieSeqList;
+                                List<MovieSeqListRequest> movieSeqListRequest;
                                 try {
                                     // movieSeqListDto의 데이터 필드를 List<Integer>로 변환
-                                    movieSeqList = objectMapper.convertValue(movieSeqListDto.getData(), new TypeReference<List<Integer>>() {});
+                                    movieSeqListRequest = objectMapper.convertValue(movieSeqListDto.getData(), new TypeReference<List<MovieSeqListRequest>>() {});
                                 } catch (Exception e) {
-                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "행동 기반 추천 영화 시퀀스 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "행동 기반 추천 영화 응답 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                 }
                                 // 3. 사용자의 비선호 영화 목록을 가져옴
                                 String unlikeMoviePath = util.getUri("/" + userSeq + "/unlike-movie");
@@ -365,7 +382,7 @@ public class BffMovieService {
                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                             }
                                             // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
-                                            MovieListRequest movieListRequest = new MovieListRequest(movieSeqList, unlikeMovieSeqs);
+                                            MovieListRequest movieListRequest = new MovieListRequest(movieSeqListRequest, unlikeMovieSeqs);
                                             String movieListpath = util.getUri("/list/recommendation");
                                             return util.sendPostRequestAsync(movieBaseUrl, movieListpath, movieListRequest)
                                                     .flatMap(movieListResponse -> {
@@ -415,7 +432,7 @@ public class BffMovieService {
                     try {
                         movieSeqListResponseDto = Objects.requireNonNull(getResponse.getBody());
                     } catch (Exception e) {
-                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 기반 추천 영화 시퀀스 데이터 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 기반 추천 영화 응답 데이터 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
                     }
                     // 상태 코드가 성공이 아닌 경우 처리
                     if (movieSeqListResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
@@ -424,12 +441,12 @@ public class BffMovieService {
                                 movieSeqListResponseDto.getData()
                         ));
                     }
-                    List<Integer> movieSeqList;
+                    List<MovieSeqListRequest> movieSeqListRequest;
                     try {
                         // movieSeqListResponseDto의 데이터 필드를 List<Integer>로 변환
-                        movieSeqList = objectMapper.convertValue(movieSeqListResponseDto.getData(), new TypeReference<List<Integer>>() {});
+                        movieSeqListRequest = objectMapper.convertValue(movieSeqListResponseDto.getData(), new TypeReference<List<MovieSeqListRequest>>() {});
                     } catch (Exception e) {
-                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 기반 추천 영화 시퀀스 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 기반 추천 영화 응답 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                     }
                     // 2. 사용자 서버에서 비선호 영화 목로 가져옴
                     String unlikeMoviePath = util.getUri("/" + userSeq + "/unlike-movie");
@@ -458,7 +475,7 @@ public class BffMovieService {
                                     return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                 }
                                 // 3. 추천 영화 목록을 가져와서 영화 서버에 요청
-                                MovieListRequest movieListRequest = new MovieListRequest(movieSeqList, unlikeMovieSeqs);
+                                MovieListRequest movieListRequest = new MovieListRequest(movieSeqListRequest, unlikeMovieSeqs);
                                 String movieListPath = util.getUri("/list/recommendation");
                                 return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                         .flatMap(movieListResponse -> {

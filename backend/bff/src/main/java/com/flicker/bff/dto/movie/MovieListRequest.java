@@ -6,11 +6,11 @@ import java.util.List;
 
 @Data
 public class MovieListRequest {
-    List<Integer> movieSeqList;
     List<Integer> unlikeMovieSeqList;
+    List<MovieSeqListRequest> movieSeqListRequest;
 
-    public MovieListRequest(List<Integer> movieSeqList, List<Integer> unlikeMovieSeqList) {
-        this.movieSeqList = movieSeqList;
+    public MovieListRequest(List<MovieSeqListRequest> movieSeqListRequest, List<Integer> unlikeMovieSeqList) {
+        this.movieSeqListRequest = movieSeqListRequest;
         this.unlikeMovieSeqList = unlikeMovieSeqList;
     }
 }
