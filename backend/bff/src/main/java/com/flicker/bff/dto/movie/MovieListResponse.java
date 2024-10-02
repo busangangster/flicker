@@ -8,4 +8,5 @@ public class MovieListResponse {
     private String movieTitle;
     private String moviePosterUrl;
     private Integer movieYear;
+    private String backgroundUrl;
 }
