@@ -7,4 +7,5 @@ public class MovieImageDto {
     private String moviePosterUrl;
     private String movieTitle;
     private Integer movieYear;
+    private String backgroundUrl;
 }
