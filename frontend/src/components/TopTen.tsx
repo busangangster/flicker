@@ -6,6 +6,7 @@ import "swiper/css/navigation"; // 네비게이션 모듈 사용 시 필요한 C
 import "../css/TopTen.css";
 import { getTopTenMovies } from "../apis/movieApi";
 import { TopTenMovie } from "../type"; // 타입 정의
+import { useNavigate } from "react-router-dom";
 
 // Font import for Rubik Doodle Shadow
 const GOOGLE_FONT_LINK =
@@ -15,9 +16,10 @@ const TopTen: React.FC = () => {
   const [movies, setMovies] = useState<TopTenMovie[]>([]);
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   // Fetch top 10 movies from backend
-  useEffect(() => { 
+  useEffect(() => {
     const getMovies = async () => {
       try {
         const response = await getTopTenMovies(); // API 호출
@@ -35,6 +37,10 @@ const TopTen: React.FC = () => {
     fontLink.rel = "stylesheet";
     document.head.appendChild(fontLink);
   }, []);
+
+  const goToDetail = (movieSeq:number) => {
+    navigate(`/moviedetail/${movieSeq}`)
+  }
 
   return (
     <div className="flex items-center">
@@ -122,29 +128,34 @@ const TopTen: React.FC = () => {
             }
           }}
         >
-          {movies.map((movie, index) => (
-            <SwiperSlide key={movie.movieSeq} className="swiper-slide-item">
-              <div className="movie-poster-container relative flex flex-col items-center">
-                {/* Number Overlay */}
-                <span
-                  className="movie-number text-white text-[70px] mb-4 relative"
-                  style={{
-                    left: "-75px",
-                    top: "30px",
-                    fontFamily: "Rubik Doodle Shadow, cursive",
-                  }}
-                >
-                  {index + 1}
-                </span>
-                {/* Movie Poster */}
-                <img
-                  src={movie.moviePosterUrl}
-                  alt={movie.movieTitle}
-                  className="h-[350px] rounded-lg object-cover transform transition-transform duration-300 hover:-translate-y-2"
-                />
-              </div>
-            </SwiperSlide>
-          ))}
+          {Array.isArray(movies) && movies.length > 0 ? (
+            movies.map((movie, index) => (
+              <SwiperSlide key={movie.movieSeq} className="swiper-slide-item">
+                <div className="movie-poster-container relative flex flex-col items-center">
+                  {/* Number Overlay */}
+                  <span
+                    className="movie-number text-white text-[70px] mb-4 relative"
+                    style={{
+                      left: "-75px",
+                      top: "30px",
+                      fontFamily: "Rubik Doodle Shadow, cursive",
+                    }}
+                  >
+                    {index + 1}
+                  </span>
+                  {/* Movie Poster */}
+                  <img
+                    src={movie.moviePosterUrl}
+                    alt={movie.movieTitle}
+                    onClick={() => goToDetail(movie.movieSeq)}
+                    className="h-[350px] rounded-lg object-cover transform transition-transform duration-300 hover:-translate-y-2"
+                  />
+                </div>
+              </SwiperSlide>
+            ))
+          ) : (
+            <p className="text-white">Loading...</p> // 데이터 로딩 중 표시
+          )}
         </Swiper>
       </div>
     </div>

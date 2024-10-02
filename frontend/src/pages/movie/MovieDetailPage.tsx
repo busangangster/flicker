@@ -54,7 +54,7 @@ const MovieDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      setIsLiked(data.bookMarkedMovie); // 초기 상태 설정
+      setIsLiked(bookMarkedMovie); // 초기 상태 설정
     }
   }, [data]);
 
