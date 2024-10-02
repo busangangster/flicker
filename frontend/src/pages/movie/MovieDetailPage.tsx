@@ -16,14 +16,19 @@ const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq를 가져옴
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [interestOption, setInterestOption] = useState("관심 없음");
+  // const [interestOption, setInterestOption] = useState("관심 없음");
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
+  const containerRef = useRef<HTMLDivElement | null>(null); // 스크롤 컨테이너 참조
 
   const userSeq = 2; // 예시로 userSeq 고정값 사용
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo(0, 0); // 스크롤 컨테이너의 최상단으로 이동
+    }
+  }, [movieSeq]); // movieSeq가 변경될 때마다 실행
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,7 +55,6 @@ const MovieDetailPage: React.FC = () => {
       return movieDetail;
     },
   });
-  // console.log(data); // undefined
 
   useEffect(() => {
     if (data) {
@@ -119,16 +123,16 @@ const MovieDetailPage: React.FC = () => {
     navigate(`/review/${movieSeq}`);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
+  // const toggleDropdown = () => {
+  //   setIsDropdownOpen((prev) => !prev);
+  // };
 
-  const handleOptionClick = () => {
-    setInterestOption((prev) =>
-      prev === "관심 없음" ? "관심 없음 취소" : "관심 없음"
-    );
-    setIsDropdownOpen(false);
-  };
+  // const handleOptionClick = () => {
+  //   setInterestOption((prev) =>
+  //     prev === "관심 없음" ? "관심 없음 취소" : "관심 없음"
+  //   );
+  //   setIsDropdownOpen(false);
+  // };
 
   const renderCategoryContent = () => {
     switch (selectedCategory) {
@@ -167,7 +171,10 @@ const MovieDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col bg-black h-screen overflow-y-auto">
+    <div
+      className="flex flex-col bg-black h-screen overflow-y-auto"
+      ref={containerRef}
+    >
       {/* 영화 세부 정보 */}
       <div className="relative h-auto">
         <div
