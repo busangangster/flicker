@@ -153,6 +153,9 @@ export interface PhotoCardReviewDto {
 // Movie Image DTO 데이터 타입
 export interface MovieImageDto {
   moviePosterUrl: string;
+  movieTitle: string;
+  movieYear: number;
+  backgroundUrl: string;
 }
 
 // Photocard 데이터 타입
@@ -174,6 +177,17 @@ export interface IFlipBook {
 }
 
 export interface PhotoCardFrontProps {
-  images: { src: string; alt: string }[];
+  images: {
+    src: string;
+    alt: string;
+    movieSeq: number;
+    movieTitle: string;
+    movieYear: number;
+    reviewRating: number;
+    createdAt: string;
+    content: string;
+    likes: number;
+    backgroundUrl: string;
+  }[];
   pageIndex: number;
 }
