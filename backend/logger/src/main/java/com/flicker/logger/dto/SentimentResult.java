@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class SentimentResult {
 
-    private Long reviewSeq;
+    private Integer reviewSeq;
     private Double sentimentScore;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

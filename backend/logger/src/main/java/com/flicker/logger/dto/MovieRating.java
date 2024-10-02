@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 @Setter
 public class MovieRating {
 
-    private Long movieSeq;
+    private Integer movieSeq;
     private Double movieRating;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timeStamp;
 
-    public MovieRating(Long movieSeq, Double movieRating) {
+    public MovieRating(Integer movieSeq, Double movieRating) {
         this.movieSeq = movieSeq;
         this.movieRating = movieRating;
         this.timeStamp = LocalDateTime.now();
