@@ -19,9 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -149,5 +147,38 @@ public class ReviewService {
                 .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_REVIEW));
         review.updateSentimentScore(dto.getSentimentScore());
         return true;
+    }
+
+    public List<ReviewRatingCountDto> getMovieReviewRatingDistribute(Integer movieSeq){
+
+        List<ReviewRatingCountDto> reviewRatingCountDtos = reviewRepository.countReviewRatingsByMovieSeq(movieSeq);
+
+
+        ReviewRatingCountDto tmp = new ReviewRatingCountDto(0.5,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(1.0,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(1.5,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(2.0,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(2.5,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(3.0,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(3.5,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(4.0,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(4.5,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+        tmp = new ReviewRatingCountDto(5.0,0L);
+        if(!reviewRatingCountDtos.contains(tmp)) reviewRatingCountDtos.add(tmp);
+
+        reviewRatingCountDtos.sort(Comparator.comparing(ReviewRatingCountDto::getReviewRating, Comparator.nullsFirst(Double::compareTo)));
+
+
+
+        return reviewRatingCountDtos;
     }
 }
