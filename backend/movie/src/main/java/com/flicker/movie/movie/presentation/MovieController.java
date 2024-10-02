@@ -176,17 +176,10 @@ public class MovieController {
     }
 
 
-    // 임의로 TOP10 영화 목록 저장하는 메서드
+    // 임의로 TOP10 영화 목록 저장하는 메서드 (임시)
     @PostMapping("/admin/set/top10")
     public ResponseEntity<ResponseDto> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
         movieService.saveTopMovieForRedis(movieSeqs);
         return ResponseDto.response(StatusCode.SUCCESS, "Top10 영화 목록 저장 성공");
-    }
-
-    // 영화 제목, 년도로 movieSeqs 조회
-    @PostMapping("/list/movieSeqs")
-    public ResponseEntity<ResponseDto> getMovieSeqsByTitleAndYear(@RequestBody List<MovieSeqListRequest> request) {
-        List<Integer> response = movieService.getMovieSeqsByTitleAndYear(request);
-        return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 }
