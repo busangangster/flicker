@@ -8,8 +8,29 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const goToPhotoCardDetail = () => {
-    navigate("/mypage/photocarddetail");
+  const goToPhotoCardDetail = (
+    src: string,
+    movieSeq: number,
+    movieTitle: string,
+    movieYear: number,
+    reviewRating: number,
+    createdAt: string,
+    content: string,
+    likes: number,
+    backgroundUrl: string,
+  ) => {
+    navigate(`/mypage/photocarddetail/${movieSeq}`, {
+      state: {
+        src, 
+        movieTitle,
+        movieYear,
+        reviewRating,
+        createdAt,
+        content,
+        likes,
+        backgroundUrl,
+      },
+    });
   };
 
   return (
@@ -23,7 +44,19 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
             src={image.src}
             alt={image.alt}
             className="border rounded-md object-cover w-full h-[320px]"
-            onClick={goToPhotoCardDetail}
+            onClick={() =>
+              goToPhotoCardDetail(
+                image.src,
+                image.movieSeq,
+                image.movieTitle,
+                image.movieYear,
+                image.reviewRating,
+                image.createdAt,
+                image.content,
+                image.likes,
+                image.backgroundUrl,
+              )
+            }
           />
         </div>
       ))}

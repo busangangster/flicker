@@ -75,7 +75,11 @@ const AppRoutes: React.FC = () => {
         <Route path="myinformation" element={<MyInformaitonPage />} />
         <Route path="photobook" element={<PhotoBookPage />} />
         <Route path="photocard" element={<PhotoCardPage />} />
-        <Route path="photocarddetail" element={<PhotoCardDetailPage />} />
+        <Route
+          path="photocarddetail/:movieSeq"
+          element={<PhotoCardDetailPage />}
+        />
+
         <Route path="userinfoedit" element={<UserInfoEditPage />} />
         <Route path="verification" element={<VerificationPage />} />
       </Route>
