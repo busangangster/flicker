@@ -44,12 +44,13 @@ const MovieDetailPage: React.FC = () => {
   // useQuery를 통해 movieDetail API 호출
   const { data, error, isLoading } = useQuery<MovieDetail, Error>({
     queryKey: ["movieDetail", movieSeq], // queryKey에 movieSeq 포함
-    queryFn: () => {
-      console.log(`Fetching movie details for movieSeq: ${movieSeq}`);
-      return fetchMovieDetail(Number(movieSeq), userSeq); // movieSeq와 userSeq를 넘겨줌
+    queryFn: async () => {
+      const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq);
+      console.log(movieDetail);
+      return movieDetail;
     },
   });
-  console.log(data);
+  // console.log(data); // undefined
 
   useEffect(() => {
     if (data) {
@@ -63,17 +64,36 @@ const MovieDetailPage: React.FC = () => {
   if (!data) return null; // data가 undefined일 경우를 처리
 
   const {
-    movie: { movieDetail, movieRating, actors },
-    reviewList,
-    recommendedMovieList,
+    movieDetailResponse: {
+      movieTitle,
+      director,
+      genre,
+      country,
+      moviePlot,
+      audienceRating,
+      movieYear,
+      runningTime,
+      moviePosterUrl,
+      trailerUrl,
+      backgroundUrl,
+      movieRating,
+      actors,
+    } = {}, // movieDetailResponse가 없을 경우를 대비해 기본값으로 빈 객체 설정
+    bookMarkedMovie = false,
+    unlikedMovie = false,
+    reviews = [],
+    similarMovies = [],
   } = data;
 
-  console.log(reviewList);
+  console.log(data);
 
   const MAX_LENGTH = 250;
-  const isLongText = movieDetail.moviePlot.length > MAX_LENGTH;
-  const displayedText = movieDetail.moviePlot.slice(0, MAX_LENGTH);
-
+  const isLongText =
+    moviePlot &&
+    moviePlot.length > MAX_LENGTH;
+  const displayedText = moviePlot
+    ? moviePlot.slice(0, MAX_LENGTH)
+    : ""; // movieDetailResponse가 없으면 빈 문자열 반환
   const extractVideoId = (url: string) => {
     const videoIdMatch = url.match(
       /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
@@ -81,7 +101,7 @@ const MovieDetailPage: React.FC = () => {
     return videoIdMatch ? videoIdMatch[1] : null;
   };
 
-  const videoId = extractVideoId(movieDetail.trailerUrl);
+const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -119,7 +139,7 @@ const MovieDetailPage: React.FC = () => {
       case "배우":
         return (
           <div className="flex flex-wrap gap-2 mt-6">
-            {actors.map((actor, index) => (
+            {(actors || []).map((actor, index) => (
               <span
                 key={index}
                 className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10"
@@ -133,7 +153,7 @@ const MovieDetailPage: React.FC = () => {
         return (
           <div className="flex flex-wrap gap-2 mt-6">
             <span className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10">
-              {movieDetail.director}
+              {director}
             </span>
           </div>
         );
@@ -141,7 +161,7 @@ const MovieDetailPage: React.FC = () => {
         return (
           <div className="flex flex-wrap gap-2 mt-6">
             <span className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10">
-              {movieDetail.genre}
+              {genre}
             </span>
           </div>
         );
@@ -156,7 +176,9 @@ const MovieDetailPage: React.FC = () => {
       <div className="relative h-auto">
         <div
           className="absolute inset-0 h-[650px] w-full bg-cover bg-center"
-          style={{ backgroundImage: `url(${movieDetail.backgroundUrl})` }}
+          style={{
+            backgroundImage: `url(${backgroundUrl})`,
+          }}
         >
           <div className="absolute inset-0 bg-black opacity-70"></div>
         </div>
@@ -171,7 +193,7 @@ const MovieDetailPage: React.FC = () => {
           {/* Left Section: Movie Poster and Details */}
           <div className="flex flex-col lg:flex-row">
             <img
-              src={movieDetail.moviePosterUrl}
+              src={moviePosterUrl}
               alt="Movie Poster"
               className="w-[270px] h-[410px] shadow-md border"
             />
@@ -179,7 +201,7 @@ const MovieDetailPage: React.FC = () => {
               <div className="flex items-center justify-between w-full">
                 <h2 className="text-4xl font-bold flex-1 flex items-center overflow-hidden">
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                    {movieDetail.movieTitle}
+                    {movieTitle}
                   </span>
                   <span className="flex items-end ml-4 flex-shrink-0">
                     <span className="text-blue-500 text-2xl">⭐</span>
@@ -224,11 +246,11 @@ const MovieDetailPage: React.FC = () => {
 
               {/* Movie details */}
               <div className="flex mt-4 text-white text-[16px]">
-                <span>{movieDetail.movieYear}</span>
+                <span>{movieYear}</span>
                 <span className="px-4 text-gray-200">|</span>
-                <span>{movieDetail.runningTime}</span>
+                <span>{runningTime}</span>
                 <span className="px-4 text-gray-200">|</span>
-                <span>{movieDetail.audienceRating}</span>
+                <span>{audienceRating}</span>
               </div>
               <p className="mt-4 text-lg">
                 {displayedText}
@@ -279,13 +301,14 @@ const MovieDetailPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
-            {reviewList.map((review) => (
+            {reviews.map((review) => (
               <Review
                 key={review.reviewSeq}
                 review={review}
                 liked={review.liked}
                 likes={review.likes}
                 nickname={review.nickname}
+                top={false} // 기본값 설정
               />
             ))}
           </div>
@@ -295,7 +318,7 @@ const MovieDetailPage: React.FC = () => {
         <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
           <div className="relative w-full max-w-4xl h-full">
             <iframe
-              src={`${movieDetail.trailerUrl}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
+              src={`${trailerUrl}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
               title="YouTube video player"
               className="w-full h-full rounded-lg shadow-md"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -315,7 +338,7 @@ const MovieDetailPage: React.FC = () => {
       <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
           category="탑건: 매버릭과 유사한 장르 작품들"
-          movies={recommendedMovieList} // recommendedMovieList를 movies prop으로 전달
+          movies={similarMovies} // recommendedMovieList를 movies prop으로 전달
         />
       </div>
     </div>

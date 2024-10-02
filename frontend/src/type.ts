@@ -48,11 +48,12 @@ export interface SignInResponse {
 }
 
 export interface JwtPayload {
-  userId: string; 
+  userId: string;
   email: string;
   nickname: string;
   birthDate: string;
   gender: "M" | "F" | "";
+  userSeq: number;
 }
 
 export interface ApiErrorResponse {
@@ -70,44 +71,45 @@ export interface ExtendedSprite extends Sprite {
 }
 
 export interface MovieDetail {
-  bookMarkedMovie: boolean;
-  movie: {
-    movieSeq: number;
-    movieDetail: {
-      movieTitle: string;
-      director: string;
-      genre: string;
-      country: string;
-      moviePlot: string;
-      audienceRating: string;
-      movieYear: number;
-      runningTime: string;
-      moviePosterUrl: string;
-      trailerUrl: string;
-      backgroundUrl: string;
-    };
+  movieDetailResponse: {
+    // movieSeq: number;
+    movieTitle: string;
+    director: string;
+    genre: string;
+    country: string;
+    moviePlot: string;
+    audienceRating: string;
+    movieYear: number;
+    runningTime: string;
+    moviePosterUrl: string;
+    trailerUrl: string;
+    backgroundUrl: string;
     movieRating: number;
     actors: {
+      actorSeq: number;
       actorName: string;
       role: string;
     }[];
   };
-  reviewList: {
+  bookMarkedMovie: boolean;
+  unlikedMovie: boolean;
+  reviews: {
     reviewSeq: number;
-    createdAt: string;
+    userSeq: number;
     nickname: string;
+    movieSeq: number;
     reviewRating: number;
     content: string;
+    createdAt: string;
     spoiler: boolean;
     likes: number;
     liked: boolean;
-    top: boolean;
   }[];
-  recommendedMovieList: {
+  similarMovies: {
     movieSeq: number;
+    movieTitle: string;
     moviePosterUrl: string;
   }[];
-  likeMovie: boolean;
 }
 
 export interface ProtectedRouteProps {
@@ -131,4 +133,42 @@ export interface TopTenMovie {
   movieSeq: number;
   movieTitle: string;
   moviePosterUrl: string;
+}
+
+// Photocard Review 데이터 타입
+export interface PhotoCardReviewDto {
+  userSeq: number;
+  movieSeq: number;
+  reviewSeq: number;
+  nickname: string;
+  reviewRating: number;
+  content: string;
+  spoiler: boolean;
+  likes: number;
+  liked: boolean;
+  createdAt: string;
+  top: null | string;
+}
+
+// Movie Image DTO 데이터 타입
+export interface MovieImageDto {
+  moviePosterUrl: string;
+}
+
+// Photocard 데이터 타입
+export interface PhotocardData {
+  reviewDto: PhotoCardReviewDto;
+  movieImageDto: MovieImageDto;
+}
+
+// IFlipBook = 포토북
+export interface IFlipBook {
+  flipNext: () => void;
+  flipPrev: () => void;
+  pageFlip: () => { flipNext: () => void; flipPrev: () => void };
+}
+
+export interface PhotoCardFrontProps {
+  images: { src: string; alt: string }[];
+  pageIndex: number;
 }
