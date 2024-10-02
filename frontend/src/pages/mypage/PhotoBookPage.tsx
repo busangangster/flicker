@@ -44,7 +44,7 @@ const PhotoBookPage: React.FC = () => {
     }
 
     setTimeout(() => {
-      navigate("/mypage/photocard");
+      navigate("/photocard");
     }, 400);
   };
 

@@ -10,6 +10,7 @@ import PlotModal from "../../components/PlotModal";
 import { MovieDetail } from "../../type";
 import Review from "../../components/Review";
 import MoviesList from "../../components/MoviesList";
+import { IoBan } from "react-icons/io5";
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -220,7 +221,7 @@ const MovieDetailPage: React.FC = () => {
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
-                  <button
+                  {/* <button
                     className="text-white text-3xl ml-2 relative z-20"
                     onClick={toggleDropdown}
                   >
@@ -235,7 +236,8 @@ const MovieDetailPage: React.FC = () => {
                         </div>
                       </div>
                     )}
-                  </button>
+                  </button> */}
+                  <IoBan className="w-6 h-6 ml-3 opacity-60 hover:opacity-100" />
                 </div>
               </div>
 
@@ -285,15 +287,15 @@ const MovieDetailPage: React.FC = () => {
 
       {/* Reviews */}
       <div className="flex">
-        <div className="p-1 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
+        <div className="p-1 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-white">
           <div className="flex w-full justify-between items-center">
-            <h3 className="text-2xl font-bold text-white">Reviews</h3>
-            <div
-              className="text-white flex ml-auto items-center cursor-pointer italic underline"
+            <h3 className="text-[38px] font-bold text-white">Reviews</h3>
+            <button
+              className="text-white flex ml-auto items-center cursor-pointer text-[16px] italic h-[30px] w-[60px] bg-[#455467] rounded-md justify-center hover:bg-gray-500"
               onClick={goToReview}
             >
               more
-            </div>
+            </button>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
             {reviews.map((review) => (
@@ -307,7 +309,7 @@ const MovieDetailPage: React.FC = () => {
         </div>
 
         {/* Trailer */}
-        <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
+        <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[450px] ml-[50px] mt-[100px]">
           <div className="relative w-full max-w-4xl h-full">
             <iframe
               src={`${trailerUrl}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
@@ -319,9 +321,6 @@ const MovieDetailPage: React.FC = () => {
             <button className="absolute inset-0 flex items-center justify-center text-white pointer-events-none">
               <svg className="w-12 h-12" />
             </button>
-            <div className="absolute top-0 left-0 bg-black bg-opacity-50 text-white px-3 py-1 rounded-br-lg">
-              절찬 상영중
-            </div>
           </div>
         </div>
       </div>

@@ -26,6 +26,7 @@ import Home from "../pages/Home";
 import MoviesPage from "../pages/movie/MoviesPage";
 import ProtectedRoute from "../components/ProtectedRoute";
 import MovieGenrePage from "../pages/movie/MovieGenrePage";
+import DisLikePage from "../pages/mypage/DisLikePage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -62,7 +63,12 @@ const AppRoutes: React.FC = () => {
       <Route path="/search" element={<SearchPage />} />
       <Route path="/movies" element={<MoviesPage />} />{" "}
       <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />
-      {/* 장르별 페이지 추가 */}
+      <Route path="/photobook" element={<PhotoBookPage />} />
+      <Route path="/photocard" element={<PhotoCardPage />} />
+      <Route
+        path="/photocarddetail/:movieSeq"
+        element={<PhotoCardDetailPage />}
+      />
       <Route
         path="/mypage/*"
         element={
@@ -72,14 +78,8 @@ const AppRoutes: React.FC = () => {
         }
       >
         <Route path="favorite" element={<FavoritePage />} />
+        <Route path="dislike" element={<DisLikePage />} />
         <Route path="myinformation" element={<MyInformaitonPage />} />
-        <Route path="photobook" element={<PhotoBookPage />} />
-        <Route path="photocard" element={<PhotoCardPage />} />
-        <Route
-          path="photocarddetail/:movieSeq"
-          element={<PhotoCardDetailPage />}
-        />
-
         <Route path="userinfoedit" element={<UserInfoEditPage />} />
         <Route path="verification" element={<VerificationPage />} />
       </Route>

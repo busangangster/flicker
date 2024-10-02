@@ -80,12 +80,12 @@ const Sidebar: React.FC = () => {
           Favorites
         </NavLink>
         <NavLink
-          to="/mypage/photobook"
+          to="/mypage/dislike"
           className={({ isActive }) =>
             isActive ? "font-semibold underline" : "hover:underline"
           }
         >
-          PhotoBook
+          Dislike
         </NavLink>
       </nav>
 

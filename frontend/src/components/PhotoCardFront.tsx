@@ -19,7 +19,7 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
     likes: number,
     backgroundUrl: string,
   ) => {
-    navigate(`/mypage/photocarddetail/${movieSeq}`, {
+    navigate(`/photocarddetail/${movieSeq}`, {
       state: {
         src, 
         movieTitle,
