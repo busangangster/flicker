@@ -25,7 +25,7 @@ public class MongoUserAction {
 
     private String keyword;
 
-    private String action; // "SEARCH" or "DETAIL"
+    private String action; // "SEARCH" or "DETAIL" or "REVIEW"
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
