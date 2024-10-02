@@ -285,6 +285,17 @@ public class MovieService {
                 .toList();
     }
 
+    @Transactional
+    public List<Integer> getMovieSeqsByTitleAndYear(MovieSeqsRequest request) {
+        // 1. 영화 제목, 년도로 영화 번호 조회
+        List<Integer> movieSeqs = new ArrayList<>();
+        for (int i = 0; i < request.getMovieTitle().size(); i++) {
+            Movie movie = movieRepoUtil.findByMovieTitleAndYear(request.getMovieTitle().get(i), request.getMovieYear().get(i));
+            movieSeqs.add(movie.getMovieSeq());
+        }
+        return movieSeqs;
+    }
+
 
     // redis , mongoDB (키워드 검색결과 ) 초기화
     private void initSearchResultForRedisAndMongoDB() {
@@ -322,4 +333,5 @@ public class MovieService {
         RedisTopMovie redisTopMovie = movieBuilderUtil.redisTopMovieBuilder("TopMovieList", movieSeqs);
         movieRepoUtil.saveTopMovieForRedis(redisTopMovie);
     }
+
 }

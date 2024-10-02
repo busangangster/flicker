@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Integer>, MovieRepositoryCustom {
 
-    // 영화 제목과 영화 연도, 그리고 DEL_YN이 'N'인 영화들 중에서 중복 여부 확인
-    Optional<Movie> findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(String movieTitle, int movieYear, String delYN);
+    // 영화 제목과 영화 연도, 그리고 DEL_YN이 'N'인 영화 조회
+    Movie findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(String movieTitle, int movieYear, String delYN);
 
     // DEL_YN이 N인 영화 전체 목록 조회 (영화 제작 연도 내림차순)
     Page<Movie> findByDelYNOrderByMovieDetail_MovieYearDescMovieSeqAsc(String delYN, Pageable pageable);

@@ -182,4 +182,11 @@ public class MovieController {
         movieService.saveTopMovieForRedis(movieSeqs);
         return ResponseDto.response(StatusCode.SUCCESS, "Top10 영화 목록 저장 성공");
     }
+
+    // 영화 제목, 년도로 movieSeqs 조회
+    @PostMapping("/list/movieSeqs")
+    public ResponseEntity<ResponseDto> getMovieSeqsByTitleAndYear(@RequestBody MovieSeqsRequest request) {
+        List<Integer> response = movieService.getMovieSeqsByTitleAndYear(request);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
 }
