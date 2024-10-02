@@ -15,11 +15,14 @@ public class MovieListResponse {
 
     private Integer movieYear;
 
+    private String backgroundUrl;
+
     public MovieListResponse(Movie movie, MovieDetail movieDetail) {
         this.movieSeq = movie.getMovieSeq();
         this.movieTitle = movieDetail.getMovieTitle();
         this.moviePosterUrl = movieDetail.getMoviePosterUrl();
         this.movieYear = movieDetail.getMovieYear();
+        this.backgroundUrl = movieDetail.getBackgroundUrl();
     }
 
     public MovieListResponse(MongoMovie mongoMovie) {
