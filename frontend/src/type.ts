@@ -195,6 +195,11 @@ export interface PhotoCardFrontProps {
 export interface Movie {
   movieSeq: number;
   moviePosterUrl: string;
+  movieTitle: string;
+  movieYear: number;
+  movieRating: number;
+  runningTime: string;
+  audienceRating: string;
 }
 
 export interface SelectionListProps {
