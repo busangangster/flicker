@@ -3,10 +3,7 @@ package com.flicker.user.common.kafka.producer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.flicker.user.common.kafka.dto.SentimentReview;
-import com.flicker.user.common.kafka.dto.SentimentReviewSerializer;
-import com.flicker.user.common.kafka.dto.WordCloudReview;
-import com.flicker.user.common.kafka.dto.WordCloudReviewSerializer;
+import com.flicker.user.common.kafka.dto.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +23,7 @@ public class CustomerProducer {
 
     private KafkaProducer<String, SentimentReview> sentimentProducer;
     private KafkaProducer<String, WordCloudReview> wordCloudProducer;
+    private KafkaProducer<String, MovieInfo>movieInfoProducer;
     private final KafkaTemplate<String,String> kafkaTemplate;
 
     @Value("${spring.kafka.bootstrap-servers}")
@@ -47,7 +45,11 @@ public class CustomerProducer {
         wordCloudProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, WordCloudReviewSerializer.class.getName());
         wordCloudProducer = new KafkaProducer<>(wordCloudProperties);
 
-
+        Properties movieInfoProperties = new Properties();
+        movieInfoProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
+        movieInfoProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        movieInfoProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MovieInfoSerializer.class.getName());
+        movieInfoProducer = new KafkaProducer<>(movieInfoProperties);
     }
 
     // Log 메시지 전송
@@ -76,9 +78,22 @@ public class CustomerProducer {
         });
     }
 
+    public void sendMovieInfo(MovieInfo movieInfo) {
+        ProducerRecord<String, MovieInfo> record = new ProducerRecord<>("movie-info", movieInfo);
+        movieInfoProducer.send(record, (RecordMetadata metadata, Exception exception) -> {
+            if (exception != null) {
+                System.err.println("Error sending log message: " + exception.getMessage());
+            } else{
+                System.out.println("Log sent successfully to topic " + metadata.topic() + " partition " + metadata.partition() + " at offset " + metadata.offset());
+            }
+        });
+    }
+
     // 리소스 정리
     public void close() {
         sentimentProducer.close();
         wordCloudProducer.close();
     }
+
+
 }

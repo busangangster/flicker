@@ -60,7 +60,15 @@ public class ReviewService {
         kafkaProducer.sendWordCloudLog(wordCloudReview);
 
         MovieInfo movieInfo = new MovieInfo();
+        movieInfo.setUserSeq(dto.getUserSeq());
         movieInfo.setMovieSeq(save.getMovieSeq());
+        movieInfo.setReviewSeq(save.getReviewSeq());
+        movieInfo.setRating(save.getReviewRating());
+        movieInfo.setType("REVIEW");
+        movieInfo.setAction("CREATE");
+        movieInfo.setTimestamp(LocalDateTime.now());
+        System.out.println("movieInfo = " + movieInfo);
+        kafkaProducer.sendMovieInfo(movieInfo);
 
         return true;
     }
