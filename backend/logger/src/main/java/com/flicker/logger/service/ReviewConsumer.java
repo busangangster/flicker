@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -49,13 +52,13 @@ public class ReviewConsumer {
     }
 
     @KafkaListener(topics = "sentiment-review", groupId = "review-group")
-    public void listenReviewSentiment(String message) {
+    public void listenReviewSentiment(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
 
-        log.info("Received ReviewSentiment message {}", message);
+        log.info("Received ReviewSentiment message {}", payload);
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            SentimentReviewEvent reviewLog = mapper.readValue(message, SentimentReviewEvent.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            SentimentReviewEvent reviewLog = objectMapper.readValue(payload, SentimentReviewEvent.class);
 
             String sql = "INSERT INTO sentiment_review_logs (review_seq, content, timestamp) " +
                     "VALUES (?, ?, ?)";
@@ -67,7 +70,7 @@ public class ReviewConsumer {
 
             log.info("Saved SReview {}", reviewLog);
         } catch (Exception e) {
-            log.error("Error processing message: {}", message, e);
+            log.error("Error processing message: {}", payload, e);
             throw new RuntimeException(e);
         }
     }
