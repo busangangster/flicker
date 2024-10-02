@@ -20,9 +20,7 @@ const MovieDetailPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  // const [localReviews, setLocalReviews] = useState<ReviewType[]>([]); // 로컬 상태 변수 이름 변경
 
-  // movieSeq가 없으면 바로 return
 
   const userSeq = 2; // 예시로 userSeq 고정값 사용
 

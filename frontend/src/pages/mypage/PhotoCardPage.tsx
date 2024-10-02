@@ -45,34 +45,42 @@ const PhotoCardPage: React.FC = () => {
   if (userError) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
   // 포토카드 데이터를 기반으로 페이지 생성
-  const createPages = (photocardData: PhotocardDataItem[]) => {
-    const imagesPerPage = 4; // 한 페이지에 보여줄 이미지 수
-    const pages = [];
+ const createPages = (photocardData: PhotocardDataItem[]) => {
+   const imagesPerPage = 4; // 한 페이지에 보여줄 이미지 수
+   const pages = [];
 
-    for (let i = 0; i < photocardData.length; i += imagesPerPage) {
-      const imageSlice = photocardData
-        .slice(i, i + imagesPerPage)
-        .map((photocard, index) => {
-          return {
-            src: photocard.movieImageDto.moviePosterUrl,
-            alt: `Movie ${index + 1}`,
-          };
-        });
+   for (let i = 0; i < photocardData.length; i += imagesPerPage) {
+     const imageSlice = photocardData
+       .slice(i, i + imagesPerPage)
+       .map((photocard, index) => {
+         return {
+           src: photocard.movieImageDto.moviePosterUrl, // 이미지 URL
+           alt: `Movie ${index + 1}`,
+           movieSeq: photocard.reviewDto.movieSeq,
+           movieTitle: photocard.movieImageDto.movieTitle,
+           movieYear: photocard.movieImageDto.movieYear,
+           reviewRating: photocard.reviewDto.reviewRating,
+           createdAt: photocard.reviewDto.createdAt,
+           content: photocard.reviewDto.content,
+           likes: photocard.reviewDto.likes,
+           backgroundUrl: photocard.movieImageDto.backgroundUrl,
+         };
+       });
 
-      pages.push({
-        id: i / imagesPerPage + 2, // 페이지 ID는 2부터 시작
-        content: (
-          <PhotoCardFront
-            images={imageSlice}
-            pageIndex={i / imagesPerPage + 2}
-          />
-        ),
-        className: i % 2 === 0 ? "left-page" : "right-page", // 짝수 페이지는 왼쪽, 홀수 페이지는 오른쪽
-      });
-    }
+     pages.push({
+       id: i / imagesPerPage + 2, // 페이지 ID는 2부터 시작
+       content: (
+         <PhotoCardFront
+           images={imageSlice}
+           pageIndex={i / imagesPerPage + 2}
+         />
+       ),
+       className: i % 2 === 0 ? "left-page" : "right-page", // 짝수 페이지는 왼쪽, 홀수 페이지는 오른쪽
+     });
+   }
 
-    return pages;
-  };
+   return pages;
+ };
 
   const pages = [
     {

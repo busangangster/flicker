@@ -43,7 +43,7 @@ const TopTen: React.FC = () => {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center h-[450px]">
       {/* Left Side: Static text "TODAY TOP 10" */}
       <div className="today-top-10 flex flex-col justify-center text-right mr-8 text-white ml-10">
         <h1

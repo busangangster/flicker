@@ -102,7 +102,7 @@ const RecommandListPage: React.FC = () => {
       style={{
         backgroundColor: "black",
         backgroundImage: isLoaded
-          ? `url(src/assets/movie/theater3.jpg)`
+          ? `url(/assets/movie/theater3.jpg)`
           : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
