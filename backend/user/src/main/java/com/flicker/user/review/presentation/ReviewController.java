@@ -142,7 +142,7 @@ public class ReviewController {
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
 
-        List<ReviewRatingCountDto> movieReviewRatingDistribute = reviewService.getMovieReviewRatingDistribute(movieSeq);
+        MovieReviewRatingCount movieReviewRatingDistribute = reviewService.getMovieReviewRatingDistribute(movieSeq);
         System.out.println("movieReviewRatingDistribute = " + movieReviewRatingDistribute);
         return ResponseDto.response(StatusCode.SUCCESS, movieReviewRatingDistribute);
 

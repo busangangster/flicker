@@ -149,7 +149,8 @@ public class ReviewService {
         return true;
     }
 
-    public List<ReviewRatingCountDto> getMovieReviewRatingDistribute(Integer movieSeq){
+    public MovieReviewRatingCount getMovieReviewRatingDistribute(Integer movieSeq){
+
 
         List<ReviewRatingCountDto> reviewRatingCountDtos = reviewRepository.countReviewRatingsByMovieSeq(movieSeq);
 
@@ -178,7 +179,15 @@ public class ReviewService {
         reviewRatingCountDtos.sort(Comparator.comparing(ReviewRatingCountDto::getReviewRating, Comparator.nullsFirst(Double::compareTo)));
 
 
+        MovieReviewRatingCount movieReviewRatingCount = new MovieReviewRatingCount();
 
-        return reviewRatingCountDtos;
+        int sum = 0;
+        for(ReviewRatingCountDto item : reviewRatingCountDtos){
+            sum += item.getCount();
+        }
+        movieReviewRatingCount.setTotalCnt(sum);
+        movieReviewRatingCount.setReviewRatingCount(reviewRatingCountDtos);
+
+        return movieReviewRatingCount;
     }
 }
