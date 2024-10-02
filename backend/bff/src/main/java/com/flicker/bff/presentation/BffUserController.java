@@ -146,4 +146,9 @@ public class BffUserController {
         return userService.getPhotoCard(userSeq);
     }
 
+    // 리뷰 워드 클라우드
+    @GetMapping("/review/movies/{movieSeq}/distribute")
+    public Mono<ResponseEntity<ResponseDto>> getMovieReviewRatingDistribute(@PathVariable(value = "movieSeq")Integer movieSeq){
+        return userService.getMovieReviewRatingDistribute(movieSeq);
+    }
 }
