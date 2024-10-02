@@ -225,6 +225,8 @@ public class BffUserService {
 
                     MovieImageDto movieImageDto = new MovieImageDto();
                     movieImageDto.setMoviePosterUrl(movieListDtoList.get(i).getMoviePosterUrl());
+                    movieImageDto.setMovieTitle(movieListDtoList.get(i).getMovieTitle());
+                    movieImageDto.setMovieYear(movieListDtoList.get(i).getMovieYear());
                     photoCardDto.setMovieImageDto(movieImageDto);
                     result.add(photoCardDto);
                 }

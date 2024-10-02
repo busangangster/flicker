@@ -7,7 +7,7 @@ public class MovieListDto {
     private int movieSeq;
 
     private String movieTitle;
-
+    private Integer movieYear;
     private String moviePosterUrl;
 
 }
