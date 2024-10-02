@@ -1,19 +1,20 @@
-// PhotoCardPage.tsx
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
 import "../../css/photobook.css";
 import { useUserQuery } from "../../hooks/useUserQuery";
+import { getPhotocard } from "../../apis/photocardApi"; // 포토카드 API 호출 추가
 import PhotoCardFront from "../../components/PhotoCardFront";
-
-// IFlipBook 인터페이스 정의
-interface IFlipBook {
-  flipNext: () => void;
-  flipPrev: () => void;
-  pageFlip: () => { flipNext: () => void; flipPrev: () => void };
-}
+import { IFlipBook, PhotocardData } from "../../type";
 
 const PhotoCardPage: React.FC = () => {
   const book = useRef<IFlipBook | null>(null);
+  const [photocardData, setPhotocardData] = useState<PhotocardData[]>([]);
+
+  const {
+    data: userData,
+    error: userError,
+    isLoading: isUserLoading,
+  } = useUserQuery(); // 유저 정보
 
   useEffect(() => {
     if (book.current) {
@@ -23,44 +24,49 @@ const PhotoCardPage: React.FC = () => {
     }
   }, []);
 
-  const { data, error, isLoading } = useUserQuery();
+  // **나중에 userSeq를 동적으로 가져오도록 수정해야 함**
+  const userSeq = 181368; // 임시로 userSeq를 하드코딩하여 데이터 확인
 
-  if (!data) return <p>유저 정보가 없습니다.</p>;
-  if (isLoading) return <p>로딩 중...</p>;
-  if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
-
-  const images = [
-    { src: "/assets/survey/image3.jpg", alt: "Movie 1" },
-    { src: "/assets/survey/image5.jpg", alt: "Movie 2" },
-    { src: "/assets/survey/image7.jpg", alt: "Movie 3" },
-    { src: "/assets/survey/image10.jpg", alt: "Movie 4" },
-    { src: "/assets/survey/image8.jpg", alt: "Movie 5" },
-    { src: "/assets/survey/image14.jpg", alt: "Movie 6" },
-    { src: "/assets/survey/image17.jpg", alt: "Movie 7" },
-    { src: "/assets/survey/image20.jpg", alt: "Movie 8" },
-  ];
-
-  const imagesPerPage = 4;
-  const totalPages = 7;
-
-  // 페이지 생성 함수 (이미지를 반복해서 페이지에 할당)
-  const createPages = (
-    images: { src: string; alt: string }[],
-    totalPages: number
-  ) => {
-    const pages = [];
-    let imageIndex = 0;
-
-    for (let i = 0; i < totalPages; i++) {
-      const imageSlice = [];
-      for (let j = 0; j < imagesPerPage; j++) {
-        imageSlice.push(images[imageIndex % images.length]);
-        imageIndex++;
+  // 포토카드 데이터를 가져오는 함수
+  useEffect(() => {
+    const fetchPhotocardData = async () => {
+      try {
+        const response = await getPhotocard(userSeq); // 임시로 하드코딩된 userSeq 사용
+        setPhotocardData(response.data); // 응답 데이터에서 PhotocardData[] 설정
+      } catch (error) {
+        console.error("포토카드 데이터를 불러오는데 실패했습니다.", error);
       }
+    };
+    fetchPhotocardData();
+  }, [userSeq]); // userSeq가 있을 때만 실행
+
+  // 유저 정보가 로딩 중이거나 에러일 경우 처리
+  if (isUserLoading) return <p>로딩 중...</p>;
+  if (userError) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
+
+  // 포토카드 데이터를 기반으로 페이지 생성
+  const createPages = (photocardData: PhotocardData[]) => {
+    const imagesPerPage = 4; // 한 페이지에 보여줄 이미지 수
+    const pages = [];
+
+    for (let i = 0; i < photocardData.length; i += imagesPerPage) {
+      const imageSlice = photocardData
+        .slice(i, i + imagesPerPage)
+        .map((photocard, index) => {
+          return {
+            src: photocard.movieImageDto.moviePosterUrl,
+            alt: `Movie ${index + 1}`,
+          };
+        });
 
       pages.push({
-        id: i + 2, // 첫 번째 페이지가 고정이므로 2부터 시작
-        content: <PhotoCardFront images={imageSlice} pageIndex={i + 2} />,
+        id: i / imagesPerPage + 2, // 페이지 ID는 2부터 시작
+        content: (
+          <PhotoCardFront
+            images={imageSlice}
+            pageIndex={i / imagesPerPage + 2}
+          />
+        ),
         className: i % 2 === 0 ? "left-page" : "right-page", // 짝수 페이지는 왼쪽, 홀수 페이지는 오른쪽
       });
     }
@@ -79,7 +85,7 @@ const PhotoCardPage: React.FC = () => {
           <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
           <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
           <p className="text-lg italic mt-2 text-gray-700 self-end mr-16 mb-10">
-            made by {data.userId}
+            made by {userData?.userId}
           </p>
           <img
             src="https://via.placeholder.com/500x300"
@@ -88,9 +94,8 @@ const PhotoCardPage: React.FC = () => {
           />
         </div>
       ),
-
     },
-    ...createPages(images, totalPages), // 이미지로 페이지 생성 (7페이지까지)
+    ...createPages(photocardData), // 포토카드 데이터를 기반으로 페이지 생성
   ];
 
   return (

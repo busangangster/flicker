@@ -16,6 +16,7 @@ export const getUserInfoFromToken = () => {
       nickname: decodedToken.nickname,
       birthDate: decodedToken.birthDate,
       gender: decodedToken.gender,
+      userSeq: decodedToken.userSeq,
     };
   }
 

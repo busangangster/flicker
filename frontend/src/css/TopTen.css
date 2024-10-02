@@ -27,7 +27,7 @@
 .swiper-button-prev-custom2,
 .swiper-button-next-custom2 {
   position: absolute;
-  top: 50%;
+  top: 60%;
   transform: translateY(-50%);
   z-index: 10;
   cursor: pointer;
