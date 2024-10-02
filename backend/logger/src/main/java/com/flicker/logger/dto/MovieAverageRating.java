@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class MovieAverageRating {
-    private Long movieSeq;
-    private Long reviewSeq;
+    private Integer movieSeq;
+    private Integer reviewSeq;
     private Integer movieCount;
     private Double movieTotalRating;
 
-    public MovieAverageRating(Long movieSeq, Integer movieCount, Double movieTotalRating) {
+    public MovieAverageRating(Integer movieSeq, Integer movieCount, Double movieTotalRating) {
         this.movieSeq = movieSeq;
         this.movieCount = movieCount;
         this.movieTotalRating = movieTotalRating;

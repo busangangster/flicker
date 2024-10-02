@@ -3,6 +3,7 @@ package com.flicker.logger.batch;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.logger.dto.SentimentResult;
+import com.flicker.logger.dto.SentimentReview;
 import com.flicker.logger.dto.SentimentReviewEvent;
 import com.flicker.logger.service.SentimentAnalysisService;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +76,7 @@ public class SentimentBatchScoreConfig {
         log.info("Sentiment sendToKafka batch score step started");
 
         return new StepBuilder("sendSentimentStep", jobRepository)
-                .<SentimentReviewEvent, SentimentResult> chunk(10, transactionManager)
+                .<SentimentReview, SentimentResult> chunk(10, transactionManager)
                 .reader(sentimentBatchKafkaReader())
                 .processor(sentimentBatchKafkaProcessor())
                 .writer(sentimentResultCompositeItemWritercompositeItemWriter())
@@ -98,16 +99,16 @@ public class SentimentBatchScoreConfig {
 
     @Bean
     @StepScope
-    public JdbcCursorItemReader<SentimentReviewEvent> sentimentBatchKafkaReader() {
+    public JdbcCursorItemReader<SentimentReview> sentimentBatchKafkaReader() {
 
-        return new JdbcCursorItemReaderBuilder<SentimentReviewEvent>()
+        return new JdbcCursorItemReaderBuilder<SentimentReview>()
                 .dataSource(dataSource)
                 .name("sentimentReader")
                 .sql("SELECT review_seq, sentiment_score " +
                         "FROM data_db.sentiment_review_logs " +
                         "WHERE is_processed = 1 " +
                         "and is_delete = 0")
-                .rowMapper(new BeanPropertyRowMapper<>(SentimentReviewEvent.class))
+                .rowMapper(new BeanPropertyRowMapper<>(SentimentReview.class))
                 .build();
     }
 
@@ -132,7 +133,7 @@ public class SentimentBatchScoreConfig {
 
     @Bean
     @StepScope
-    public ItemProcessor<SentimentReviewEvent, SentimentResult> sentimentBatchKafkaProcessor() {
+    public ItemProcessor<SentimentReview, SentimentResult> sentimentBatchKafkaProcessor() {
 
         return item -> SentimentResult.builder()
                 .reviewSeq(item.getReviewSeq())

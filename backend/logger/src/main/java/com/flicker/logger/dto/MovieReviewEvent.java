@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Setter
 public class MovieReviewEvent {
 
-    private Long userSeq;
-    private Long movieSeq;
-    private Long reviewSeq;
+    private Integer userSeq;
+    private Integer movieSeq;
+    private Integer reviewSeq;
     private String type; // "review" or "movie"
     private String action; // "create" or "delete"
     private Double rating;
