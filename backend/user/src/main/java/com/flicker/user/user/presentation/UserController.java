@@ -173,7 +173,8 @@ public class UserController {
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
         MovieSeqListDto favoriteMovies = userService.getBookmarkMovies(userSeq);
-        return ResponseDto.response(StatusCode.SUCCESS, favoriteMovies);
+        List<Integer> movieSeqList = favoriteMovies.getMovieSeqList();
+        return ResponseDto.response(StatusCode.SUCCESS, movieSeqList);
     }
 
     // 관심없는 영화 삭제
