@@ -447,7 +447,7 @@ public class BffMovieService {
 
     public Mono<ResponseEntity<ResponseDto>> getRecommendationMovieListByActor(int userSeq) {
         // 1. 영화 서버에서 사용자의 추천 영화 배우 가져오기
-        String path = util.getUri("/list/recommendActor/" + userSeq);
+        String path = util.getUri("/recommendActor/" + userSeq);
         return util.sendGetRequestAsync(movieBaseUrl, path)
                 .flatMap(getResponse -> {
                     ResponseDto actorResponseDto;
