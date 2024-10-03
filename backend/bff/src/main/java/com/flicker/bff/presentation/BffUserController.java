@@ -99,18 +99,18 @@ public class BffUserController {
     }
 
     // 10. 비선호 영화 등록
-    @PostMapping("/{userSeq}/unlike-movie/{movieSeq}")
+    @PostMapping("/{userSeq}/dislike-movie/{movieSeq}")
     public Mono<ResponseEntity<ResponseDto>> registerUnlikeMovie(@PathVariable(value = "userSeq")Integer userSeq, @PathVariable(value = "movieSeq")Integer movieSeq){
         return userService.registerUnlikeMovie(userSeq, movieSeq);
     }
 
     // 11. 비선호 영화 삭제
-    @DeleteMapping("/{userSeq}/unlike-movie/{movieSeq}")
+    @DeleteMapping("/{userSeq}/dislike-movie/{movieSeq}")
     public Mono<ResponseEntity<ResponseDto>> deleteUnlikeMovie(@PathVariable(value = "userSeq")Integer userSeq, @PathVariable(value = "movieSeq")Integer movieSeq){
         return userService.deleteUnlikeMovie(userSeq,movieSeq);
     }
     // 12. 비선호 영화 조회
-    @GetMapping("/{userSeq}/unlike-movie")
+    @GetMapping("/{userSeq}/dislike-movie")
     public Mono<ResponseEntity<ResponseDto>> getUnlikeMovie(@PathVariable(value = "userSeq")Integer userSeq){
         return userService.getUnlikeMovie(userSeq);
     }

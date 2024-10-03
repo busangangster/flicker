@@ -135,7 +135,6 @@ public class BffUserService {
                 ));
             }
 
-            System.out.println("reviewResponseDto = " + reviewResponseDto);
 
             // ObjectMapper를 이용하여 JSON 데이터를 ReviewListDto로 변환
             List<Integer> movieSeqList;
@@ -145,7 +144,6 @@ public class BffUserService {
                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 리스트를 역직렬화하는데 오류 발생: " + e.getMessage()));
             }
 
-            System.out.println("movieSeqList = " + movieSeqList);
 
             // 영화 정보 받아오는 요청 보내기
             String path2 = util.getUri("/list/movieId");
@@ -167,7 +165,6 @@ public class BffUserService {
                     ));
                 }
 
-                System.out.println("movieDto = " + movieDto);
 
                 // ObjectMapper를 이용하여 JSON 데이터를 REviewListDto로 역직렬화
                 List<MovieListDto> movieListDtoList;
@@ -188,7 +185,6 @@ public class BffUserService {
                     movieInfoDto.setBackgroundUrl(item.getBackgroundUrl());
                     result.add(movieInfoDto);
                 }
-                System.out.println("result = " + result);
                 return Mono.just(ResponseDto.response(StatusCode.SUCCESS, result));
             });
 
@@ -227,15 +223,11 @@ public class BffUserService {
             }
             // reviewResponseDto의 상태 코드가 성공이 아닌 경우 처리
             if (reviewResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
-                System.out.println("에러 발생" + reviewResponseDto.getData());
                 return Mono.error(new RestApiException(
                         StatusCode.of(reviewResponseDto.getHttpStatus(), reviewResponseDto.getServiceStatus(), reviewResponseDto.getMessage()),
                         reviewResponseDto.getData()
                 ));
             }
-
-            System.out.println("reviewResponseDto = " + reviewResponseDto);
-            System.out.println("reviewResponseDto = " + reviewResponseDto.getData());
 
             // ObjectMapper를 이용하여 JSON 데이터를 ReviewListDto로 변환
             List<Integer> movieSeqList;
@@ -245,7 +237,6 @@ public class BffUserService {
                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 리스트를 역직렬화하는데 오류 발생: " + e.getMessage()));
             }
 
-            System.out.println("movieSeqList = " + movieSeqList);
 
             // 영화 정보 받아오는 요청 보내기
             String path2 = util.getUri("/list/movieId");
@@ -268,8 +259,6 @@ public class BffUserService {
                 }
 
 
-                System.out.println("movieDto = " + movieDto);
-
                 // ObjectMapper를 이용하여 JSON 데이터를 REviewListDto로 역직렬화
                 List<MovieListDto> movieListDtoList;
                 try {
@@ -290,7 +279,6 @@ public class BffUserService {
                     result.add(movieInfoDto);
                 }
 
-                System.out.println("result = " + result);
                 
                 return Mono.just(ResponseDto.response(StatusCode.SUCCESS, result));
             });
@@ -375,7 +363,6 @@ public class BffUserService {
                     ));
                 }
 
-                System.out.println("movieDto = " + movieDto);
 
                 // ObjectMapper를 이용하여 JSON 데이터를 REviewListDto로 역직렬화
                 List<MovieListDto> movieListDtoList;
