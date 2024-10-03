@@ -124,9 +124,9 @@ public class BffMovieController {
         return bffMovieService.getMovieWordCloud(movieSeq);
     }
 
-    // 임의로 Top10 영화 생성 (테스트용)
-    @PostMapping("/admin/set/top10")
-    public Mono<ResponseEntity<ResponseDto>> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
-        return bffMovieService.setTopMovieList(movieSeqs);
+    // 평점 높은 영화 목록 조회
+    @GetMapping("/list/topRating")
+    public Mono<ResponseEntity<ResponseDto>> getTopRatingMovieList() {
+        return bffMovieService.getTopRatingMovieList();
     }
 }
