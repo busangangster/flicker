@@ -47,7 +47,7 @@ public class ReviewService {
         sentimentReview.setReviewSeq(save.getReviewSeq());
         sentimentReview.setTimestamp(LocalDateTime.now());
         sentimentReview.setContent(save.getContent());
-        System.out.println("sentimentReview = " + sentimentReview);
+//        System.out.println("sentimentReview = " + sentimentReview);
         kafkaProducer.sendSentimentLog(sentimentReview);
 
         WordCloudReview wordCloudReview = new WordCloudReview();
@@ -56,7 +56,7 @@ public class ReviewService {
         wordCloudReview.setContent(save.getContent());
         wordCloudReview.setUserSeq(save.getUserSeq());
         wordCloudReview.setRating(save.getReviewRating());
-        System.out.println("wordCloudReview = " + wordCloudReview);
+//        System.out.println("wordCloudReview = " + wordCloudReview);
         kafkaProducer.sendWordCloudLog(wordCloudReview);
 
         MovieInfo movieInfo = new MovieInfo();
@@ -67,7 +67,7 @@ public class ReviewService {
         movieInfo.setType("REVIEW");
         movieInfo.setAction("CREATE");
         movieInfo.setTimestamp(LocalDateTime.now());
-        System.out.println("movieInfo = " + movieInfo);
+//        System.out.println("movieInfo = " + movieInfo);
         kafkaProducer.sendMovieInfo(movieInfo);
 
         return true;
@@ -80,6 +80,17 @@ public class ReviewService {
                 .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_REVIEW));
 
         reviewRepository.delete(review);
+
+        MovieInfo movieInfo = new MovieInfo();
+        movieInfo.setUserSeq(dto.getUserSeq());
+        movieInfo.setMovieSeq(review.getMovieSeq());
+        movieInfo.setReviewSeq(review.getReviewSeq());
+        movieInfo.setRating(review.getReviewRating());
+        movieInfo.setType("REVIEW");
+        movieInfo.setAction("DELETE");
+        movieInfo.setTimestamp(LocalDateTime.now());
+//        System.out.println("movieInfo = " + movieInfo);
+        kafkaProducer.sendMovieInfo(movieInfo);
 
         return true;
     }
