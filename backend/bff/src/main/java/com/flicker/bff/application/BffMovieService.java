@@ -133,15 +133,6 @@ public class BffMovieService {
         return util.sendGetRequestAsync(movieBaseUrl, path);
     }
 
-    // 임의로 Top10 영화 목록을 설정하는 메서드 (임시)
-    public Mono<ResponseEntity<ResponseDto>> setTopMovieList(List<Integer> movieSeqs) {
-        // 1. 외부 API 경로 설정
-        String path = util.getUri("/admin/set/top10");
-        // 2. POST 요청 메서드를 사용하여 외부 API에 요청을 보냅니다.
-        return util.sendPostRequestAsync(movieBaseUrl, path, movieSeqs);
-    }
-
-
     // 영화 상세조회
     public Mono<ResponseEntity<ResponseDto>> getMovieDetail(int movieSeq, int userSeq) {
         try {
@@ -510,5 +501,12 @@ public class BffMovieService {
                         return Mono.just(ResponseDto.response(StatusCode.UNKNOW_ERROR, "영화 서버에서 리뷰 기반 추천을 가져오는데 알 수 없는 오류 발생: " + e.getMessage()));
                     }
                 });
+    }
+
+    public Mono<ResponseEntity<ResponseDto>> getTopRatingMovieList() {
+        // 1. 외부 API의 경로를 설정합니다.
+        String path = util.getUri("/list/topRating");
+        // 2. 비동기 방식으로 GET 요청을 외부 API에 보냅니다.
+        return util.sendGetRequestAsync(movieBaseUrl, path);
     }
 }

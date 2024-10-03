@@ -9,4 +9,5 @@ public class MovieListResponse {
     private String moviePosterUrl;
     private Integer movieYear;
     private String backgroundUrl;
+    private Double movieRating;
 }
