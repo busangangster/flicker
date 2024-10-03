@@ -3,18 +3,16 @@ package com.flicker.user.user.presentation;
 import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
+import com.flicker.user.jwt.JWTUtil;
 import com.flicker.user.review.application.ReviewService;
 import com.flicker.user.review.dto.MyPageReviewCntDto;
 import com.flicker.user.review.dto.ReviewDto;
 import com.flicker.user.user.application.UserService;
-import com.flicker.user.user.domain.entity.User;
 import com.flicker.user.user.dto.*;
-import com.flicker.user.user.infrastructure.UserRepository;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final JWTUtil jwtUtil;
     private final ReviewService reviewService;
     private final UserService userService;
 
@@ -71,17 +70,33 @@ public class UserController {
     }
 
     @PutMapping("/{userSeq}")
-    public ResponseEntity<ResponseDto> update(@PathVariable(value = "userSeq")Integer userSeq,
-                                              @RequestBody UserUpdateDto dto){
+    public ResponseEntity<String> update(@PathVariable(value = "userSeq")Integer userSeq,
+                                         @RequestBody UserUpdateDto dto, HttpServletResponse response){
         if(userSeq == null || dto.getNickname() == null || dto.getPassword() == null || dto.getEmail() == null){
             throw new RestApiException(StatusCode.BAD_REQUEST);
         }
 
-        if(!userService.update(userSeq,dto)){
-            throw new RestApiException(StatusCode.BAD_REQUEST);
+
+        UserLoginResDto update = userService.update(userSeq, dto);
+        if(update == null){
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR);
         }
 
-        return ResponseDto.response(StatusCode.SUCCESS, null);
+        String access = jwtUtil.createToken("access", update, "ROLE_USER", 600000L);
+        String refresh = jwtUtil.createToken("refresh", update, "ROLE_USER", 86400000L);
+
+        Cookie refreshTokenCookie = new Cookie("refresh", refresh);
+        refreshTokenCookie.setHttpOnly(true); // HttpOnly 옵션을 설정하여 자바스크립트에서 접근하지 못하도록
+        refreshTokenCookie.setSecure(true);   // HTTPS로만 전송 (개발 환경에서는 false로 설정 가능)
+        refreshTokenCookie.setPath("/");      // 쿠키의 경로 설정
+        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // Refresh 토큰의 유효기간을 설정 (예: 7일)
+
+        response.addCookie(refreshTokenCookie); // 응답에 쿠키 추가
+
+        // 6. 새로운 Access 토큰과 함께 응답 반환
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + access)  // Access 토큰을 헤더에 담기
+                .body("OK");
     }
 
     // 로그 아웃

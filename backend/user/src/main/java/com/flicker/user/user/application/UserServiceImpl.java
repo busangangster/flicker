@@ -7,10 +7,7 @@ import com.flicker.user.user.domain.entity.BookmarkMovie;
 import com.flicker.user.user.domain.entity.FavoriteMovie;
 import com.flicker.user.user.domain.entity.UnlikeMovie;
 import com.flicker.user.user.domain.entity.User;
-import com.flicker.user.user.dto.MovieDetail;
-import com.flicker.user.user.dto.MovieSeqListDto;
-import com.flicker.user.user.dto.UserRegisterDto;
-import com.flicker.user.user.dto.UserUpdateDto;
+import com.flicker.user.user.dto.*;
 import com.flicker.user.user.infrastructure.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -140,13 +137,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public boolean update(Integer userSeq, UserUpdateDto dto) {
+    public UserLoginResDto update(Integer userSeq, UserUpdateDto dto) {
         User user = userRepository.findById(userSeq)
                 .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_USER));
 
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         user.updateUser(dto);
-        return true;
+
+        return userConverter.toUserLoginResDto(user);
     }
 
     public User findUserSeqToUser(Integer userSeq){
