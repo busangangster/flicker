@@ -34,12 +34,16 @@ public class BffUserController {
     }
 
     // 3. 회원수정(LOW)
-    @DeleteMapping("/{userSeq}")
-    public Mono<ResponseEntity<ResponseDto>> delete(@PathVariable(value = "userSeq")Integer userSeq){
-        return userService.delete(userSeq);
+    @PutMapping("/{userSeq}")
+    public Mono<ResponseEntity<ResponseDto>> update(@PathVariable(value = "userSeq")Integer userSeq,@RequestBody UserUpdateDto dto){
+        return userService.update(userSeq,dto);
     }
 
     // 4. 회원탈퇴(LOW)
+    @DeleteMapping("/{userSeq}")
+    public Mono<ResponseEntity<ResponseDto>> delete(@PathVariable(value = "userSeq")Integer userSeq,@RequestBody UserUpdateDto dto){
+        return userService.delete(userSeq);
+    }
     // 3. 영화 디테일 페이지의 대표 리뷰 조회
     @GetMapping("/review/movies/{movieSeq}/popular-review")
     public Mono<ResponseEntity<ResponseDto>> getPopularMovieReviews(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq) {

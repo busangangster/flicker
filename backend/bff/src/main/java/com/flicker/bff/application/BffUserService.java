@@ -53,6 +53,10 @@ public class BffUserService {
     }
 
     // 3. 회원수정(LOW)
+    public Mono<ResponseEntity<ResponseDto>> update(Integer userSeq, UserUpdateDto dto) {
+        String path = util.getUri("/" + userSeq);
+        return util.sendPutRequestAsync(userReviewBaseUrl, path,dto);
+    }
     // 4. 회원탈퇴(LOW)
     public Mono<ResponseEntity<ResponseDto>> delete(Integer userSeq) {
         String path = util.getUri("/" + userSeq);
