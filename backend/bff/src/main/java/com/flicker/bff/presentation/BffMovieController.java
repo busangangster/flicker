@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/bff/movie")
@@ -123,8 +125,8 @@ public class BffMovieController {
     }
 
     // 임의로 Top10 영화 생성 (테스트용)
-//    @PostMapping("/admin/set/top10")
-//    public Mono<ResponseEntity<ResponseDto>> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
-//        return bffMovieService.setTopMovieList(movieSeqs);
-//    }
+    @PostMapping("/admin/set/top10")
+    public Mono<ResponseEntity<ResponseDto>> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
+        return bffMovieService.setTopMovieList(movieSeqs);
+    }
 }
