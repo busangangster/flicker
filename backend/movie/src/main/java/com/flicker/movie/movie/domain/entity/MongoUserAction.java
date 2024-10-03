@@ -27,6 +27,8 @@ public class MongoUserAction {
 
     private String action; // "SEARCH" or "DETAIL" or "REVIEW"
 
+    private Integer movieYear;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }
