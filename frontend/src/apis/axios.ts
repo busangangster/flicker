@@ -203,6 +203,7 @@ export const fetchMovieRating = async () => {
   }
 };
 
+// 이번 달 개봉 영화 조회
 export const fetchMovieNew = async () => {
   try {
     const response = await movieListApi.get(`/newMovie`);
