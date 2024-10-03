@@ -136,4 +136,10 @@ public class BffMovieController {
         return bffMovieService.getRecommendationMovieListByActor(userSeq);
     }
 
+    // 이번달 개봉 영화 목록 조회
+    @GetMapping("/list/newMovie")
+    public Mono<ResponseEntity<ResponseDto>> getNewMovieList() {
+        return bffMovieService.getNewMovieList();
+    }
+
 }
