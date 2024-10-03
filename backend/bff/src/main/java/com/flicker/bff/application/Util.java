@@ -50,9 +50,8 @@ public class Util {
                     .retrieve()
                     .bodyToMono(String.class)  // 응답을 문자열로 받음
                     .flatMap(response -> {
-                        // 받은 응답을 sysout으로 출력
+                        System.out.println("Server Response: " + response); // 서버 응답 로그 출력
                         try {
-                            System.out.println("response: " + response);
                             // 응답을 ResponseDto로 변환
                             ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
                             return Mono.just(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData()));
@@ -62,7 +61,6 @@ public class Util {
                         }
                     })
                     .onErrorResume(e -> {
-                        System.out.println("error: " + e);
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
