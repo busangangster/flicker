@@ -10,4 +10,6 @@ public class MovieListDto {
     private String moviePosterUrl;
     private String backgroundUrl;
     private Double movieRating;
+    private String audienceRating;
+    private String runningTime;
 }
