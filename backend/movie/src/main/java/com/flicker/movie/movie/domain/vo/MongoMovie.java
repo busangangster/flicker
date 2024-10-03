@@ -11,4 +11,7 @@ public class MongoMovie {
     private int movieSeq;
     private String movieTitle;
     private String moviePosterUrl;
+    private int movieYear;
+    private String backgroundUrl;
+    private double movieRating;
 }
