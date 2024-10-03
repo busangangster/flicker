@@ -12,6 +12,8 @@ public class UserActionResponse {
 
     private String keyword;
 
+    private int movieYear;
+
     private String action; // "SEARCH" or "DETAIL"
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -22,5 +24,6 @@ public class UserActionResponse {
         this.keyword = mongoUserAction.getKeyword();
         this.action = mongoUserAction.getAction();
         this.timestamp = mongoUserAction.getTimestamp();
+        this.movieYear = mongoUserAction.getMovieYear();
     }
 }

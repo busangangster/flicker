@@ -81,6 +81,8 @@ public class MovieBuilderUtil {
                         .movieYear(movie.getMovieDetail().getMovieYear()) // 영화 제작 연도 설정
                         .backgroundUrl(movie.getMovieDetail().getBackgroundUrl()) // 배경 이미지 URL 설정
                         .movieRating(movie.getMovieRating()) // 영화 평점 설정
+                        .audienceRating(movie.getMovieDetail().getAudienceRating()) // 관람 등급 설정
+                        .runningTime(movie.getMovieDetail().getRunningTime()) // 상영 시간 설정
                         .build())
                 .collect(Collectors.toList());
         // MongoMovieList 생성
@@ -99,12 +101,13 @@ public class MovieBuilderUtil {
     }
 
     // MongoUserAction 빌더 메서드
-    public MongoUserAction buildMongoUserAction(int userSeq, String keyword, String action, LocalDateTime timestamp) {
+    public MongoUserAction buildMongoUserAction(int userSeq, String keyword, String action, LocalDateTime timestamp, Integer movieYear) {
         return MongoUserAction.builder()
                 .userSeq(userSeq)
                 .keyword(keyword)
                 .action(action)
                 .timestamp(timestamp)
+                .movieYear(movieYear)
                 .build();
     }
 

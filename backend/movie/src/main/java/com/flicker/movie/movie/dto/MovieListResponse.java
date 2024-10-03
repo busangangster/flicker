@@ -19,6 +19,10 @@ public class MovieListResponse {
 
     private double movieRating;
 
+    private String audienceRating;
+
+    private String runningTime;
+
     public MovieListResponse(Movie movie, MovieDetail movieDetail) {
         this.movieSeq = movie.getMovieSeq();
         this.movieTitle = movieDetail.getMovieTitle();
@@ -26,6 +30,8 @@ public class MovieListResponse {
         this.movieYear = movieDetail.getMovieYear();
         this.backgroundUrl = movieDetail.getBackgroundUrl();
         this.movieRating = movie.getMovieRating();
+        this.audienceRating = movieDetail.getAudienceRating();
+        this.runningTime = movieDetail.getRunningTime();
     }
 
     public MovieListResponse(MongoMovie mongoMovie) {
@@ -35,5 +41,7 @@ public class MovieListResponse {
         this.movieYear = mongoMovie.getMovieYear();
         this.backgroundUrl = mongoMovie.getBackgroundUrl();
         this.movieRating = mongoMovie.getMovieRating();
+        this.audienceRating = mongoMovie.getAudienceRating();
+        this.runningTime = mongoMovie.getRunningTime();
     }
 }

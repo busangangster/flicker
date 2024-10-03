@@ -131,7 +131,8 @@ public class CustomConsumer {
             }
             Movie movie = movieRepoUtil.findById(reviewActionEvent.getMovieSeq());
             String movieTitle = movie.getMovieDetail().getMovieTitle();
-            MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(reviewActionEvent.getUserSeq(), movieTitle, "REVIEW", reviewActionEvent.getTimestamp());
+            int movieYear = movie.getMovieDetail().getMovieYear();
+            MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(reviewActionEvent.getUserSeq(), movieTitle, "REVIEW", reviewActionEvent.getTimestamp(), movieYear);
             // 3. 사용자 행동 로그 추가
             movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
             // 4. 해당 유저의 추천 배우 삭제

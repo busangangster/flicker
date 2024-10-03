@@ -147,7 +147,7 @@ public class MovieService {
     @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq, int page, int size) {
         // 1. MongoUserAction 객체 생성
-        MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, keyword, "SEARCH", LocalDateTime.now());
+        MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, keyword, "SEARCH", LocalDateTime.now(), null);
         // 2. MongoDB에 행동 로그 저장
         movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
         // 3. redis 키워드 조회 후 결과 반환
@@ -182,7 +182,7 @@ public class MovieService {
         // 1. 영화 정보 조회
         Movie movie = movieRepoUtil.findById(movieSeq);
         // 2. MovieEvent 객체 생성
-        MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, movie.getMovieDetail().getMovieTitle(), "DETAIL", LocalDateTime.now());
+        MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, movie.getMovieDetail().getMovieTitle(), "DETAIL", LocalDateTime.now(), movie.getMovieDetail().getMovieYear());
         // 3. MongoDB에 행동 로그 저장
         movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
         // 4. MovieDetailResponse 생성
