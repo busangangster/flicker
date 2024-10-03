@@ -353,3 +353,19 @@ export const updateUserInfo = async (
     throw error;
   }
 };
+
+export const fetchSideBarUserInfo = async (userSeq: number) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/myPage`;
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error("Error fetching user page info:", error);
+    throw error;
+  }
+};

@@ -99,6 +99,8 @@ const MoviesPage: React.FC = () => {
         movieSeq: movie.movieSeq,
         moviePosterUrl: movie.moviePosterUrl,
         movieYear: movie.movieYear,
+        movieTitle: movie.movieTitle,
+
         movieRating: movie.movieRating,
         runningTime: movie.runningTime,
         audienceRating: movie.audienceRating,
@@ -123,6 +125,8 @@ const MoviesPage: React.FC = () => {
         movieSeq: movie.movieSeq,
         moviePosterUrl: movie.moviePosterUrl,
         movieYear: movie.movieYear,
+        movieTitle: movie.movieTitle,
+
         movieRating: movie.movieRating,
         runningTime: movie.runningTime,
         audienceRating: movie.audienceRating,
