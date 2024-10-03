@@ -8,6 +8,7 @@ import com.flicker.user.user.domain.vo.UserInfo;
 import com.flicker.user.user.dto.MovieSeqListDto;
 import com.flicker.user.user.dto.UserUpdateDto;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -90,7 +92,11 @@ public class User {
         return true;
     }
 
+    @Transactional
     public void addFavoriteMovie(MovieSeqListDto dto){
+
+        this.favoriteMovies.clear();
+
         for(Integer movieSeq : dto.getMovieSeqList()){
 
             boolean isDuplicate = false;
