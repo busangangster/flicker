@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { MoviesListProps } from "../type";
 import "../css/MovieList.css"; // css 파일에서 hover 애니메이션 적용
 
+
 const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
