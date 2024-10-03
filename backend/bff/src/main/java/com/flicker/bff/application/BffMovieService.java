@@ -164,28 +164,10 @@ public class BffMovieService {
                         }
                         movieDetailAndReviewAndRecommendResponse.setMovieDetailResponse(movieDetailResponse);
                         // 2. 추천 서버에서 연관 영화 추천 가져오기
-//                        List<RecommendByContentRequest> recommendByContentRequests = Collections.singletonList(new RecommendByContentRequest(movieDetailResponse.getMovieTitle(), movieDetailResponse.getMovieYear(), null));
-//                        String recommendationPath = util.getUri("/content");
-//                        return util.sendPostRequestToRecommendServer(recommendBaseUrl, recommendationPath, recommendByContentRequests)
-//                                .flatMap(recommendResponse -> {
-// TODO: 임시
-                                    List<MovieSeqListRequest> recommendResponse = new ArrayList<>();
-                                    recommendResponse.add(new MovieSeqListRequest("1980", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("가족이라서 문제입니다", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("고스트버스터즈: 오싹한 뉴욕", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("고질라 X 콩: 뉴 엠파이어", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("그녀가 죽었다", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("나쁜 녀석들: 라이드 오어 다이", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("나이트 스윔", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("나이트비치", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("너란 개념", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("눈에 갇힌 외딴 산장에서", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("수유천", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("행복의 나라", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("혹성탈출: 새로운 시대", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("데드풀과 울버린", 2024));
-                                    recommendResponse.add(new MovieSeqListRequest("듄: 파트 2", 2024));
-
+                        List<RecommendByContentRequest> recommendByContentRequests = Collections.singletonList(new RecommendByContentRequest(movieDetailResponse.getMovieTitle(), movieDetailResponse.getMovieYear(), null));
+                        String recommendationPath = util.getUri("/content");
+                        return util.sendPostRequestToRecommendServer(recommendBaseUrl, recommendationPath, recommendByContentRequests)
+                                .flatMap(recommendResponse -> {
                                     // 3. 사용자의 찜/비선호 여부, 비선호 영화 목록, 탑 리뷰 목록을 가져옴
                                     String userMovieDetailPath = util.getUri("/movie-detail?userSeq=" + userSeq + "&movieSeq=" + movieSeq);
                                     return util.sendGetRequestAsync(userBaseUrl, userMovieDetailPath)
@@ -248,7 +230,7 @@ public class BffMovieService {
                                                             movieDetailAndReviewAndRecommendResponse.setSimilarMovies(movieListResponses);
                                                             return Mono.just(ResponseDto.response(StatusCode.SUCCESS, movieDetailAndReviewAndRecommendResponse));
                                                         });
-//                                            });
+                                            });
                                 });
                     })
                     .onErrorResume(e -> {
