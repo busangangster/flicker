@@ -134,6 +134,7 @@ public class ReviewController {
         return ResponseDto.response(StatusCode.SUCCESS, userReviews);
     }
 
+
     @GetMapping("/movies/{movieSeq}/distribute")
     public ResponseEntity<ResponseDto> getMovieReviewRatingDistribute(@PathVariable Integer movieSeq){
         System.out.println("요청 들어옴");
@@ -147,4 +148,5 @@ public class ReviewController {
         return ResponseDto.response(StatusCode.SUCCESS, movieReviewRatingDistribute);
 
     }
+
 }
