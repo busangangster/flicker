@@ -448,7 +448,7 @@ public class BffMovieService {
     public Mono<ResponseEntity<ResponseDto>> getRecommendationMovieListByActor(int userSeq) {
         // 1. 영화 서버에서 사용자의 추천 영화 배우 가져오기
         String path = util.getUri("/list/recommendActor/" + userSeq);
-        return util.sendGetRequestAsync(recommendBaseUrl, path)
+        return util.sendGetRequestAsync(movieBaseUrl, path)
                 .flatMap(getResponse -> {
                     ResponseDto actorResponseDto;
                     try {
@@ -465,11 +465,14 @@ public class BffMovieService {
                     }
                     String actorName;
                     try {
-                        // actorListResponseDto의 데이터 필드를 List<String>로 변환
+                        // actorListResponseDto의 데이터 필드를 String로 변환
                         actorName = objectMapper.convertValue(actorResponseDto.getData(), new TypeReference<String>() {
                         });
                     } catch (Exception e) {
                         return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                    }
+                    if(actorName == null || actorName.isEmpty()) {
+                        return Mono.just(ResponseDto.response(StatusCode.NO_CONTENT, "최근에 리뷰를 달지 않았습니다."));
                     }
                     // 2. 추천 서버에서 연관 영화 목록을 가져옴
                     List<RecommendByContentRequest> recommendByContentRequests = Collections.singletonList(new RecommendByContentRequest(null, null, actorName));
