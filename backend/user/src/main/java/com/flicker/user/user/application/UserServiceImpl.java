@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService{
     public MovieSeqListDto getBookmarkMovies(Integer userSeq) {
         User user = findUserSeqToUser(userSeq);
         List<Integer> movieSeqList = user.getBookmarkMovies().stream()
-                .map(BookmarkMovie::getBookmarkMovieSeq)
+                .map(BookmarkMovie::getMovieSeq)
                 .toList();
         return new MovieSeqListDto(movieSeqList);
     }
