@@ -50,7 +50,6 @@ public class Util {
                     .retrieve()
                     .bodyToMono(String.class)  // 응답을 문자열로 받음
                     .flatMap(response -> {
-                        System.out.println("Server Response: " + response); // 서버 응답 로그 출력
                         try {
                             // 응답을 ResponseDto로 변환
                             ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
