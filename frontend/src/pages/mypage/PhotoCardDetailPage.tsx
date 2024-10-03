@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import thumbUpOutline from "../../assets/review/thumb_up_outline.png";
 import starFull from "../../assets/review/star.png";
 import starHalf from "../../assets/review/star_half.png";
+import star_outline from "../../assets/review/star_outline.png";
 import "../../css/PhotoCard.css";
 import { PhotoCardFrontProps } from "../../type";
 
@@ -24,7 +25,7 @@ const PhotoCardDetailPage: React.FC<{
 
   return (
     <div
-      className="w-[450px] h-[650px] photo-card-animation"
+      className="w-[450px] h-full photo-card-animation"
       onClick={handleCardClick}
     >
       <div className={`photo-card ${isFlipped ? "flipped" : ""}`}>
@@ -44,7 +45,7 @@ const PhotoCardDetailPage: React.FC<{
             src="/assets/common/x.png"
             alt="Back Button"
             className="w-4 h-4 absolute top-4 right-4 cursor-pointer"
-            onClick={handleCloseModal} 
+            onClick={handleCloseModal}
           />
           <h2 className="text-center text-xl italic mb-3 text-black">
             My Photo Card
@@ -57,16 +58,40 @@ const PhotoCardDetailPage: React.FC<{
             {card.movieTitle}
           </h1>
           <hr className="mb-6 border-gray-600" />
-
           <div className="flex items-center justify-center mb-6">
-            {Array.from({ length: 5 }, (_, index) => (
-              <img
-                key={index}
-                src={index + 1 <= card.reviewRating ? starFull : starHalf}
-                alt="Star"
-                className="w-7 h-7 ml-1"
-              />
-            ))}
+            {Array.from({ length: 5 }, (_, index) => {
+              const fullStars = Math.floor(card.reviewRating);
+              const hasHalfStar = card.reviewRating % 1 !== 0;
+
+              if (index < fullStars) {
+                return (
+                  <img
+                    key={index}
+                    src={starFull}
+                    alt="Star"
+                    className="w-7 h-7 ml-1"
+                  />
+                );
+              } else if (index === fullStars && hasHalfStar) {
+                return (
+                  <img
+                    key={index}
+                    src={starHalf}
+                    alt="Half Star"
+                    className="w-7 h-7 ml-1"
+                  />
+                );
+              } else {
+                return (
+                  <img
+                    key={index}
+                    src={star_outline}
+                    alt="Star Outline"
+                    className="w-7 h-7 ml-1"
+                  />
+                );
+              }
+            })}
             <span className="ml-3 text-xl text-black font-bold">
               {card.reviewRating.toFixed(1)}
             </span>
@@ -76,8 +101,8 @@ const PhotoCardDetailPage: React.FC<{
             <h3 className="font-semibold mb-2 ml-2 text-black text-lg italic">
               info
             </h3>
-            <div className="border border-gray-500 rounded-sm p-4 text-sm text-black font-semibold">
-              <p>{card.createdAt}</p>
+            <div className="border border-gray-500 rounded-sm p-4 text-black font-semibold">
+              <p>{card.createdAt.slice(0, 10)}</p>
             </div>
           </div>
 
@@ -97,7 +122,7 @@ const PhotoCardDetailPage: React.FC<{
                 </span>
               </div>
             </div>
-            <div className="border border-gray-500 rounded-sm p-4 text-sm text-black font-semibold leading-relaxed">
+            <div className="border border-gray-500 rounded-sm p-4 text-black font-semibold leading-relaxed">
               <p>{card.content}</p>
             </div>
           </div>

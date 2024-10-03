@@ -108,7 +108,7 @@ const MovieGenrePage: React.FC = () => {
       </div>
       <div className="mt-10 mb-4">
         <span
-          className="text-gray-300 text-2xl ml-16 cursor-pointer"
+          className="text-gray-300 text-2xl ml-16 cursor-pointer hover:underline"
           onClick={goBack}
         >
           영화
