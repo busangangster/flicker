@@ -129,4 +129,11 @@ public class BffMovieController {
     public Mono<ResponseEntity<ResponseDto>> getTopRatingMovieList() {
         return bffMovieService.getTopRatingMovieList();
     }
+
+    // 추천 배우에 따른 연관 영화 목록 조회
+    @GetMapping("/list/recommendActor/{userSeq}")
+    public Mono<ResponseEntity<ResponseDto>> getRecommendationMovieListByActor(@PathVariable int userSeq) {
+        return bffMovieService.getRecommendationMovieListByActor(userSeq);
+    }
+
 }
