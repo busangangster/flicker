@@ -8,6 +8,7 @@ public interface UserService {
 
     public boolean register(UserRegisterDto dto);
     public boolean delete(Integer userSeq);
+    public boolean update(Integer userSeq, UserUpdateDto dto);
 
     public String getNicknameByUserSeq(Integer userSeq);
     public MovieSeqListDto getFavoriteMovies(Integer userSeq);

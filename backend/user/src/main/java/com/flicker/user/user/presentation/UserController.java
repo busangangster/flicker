@@ -7,10 +7,7 @@ import com.flicker.user.review.application.ReviewService;
 import com.flicker.user.review.dto.ReviewDto;
 import com.flicker.user.user.application.UserService;
 import com.flicker.user.user.domain.entity.User;
-import com.flicker.user.user.dto.MovieDetail;
-import com.flicker.user.user.dto.MovieSeqListDto;
-import com.flicker.user.user.dto.UserLoginReqDto;
-import com.flicker.user.user.dto.UserRegisterDto;
+import com.flicker.user.user.dto.*;
 import com.flicker.user.user.infrastructure.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,26 +26,7 @@ public class UserController {
 
     private final ReviewService reviewService;
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    @GetMapping("/auth-test")
-    public ResponseEntity<ResponseDto> login(HttpServletRequest request){
-
-        Cookie[] cookies = request.getCookies(); // 요청에서 쿠키 배열 가져오기
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                System.out.println(cookie.getName());
-            }
-        }
-
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(userId == null) {
-            throw new RestApiException(StatusCode.INVALID_ID_OR_PASSWORD);
-        }
-        User byUserId = userRepository.findByUserId(userId);
-
-        return ResponseDto.response(StatusCode.SUCCESS ,byUserId);
-    }
 
     // 회원 가입 (아이디 중복 체크)
     // @TODO 아이디 중복 체크, 실제 서비스 실행
@@ -88,6 +66,20 @@ public class UserController {
         if(!delete){
             throw new RestApiException(StatusCode.BAD_REQUEST);
         }
+        return ResponseDto.response(StatusCode.SUCCESS, null);
+    }
+
+    @PutMapping("/{userSeq}")
+    public ResponseEntity<ResponseDto> update(@PathVariable(value = "userSeq")Integer userSeq,
+                                              @RequestBody UserUpdateDto dto){
+        if(userSeq == null || dto.getNickname() == null || dto.getPassword() == null || dto.getEmail() == null){
+            throw new RestApiException(StatusCode.BAD_REQUEST);
+        }
+
+        if(!userService.update(userSeq,dto)){
+            throw new RestApiException(StatusCode.BAD_REQUEST);
+        }
+
         return ResponseDto.response(StatusCode.SUCCESS, null);
     }
 
