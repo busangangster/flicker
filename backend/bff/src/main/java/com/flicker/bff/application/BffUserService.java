@@ -180,8 +180,9 @@ public class BffUserService {
                     movieInfoDto.setMovieYear(item.getMovieYear());
                     movieInfoDto.setMoviePosterUrl(item.getMoviePosterUrl());
                     movieInfoDto.setBackgroundUrl(item.getBackgroundUrl());
+                    result.add(movieInfoDto);
                 }
-
+                System.out.println("result = " + result);s
                 return Mono.just(ResponseDto.response(StatusCode.SUCCESS, result));
             });
 
@@ -209,6 +210,7 @@ public class BffUserService {
     // 15. 찜한 영화 조회
     public Mono<ResponseEntity<ResponseDto>> getBookmarkMovie(Integer userSeq) {
         String path = util.getUri("/"+userSeq+"/bookmark-movie");
+
         return util.sendGetRequestAsync(userReviewBaseUrl,path).flatMap(getResponse ->{
             //바로 받는 코드
             ResponseDto reviewResponseDto;
@@ -275,6 +277,8 @@ public class BffUserService {
                     result.add(movieInfoDto);
                 }
 
+                System.out.println("result = " + result);
+                
                 return Mono.just(ResponseDto.response(StatusCode.SUCCESS, result));
             });
 
