@@ -139,6 +139,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public boolean update(Integer userSeq, UserUpdateDto dto) {
         User user = userRepository.findById(userSeq)
                 .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_USER));
