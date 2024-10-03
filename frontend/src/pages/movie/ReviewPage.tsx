@@ -170,6 +170,7 @@ const ReviewPage: React.FC = () => {
     setReviews((prev: ReviewType[]) => [newReview, ...prev]);
   };
 
+
   // const handleLikeToggle = (reviewSeq: number) => {
   //   setReviews((prevReviews) =>
   //     prevReviews.map((review) =>
@@ -210,7 +211,14 @@ const ReviewPage: React.FC = () => {
                 />
               </div>
             </div>
-            {userData ? <ReviewForm onSubmit={handleAddReview} /> : ""}
+            {userData ? (
+              <ReviewForm
+                onSubmit={handleAddReview}
+                movieSeq={Number(movieSeq)}
+              />
+            ) : (
+              ""
+            )}
             {reviews.length > 0 ? (
               getSortedReviews().map((review) => (
                 <Review
@@ -225,15 +233,18 @@ const ReviewPage: React.FC = () => {
             {isLoading && <div>Loading...</div>}
           </div>
           <div className="w-1/4 pl-4">
-            <div className="mb-6">
-              <img
-                src={moviePosterUrl || "default_poster_url"}
-                alt="Movie Poster"
-                className="w-full rounded-sm mb-4"
-              />
+            <div className="sticky top-20">
+              {" "}
+              <div className="mb-6">
+                <img
+                  src={moviePosterUrl || "default_poster_url"}
+                  alt="Movie Poster"
+                  className="w-full rounded-sm mb-4"
+                />
+              </div>
+              <Ratings movieSeq={Number(movieSeq)} />
+              <Keyword />
             </div>
-            <Ratings />
-            <Keyword />
           </div>
         </div>
         <div className="w-1/5"></div>

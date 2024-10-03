@@ -7,6 +7,7 @@ import { MoviesListProps } from "../type";
 import "../css/MovieList.css"; 
 import { FaStar, FaStarHalfAlt } from "react-icons/fa"; 
 
+
 const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);

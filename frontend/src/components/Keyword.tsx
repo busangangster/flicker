@@ -1,29 +1,61 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import WordCloud from "react-d3-cloud";
-
-// 단어 리스트
-const words = [
-  { text: "감동", value: 50 },
-  { text: "재미", value: 30 },
-  { text: "최고", value: 40 },
-  { text: "강추", value: 25 },
-  { text: "비장", value: 20 },
-  { text: "시원함", value: 35 },
-  { text: "인생영화", value: 45 },
-];
-
-// 글자 크기 설정 (value 값에 비례해 더 큰 차이를 보이도록 조정)
-const fontSize = (word: { value: number }) => word.value * 2; // 기존보다 큰 차이 설정
-
-// 글자 회전 설정 (0도 고정)
-const rotate = () => 0;
+import { getWordCloud } from "../apis/movieApi";
+import { WordCloud as WordCloudDataType } from "../type";
+import { useParams } from "react-router-dom";
 
 const Keyword: React.FC = () => {
+  const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq 받아오기
+  const [words, setWords] = useState<{ text: string; value: number }[]>([]); // 워드 클라우드 데이터를 저장할 상태
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchWordCloudData = async () => {
+      setIsLoading(true);
+      try {
+        const wordCloudData: WordCloudDataType = await getWordCloud(
+          Number(movieSeq)
+        );
+        // API에서 받은 데이터를 변환하여 사용
+      const formattedWords = wordCloudData.data
+        .filter((item) => item.keyword !== "영화")
+        .map((item) => ({
+          text: item.keyword,
+          value: item.count,
+        }));
+
+        
+        setWords(formattedWords);
+      } catch (err) {
+        console.error("워드 클라우드 데이터를 불러오는 중 오류 발생:", err);
+        setError("워드 클라우드 데이터를 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWordCloudData(); // API 호출
+  }, [movieSeq]);
+
+  // 글자 크기 설정 (최소 및 최대 크기 제한 추가)
+  const fontSize = (word: { value: number }) => {
+    const minSize = 50;
+    const maxSize = 130;
+    return Math.min(Math.max(word.value * 0.1, minSize), maxSize);
+  };
+
+  // 글자 회전 설정 (0도 고정)
+  const rotate = () => 0;
+
+  // 상위 50개의 단어만 표시하도록 제한
+  const limitedWords = words.slice(0, 50);
+
   // useMemo를 사용하여 워드 클라우드 데이터를 메모이제이션
   const wordCloudComponent = useMemo(() => {
     return (
       <WordCloud
-        data={words}
+        data={limitedWords}
         font={() => "NanumGothic"}
         fontSize={fontSize} // 글자 크기 설정
         rotate={rotate} // 글자 회전 설정
@@ -42,12 +74,20 @@ const Keyword: React.FC = () => {
         height={500} // 워드 클라우드의 높이
       />
     );
-  }, []); // 빈 배열을 의존성으로 전달하여 처음 렌더링 시에만 실행
+  }, [limitedWords]); // words 배열이 변경될 때마다 업데이트
 
   return (
     <div className="mt-4">
       <h2 className="text-lg font-semibold mb-2">Keyword</h2>
-      <div className="bg-gray-800 p-2 rounded">{wordCloudComponent}</div>
+      <div className="bg-gray-800 p-2 rounded">
+        {isLoading ? (
+          <p>로딩 중...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          wordCloudComponent
+        )}
+      </div>
     </div>
   );
 };
