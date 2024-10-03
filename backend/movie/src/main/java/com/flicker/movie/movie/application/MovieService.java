@@ -19,27 +19,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/*
- * MovieService 클래스는 영화 정보를 생성, 수정, 삭제하는 비즈니스 로직을 담당한다.
- * MovieBuilderUtil, MovieRepoUtil, CustomProducer를 주입받는다.
- * createMovie() 메서드는 영화 정보를 생성한다.
- * updateMovie() 메서드는 영화 정보를 수정한다.
- * updateMovieRating() 메서드는 영화 평점을 수정한다.
- * deleteMovie() 메서드는 영화 정보를 삭제한다.
- * getAllMovieList() 메서드는 모든 영화 리스트를 조회한다.
- * getMovieListByGenre() 메서드는 장르별 영화 리스트를 조회한다.
- * getMovieListByActor() 메서드는 배우별 영화 리스트를 조회한다.
- * getMovieListByKeyword() 메서드는 키워드를 포함하는 영화 리스트를 조회한다.
- * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
- * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
- * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
- * getTopMovieList() 메서드는 Top10 영화 리스트를 조회한다.
- * getMovieListByMovieSeqList() 메서드는 영화 번호 목록으로 영화 리스트를 조회한다.
- * initSearchResultForRedisAndMongoDB() 메서드는 redis, mongoDB (키워드 검색결과)를 초기화한다.
- * findTopKeywords() 메서드는 상위 10개 키워드를 추출한다.
- * findMovieSeqsByKeywords() 메서드는 영화 제목 목록의 영화 번호를 추출한다.
- * saveTopMovieForRedis() 메서드는 Redis에 영화 번호 목록을 저장한다.
- */
 @RequiredArgsConstructor
 @Service
 public class MovieService {
@@ -241,8 +220,21 @@ public class MovieService {
     public List<MovieListResponse> getTopMovieList() {
         // 1. Redis에서 TopMovieList 조회
         RedisTopMovie redisTopMovie = movieRepoUtil.findTopMovieListForRedis();
-        // 2. 영화 번호 목록 추출
-        List<Integer> movieSeqs = redisTopMovie.getMovieSeqs();
+        List<Integer> movieSeqs;
+        // Redis에 값이 없으면 DB에서 조회
+        if (redisTopMovie == null) {
+            List<TopMovie> topMovies = movieRepoUtil.findTopMovieList();
+            // 영화 번호 목록 추출
+            movieSeqs = topMovies.stream()
+                    .map(TopMovie::getMovieSeq)
+                    .toList();
+            // Redis에 영화 번호 목록을 저장 (키는 예를 들어 "TopMovieList")
+            redisTopMovie = movieBuilderUtil.redisTopMovieBuilder("TopMovieList", movieSeqs);
+            movieRepoUtil.saveTopMovieForRedis(redisTopMovie);
+        } else {
+            // 2. 영화 번호 목록 추출
+            movieSeqs = redisTopMovie.getMovieSeqs();
+        }
         // 3. TopMovieList 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
         // 4. movieSeq를 키로 하는 Map으로 변환 (Movie 객체 매핑)
@@ -286,13 +278,25 @@ public class MovieService {
                 .toList();
     }
 
+    @Transactional
+    public List<MovieListResponse> getTopRatingMovieList() {
+        // 1. 평점 높은 영화 30개 조회
+        Pageable pageable = PageRequest.of(0, 30);
+        List<Movie> movieList = movieRepoUtil.findTopRatingMovieList(pageable);
+        // 2. MovieListResponse 리스트 생성
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
+    }
+
     // redis , mongoDB (키워드 검색결과 ) 초기화
     private void initSearchResultForRedisAndMongoDB() {
         movieRepoUtil.deleteAllSearchResultForRedis();
         movieRepoUtil.deleteAllSearchResultForMongoDB();
     }
-    
+
     // Top10 키워드 추출
+    @Transactional
     public List<String> findTopKeywords(List<MongoUserAction> userActions) {
         // 키워드의 빈도를 계산하고 상위 10개를 추출
         return userActions.stream()
@@ -303,11 +307,12 @@ public class MovieService {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
-    
+
     // 영화 제목 목록의 영화 번호 추출
+    @Transactional
     public List<Integer> findMovieSeqsByKeywords(List<String> movieTitles) {
         List<Integer> movieSeqs = new ArrayList<>();
-        for(String movieTitle : movieTitles) {
+        for (String movieTitle : movieTitles) {
             // 영화 제목으로 영화 번호 조회
             Movie movie = movieRepoUtil.findByMovieTitle(movieTitle);
             // 영화 번호 목록에 추가
@@ -316,11 +321,16 @@ public class MovieService {
         return movieSeqs;
     }
 
-    // Redis에 영화 번호 목록을 저장
-    public void saveTopMovieForRedis(List<Integer> movieSeqs) {
-        // Redis에 영화 번호 목록을 저장 (키는 예를 들어 "TopMovieList")
-        RedisTopMovie redisTopMovie = movieBuilderUtil.redisTopMovieBuilder("TopMovieList", movieSeqs);
-        movieRepoUtil.saveTopMovieForRedis(redisTopMovie);
+    @Transactional
+    public String getRecommendActor(int userSeq) {
+        // 랜덤으로 해당 유저의 사용자 추천 배우 중 1명 뽑기
+        List<RecommendActor> recommendActors = movieRepoUtil.findRecommendActor(userSeq);
+        if (recommendActors == null || recommendActors.isEmpty()) {
+            throw new RestApiException(StatusCode.NO_CONTENT, "추천된 배우가 존재하지 않습니다.");
+        }
+        RecommendActor recommendActor = recommendActors.get((int) (Math.random() * recommendActors.size()));
+        Movie movie = movieRepoUtil.findById(recommendActor.getMovieSeq());
+        Actor actor = movie.getActor(recommendActor.getActorSeq());
+        return actor.getActorName();
     }
-
 }

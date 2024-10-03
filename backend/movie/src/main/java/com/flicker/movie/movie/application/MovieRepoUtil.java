@@ -4,13 +4,11 @@ import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.domain.vo.MongoMovie;
-import com.flicker.movie.movie.dto.MovieSeqListRequest;
 import com.flicker.movie.movie.infrastructure.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -34,6 +32,8 @@ public class MovieRepoUtil {
     private final MongoUserActionRepository mongoUserActionRepository;
     private final MovieBuilderUtil movieBuilderUtil;
     private final RedisTopMovieRepository redisTopMovieRepository;
+    private final TopMovieRepository topMovieRepository;
+    private final RecommendActorRepository recommendActorRepository;
 
     /**
      * 영화 ID(movieSeq)를 사용하여 영화 정보를 조회하는 메서드입니다.
@@ -161,6 +161,47 @@ public class MovieRepoUtil {
             return movieRepository.findByKeywordInTitlePlotActorGenre(keyword, "N", pageable);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "키워드를 포함하는 영화 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+
+    /**
+     * Top10 영화 목록을 저장하는 메서드입니다.
+     * @param topMovies 저장할 Top10 영화 목록
+     * @throws RestApiException Top10 영화 목록 저장 중 오류가 발생할 경우 발생
+     */
+    public void saveTopMovie(List<TopMovie> topMovies) {
+        try {
+            topMovieRepository.saveAll(topMovies);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Top10 영화 목록 저장 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Top10 영화 목록을 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException Top10 영화 목록 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteTopMovie() {
+        try {
+            topMovieRepository.deleteAll();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Top10 영화 목록 삭제 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Top10 영화 목록을 조회하는 메서드입니다.
+     *
+     * @return 조회된 Top10 영화 목록
+     * @throws RestApiException Top10 영화 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public List<TopMovie> findTopMovieList() {
+        try {
+            return topMovieRepository.findByName(1);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "DB에서 Top10 영화 목록 조회 중 오류가 발생했습니다." + e.getMessage());
         }
     }
 
@@ -292,6 +333,19 @@ public class MovieRepoUtil {
     }
 
     /**
+     * Redis에 저장된 Top10 영화 목록을 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException Top10 영화 목록 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteTopMovieForRedis() {
+        try {
+            redisTopMovieRepository.deleteAll();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 저장된 Top10 영화 목록을 삭제하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
      * MongoDB에 저장된 검색 결과를 모두 삭제하는 메서드입니다.
      *
      * @throws RestApiException 검색 결과 삭제 중 오류가 발생할 경우 발생
@@ -359,8 +413,8 @@ public class MovieRepoUtil {
      */
     public RedisTopMovie findTopMovieListForRedis() {
         try {
-            return redisTopMovieRepository.findById("TopMovieList")
-                    .orElseThrow(() -> new RestApiException(StatusCode.NOT_FOUND, "Redis에서 Top10 영화 목록을 찾을 수 없습니다."));
+            Optional<RedisTopMovie> topMovieList = redisTopMovieRepository.findById("TopMovieList");
+            return topMovieList.orElse(null);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 저장된 Top10 영화 목록을 조회하는 중 오류가 발생했습니다.");
         }
@@ -379,6 +433,44 @@ public class MovieRepoUtil {
             mongoUserActionRepository.deleteByTimestampBefore(sevenDaysAgo);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "MongoDB에서 오래된 사용자 행동 로그를 삭제하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 평점이 높은 영화 목록을 조회하는 메서드입니다.
+     *
+     * @return 조회된 영화 목록
+     * @throws RestApiException 평점이 높은 영화 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public List<Movie> findTopRatingMovieList(Pageable pageable) {
+        try {
+            return movieRepository.findByDelYNOrderByMovieRatingDesc("N", pageable);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "평점이 높은 영화 목록 조회 중 오류가 발생했습니다.");
+        }
+    }
+
+    public void saveRecommendActor(List<RecommendActor> recommendActors) {
+        try {
+            recommendActorRepository.saveAll(recommendActors);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 목록을 저장하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    public void deleteRecommendActor(Integer userSeq) {
+        try {
+            recommendActorRepository.deleteByUserSeq(userSeq);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 목록을 삭제하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    public List<RecommendActor> findRecommendActor(int userSeq) {
+        try {
+            return recommendActorRepository.findByUserSeq(userSeq);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 목록을 조회하는 중 오류가 발생했습니다.");
         }
     }
 }

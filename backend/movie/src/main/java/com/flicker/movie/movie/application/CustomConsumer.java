@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.config.KafkaConfig;
-import com.flicker.movie.movie.domain.entity.MongoUserAction;
-import com.flicker.movie.movie.domain.entity.Movie;
-import com.flicker.movie.movie.domain.entity.WordCloud;
+import com.flicker.movie.movie.domain.entity.*;
 import com.flicker.movie.movie.dto.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -27,16 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
 
-/*
-     * CustomConsumer 클래스는 Kafka 메시지를 수신하는 컨슈머 역할을 한다.
-     * KafkaConfig, MovieBuilderUtil, MovieRepoUtil, ObjectMapper를 주입받는다.
-     * build() 메서드에서 KafkaConsumer 객체를 생성한다.
-     * consumeMovieRating() 메서드는 영화 평점 업데이트 Kafka 메시지를 수신한다.
-     * consumeWordCloud() 메서드는 영화 워드 클라우드 업데이트 Kafka 메시지를 수신한다.
-     * consumeAlarmMovie() 메서드는 주기적 이벤트 처리 Kafka 메시지를 수신한다.
-     * @RetryableTopic 어노테이션을 사용하여 메시지 수신 중 오류가 발생할 경우 재시도한다.
-     * @KafkaListener 어노테이션을 사용하여 토픽을 구독한다.
- */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -145,7 +134,13 @@ public class CustomConsumer {
             MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(reviewActionEvent.getUserSeq(), movieTitle, "REVIEW", reviewActionEvent.getTimestamp());
             // 3. 사용자 행동 로그 추가
             movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
-            // 4. 오프셋 커밋
+            // 4. 해당 유저의 추천 배우 삭제
+            movieRepoUtil.deleteRecommendActor(reviewActionEvent.getUserSeq());
+            // 5. 추천 배우 DB 저장
+            List<Actor> actors = movie.getActors();
+            List<RecommendActor> recommendActors = movieBuilderUtil.buildRecommendActorList(reviewActionEvent.getUserSeq(), actors, movie.getMovieSeq());
+            movieRepoUtil.saveRecommendActor(recommendActors);
+            // 6. 오프셋 커밋
             consumer.commitSync();
             log.info("Kafka 메시지 처리 완료 - 토픽: {}", topic);
         } catch (Exception e) {
@@ -174,8 +169,12 @@ public class CustomConsumer {
                 List<String> topKeywords = movieService.findTopKeywords(userActions);
                 // 3. 해당 키워드의 영화 번호 추출
                 List<Integer> movieSeqs = movieService.findMovieSeqsByKeywords(topKeywords);
-                // 4. Redis에 영화 번호 목록을 저장
-                movieService.saveTopMovieForRedis(movieSeqs);
+                // 4. 기존 topMovie 삭제
+                movieRepoUtil.deleteTopMovie();
+                movieRepoUtil.deleteTopMovieForRedis();
+                // 5. DB에 영화 번호 목록을 저장
+                List<TopMovie> topMovies = movieBuilderUtil.buildTopMovieList(movieSeqs);
+                movieRepoUtil.saveTopMovie(topMovies);
             }
             else if(alarmMovieEvent.getType().equals("ActionDelete")) {
                 // 1. MongoDB에서 오래된 사용자 행동 제거 (1주일)

@@ -78,6 +78,9 @@ public class MovieBuilderUtil {
                         .movieSeq(movie.getMovieSeq()) // 영화 ID 설정
                         .movieTitle(movie.getMovieDetail().getMovieTitle()) // 영화 제목 설정
                         .moviePosterUrl(movie.getMovieDetail().getMoviePosterUrl()) // 영화 포스터 URL 설정
+                        .movieYear(movie.getMovieDetail().getMovieYear()) // 영화 제작 연도 설정
+                        .backgroundUrl(movie.getMovieDetail().getBackgroundUrl()) // 배경 이미지 URL 설정
+                        .movieRating(movie.getMovieRating()) // 영화 평점 설정
                         .build())
                 .collect(Collectors.toList());
         // MongoMovieList 생성
@@ -124,5 +127,26 @@ public class MovieBuilderUtil {
                 .movieSeqs(movieSeqs)
                 .expiration(86400L) // 24시간 ( 24 * 60 * 60 )
                 .build();
+    }
+
+
+    public List<TopMovie> buildTopMovieList(List<Integer> movieSeqs) {
+        return movieSeqs.stream()
+                .map(movieSeq -> TopMovie.builder()
+                        .name(1)
+                        .movieSeq(movieSeq)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<RecommendActor> buildRecommendActorList(Integer userSeq, List<Actor> actors, int movieSeq) {
+        return actors.stream()
+                .filter(actor -> actor.getRole() != null && actor.getRole().contains("주연")) // "주연"이 포함된 배우만 필터링
+                .map(actor -> RecommendActor.builder()
+                        .userSeq(userSeq)
+                        .actorSeq(actor.getActorSeq())
+                        .movieSeq(movieSeq)
+                        .build())
+                .collect(Collectors.toList());
     }
 }

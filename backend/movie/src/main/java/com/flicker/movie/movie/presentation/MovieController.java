@@ -175,11 +175,17 @@ public class MovieController {
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
+    // 평점 높은 영화 30개 조회
+    @GetMapping("/list/topRating")
+    public ResponseEntity<ResponseDto> getTopRatingMovieList() {
+        List<MovieListResponse> response = movieService.getTopRatingMovieList();
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
 
-    // 임의로 TOP10 영화 목록 저장하는 메서드 (임시)
-    @PostMapping("/admin/set/top10")
-    public ResponseEntity<ResponseDto> setTopMovieList(@RequestBody List<Integer> movieSeqs) {
-        movieService.saveTopMovieForRedis(movieSeqs);
-        return ResponseDto.response(StatusCode.SUCCESS, "Top10 영화 목록 저장 성공");
+    // 영화 추천 배우 조회
+    @GetMapping("/recommendActor/{userSeq}")
+    public ResponseEntity<ResponseDto> getRecommendActor(@PathVariable int userSeq) {
+        String response = movieService.getRecommendActor(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 }
