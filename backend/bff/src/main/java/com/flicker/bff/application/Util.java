@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
+import com.flicker.bff.dto.movie.MovieSeqListRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -18,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -311,6 +314,18 @@ public class Util {
         } catch (Exception e) {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient DELETE 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
+    }
+
+
+    public <T> Mono<List<MovieSeqListRequest>> sendPostRequestToRecommendServer(String baseUrl, String path, T requestBody) {
+        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+
+        return webClient.post()
+                .uri(path)
+                .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<MovieSeqListRequest>>() {}) // 반환 타입 지정
+                .onErrorResume(e -> Mono.error(e instanceof RestApiException ? e : new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 서버 POST 요청 중 오류 발생: " + e.getMessage())));
     }
 
 }
