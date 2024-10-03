@@ -118,8 +118,8 @@ const MovieDetailPage: React.FC = () => {
     similarMovies = [],
   } = movieData;
 
-  // console.log(data);
 
+  
   const MAX_LENGTH = 250;
   const isLongText = moviePlot && moviePlot.length > MAX_LENGTH;
   const displayedText = moviePlot ? moviePlot.slice(0, MAX_LENGTH) : ""; // movieDetailResponse가 없으면 빈 문자열 반환
@@ -329,9 +329,7 @@ const toggleDislike = async () => {
                     />
                     {/* Tooltip */}
                     <div className="absolute left-1/2 transform -translate-x-3/4 mt-2 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-32 text-center">
-                      {
-                        "관심 없음 목록에 추가하면 추천에서 제외됩니다."
-                          }
+                      {"관심 없음 목록에 추가하면 추천에서 제외됩니다."}
                     </div>
                   </div>
                 </div>

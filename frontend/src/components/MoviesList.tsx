@@ -164,18 +164,22 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
               </div>
               <div className="details">
                 <h1 className="text-[20px]">{movie.movieTitle}</h1>
-                <div className="text-[15px]">{`${movie.movieYear} • ${movie.runningTime} • ${movie.audienceRating}`}</div>
+                <div className="text-[15px]">
+                  {`${movie.movieYear || "정보 없음"} • ${
+                    movie.runningTime || "정보 없음"
+                  } • ${movie.audienceRating || "정보 없음"}`}
+                </div>
                 <div className="rating flex items-center">
-                  {renderStars(movie.movieRating)}
-                  <span className="ml-2">{movie.movieRating}/5</span>
+                  {renderStars(movie.movieRating ?? 0)}{" "}
+                  {/* movieRating이 undefined이면 0으로 설정 */}
+                  <span className="ml-2">{movie.movieRating ?? 0}/5</span>{" "}
+                  {/* undefined일 때 0으로 표시 */}
                 </div>
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
-
-      
     </div>
   );
 };
