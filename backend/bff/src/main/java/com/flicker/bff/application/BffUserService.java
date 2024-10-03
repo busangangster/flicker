@@ -182,7 +182,7 @@ public class BffUserService {
                     movieInfoDto.setBackgroundUrl(item.getBackgroundUrl());
                     result.add(movieInfoDto);
                 }
-                System.out.println("result = " + result);s
+                System.out.println("result = " + result);
                 return Mono.just(ResponseDto.response(StatusCode.SUCCESS, result));
             });
 
