@@ -13,6 +13,8 @@ public class UserActionResponse {
 
     private String action; // "SEARCH" or "DETAIL"
 
+    private Integer movieYear;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }
