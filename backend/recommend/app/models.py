@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class SentimentReviewEvent(BaseModel):
     reviewSeq: int
@@ -9,9 +10,17 @@ class SentimentResult(BaseModel):
     sentimentScore: float
 
 class ContentMovieRequest(BaseModel):
-    movieTitle: str
-    year: int
+    movieTitle: Optional[str] = None  # 생략되면 None이 기본값
+    year: Optional[int] = None        # 생략되면 None이 기본값
+    actorName: Optional[str] = None   # 생략되면 None이 기본값
 
 class ContentMovieResponse(BaseModel):
     movieTitle: str
-    year: int
+    movieYear: int
+
+class CollaboMovieResponse(BaseModel):
+    movieTitle: str
+    movieYear: int
+
+class CollaboMovieRequest(BaseModel):
+    userSeq: int
