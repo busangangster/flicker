@@ -539,19 +539,19 @@ public class BffMovieService {
                                 actorResponseDto.getData()
                         ));
                     }
-                    String actorName;
+                    RecommendActorResponse recommendActorResponse;
                     try {
                         // actorListResponseDto의 데이터 필드를 String로 변환
-                        actorName = objectMapper.convertValue(actorResponseDto.getData(), new TypeReference<String>() {
+                        recommendActorResponse = objectMapper.convertValue(actorResponseDto.getData(), new TypeReference<RecommendActorResponse>() {
                         });
                     } catch (Exception e) {
                         return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                     }
-                    if(actorName == null || actorName.isEmpty()) {
+                    if(recommendActorResponse == null) {
                         return Mono.just(ResponseDto.response(StatusCode.NO_CONTENT, "최근에 리뷰를 달지 않았습니다."));
                     }
                     // 2. 추천 서버에서 연관 영화 목록을 가져옴
-                    List<RecommendByContentRequest> recommendByContentRequests = Collections.singletonList(new RecommendByContentRequest(null, null, actorName));
+                    List<RecommendByContentRequest> recommendByContentRequests = Collections.singletonList(new RecommendByContentRequest(null, null, recommendActorResponse.getActorName()));
                     String recommendationPath = util.getUri("/content");
                     return util.sendPostRequestToRecommendServer(recommendBaseUrl, recommendationPath, recommendByContentRequests)
                             .flatMap(recommendResponse -> {
@@ -608,7 +608,8 @@ public class BffMovieService {
                                                         } catch (Exception e) {
                                                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 기반 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                                         }
-                                                        return Mono.just(ResponseDto.response(StatusCode.SUCCESS, movieListResponses));
+                                                        RecommendMovieByActorResponse recommendMovieByActorResponse = new RecommendMovieByActorResponse(recommendActorResponse.getActorName(), recommendActorResponse.getMovieTitle(), movieListResponses);
+                                                        return Mono.just(ResponseDto.response(StatusCode.SUCCESS, recommendMovieByActorResponse));
                                                     });
                                         });
                             });
@@ -619,5 +620,12 @@ public class BffMovieService {
                         return Mono.just(ResponseDto.response(StatusCode.UNKNOW_ERROR, "영화 서버에서 배우 기반 영화 추천 목록 가져오는데 알 수 없는 오류 발생: " + e.getMessage()));
                     }
                 });
+    }
+
+    public Mono<ResponseEntity<ResponseDto>> getNewMovieList() {
+        // 1. 외부 API의 경로를 설정합니다.
+        String path = util.getUri("/list/newMovie");
+        // 2. 비동기 방식으로 GET 요청을 외부 API에 보냅니다.
+        return util.sendGetRequestAsync(movieBaseUrl, path);
     }
 }
