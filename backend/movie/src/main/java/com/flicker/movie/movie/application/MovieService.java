@@ -151,26 +151,26 @@ public class MovieService {
         // 2. MongoDB에 행동 로그 저장
         movieRepoUtil.saveUserActionForMongoDB(mongoUserAction);
         // 3. redis 키워드 조회 후 결과 반환
-//        String redisKey = keyword + "/" + page + "/" + size;
-//        List<MongoMovie> mongoMovieList = movieRepoUtil.findByKeywordForRedis(redisKey);
-//        if (mongoMovieList != null) {
-//            // redis에 저장된 키워드가 있을 경우
-//            // 4. MovieListResponse 리스트 생성
-//            List<MovieListResponse> responses = new ArrayList<>();
-//            for (MongoMovie mongoMovie : mongoMovieList) {
-//                responses.add(new MovieListResponse(mongoMovie));
-//            }
-//            return responses;
-//        }
+        String redisKey = keyword + "/" + page + "/" + size;
+        List<MongoMovie> mongoMovieList = movieRepoUtil.findByKeywordForRedis(redisKey);
+        if (mongoMovieList != null) {
+            // redis에 저장된 키워드가 있을 경우
+            // 4. MovieListResponse 리스트 생성
+            List<MovieListResponse> responses = new ArrayList<>();
+            for (MongoMovie mongoMovie : mongoMovieList) {
+                responses.add(new MovieListResponse(mongoMovie));
+            }
+            return responses;
+        }
         // redis에 저장된 키워드가 없을 경우
         // 4. 키워드를 포함하는 영화 리스트 조회
         Pageable pageable = PageRequest.of(page, size);
         List<Movie> movieList = movieRepoUtil.findByKeyword(keyword, pageable);
         // 5. DB에서 가져온 결과 MongoDB에 저장 후 키 반환
-//        String mongoKey = movieRepoUtil.saveSearchListForMongoDB(movieList);
+        String mongoKey = movieRepoUtil.saveSearchListForMongoDB(movieList);
         // 6. Redis에 SearchResult 저장
-//        RedisSearchResult redisSearchResult = MovieBuilderUtil.buildSearchResult(redisKey, mongoKey);
-//        movieRepoUtil.saveSearchResultForRedis(redisSearchResult);
+        RedisSearchResult redisSearchResult = MovieBuilderUtil.buildSearchResult(redisKey, mongoKey);
+        movieRepoUtil.saveSearchResultForRedis(redisSearchResult);
         // 7. MovieListResponse 리스트 생성
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
