@@ -140,7 +140,7 @@ public class BffMovieService {
                     }
                     // 검색 결과가 없을 경우 처리
                     if (searchMovieListResponses == null || searchMovieListResponses.isEmpty()) {
-                        return Mono.just(ResponseDto.response(StatusCode.NO_CONTENT, "검색 결과가 없습니다."));
+                        return Mono.just(ResponseDto.response(StatusCode.NO_SUCH_ELEMENT, "검색 결과가 없습니다."));
                     }
                     // 2. 검색 한 영화와 추천서버에서 연관 영화 가져오기
                     List<RecommendByContentRequest> recommendByContentRequests = searchMovieListResponses.stream()
@@ -368,7 +368,7 @@ public class BffMovieService {
                     }
                     // 사용자의 최근 행동이 없을 경우 처리
                     if (userActions == null || userActions.isEmpty()) {
-                        return Mono.just(ResponseDto.response(StatusCode.NO_CONTENT, "사용자의 최근 행동이 없습니다."));
+                        return Mono.just(ResponseDto.response(StatusCode.NO_SUCH_ELEMENT, "사용자의 최근 행동이 없습니다."));
                     }
                     // 2. 추천 서버로 사용자의 최근 행동 목록을 전송하고, 추천 영화 목록을 가져옴
                     String recommendationPath = util.getUri("/content");
@@ -548,7 +548,7 @@ public class BffMovieService {
                         return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                     }
                     if(recommendActorResponse == null) {
-                        return Mono.just(ResponseDto.response(StatusCode.NO_CONTENT, "최근에 리뷰를 달지 않았습니다."));
+                        return Mono.just(ResponseDto.response(StatusCode.NO_SUCH_ELEMENT, "최근에 리뷰를 달지 않았습니다."));
                     }
                     // 2. 추천 서버에서 연관 영화 목록을 가져옴
                     List<RecommendByContentRequest> recommendByContentRequests = Collections.singletonList(new RecommendByContentRequest(null, null, recommendActorResponse.getActorName()));

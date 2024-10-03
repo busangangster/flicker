@@ -32,7 +32,7 @@ public enum StatusCode {
     UNKNOW_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 503, "알 수 없는 에러가 발생했습니다."),
     NOT_CUSTOM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 504, "커스텀 되지 않은 에러가 발생했습니다."),
 
-    NO_CONTENT(HttpStatus.NO_CONTENT, 204, "요청한 정보가 없습니다.");
+    NO_CONTENT(HttpStatus.OK, 412, "요청한 정보가 없습니다.");
 
 
 
