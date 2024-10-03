@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,6 +9,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { getReviewRating } from "../apis/movieApi"; // API 호출 함수 가져오기
+import { RatingData, ReviewRatingCount } from "../type";
+import { TooltipItem } from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -19,82 +22,108 @@ ChartJS.register(
   Legend
 );
 
-// x라벨 (0부터 0.5 단위로 5까지)
-const xLabels = Array.from({ length: 11 }, (_, i) => (i * 0.5).toFixed(1));
+const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
+  const [yValues, setYValues] = useState<number[]>(Array(10).fill(0)); // 초기값은 0으로 채워진 배열
+  const [averageRating, setAverageRating] = useState<number>(0); // 가중 평균 값
+  const [totalCnt, setTotalCnt] = useState<number>(0); // 총 리뷰 수
 
-// y라벨 (해당 별점을 준 사람의 수)
-const yValues = [0, 20, 50, 150, 200, 300, 100, 500, 400, 800, 600];
-
-// weighted average 별점 계산
-const weightedAverage = (xValues: number[], yValues: number[]): number => {
-  const sumOfProducts = xValues.reduce(
-    (sum, value, index) => sum + value * yValues[index],
-    0
+  // x 라벨 (0.5부터 시작해서 5.0까지)
+  const xLabels = Array.from({ length: 10 }, (_, i) =>
+    (i * 0.5 + 0.5).toFixed(1)
   );
-  const totalRatings = yValues.reduce((sum, value) => sum + value, 0);
-  return sumOfProducts / totalRatings;
-};
 
-const averageRating = weightedAverage(xLabels.map(Number), yValues).toFixed(2); // 소수점 2자리로 반올림
+  // 데이터를 불러오는 함수
+  const fetchRatingsData = async () => {
+    try {
+      const response: RatingData = await getReviewRating(movieSeq);
 
-const data = {
-  labels: ["", "", "", "", "", "", "", "", "", "", ""],
-  datasets: [
-    {
-      label: "Ratings",
-      data: yValues,
-      backgroundColor: "rgba(128, 128, 128, 0.8)",
-      borderColor: "rgba(128, 128, 128, 1)",
-      borderWidth: 1,
-      barPercentage: 0.8,
-      categoryPercentage: 0.9,
-    },
-  ],
-};
+      // 별점에 따라 yValues를 업데이트하는 로직
+      const ratingCountMap = Array(10).fill(0); // 0.5부터 5.0까지 0.5 단위로 값 설정
 
-const options = {
-  maintainAspectRatio: false,
-  scales: {
-    x: {
-      ticks: {
-        maxRotation: 0,
-        minRotation: 0,
-        padding: 0,
+      response.data.reviewRatingCount.forEach((rating: ReviewRatingCount) => {
+        const index = (rating.reviewRating - 0.5) / 0.5; // reviewRating에 따른 index 계산
+        if (index >= 0 && index < ratingCountMap.length) {
+          ratingCountMap[index] = rating.count;
+        }
+      });
+
+      setYValues(ratingCountMap); // yValues 업데이트
+
+      // 가중 평균 계산
+      const sumOfRatings = response.data.reviewRatingCount.reduce(
+        (sum, rating) => sum + rating.reviewRating * rating.count,
+        0
+      );
+      setAverageRating(sumOfRatings / response.data.totalCnt || 0); // 평균 값 설정
+
+      // 총 리뷰 수 업데이트
+      setTotalCnt(response.data.totalCnt);
+    } catch (error) {
+      console.error("별점 데이터를 불러오는 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRatingsData(); // 컴포넌트가 로드될 때 별점 데이터를 불러옴
+  }, [movieSeq]);
+
+  const data = {
+    labels: xLabels,
+    datasets: [
+      {
+        label: "Ratings",
+        data: yValues,
+        backgroundColor: "rgba(128, 128, 128, 0.8)",
+        borderColor: "rgba(128, 128, 128, 1)",
+        borderWidth: 1,
+        barPercentage: 0.8,
+        categoryPercentage: 0.9,
+      },
+    ],
+  };
+
+  const options = {
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: {
+          display: false,
+          maxRotation: 0,
+          minRotation: 0,
+          padding: 0,
+        },
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        beginAtZero: true,
         display: false,
       },
-      grid: {
+    },
+    plugins: {
+      legend: {
         display: false,
       },
+      tooltip: {
+        enabled: true, // 툴팁 활성화
+        callbacks: {
+          label: function (tooltipItem: TooltipItem<"bar">) {
+            return ` ${tooltipItem.raw} Flickers`; // y값을 툴팁으로 표시
+          },
+        },
+      },
     },
-    y: {
-      beginAtZero: true,
-      display: false,
+    layout: {
+      padding: {
+        right: 60,
+      },
     },
-  },
-  plugins: {
-    legend: {
-      display: false,
-    },
-    tooltip: {
-      enabled: false,
-    },
-  },
-  layout: {
-    padding: {
-      right: 60,
-    },
-  },
-  clip: false as const,
-};
+    clip: false as const,
+  };
 
-const Ratings: React.FC = () => {
-  const totalRatings = yValues.reduce((sum, value) => sum + value, 0);
-
-  // totalRatings 숫자 포맷 변환
   const formattedTotalRatings =
-    totalRatings >= 1000
-      ? `${(totalRatings / 1000).toFixed(0)}K`
-      : totalRatings;
+    totalCnt >= 1000 ? `${(totalCnt / 1000).toFixed(0)}K` : totalCnt;
 
   return (
     <div
@@ -106,12 +135,12 @@ const Ratings: React.FC = () => {
         <span className="text-sm">{formattedTotalRatings} Flickers</span>
       </div>
       <div className="border-t border-gray-700 mb-4"></div>
-      <div className="relative">
+      <div className="relative ml-3">
         <Bar data={data} options={options} />
         <div className="absolute right-5 top-1/3 flex items-center text-2xl font-bold transform translate-x-1/2">
-          {averageRating}
+          {averageRating.toFixed(2)}
         </div>
-        <div className="absolute bottom-0 -left-1 flex text-sm text-[#608CFF] transform translate-x-1/2">
+        <div className="absolute bottom-0 -left-5 flex text-sm text-[#608CFF] transform translate-x-1/2">
           ☆
         </div>
         <div className="absolute bottom-0 right-7 flex text-sm text-[#608CFF] transform translate-x-1/2">

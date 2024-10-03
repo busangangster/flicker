@@ -20,7 +20,7 @@ import PhotoCardPage from "../pages/mypage/PhotoCardPage";
 import Mypage from "../pages/mypage/Mypage";
 import UserInfoEditPage from "../pages/mypage/UserInfoEditPage";
 import VerificationPage from "../pages/mypage/VerificationPage";
-import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
+// import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
 import Home from "../pages/Home";
 import MoviesPage from "../pages/movie/MoviesPage";
@@ -65,10 +65,10 @@ const AppRoutes: React.FC = () => {
       <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />
       <Route path="/photobook" element={<PhotoBookPage />} />
       <Route path="/photocard" element={<PhotoCardPage />} />
-      <Route
+      {/* <Route
         path="/photocarddetail/:movieSeq"
         element={<PhotoCardDetailPage />}
-      />
+      /> */}
       <Route
         path="/mypage/*"
         element={

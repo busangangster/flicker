@@ -231,3 +231,30 @@ export interface Page {
   content: JSX.Element;
   className?: string; 
 }
+
+export interface ReviewForm {
+  userSeq: number;
+  movieSeq: number;
+  reviewRating: number;
+  content: string;
+  isSpoiler: boolean;
+}
+
+export interface WordCloud {
+  data: {
+    keyword: string;
+    count: number;
+  }[];
+}
+
+export interface ReviewRatingCount {
+  reviewRating: number;
+  count: number; 
+}
+
+export interface RatingData {
+  data: {
+    reviewRatingCount: ReviewRatingCount[];
+    totalCnt: number;
+  };
+}
