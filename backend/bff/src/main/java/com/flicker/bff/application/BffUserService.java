@@ -272,6 +272,7 @@ public class BffUserService {
                     movieInfoDto.setMovieYear(item.getMovieYear());
                     movieInfoDto.setMoviePosterUrl(item.getMoviePosterUrl());
                     movieInfoDto.setBackgroundUrl(item.getBackgroundUrl());
+                    result.add(movieInfoDto);
                 }
 
                 return Mono.just(ResponseDto.response(StatusCode.SUCCESS, result));
