@@ -172,8 +172,7 @@ public class CustomConsumer {
                 // 3. 해당 키워드의 영화 번호 추출
                 List<Integer> movieSeqs = movieService.findMovieSeqsByKeywords(topKeywords);
                 // 4. 기존 topMovie 삭제
-                movieRepoUtil.deleteTopMovie();
-                movieRepoUtil.deleteTopMovieForRedis();
+                movieService.deleteTopMovie();
                 // 5. DB에 영화 번호 목록을 저장
                 List<TopMovie> topMovies = movieBuilderUtil.buildTopMovieList(movieSeqs);
                 movieRepoUtil.saveTopMovie(topMovies);
