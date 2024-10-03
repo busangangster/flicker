@@ -4,6 +4,7 @@ import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.review.application.ReviewService;
+import com.flicker.user.review.dto.MyPageReviewCntDto;
 import com.flicker.user.review.dto.ReviewDto;
 import com.flicker.user.user.application.UserService;
 import com.flicker.user.user.domain.entity.User;
@@ -208,6 +209,16 @@ public class UserController {
         movieDetail.setReviews(popularMovieReviews);
 
         return ResponseDto.response(StatusCode.SUCCESS, movieDetail);
+    }
+
+    @GetMapping("/{userSeq}/myPage")
+    public ResponseEntity<ResponseDto> getMyPageMovie(@PathVariable(value = "userSeq")Integer userSeq){
+        if(userSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+        MyPageReviewCntDto myPageReviewCnt = reviewService.getMyPageReviewCnt(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, myPageReviewCnt);
     }
 
 

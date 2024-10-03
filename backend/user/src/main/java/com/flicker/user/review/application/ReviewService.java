@@ -11,6 +11,7 @@ import com.flicker.user.review.domain.entity.Review;
 import com.flicker.user.review.dto.*;
 import com.flicker.user.review.infrastructure.ReviewRepository;
 import com.flicker.user.user.application.UserService;
+import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,7 +48,6 @@ public class ReviewService {
         sentimentReview.setReviewSeq(save.getReviewSeq());
         sentimentReview.setTimestamp(LocalDateTime.now());
         sentimentReview.setContent(save.getContent());
-//        System.out.println("sentimentReview = " + sentimentReview);
         kafkaProducer.sendSentimentLog(sentimentReview);
 
         WordCloudReview wordCloudReview = new WordCloudReview();
@@ -56,7 +56,6 @@ public class ReviewService {
         wordCloudReview.setContent(save.getContent());
         wordCloudReview.setUserSeq(save.getUserSeq());
         wordCloudReview.setRating(save.getReviewRating());
-//        System.out.println("wordCloudReview = " + wordCloudReview);
         kafkaProducer.sendWordCloudLog(wordCloudReview);
 
         MovieInfo movieInfo = new MovieInfo();
@@ -67,7 +66,6 @@ public class ReviewService {
         movieInfo.setType("REVIEW");
         movieInfo.setAction("CREATE");
         movieInfo.setTimestamp(LocalDateTime.now());
-//        System.out.println("movieInfo = " + movieInfo);
         kafkaProducer.sendMovieInfo(movieInfo);
 
         return true;
@@ -89,7 +87,6 @@ public class ReviewService {
         movieInfo.setType("REVIEW");
         movieInfo.setAction("DELETE");
         movieInfo.setTimestamp(LocalDateTime.now());
-//        System.out.println("movieInfo = " + movieInfo);
         kafkaProducer.sendMovieInfo(movieInfo);
 
         return true;
@@ -124,7 +121,6 @@ public class ReviewService {
         List<ReviewDto> reviewDtoList = new ArrayList<>();
 
         for (Review review : allByMovieSeq.getContent()) {
-    //        System.out.println("review.getUserSeq() = " + review.getUserSeq());
             String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
             ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
             reviewDtoList.add(reviewDto);
@@ -158,7 +154,6 @@ public class ReviewService {
             reviewDtos.add(reviewDto);
         }
 
-        System.out.println(reviewDtos);
 
         return reviewDtos;
     }
@@ -212,5 +207,17 @@ public class ReviewService {
         movieReviewRatingCount.setReviewRatingCount(reviewRatingCountDtos);
 
         return movieReviewRatingCount;
+    }
+
+    public MyPageReviewCntDto getMyPageReviewCnt(Integer userSeq){
+        Tuple result = reviewRepository.findLikesSumAndReviewCountByUserSeq(userSeq);
+
+        Long totalLikes = result.get(0, Long.class); // SUM(likes)
+        Long reviewCount = result.get(1, Long.class); // COUNT(*)
+
+        MyPageReviewCntDto dto = new MyPageReviewCntDto();
+        dto.setReviewCnt(reviewCount);
+        dto.setLikes(totalLikes);
+        return dto;
     }
 }
