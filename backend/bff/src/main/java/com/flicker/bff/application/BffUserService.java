@@ -120,6 +120,8 @@ public class BffUserService {
         return util.sendGetRequestAsync(userReviewBaseUrl,path).flatMap(getResponse ->{
             //바로 받는 코드
             ResponseDto reviewResponseDto;
+
+
             try {
                 reviewResponseDto = Objects.requireNonNull(getResponse.getBody());
             } catch (Exception e) {
@@ -133,6 +135,8 @@ public class BffUserService {
                 ));
             }
 
+            System.out.println("reviewResponseDto = " + reviewResponseDto);
+
             // ObjectMapper를 이용하여 JSON 데이터를 ReviewListDto로 변환
             List<Integer> movieSeqList;
             try {
@@ -140,6 +144,8 @@ public class BffUserService {
             } catch (Exception e) {
                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "비선호 영화 리스트를 역직렬화하는데 오류 발생: " + e.getMessage()));
             }
+
+            System.out.println("movieSeqList = " + movieSeqList);
 
             // 영화 정보 받아오는 요청 보내기
             String path2 = util.getUri("/list/movieId");
