@@ -208,7 +208,7 @@ public class MovieService {
         List<MongoUserAction> userActionList = movieRepoUtil.findUserActionListForMongoDB(userSeq);
         // 2. 사용자 행동 로그가 없을 경우
         if (userActionList == null || userActionList.isEmpty()) {
-            throw new RestApiException(StatusCode.NO_CONTENT, "사용자 행동 로그가 존재하지 않습니다.");
+            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "사용자 행동 로그가 존재하지 않습니다.");
         }
         // 3. UserActionResponse 리스트 생성
         return userActionList.stream()
@@ -224,6 +224,9 @@ public class MovieService {
         // Redis에 값이 없으면 DB에서 조회
         if (redisTopMovie == null) {
             List<TopMovie> topMovies = movieRepoUtil.findTopMovieList();
+            if (topMovies.isEmpty()) {
+                throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "Top 영화가 존재하지 않습니다.");
+            }
             // 영화 번호 목록 추출
             movieSeqs = topMovies.stream()
                     .map(TopMovie::getMovieSeq)
@@ -234,9 +237,9 @@ public class MovieService {
         }
         // 2. 영화 번호 목록 추출
         movieSeqs = redisTopMovie.getMovieSeqs();
-        if(movieSeqs.isEmpty()) {
+        if (movieSeqs.isEmpty()) {
             movieRepoUtil.deleteTopMovieForRedis();
-            throw new RestApiException(StatusCode.NO_CONTENT, "Top 영화가 존재하지 않습니다.");
+            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "Top 영화가 존재하지 않습니다.");
         }
         // 3. TopMovieList 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
@@ -335,7 +338,7 @@ public class MovieService {
         // 랜덤으로 해당 유저의 사용자 추천 배우 중 1명 뽑기
         List<RecommendActor> recommendActors = movieRepoUtil.findRecommendActor(userSeq);
         if (recommendActors == null || recommendActors.isEmpty()) {
-            throw new RestApiException(StatusCode.NO_CONTENT, "추천된 배우가 존재하지 않습니다.");
+            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "추천된 배우가 존재하지 않습니다.");
         }
         RecommendActor recommendActor = recommendActors.get((int) (Math.random() * recommendActors.size()));
         Movie movie = movieRepoUtil.findById(recommendActor.getMovieSeq());
@@ -364,13 +367,14 @@ public class MovieService {
         if (redisNewMovie == null) {
             // 1. 개봉 영화 목록 조회
             List<NewMovie> newMovies = movieRepoUtil.findNewMovie();
+            if (newMovies.isEmpty()) {
+                System.out.println("개봉 영화가 존재하지 않습니다.");
+                throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "개봉 영화가 존재하지 않습니다.");
+            }
             // 2. 영화 번호 목록 추출
             movieSeqs = newMovies.stream()
                     .map(NewMovie::getMovieSeq)
                     .toList();
-            if (movieSeqs.isEmpty()) {
-                throw new RestApiException(StatusCode.NO_CONTENT, "개봉 영화가 존재하지 않습니다.");
-            }
             // 3. redis에 영화 번호 목록 저장
             redisNewMovie = movieBuilderUtil.redisNewMovieBuilder("NewMovieList", movieSeqs);
             movieRepoUtil.saveNewMovieForRedis(redisNewMovie);
@@ -379,7 +383,7 @@ public class MovieService {
         movieSeqs = redisNewMovie.getMovieSeqs();
         if (movieSeqs.isEmpty()) {
             movieRepoUtil.deleteNewMovieForRedis();
-            throw new RestApiException(StatusCode.NO_CONTENT, "개봉 영화가 존재하지 않습니다.");
+            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "개봉 영화가 존재하지 않습니다.");
         }
         // 4. 개봉 영화 목록 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
