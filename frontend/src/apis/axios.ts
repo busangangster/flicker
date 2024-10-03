@@ -126,14 +126,10 @@ export const fetchMovieGenre = async (
   size: number
 ) => {
   try {
-    // API 호출
     const response = await movieListApi.get(`/genre/${genre}/${page}/${size}`);
 
-    // 응답 구조가 올바른지 확인 후 처리
     if (response?.data?.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
-      // console.log(movies);
-      // return movies.map((movie: any) => movie.moviePosterUrl); // moviePosterUrl 추출
       return movies;
     } else {
       console.error("Unexpected response structure", response);
@@ -152,14 +148,10 @@ export const fetchMovieYear = async (
   size: number
 ) => {
   try {
-    // API 호출
     const response = await movieListApi.get(`/year/${year}/${page}/${size}`);
 
-    // 응답 구조가 올바른지 확인 후 처리
     if (response?.data?.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
-      // console.log(movies);
-      // return movies.map((movie: any) => movie.moviePosterUrl); // moviePosterUrl 추출
       return movies;
     } else {
       console.error("Unexpected response structure", response);
@@ -178,20 +170,48 @@ export const fetchMovieCountry = async (
   size: number
 ) => {
   try {
-    // API 호출
     const response = await movieListApi.get(
       `/country/${country}/${page}/${size}`
     );
-
-    // 응답 구조가 올바른지 확인 후 처리
     if (response?.data?.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
-      // console.log(movies);
-      // return movies.map((movie: any) => movie.moviePosterUrl); // moviePosterUrl 추출
       return movies;
     } else {
       console.error("Unexpected response structure", response);
       return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+// 별점 높은 영화 조회
+export const fetchMovieRating = async () => {
+  try {
+    const response = await movieListApi.get(`/topRating`);
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+export const fetchMovieNew = async () => {
+  try {
+    const response = await movieListApi.get(`/newMovie`);
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
     }
   } catch (error) {
     console.error("Error fetching movies:", error);
@@ -243,7 +263,10 @@ export const addfavoriteMovies = async (userSeq: number, movieSeq: number) => {
   }
 };
 
-export const deletefavoriteMovies = async (userSeq: number, movieSeq: number) => {
+export const deletefavoriteMovies = async (
+  userSeq: number,
+  movieSeq: number
+) => {
   const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie/${movieSeq}`;
   try {
     const response = await axios.delete(url, {
@@ -259,7 +282,7 @@ export const deletefavoriteMovies = async (userSeq: number, movieSeq: number) =>
 };
 
 export const fetchFavoriteMovies = async (userSeq: number) => {
-  console.log("userSeq", userSeq)
+  console.log("userSeq", userSeq);
   const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie`;
 
   try {
