@@ -411,4 +411,9 @@ public class BffUserService {
         String path = util.getUri("/review/movies/"+movieSeq+"/distribute");
         return util.sendGetRequestAsync(userReviewBaseUrl, path);
     }
+
+    public Mono<ResponseEntity<ResponseDto>> getMyPage(Integer userSeq) {
+        String path = util.getUri("/"+userSeq+"/myPage");
+        return util.sendGetRequestAsync(userReviewBaseUrl,path);
+    }
 }

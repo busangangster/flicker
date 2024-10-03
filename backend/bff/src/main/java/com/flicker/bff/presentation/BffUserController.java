@@ -155,4 +155,10 @@ public class BffUserController {
     public Mono<ResponseEntity<ResponseDto>> getMovieReviewRatingDistribute(@PathVariable(value = "movieSeq")Integer movieSeq){
         return userService.getMovieReviewRatingDistribute(movieSeq);
     }
+
+    // 마이페이지 리뷰 수 , 라이크 수
+    @GetMapping("/{userSeq}/myPage")
+    public Mono<ResponseEntity<ResponseDto>> getMyPage(@PathVariable(value = "userSeq")Integer userSeq){
+        return userService.getMyPage(userSeq);
+    }
 }
