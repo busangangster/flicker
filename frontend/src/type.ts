@@ -177,7 +177,7 @@ export interface IFlipBook {
 }
 
 export interface PhotoCardFrontProps {
-  images: {
+  images: Array<{
     src: string;
     alt: string;
     movieSeq: number;
@@ -188,9 +188,22 @@ export interface PhotoCardFrontProps {
     content: string;
     likes: number;
     backgroundUrl: string;
-  }[];
+  }>;
   pageIndex: number;
-}
+  onCardClick: (card: {
+    src: string;
+    alt: string;
+    movieSeq: number;
+    movieTitle: string;
+    movieYear: number;
+    reviewRating: number;
+    createdAt: string;
+    content: string;
+    likes: number;
+    backgroundUrl: string;
+  }) => void; // onCardClick 함수 타입 정의
+};
+
 
 export interface Movie {
   movieSeq: number;
@@ -213,5 +226,8 @@ export interface MoviesListProps {
   movies: Movie[]; // movieSeq와 moviePosterUrl을 포함하는 배열
 }
 
-
-
+export interface Page {
+  id: number;
+  content: JSX.Element;
+  className?: string; 
+}

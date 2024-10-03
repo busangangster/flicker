@@ -36,22 +36,64 @@
   animation: zoomOut 0.6s ease-in-out;
 }
 
-/* 페이지 공통 스타일 */
-.page {
-  width: 100%;
-  height: 100%;
-  position: relative; /* 필요한 경우 추가 */
-  overflow: visible; /* 그림자가 잘리지 않도록 설정 */
-}
-
+/* left-page 직선 및 그림자 추가 */
 .left-page {
-  border-right: 1px solid #b1b1b1;
+  position: relative;
+  border-right: 1px solid #c0c0c0;
   background: linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
   box-shadow: 0px 0 50px rgba(0, 0, 0, 0.5); /* 왼쪽 그림자 추가 */
 }
 
+.left-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.left-page::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
+  z-index: 1;
+}
+
+/* right-page 직선 및 그림자 추가 */
 .right-page {
+  position: relative;
   border-left: 1px solid #b1b1b1;
   background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
   box-shadow: 0 0 35px rgba(0, 0, 0, 0.5); /* 오른쪽 그림자 추가 */
+}
+
+.right-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.right-page::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 10px;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent);
+  z-index: 1;
 }

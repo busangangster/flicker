@@ -144,7 +144,7 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
               </div>
               <div className="details">
                 <h1 className="text-[20px]">{movie.movieTitle}</h1>
-                <h2>{`${movie.movieYear} • ${movie.runningTime} • ${movie.audienceRating}`}</h2>
+                <div>{`${movie.movieYear} • ${movie.runningTime} • ${movie.audienceRating}`}</div>
                 <div className="rating">
                   {[...Array(5)].map((_, index) => (
                     <i
