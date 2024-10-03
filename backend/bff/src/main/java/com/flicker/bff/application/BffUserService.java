@@ -227,11 +227,13 @@ public class BffUserService {
             }
             // reviewResponseDto의 상태 코드가 성공이 아닌 경우 처리
             if (reviewResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                System.out.println("에러 발생" + reviewResponseDto.getData());
                 return Mono.error(new RestApiException(
                         StatusCode.of(reviewResponseDto.getHttpStatus(), reviewResponseDto.getServiceStatus(), reviewResponseDto.getMessage()),
                         reviewResponseDto.getData()
                 ));
             }
+            System.out.println("reviewResponseDto = " + reviewResponseDto);
 
             // ObjectMapper를 이용하여 JSON 데이터를 ReviewListDto로 변환
             List<Integer> movieSeqList;
