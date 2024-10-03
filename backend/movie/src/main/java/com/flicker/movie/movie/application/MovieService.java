@@ -322,7 +322,7 @@ public class MovieService {
     }
 
     @Transactional
-    public String getRecommendActor(int userSeq) {
+    public RecommendActorResponse getRecommendActor(int userSeq) {
         // 랜덤으로 해당 유저의 사용자 추천 배우 중 1명 뽑기
         List<RecommendActor> recommendActors = movieRepoUtil.findRecommendActor(userSeq);
         if (recommendActors == null || recommendActors.isEmpty()) {
@@ -331,6 +331,56 @@ public class MovieService {
         RecommendActor recommendActor = recommendActors.get((int) (Math.random() * recommendActors.size()));
         Movie movie = movieRepoUtil.findById(recommendActor.getMovieSeq());
         Actor actor = movie.getActor(recommendActor.getActorSeq());
-        return actor.getActorName();
+        return new RecommendActorResponse(actor.getActorName(), movie.getMovieDetail().getMovieTitle());
+    }
+
+    @Transactional
+    public void deleteNewMovie() {
+        movieRepoUtil.deleteNewMovie();
+    }
+
+    @Transactional
+    public void saveNewMovie(List<Integer> movieSeqList) {
+        List<NewMovie> newMovies = movieBuilderUtil.buildNewMovieList(movieSeqList);
+        movieRepoUtil.saveNewMovie(newMovies);
+    }
+
+    @Transactional
+    public List<MovieListResponse> getNewMovieList() {
+        // 1. redis에서 개봉 영화 목록 조회
+        RedisNewMovie redisNewMovie = movieRepoUtil.findNewMovieForRedis();
+        List<Integer> movieSeqs;
+        // 2. redis에 값이 없으면 DB에서 조회
+        if (redisNewMovie == null) {
+            // 1. 개봉 영화 목록 조회
+            List<NewMovie> newMovies = movieRepoUtil.findNewMovie();
+            // 2. 영화 번호 목록 추출
+            movieSeqs = newMovies.stream()
+                    .map(NewMovie::getMovieSeq)
+                    .toList();
+            // 3. redis에 영화 번호 목록 저장
+            redisNewMovie = movieBuilderUtil.redisNewMovieBuilder("NewMovieList", movieSeqs);
+            movieRepoUtil.saveNewMovieForRedis(redisNewMovie);
+        }
+        // 3. redis에 값이 있으면 redis에서 조회
+        movieSeqs = redisNewMovie.getMovieSeqs();
+        // 4. 개봉 영화 목록 조회
+        List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
+        // 5. 검색 Redis, MongoDB 초기화
+        initSearchResultForRedisAndMongoDB();
+        // 4. movieSeq를 키로 하는 Map으로 변환 (Movie 객체 매핑)
+        Map<Integer, Movie> movieMap = movieList.stream()
+                .collect(Collectors.toMap(Movie::getMovieSeq, Function.identity()));
+        // 5. movieSeqs 순서에 맞춰 movieMap에서 Movie 객체를 가져와 List 생성
+        List<Movie> orderedMovieList = new ArrayList<>();
+        for (Integer seq : movieSeqs) {
+            if (movieMap.containsKey(seq)) {
+                orderedMovieList.add(movieMap.get(seq));
+            }
+        }
+        // 6. MovieListResponse 리스트 생성
+        return orderedMovieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .toList();
     }
 }

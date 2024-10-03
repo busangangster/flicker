@@ -34,6 +34,8 @@ public class MovieRepoUtil {
     private final RedisTopMovieRepository redisTopMovieRepository;
     private final TopMovieRepository topMovieRepository;
     private final RecommendActorRepository recommendActorRepository;
+    private final NewMovieRepository newMovieRepository;
+    private final RedisNewMovieRepository redisNewMovieRepository;
 
     /**
      * 영화 ID(movieSeq)를 사용하여 영화 정보를 조회하는 메서드입니다.
@@ -450,6 +452,12 @@ public class MovieRepoUtil {
         }
     }
 
+    /**
+     * 추천된 배우 목록을 저장하는 메서드입니다.
+     *
+     * @param recommendActors 저장할 배우 목록
+     * @throws RestApiException 추천 베우 목록 저장 중 오류가 발생할 경우 발생
+     */
     public void saveRecommendActor(List<RecommendActor> recommendActors) {
         try {
             recommendActorRepository.saveAll(recommendActors);
@@ -458,6 +466,11 @@ public class MovieRepoUtil {
         }
     }
 
+    /**
+     * 추천된 영화 목록을 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException 추천 영화 목록 삭제 중 오류가 발생할 경우 발생
+     */
     public void deleteRecommendActor(Integer userSeq) {
         try {
             recommendActorRepository.deleteByUserSeq(userSeq);
@@ -466,11 +479,87 @@ public class MovieRepoUtil {
         }
     }
 
+    /**
+     * 사용자에게 추천된 배우 목록을 조회하는 메서드입니다.
+     *
+     * @param userSeq 사용자의 ID
+     * @return 조회된 추천 배우 목록
+     * @throws RestApiException 추천 배우 목록 조회 중 오류가 발생할 경우 발생
+     */
     public List<RecommendActor> findRecommendActor(int userSeq) {
         try {
             return recommendActorRepository.findByUserSeq(userSeq);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 배우 목록을 조회하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 신규 영화 목록을 저장하는 메서드입니다.
+     *
+     * @param newMovies 저장할 신규 영화 목록
+     * @throws RestApiException 신규 영화 목록 저장 중 오류가 발생할 경우 발생
+     */
+    public void saveNewMovie(List<NewMovie> newMovies) {
+        try {
+            newMovieRepository.saveAll(newMovies);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "신규 영화 목록을 저장하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 신규 영화 목록을 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException 신규 영화 목록 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteNewMovie() {
+        try {
+            newMovieRepository.deleteAll();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "신규 영화 목록을 삭제하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 신규 영화 목록을 조회하는 메서드입니다.
+     *
+     * @return 조회된 신규 영화 목록
+     * @throws RestApiException 신규 영화 목록 조회 중 오류가 발생할 경우 발생
+     */
+    public List<NewMovie> findNewMovie() {
+        try {
+            return newMovieRepository.findAll();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "신규 영화 목록을 조회하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Redis에 신규 영화 목록을 조회하는 메서드입니다.
+     *
+     * @return 조회된 신규 영화 목록
+     */
+    public RedisNewMovie findNewMovieForRedis() {
+        try {
+            Optional<RedisNewMovie> redisNewMovie = redisNewMovieRepository.findById("NewMovieList");
+            return redisNewMovie.orElse(null);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 저장된 신규 영화 목록을 조회하는 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Redis에 신규 영화 목록을 저장하는 메서드입니다.
+     *
+     * @param redisNewMovie 저장할 신규 영화 목록
+     * @throws RestApiException 신규 영화 목록 저장 중 오류가 발생할 경우 발생
+     */
+    public void saveNewMovieForRedis(RedisNewMovie redisNewMovie) {
+        try {
+            redisNewMovieRepository.save(redisNewMovie);
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 신규 영화 목록을 저장하는 중 오류가 발생했습니다.");
         }
     }
 }
