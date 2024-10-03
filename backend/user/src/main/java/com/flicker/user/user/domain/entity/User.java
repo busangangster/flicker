@@ -125,6 +125,7 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Transactional
     public void updateUser(UserUpdateDto dto){
         this.nickname = dto.getNickname();
         this.email = dto.getEmail();
