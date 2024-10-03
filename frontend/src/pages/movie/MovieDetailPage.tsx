@@ -1,16 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // useParams 사용
+import { useParams, useNavigate, useLocation } from "react-router-dom"; // useParams 사용
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Navbar from "../../components/common/Navbar";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMovieDetail } from "../../apis/axios";
+import {
+  addDislikeMovies,
+  addfavoriteMovies,
+  deleteDislikeMovies,
+  deletefavoriteMovies,
+  fetchMovieDetail,
+} from "../../apis/axios";
 import PlotModal from "../../components/PlotModal";
 import { MovieDetail } from "../../type";
 import Review from "../../components/Review";
 import MoviesList from "../../components/MoviesList";
 import { IoBan } from "react-icons/io5";
+import { useUserQuery } from "../../hooks/useUserQuery";
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,17 +25,11 @@ const MovieDetailPage: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   // const [interestOption, setInterestOption] = useState("관심 없음");
   const [isLiked, setIsLiked] = useState(false);
+  const [disLiked, setDisLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null); // 스크롤 컨테이너 참조
-
-  const userSeq = 2; // 예시로 userSeq 고정값 사용
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTo(0, 0); // 스크롤 컨테이너의 최상단으로 이동
-    }
-  }, [movieSeq]); // movieSeq가 변경될 때마다 실행
+  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,26 +47,54 @@ const MovieDetailPage: React.FC = () => {
     };
   }, []);
 
+  const {
+    data: userData,
+    error: userError,
+    isLoading: userIsLoading,
+  } = useUserQuery();
+
+  const userSeq = userData?.userSeq // 예시로 userSeq 고정값 사용
+
   // useQuery를 통해 movieDetail API 호출
-  const { data, error, isLoading } = useQuery<MovieDetail, Error>({
-    queryKey: ["movieDetail", movieSeq], // queryKey에 movieSeq 포함
+  const {
+    data: movieData,
+    error: movieError,
+    isLoading: movieIsLoading,
+  } = useQuery<MovieDetail, Error>({
+    queryKey: ["movieDetail", movieSeq],
     queryFn: async () => {
-      const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq);
-      console.log(movieDetail);
-      return movieDetail;
+      if (userSeq) {
+        const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq);
+        return movieDetail;
+      }
     },
+    enabled: !!userSeq && !!movieSeq, // `userSeq`와 `movieSeq`가 존재할 때만 쿼리 실행
   });
+  
 
   useEffect(() => {
-    if (data) {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (movieData) {
       setIsLiked(bookMarkedMovie); // 초기 상태 설정
     }
-  }, [data]);
+  }, [movieData]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading movie details.</div>;
+  useEffect(() => {
+    if (movieData) {
+      setDisLiked(unlikedMovie); // 초기 상태 설정
+    }
+  }, [movieData]);
 
-  if (!data) return null; // data가 undefined일 경우를 처리
+  if (movieIsLoading) return <div>Loading...</div>;
+  if (movieError) return <div>유저 정보를 불러오는데 실패했습니다.</div>;
+  if (!movieData) return null; // data가 undefined일 경우를 처리
+
+  if (!userData) return null;
+  if (userIsLoading) return <p>Loading...</p>;
+  if (userError) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
   const {
     movieDetailResponse: {
@@ -84,12 +113,12 @@ const MovieDetailPage: React.FC = () => {
       actors,
     } = {}, // movieDetailResponse가 없을 경우를 대비해 기본값으로 빈 객체 설정
     bookMarkedMovie = false,
-    // unlikedMovie = false,
+    unlikedMovie = false,
     reviews = [],
     similarMovies = [],
-  } = data;
+  } = movieData;
 
-  console.log(data);
+  // console.log(data);
 
   const MAX_LENGTH = 250;
   const isLongText = moviePlot && moviePlot.length > MAX_LENGTH;
@@ -115,8 +144,45 @@ const MovieDetailPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const toggleHeart = () => {
-    setIsLiked((prev) => !prev);
+const toggleHeart = async () => {
+  if (!userSeq) {
+    console.error("User sequence is not available."); // userSeq가 없을 때 에러 처리
+    return;
+  }
+
+  setIsLiked((prev) => !prev);
+
+  try {
+    if (isLiked) {
+      await deletefavoriteMovies(userSeq, Number(movieSeq));
+      console.log("찜목록에서 삭제");
+    } else {
+      await addfavoriteMovies(userSeq, Number(movieSeq));
+      console.log("찜목록에 추가");
+    }
+  } catch (error) {
+    console.error("즐겨찾기 API 호출 중 오류 발생:", error);
+  }
+};
+
+  const toggleDislike = async () => {
+      if (!userSeq) {
+        console.error("User sequence is not available."); // userSeq가 없을 때 에러 처리
+        return;
+      }
+    setDisLiked((prev) => !prev);
+
+    try {
+      if (disLiked) {
+        await deleteDislikeMovies(userSeq, Number(movieSeq));
+        console.log("관심없음 목록에서 삭제");
+      } else {
+        await addDislikeMovies(userSeq, Number(movieSeq));
+        console.log("관심없음 목록에 추가");
+      }
+    } catch (error) {
+      console.error("즐겨찾기 API 호출 중 오류 발생:", error);
+    }
   };
 
   const goToReview = () => {
@@ -171,10 +237,7 @@ const MovieDetailPage: React.FC = () => {
   };
 
   return (
-    <div
-      className="flex flex-col bg-black h-screen overflow-y-auto"
-      ref={containerRef}
-    >
+    <div className="flex flex-col bg-black h-screen overflow-y-auto">
       {/* 영화 세부 정보 */}
       <div className="relative h-auto">
         <div
@@ -228,23 +291,11 @@ const MovieDetailPage: React.FC = () => {
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
-                  {/* <button
-                    className="text-white text-3xl ml-2 relative z-20"
-                    onClick={toggleDropdown}
-                  >
-                    ⋮
-                    {isDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-40 bg-gray-200 text-black bg-opacity-90 rounded-md shadow-lg z-50 font-bold text-left">
-                        <div
-                          className="cursor-pointer px-4 py-2 text-base hover:bg-gray-400 rounded-md hover:bg-opacity-80 shadow-lg z-50"
-                          onClick={handleOptionClick}
-                        >
-                          {interestOption}
-                        </div>
-                      </div>
-                    )}
-                  </button> */}
-                  <IoBan className="w-6 h-6 ml-3 opacity-60 hover:opacity-100" />
+
+                  <IoBan
+                    className="w-6 h-6 ml-3 opacity-60 hover:opacity-100"
+                    onClick={toggleDislike}
+                  />
                 </div>
               </div>
 
@@ -267,7 +318,7 @@ const MovieDetailPage: React.FC = () => {
               <PlotModal
                 isopen={isModalOpen}
                 onClose={closeModal}
-                movieDetail={data}
+                movieDetail={movieData}
               />
               <div>
                 <div className="flex w-full h-[40px] bg-transparent border-b border-opacity-50 border-white text-white justify-start items-center space-x-4 mt-4 cursor-pointer">
@@ -336,7 +387,7 @@ const MovieDetailPage: React.FC = () => {
       <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
           category={`${movieTitle}과 유사한 장르 작품들`}
-          movies={similarMovies} // recommendedMovieList를 movies prop으로 전달
+          movies={similarMovies}
         />
       </div>
     </div>

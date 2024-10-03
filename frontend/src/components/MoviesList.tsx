@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { MoviesListProps } from "../type";
 
 
-
 const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);

@@ -4,61 +4,56 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
-import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types"; // Swiper 인스턴스 타입 가져오기
+import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
+import { useQuery } from "@tanstack/react-query";
+import { fetchFavoriteMovies } from "../../apis/axios";
+import { useUserQuery } from "../../hooks/useUserQuery";
+import { useNavigate } from "react-router-dom";
+
+interface FavoriteMovie {
+  movieSeq: number;
+  moviePosterUrl: string;
+}
 
 const FavoritePage: React.FC = () => {
-  const movieImages = [
-    "/assets/survey/image1.jpg",
-    "/assets/survey/image2.jpg",
-    "/assets/survey/image3.jpg",
-    "/assets/survey/image4.jpg",
-    "/assets/survey/image5.jpg",
-    "/assets/survey/image7.jpg",
-    "/assets/survey/image8.jpg",
-    "/assets/survey/image9.jpg",
-    "/assets/survey/image10.jpg",
-    "/assets/survey/image11.jpg",
-    "/assets/survey/image12.jpg",
-    "/assets/survey/image13.jpg",
-    "/assets/survey/image14.jpg",
-    "/assets/survey/image15.jpg",
-  ];
+  const navigate = useNavigate();
+  // 사용자 정보 가져오기
+  const { data: userData } = useUserQuery();
+  const userSeq = userData?.userSeq;
 
-  // 8개씩 나누어 슬라이드 페이지로 구성
-  const slides = [];
-  for (let i = 0; i < movieImages.length; i += 10) {
-    slides.push(movieImages.slice(i, i + 10));
-  }
+  // 즐겨찾기 영화 가져오기
+  // 하나의 객체로 묶어서 전달해야함 !!
+  const { data: favoriteMovies } = useQuery({
+    queryKey: ["favoriteMovies", userSeq], // queryKey
+    queryFn: () => fetchFavoriteMovies(userSeq!), // queryFn
+    enabled: !!userSeq, // userSeq가 존재할 때만 쿼리 실행, options
+  });
 
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
   const [swiperInstance, setSwiperInstance] = useState<SwiperInstance | null>(
     null
-  ); // Swiper 인스턴스 타입 설정
+  );
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
   useEffect(() => {
     if (swiperInstance && prevRef.current && nextRef.current) {
-      // Swiper navigation setup
       swiperInstance.params.navigation = {
-        ...(swiperInstance.params.navigation as NavigationOptions), // NavigationOptions로 타입 캐스팅
+        ...(swiperInstance.params.navigation as NavigationOptions),
         prevEl: prevRef.current,
         nextEl: nextRef.current,
       };
 
-      // Re-initialize navigation after setting new elements
       swiperInstance.navigation.destroy();
       swiperInstance.navigation.init();
       swiperInstance.navigation.update();
 
-      // Event listener for slide change to update button visibility
       swiperInstance.on("slideChange", () => {
         setIsBeginning(swiperInstance.isBeginning);
         setIsEnd(swiperInstance.isEnd);
       });
 
-      // Set initial button states
       setIsBeginning(swiperInstance.isBeginning);
       setIsEnd(swiperInstance.isEnd);
     }
@@ -66,15 +61,12 @@ const FavoritePage: React.FC = () => {
 
   const handleSwiper = (swiper: SwiperInstance) => {
     setSwiperInstance(swiper);
-
-    // Update navigation visibility when swiper instance is set
     swiper.on("slideChange", () => {
       setIsBeginning(swiper.isBeginning);
       setIsEnd(swiper.isEnd);
     });
   };
 
-  // 직접 슬라이드 이동 이벤트 연결
   const handlePrevClick = () => {
     if (swiperInstance) {
       swiperInstance.slidePrev();
@@ -87,13 +79,25 @@ const FavoritePage: React.FC = () => {
     }
   };
 
+  const goToDetail = (movieSeq: number) => {
+    navigate(`/moviedetail/${movieSeq}`);
+  };
+
+  const slides = [];
+  if (favoriteMovies) {
+    for (let i = 0; i < favoriteMovies.length; i += 10) {
+      slides.push(favoriteMovies.slice(i, i + 10));
+    }
+  }
+
+  console.log(slides);
+
   return (
     <div className="bg-black p-8 rounded-lg w-[1200px] relative">
       <h2 className="text-2xl font-semibold italic text-white mb-6">
         My Favorite Movies
       </h2>
 
-      {/* 외부 화살표 버튼 - 슬라이드 상태에 따라 표시 */}
       {!isBeginning && (
         <div
           ref={prevRef}
@@ -121,10 +125,6 @@ const FavoritePage: React.FC = () => {
           nextEl: nextRef.current,
           hideOnClick: true,
         }}
-        // pagination={{
-        //   clickable: true,
-        //   hideOnClick: true,
-        // }}
         spaceBetween={30}
         slidesPerView={1}
         style={{ overflow: "hidden" }}
@@ -132,12 +132,13 @@ const FavoritePage: React.FC = () => {
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
             <div className="grid grid-cols-5 gap-6">
-              {slide.map((image, idx) => (
+              {slide.map((movie: FavoriteMovie, idx: number) => (
                 <img
                   key={idx}
-                  src={image}
+                  src={movie.moviePosterUrl}
                   alt={`Movie ${idx + 1}`}
-                  className="rounded-lg object-cover"
+                  className="rounded-lg object-cover cursor-pointer"
+                  onClick={() => goToDetail(movie.movieSeq)}
                   style={{ width: "250px", height: "300px" }}
                 />
               ))}
@@ -145,33 +146,6 @@ const FavoritePage: React.FC = () => {
           </SwiperSlide>
         ))}
       </Swiper>
-
-      <style>
-        {`
-          .swiper-pagination {
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: right;
-            padding-right: 20px;
-          }
-          .swiper-button-prev-custom, .swiper-button-next-custom {
-            color: white;
-            top: 50%;
-            transform: translateY(-50%);
-            position: absolute;
-            z-index: 100;
-            font-size: 24px;
-            cursor: pointer;
-          }
-          .swiper-button-prev-custom {
-            left: -20px;
-          }
-          .swiper-button-next-custom {
-            right: -20px;
-          }
-        `}
-      </style>
     </div>
   );
 };

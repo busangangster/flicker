@@ -19,7 +19,6 @@ export const getTopTenMovies = async () => {
     const response = await axios.get(
       "/api/bff/movie/list/top10"
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("영화 목록을 가져오는데 실패했습니다.", error);
