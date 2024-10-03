@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserQuery } from "../../hooks/useUserQuery";
 
 const MyInformationPage: React.FC = () => {
   const navigate = useNavigate();
 
+  // 유저 정보 쿼리
+  const { data, error, isLoading, refetch } = useUserQuery();
+
+  // 페이지에 도착할 때마다 데이터를 강제로 다시 가져오도록 설정
+  useEffect(() => {
+    refetch(); // 데이터를 다시 불러오는 작업
+  }, []);
+
+  console.log(data);
+
   const goToVerification = () => {
     navigate("/mypage/verification");
   };
-  const { data, error, isLoading } = useUserQuery();
-  console.log(data)
-  if (!data) return <p>유저 정보가 없습니다.</p>;
+
   if (isLoading) return <p>로딩 중...</p>;
   if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
@@ -21,7 +29,7 @@ const MyInformationPage: React.FC = () => {
       {/* User Profile Picture and Information */}
       <div className="flex items-start space-x-8">
         <img
-          src="/assets/George.jpg" // 실제 프로필 이미지 경로로 대체
+          src="/assets/George.jpg"
           alt="User"
           className="rounded-[90px] w-[220px] h-[170px] object-cover mr-10"
         />
@@ -29,33 +37,33 @@ const MyInformationPage: React.FC = () => {
           <div className="flex items-center">
             <p className="w-24 font-semibold">닉네임</p>
             <p className="border-b border-gray-400 flex-grow pl-2">
-              {data.nickname}
+              {data?.nickname}
             </p>
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">아이디</p>
             <p className="border-b border-gray-400 flex-grow pl-2">
-              {data.userId}
+              {data?.userId}
             </p>
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">이메일</p>
             <p className="border-b border-gray-400 flex-grow pl-2">
-              {data.email}
+              {data?.email}
             </p>
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">생년월일</p>
             <p className="border-b border-gray-400 flex-grow pl-2">
-              {data.birthDate}
+              {data?.birthDate}
             </p>
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">성별</p>
             <p className="border-b border-gray-400 flex-grow pl-2">
-              {data.gender === "M"
+              {data?.gender === "M"
                 ? "남성"
-                : data.gender === "F"
+                : data?.gender === "F"
                 ? "여성"
                 : "정보 없음"}
             </p>

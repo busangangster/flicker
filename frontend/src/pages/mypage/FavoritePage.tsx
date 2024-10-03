@@ -146,6 +146,33 @@ const FavoritePage: React.FC = () => {
           </SwiperSlide>
         ))}
       </Swiper>
+
+      <style>
+        {`
+          .swiper-pagination {
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: right;
+            padding-right: 20px;
+          }
+          .swiper-button-prev-custom, .swiper-button-next-custom {
+            color: white;
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            z-index: 100;
+            font-size: 24px;
+            cursor: pointer;
+          }
+          .swiper-button-prev-custom {
+            left: -20px;
+          }
+          .swiper-button-next-custom {
+            right: -20px;
+          }
+        `}
+      </style>
     </div>
   );
 };

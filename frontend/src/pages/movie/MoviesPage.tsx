@@ -98,6 +98,10 @@ const MoviesPage: React.FC = () => {
       const movies = response.map((movie: Movie) => ({
         movieSeq: movie.movieSeq,
         moviePosterUrl: movie.moviePosterUrl,
+        movieYear: movie.movieYear,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
       }));
       setMovies(movies);
     } catch (error) {
@@ -118,6 +122,10 @@ const MoviesPage: React.FC = () => {
       const movies = response.map((movie: Movie) => ({
         movieSeq: movie.movieSeq,
         moviePosterUrl: movie.moviePosterUrl,
+        movieYear: movie.movieYear,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
       }));
       setMovies(movies);
     } catch (error) {

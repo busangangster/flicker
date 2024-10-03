@@ -1,10 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
 import { useNavigate } from "react-router-dom";
 import { MoviesListProps } from "../type";
-import "../css/MovieList.css"; // css 파일에서 hover 애니메이션 적용
+import "../css/MovieList.css"; 
+import { FaStar, FaStarHalfAlt } from "react-icons/fa"; 
 
 const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   const prevRef = useRef<HTMLDivElement | null>(null);
@@ -63,6 +64,24 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
 
   const goToDetail = (movieSeq: number) => {
     navigate(`/moviedetail/${movieSeq}`);
+  };
+
+  const renderStars = (rating: number) => {
+    const totalStars = 5;
+    return [...Array(totalStars)].map((_, index) => {
+      const ratingValue = index + 1;
+      return (
+        <Fragment key={index}>
+          {rating >= ratingValue ? (
+            <FaStar className="star" color="#ffc107" size={16} />
+          ) : rating >= ratingValue - 0.5 ? (
+            <FaStarHalfAlt className="star" color="#ffc107" size={16} />
+          ) : (
+            <FaStar className="star" color="#e4e5e9" size={16} />
+          )}
+        </Fragment>
+      );
+    });
   };
 
   return (
@@ -144,25 +163,18 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
               </div>
               <div className="details">
                 <h1 className="text-[20px]">{movie.movieTitle}</h1>
-                <div>{`${movie.movieYear} • ${movie.runningTime} • ${movie.audienceRating}`}</div>
-                <div className="rating">
-                  {[...Array(5)].map((_, index) => (
-                    <i
-                      key={index}
-                      className={
-                        index + 1 <= movie.movieRating
-                          ? "fas fa-star"
-                          : "far fa-star"
-                      }
-                    ></i>
-                  ))}
-                  <span>{movie.movieRating}/5</span>
+                <div className="text-[15px]">{`${movie.movieYear} • ${movie.runningTime} • ${movie.audienceRating}`}</div>
+                <div className="rating flex items-center">
+                  {renderStars(movie.movieRating)}
+                  <span className="ml-2">{movie.movieRating}/5</span>
                 </div>
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
+
+      
     </div>
   );
 };

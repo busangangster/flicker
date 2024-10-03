@@ -325,3 +325,31 @@ export const deleteDislikeMovies = async (
     throw error; // 에러 처리
   }
 };
+
+export const updateUserInfo = async (
+  userSeq: number,
+  data: { email: string; password: string; nickname: string }
+) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}`;
+
+  try {
+    const response = await axios.put(
+      url,
+      {
+        email: data.email,
+        password: data.password,
+        nickname: data.nickname,
+      }, // JSON 형식으로 body 전달
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data; // 응답 데이터 반환
+  } catch (error) {
+    console.error("Error updating user info:", error);
+    throw error;
+  }
+};

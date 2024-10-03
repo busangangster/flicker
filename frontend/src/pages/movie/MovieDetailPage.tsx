@@ -18,6 +18,7 @@ import Review from "../../components/Review";
 import MoviesList from "../../components/MoviesList";
 import { IoBan } from "react-icons/io5";
 import { useUserQuery } from "../../hooks/useUserQuery";
+import Swal from "sweetalert2";
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const MovieDetailPage: React.FC = () => {
     isLoading: userIsLoading,
   } = useUserQuery();
 
-  const userSeq = userData?.userSeq // 예시로 userSeq 고정값 사용
+  const userSeq = userData?.userSeq; // 예시로 userSeq 고정값 사용
 
   // useQuery를 통해 movieDetail API 호출
   const {
@@ -70,7 +71,6 @@ const MovieDetailPage: React.FC = () => {
     },
     enabled: !!userSeq && !!movieSeq, // `userSeq`와 `movieSeq`가 존재할 때만 쿼리 실행
   });
-  
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -144,46 +144,74 @@ const MovieDetailPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-const toggleHeart = async () => {
-  if (!userSeq) {
-    console.error("User sequence is not available."); // userSeq가 없을 때 에러 처리
-    return;
-  }
-
-  setIsLiked((prev) => !prev);
-
-  try {
-    if (isLiked) {
-      await deletefavoriteMovies(userSeq, Number(movieSeq));
-      console.log("찜목록에서 삭제");
-    } else {
-      await addfavoriteMovies(userSeq, Number(movieSeq));
-      console.log("찜목록에 추가");
+  const toggleHeart = async () => {
+    if (!userSeq) {
+      console.error("User sequence is not available."); // userSeq가 없을 때 에러 처리
+      return;
     }
-  } catch (error) {
-    console.error("즐겨찾기 API 호출 중 오류 발생:", error);
-  }
-};
 
-  const toggleDislike = async () => {
-      if (!userSeq) {
-        console.error("User sequence is not available."); // userSeq가 없을 때 에러 처리
-        return;
-      }
-    setDisLiked((prev) => !prev);
+    setIsLiked((prev) => !prev);
 
     try {
-      if (disLiked) {
-        await deleteDislikeMovies(userSeq, Number(movieSeq));
-        console.log("관심없음 목록에서 삭제");
+      if (isLiked) {
+        await deletefavoriteMovies(userSeq, Number(movieSeq));
+        console.log("찜목록에서 삭제");
       } else {
-        await addDislikeMovies(userSeq, Number(movieSeq));
-        console.log("관심없음 목록에 추가");
+        await addfavoriteMovies(userSeq, Number(movieSeq));
+        console.log("찜목록에 추가");
+
+        Swal.fire({
+          title: "찜 완료!",
+          icon: "success",
+          confirmButtonText: "확인",
+        });
       }
     } catch (error) {
       console.error("즐겨찾기 API 호출 중 오류 발생:", error);
     }
   };
+
+const toggleDislike = async () => {
+  if (!userSeq) {
+    console.error("User sequence is not available.");
+    return;
+  }
+
+  try {
+    // setDisLiked와 동시에 현재 상태값을 이용해서 API 호출을 분기 처리
+    setDisLiked((prevDisLiked) => {
+      // 현재 상태값을 기준으로 API 호출
+      if (prevDisLiked) {
+        deleteDislikeMovies(userSeq, Number(movieSeq))
+          .then(() => {
+            console.log("관심없음 목록에서 삭제");
+          })
+          .catch((error) => {
+            console.error("관심없음 목록 삭제 중 오류 발생:", error);
+          });
+      } else {
+        addDislikeMovies(userSeq, Number(movieSeq))
+          .then(() => {
+            console.log("관심없음 목록에 추가");
+
+            Swal.fire({
+              title: "무관심 추가 완룡!",
+              icon: "success",
+              confirmButtonText: "확인",
+            });
+          })
+          .catch((error) => {
+            console.error("관심없음 목록 추가 중 오류 발생:", error);
+          });
+      }
+
+      return !prevDisLiked; // 상태 반전
+    });
+  } catch (error) {
+    console.error("API 호출 중 오류 발생:", error);
+  }
+};
+
 
   const goToReview = () => {
     navigate(`/review/${movieSeq}`);
@@ -292,10 +320,20 @@ const toggleHeart = async () => {
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
 
-                  <IoBan
-                    className="w-6 h-6 ml-3 opacity-60 hover:opacity-100"
-                    onClick={toggleDislike}
-                  />
+                  <div className="relative group">
+                    <IoBan
+                      className={`w-6 h-6 ml-3 ${
+                        disLiked ? "opacity-100" : "opacity-60"
+                      } hover:opacity-100`}
+                      onClick={toggleDislike}
+                    />
+                    {/* Tooltip */}
+                    <div className="absolute left-1/2 transform -translate-x-3/4 mt-2 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-32 text-center">
+                      {
+                        "관심 없음 목록에 추가하면 추천에서 제외됩니다."
+                          }
+                    </div>
+                  </div>
                 </div>
               </div>
 
