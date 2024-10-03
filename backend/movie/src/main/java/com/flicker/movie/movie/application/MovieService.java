@@ -231,9 +231,12 @@ public class MovieService {
             // Redis에 영화 번호 목록을 저장 (키는 예를 들어 "TopMovieList")
             redisTopMovie = movieBuilderUtil.redisTopMovieBuilder("TopMovieList", movieSeqs);
             movieRepoUtil.saveTopMovieForRedis(redisTopMovie);
-        } else {
-            // 2. 영화 번호 목록 추출
-            movieSeqs = redisTopMovie.getMovieSeqs();
+        }
+        // 2. 영화 번호 목록 추출
+        movieSeqs = redisTopMovie.getMovieSeqs();
+        if(movieSeqs.isEmpty()) {
+            movieRepoUtil.deleteTopMovieForRedis();
+            throw new RestApiException(StatusCode.NO_CONTENT, "Top 영화가 존재하지 않습니다.");
         }
         // 3. TopMovieList 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
@@ -289,6 +292,12 @@ public class MovieService {
                 .toList();
     }
 
+    @Transactional
+    public void deleteTopMovie() {
+        movieRepoUtil.deleteTopMovie();
+        movieRepoUtil.deleteTopMovieForRedis();
+    }
+
     // redis , mongoDB (키워드 검색결과 ) 초기화
     private void initSearchResultForRedisAndMongoDB() {
         movieRepoUtil.deleteAllSearchResultForRedis();
@@ -337,6 +346,7 @@ public class MovieService {
     @Transactional
     public void deleteNewMovie() {
         movieRepoUtil.deleteNewMovie();
+        movieRepoUtil.deleteNewMovieForRedis();
     }
 
     @Transactional
@@ -358,12 +368,19 @@ public class MovieService {
             movieSeqs = newMovies.stream()
                     .map(NewMovie::getMovieSeq)
                     .toList();
+            if (movieSeqs.isEmpty()) {
+                throw new RestApiException(StatusCode.NO_CONTENT, "개봉 영화가 존재하지 않습니다.");
+            }
             // 3. redis에 영화 번호 목록 저장
             redisNewMovie = movieBuilderUtil.redisNewMovieBuilder("NewMovieList", movieSeqs);
             movieRepoUtil.saveNewMovieForRedis(redisNewMovie);
         }
         // 3. redis에 값이 있으면 redis에서 조회
         movieSeqs = redisNewMovie.getMovieSeqs();
+        if (movieSeqs.isEmpty()) {
+            movieRepoUtil.deleteNewMovieForRedis();
+            throw new RestApiException(StatusCode.NO_CONTENT, "개봉 영화가 존재하지 않습니다.");
+        }
         // 4. 개봉 영화 목록 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
         // 5. 검색 Redis, MongoDB 초기화
@@ -383,4 +400,5 @@ public class MovieService {
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
     }
+
 }

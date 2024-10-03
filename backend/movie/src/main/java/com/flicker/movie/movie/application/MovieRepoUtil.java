@@ -562,4 +562,17 @@ public class MovieRepoUtil {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 신규 영화 목록을 저장하는 중 오류가 발생했습니다.");
         }
     }
+
+    /**
+     * Redis에 저장된 신규 영화 목록을 삭제하는 메서드입니다.
+     *
+     * @throws RestApiException 신규 영화 목록 삭제 중 오류가 발생할 경우 발생
+     */
+    public void deleteNewMovieForRedis() {
+        try {
+            redisNewMovieRepository.deleteAll();
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "Redis에 저장된 신규 영화 목록을 삭제하는 중 오류가 발생했습니다.");
+        }
+    }
 }
