@@ -152,4 +152,20 @@ public class MovieBuilderUtil {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public List<NewMovie> buildNewMovieList(List<Integer> movieSeqs) {
+        return movieSeqs.stream()
+                .map(movieSeq -> NewMovie.builder()
+                        .movieSeq(movieSeq)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public RedisNewMovie redisNewMovieBuilder(String newMovieList, List<Integer> movieSeqs) {
+        return RedisNewMovie.builder()
+                .id(newMovieList)
+                .movieSeqs(movieSeqs)
+                .expiration(2592000L) // 1달 ( 30 * 24 * 60 * 60 )
+                .build();
+    }
 }

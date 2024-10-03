@@ -5,6 +5,7 @@ import com.flicker.movie.common.module.exception.RestApiException;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.config.KafkaConfig;
 import com.flicker.movie.movie.domain.entity.*;
+import com.flicker.movie.movie.domain.vo.MovieDetail;
 import com.flicker.movie.movie.dto.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -186,6 +187,30 @@ public class CustomConsumer {
             // 3. 오프셋 커밋
             consumer.commitSync();
             log.info("Kafka 메시지 처리 완료 - 토픽: {}", topic);
+        } catch (Exception e) {
+            log.error("Kafka 이벤트 수신 중 오류 발생 - 토픽: {}, 에러: {}", topic, e.getMessage());
+            throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");
+        }
+    }
+
+    // Kafka 메시지 수신 ( 이번달 개봉 영화 등록 )
+    @RetryableTopic(
+            attempts = "5",
+            backoff = @Backoff(delay = 2000)
+    )
+    @KafkaListener(topics = "${spring.kafka.template.new-movie-topic}")
+    @Transactional
+    public void consumeNewMovie(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
+        try {
+            // 1. 역직렬화: payload를 NewMovieEvent 객체로 변환
+            NewMovieEvent newMovieEvent = objectMapper.readValue(payload, NewMovieEvent.class);
+            // 2. 기존 개봉 영화 삭제
+            movieService.deleteNewMovie();
+            // 3. DB에 개봉 영화 추가
+            movieService.saveNewMovie(newMovieEvent.getMovieSeqList());
+            // 4. 오프셋 커밋
+            consumer.commitSync();
+            log.info("Kafka 메시지 처리 완료 토픽: {}", topic);
         } catch (Exception e) {
             log.error("Kafka 이벤트 수신 중 오류 발생 - 토픽: {}, 에러: {}", topic, e.getMessage());
             throw new RestApiException(StatusCode.KAFKA_ERROR, "Kafka 이벤트 수신 중 오류가 발생했습니다.");

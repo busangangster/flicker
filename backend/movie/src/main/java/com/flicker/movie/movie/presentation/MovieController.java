@@ -4,6 +4,7 @@ import com.flicker.movie.common.module.response.ResponseDto;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.application.ActorService;
 import com.flicker.movie.movie.application.MovieService;
+import com.flicker.movie.movie.domain.entity.RecommendActor;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -185,7 +186,14 @@ public class MovieController {
     // 영화 추천 배우 조회
     @GetMapping("/recommendActor/{userSeq}")
     public ResponseEntity<ResponseDto> getRecommendActor(@PathVariable int userSeq) {
-        String response = movieService.getRecommendActor(userSeq);
+        RecommendActorResponse response = movieService.getRecommendActor(userSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
+
+    // 개봉 영화 목록 조회
+    @GetMapping("/list/newMovie")
+    public ResponseEntity<ResponseDto> getNewMovieList() {
+        List<MovieListResponse> response = movieService.getNewMovieList();
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 }
