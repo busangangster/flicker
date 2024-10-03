@@ -73,6 +73,11 @@ const MoviesPage: React.FC = () => {
       const movies = response.map((movie: Movie) => ({
         movieSeq: movie.movieSeq,
         moviePosterUrl: movie.moviePosterUrl,
+        movieTitle: movie.movieTitle,
+        movieYear: movie.movieYear,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
       }));
       setMovies(movies);
     } catch (error) {
