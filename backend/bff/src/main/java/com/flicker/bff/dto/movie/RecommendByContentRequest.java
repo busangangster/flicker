@@ -2,12 +2,11 @@ package com.flicker.bff.dto.movie;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class MovieSeqListRequest {
+public class RecommendByContentRequest {
     private String movieTitle;
-    private int movieYear;
+    private Integer year;
+    private String actorName;
 }
