@@ -161,4 +161,9 @@ public class BffUserController {
     public Mono<ResponseEntity<ResponseDto>> getMyPage(@PathVariable(value = "userSeq")Integer userSeq){
         return userService.getMyPage(userSeq);
     }
+
+    @GetMapping("/review/check-already-review")
+    public Mono<ResponseEntity<ResponseDto>> checkAlreadyReview(@RequestParam Integer userSeq, @RequestParam Integer movieSeq){
+        return userService.checkAlreadyReview(userSeq,movieSeq);
+    }
 }

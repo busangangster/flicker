@@ -416,4 +416,10 @@ public class BffUserService {
         String path = util.getUri("/"+userSeq+"/myPage");
         return util.sendGetRequestAsync(userReviewBaseUrl,path);
     }
+
+
+    public Mono<ResponseEntity<ResponseDto>> checkAlreadyReview(Integer userSeq, Integer movieSeq) {
+        String path = util.getUri("/review/check-already-review?userSeq="+userSeq+"&movieSeq="+movieSeq);
+        return util.sendGetRequestAsync(userReviewBaseUrl,path);
+    }
 }
