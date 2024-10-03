@@ -220,4 +220,9 @@ public class ReviewService {
         dto.setLikes(totalLikes);
         return dto;
     }
+
+    public boolean checkAlreadyReview(Integer userSeq, Integer movieSeq){
+        Review review = reviewRepository.findByUserSeqAndMovieSeq(userSeq, movieSeq);
+        return review != null;
+    }
 }

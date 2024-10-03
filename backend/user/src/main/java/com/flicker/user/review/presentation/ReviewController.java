@@ -4,11 +4,8 @@ import com.flicker.user.common.exception.RestApiException;
 import com.flicker.user.common.response.ResponseDto;
 import com.flicker.user.common.status.StatusCode;
 import com.flicker.user.review.application.ReviewService;
-import com.flicker.user.review.domain.entity.Review;
 import com.flicker.user.review.dto.*;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -147,6 +144,16 @@ public class ReviewController {
         System.out.println("movieReviewRatingDistribute = " + movieReviewRatingDistribute);
         return ResponseDto.response(StatusCode.SUCCESS, movieReviewRatingDistribute);
 
+    }
+
+    @GetMapping("/check-already-review")
+    public ResponseEntity<ResponseDto> checkAlreadyReview(@RequestParam(value = "userSeq")Integer userSeq, @RequestParam(value = "movieSeq")Integer movieSeq){
+        if(userSeq == null || movieSeq == null){
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+        boolean alreadyReview = reviewService.checkAlreadyReview(userSeq,movieSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, alreadyReview);
     }
 
 }
