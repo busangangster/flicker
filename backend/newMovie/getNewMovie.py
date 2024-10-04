@@ -1,3 +1,4 @@
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
@@ -6,14 +7,20 @@ import io
 import time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Movie, Actor
+from models import Movie, Actor  # Movie, Actor 모델이 정의되어 있어야 합니다.
 import re
-from selenium.webdriver.common.by import By  # By 모듈 임포트
+from selenium.webdriver.common.by import By
 import base64
+from typing import List
+
+
+# FastAPI 인스턴스 생성
+app = FastAPI()
 
 # 표준 출력의 인코딩을 UTF-8로 설정하여 출력 시 한글이 깨지지 않도록 설정
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 
+# 전역 변수로 movieSeqList 정의
 movieSeqList = []
 
 def initialize_driver():
@@ -339,6 +346,7 @@ def save_movie_data_to_db(movie_title, plot, year, genre, country, image_url, ba
     - audience (str): 관람 등급
     - trailer_url (str): 예고편 URL
     """
+    global movieSeqList
     try:
         # 세션 생성
         session = create_session()
@@ -462,11 +470,16 @@ def create_session():
     SQLAlchemy 세션을 생성하고 반환하는 함수.
     """
     user = 'root'
-    password = '1234'
-    host = '3.36.106.130'   
-    port = '32263'        
+    password = 'ssafy'
+    host = '127.0.0.1'   
+    port = '3306'        
     database = 'flicker'
 
+    # user = 'root'
+    # password = '1234'
+    # host = '3.36.106.130'
+    # port = '32263' 
+    # database = 'moviedb' 
     movieEngine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}")
 
     # 세션 생성기
@@ -477,25 +490,34 @@ def create_session():
 
 
 
-def main_process():
-    # Selenium ChromeDriver 초기화
-    driver = initialize_driver()
-
+def main_process(driver):
     # 이번달 개봉 영화 정보 수집
     movie_info_list = collect_movie_titles(driver)
-
     # 수집된 영화 제목들 상세 정보 크롤링 및 DB 저장
-    while True:
+    while movie_info_list:
         movie_info_list = search_and_find_movie(driver, movie_info_list)
-        if(len(movie_info_list) == 0):
-            break
-    
-    # 드라이버 종료
-    driver.quit()
 
-    print(movieSeqList)
+# FastAPI 엔드포인트 정의
+@app.get("/api/newMovie/list", response_model=List[int])
+def getNewMovieList():
+    """
+    영화 데이터를 크롤링하고 수집한 후 영화 ID 리스트를 JSON으로 반환하는 API 엔드포인트.
+    """
+    global movieSeqList
+    driver = None
+    try:
+        driver = initialize_driver()  # Selenium WebDriver 초기화
+        # 메인 프로세스를 동기적으로 수행
+        main_process(driver)
+        # 크롤링이 완료되었으면 movieSeqList 반환
+        return movieSeqList
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # 예외 발생 여부와 관계없이 드라이버 종료
+        if driver is not None:
+            driver.quit()
 
-
-# 프로그램 실행
 if __name__ == "__main__":
-    main_process()
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
