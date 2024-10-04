@@ -86,7 +86,7 @@ const Review: React.FC<ReviewProps> = ({ review, onDelete }) => {
               {onDelete && (
                 <button
                   onClick={handleDeleteReview}
-                  className="mr-3 text-white bg-[#44547B] px-2 py-1 rounded-md hover:bg-gray-700 text-sm border-none bg-transparent cursor-pointer"
+                  className="mr-3 text-white bg-[#44547B] px-2 py-1 rounded-md hover:bg-gray-700 text-sm border-none cursor-pointer"
                 >
                   삭제
                 </button>
