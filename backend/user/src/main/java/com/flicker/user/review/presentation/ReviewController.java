@@ -152,8 +152,8 @@ public class ReviewController {
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
 
-        boolean alreadyReview = reviewService.checkAlreadyReview(userSeq,movieSeq);
-        return ResponseDto.response(StatusCode.SUCCESS, alreadyReview);
+        CheckAlreadyReviewDto checkAlreadyReviewDto = reviewService.checkAlreadyReview(userSeq, movieSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, checkAlreadyReviewDto);
     }
 
 }
