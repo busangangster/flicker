@@ -354,8 +354,12 @@ public class MovieService {
 
     @Transactional
     public void saveNewMovie(List<Integer> movieSeqList) {
+        // 1. 개봉 영화 목록 생성
         List<NewMovie> newMovies = movieBuilderUtil.buildNewMovieList(movieSeqList);
+        // 2. 개봉 영화 목록 저장
         movieRepoUtil.saveNewMovie(newMovies);
+        // 3. 검색 Redis, MongoDB 초기화
+        initSearchResultForRedisAndMongoDB();
     }
 
     @Transactional
@@ -386,9 +390,7 @@ public class MovieService {
         }
         // 4. 개봉 영화 목록 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
-        // 5. 검색 Redis, MongoDB 초기화
-        initSearchResultForRedisAndMongoDB();
-        // 4. movieSeq를 키로 하는 Map으로 변환 (Movie 객체 매핑)
+        // 5. movieSeq를 키로 하는 Map으로 변환 (Movie 객체 매핑)
         Map<Integer, Movie> movieMap = movieList.stream()
                 .collect(Collectors.toMap(Movie::getMovieSeq, Function.identity()));
         // 5. movieSeqs 순서에 맞춰 movieMap에서 Movie 객체를 가져와 List 생성
