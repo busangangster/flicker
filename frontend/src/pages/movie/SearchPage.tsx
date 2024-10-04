@@ -7,33 +7,37 @@ import SelectionList from "../../components/SelectionList";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { Movie } from "../../type";
 
-
 const SearchPage: React.FC = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("query") || "";
-  
+
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const { data: userData } = useUserQuery();
-  const userSeq = userData?.userSeq; 
+  const userSeq = userData?.userSeq;
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    // 새로운 검색어가 들어올 때, 기존 영화 데이터를 초기화하고 페이지를 0으로 리셋
+    setMovies([]); // 기존 데이터 초기화
+    setPage(0); // 페이지 초기화
+  }, [searchQuery]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        // userSeq가 undefined일 경우를 처리
-        if (userSeq) {
+        if (userSeq && page <= 3) {
           const newMovies = await fetchMoviesBySearch(
             searchQuery,
             userSeq,
-            0,
-            10
+            page,
+            15
           );
-          console.log(newMovies)
           setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-          if (newMovies.length < 20) {
-            setHasMore(false); // 더 이상 로드할 데이터가 없으면 hasMore를 false로 설정
+          if (newMovies.length < 15 || page === 3) {
+            setHasMore(false);
           }
         }
       } catch (error) {
@@ -47,7 +51,9 @@ const SearchPage: React.FC = () => {
   }, [searchQuery, page, userSeq]);
 
   const loadMoreMovies = () => {
-    setPage((prevPage) => prevPage + 1);
+    if (page < 3) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
   return (
@@ -59,8 +65,8 @@ const SearchPage: React.FC = () => {
       <div className="mt-[100px] flex justify-end items-end w-[1800px]">
         <SearchBar
           initialSearchQuery={searchQuery}
-          isExpanded={false}
-          setIsExpanded={() => {}}
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
         />
       </div>
 

@@ -23,8 +23,6 @@ import Swal from "sweetalert2";
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq를 가져옴
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  // const [interestOption, setInterestOption] = useState("관심 없음");
   const [isLiked, setIsLiked] = useState(false);
   const [disLiked, setDisLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,21 +30,21 @@ const MovieDetailPage: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   // const handleClickOutside = (event: MouseEvent) => {
+  //   //   if (
+  //   //     dropdownRef.current &&
+  //   //     !dropdownRef.current.contains(event.target as Node)
+  //   //   ) {
+  //   //     setIsDropdownOpen(false);
+  //   //   }
+  //   // };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   const {
     data: userData,

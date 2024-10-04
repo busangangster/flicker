@@ -53,7 +53,7 @@ const SelectionList: React.FC<SelectionListProps> = ({
       ) : (
         <p className="text-white">해당 장르의 영화가 없습니다.</p>
       )}
-      <div ref={observerRef} /> {/* 추가 데이터를 불러오기 위한 감지 영역 */}
+      <div ref={observerRef} /> 
     </div>
   );
 };
