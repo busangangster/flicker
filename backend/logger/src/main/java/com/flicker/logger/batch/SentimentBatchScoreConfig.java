@@ -4,7 +4,7 @@ import com.flicker.logger.config.KafkaItemWriter;
 import com.flicker.logger.dto.SentimentResult;
 import com.flicker.logger.dto.SentimentReview;
 import com.flicker.logger.dto.SentimentReviewEvent;
-import com.flicker.logger.service.SentimentAnalysisService;
+import com.flicker.logger.application.SentimentAnalysisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

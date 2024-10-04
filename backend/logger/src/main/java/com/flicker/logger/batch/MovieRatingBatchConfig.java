@@ -72,7 +72,7 @@ public class MovieRatingBatchConfig {
                 .<MovieAverageRating, MovieRating>chunk(10, platformTransactionManager)
                 .reader(sendToKafkaReader()) // 평균 점수를 읽어오는 Reader
                 .processor(sendToKafkaProcessor())
-                .writer(kafkaItemWriter(kafkaTemplate)) // 카프카로 발행하는 Writer
+                .writer(compositeKafkaItemWriter()) // 카프카로 발행하는 Writer
                 .build();
     }
 
@@ -176,5 +176,24 @@ public class MovieRatingBatchConfig {
     @StepScope
     public KafkaItemWriter<MovieRating> kafkaItemWriter(KafkaTemplate<String, String> kafkaTemplate) {
         return new KafkaItemWriter<>(kafkaTemplate, "movie-rating");
+    }
+
+    @Bean
+    @StepScope
+    public JdbcBatchItemWriter<MovieRating> kafkaItemJdbcWriter() {
+
+        return new JdbcBatchItemWriterBuilder<MovieRating>()
+                .dataSource(dataSource)
+                .sql("UPDATE data_db.movie_average_rating SET is_changed = false WHERE movie_seq = :movieSeq")
+                .beanMapped()
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    public CompositeItemWriter<MovieRating> compositeKafkaItemWriter() {
+        CompositeItemWriter<MovieRating> writer = new CompositeItemWriter<>();
+        writer.setDelegates(Arrays.asList(kafkaItemWriter(kafkaTemplate), kafkaItemJdbcWriter()));
+        return writer;
     }
 }

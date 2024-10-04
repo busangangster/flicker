@@ -1,4 +1,4 @@
-package com.flicker.logger.controller;
+package com.flicker.logger.presentation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.JobParameters;

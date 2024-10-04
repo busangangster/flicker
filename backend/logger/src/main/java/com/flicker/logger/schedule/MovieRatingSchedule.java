@@ -25,8 +25,7 @@ public class MovieRatingSchedule {
     * 배치 서버에서 가지고 있는 요약 테이블(평점)을 기준으로 업데이트 후
     * 업데이트 된 영화 정보를 기준으로 카프카 이벤트 발생
     * */
-//    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
-    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
     public void runRatingJob() throws Exception{
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
