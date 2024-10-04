@@ -2,6 +2,7 @@
 import React from "react";
 import Navbar from "../../components/common/Navbar";
 import Member from "../../components/Member";
+import team from "/assets/service/team.jpg";
 
 const ContactPage: React.FC = () => {
   return (
@@ -16,9 +17,9 @@ const ContactPage: React.FC = () => {
         <div className="flex items-center justify-center ">
           {/* 팀 이미지 */}
           <img
-            src="https://via.placeholder.com/500x300"
+            src={team}
             alt="Team"
-            className="w-[600px] h-[400px] mr-10 object-cover "
+            className="w-[1000px] h-[400px] mr-10 object-cover rounded-md "
           />
           {/* 팀 설명 */}
           <div className="text-left">
