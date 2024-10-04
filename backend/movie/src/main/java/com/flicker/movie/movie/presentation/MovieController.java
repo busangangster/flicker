@@ -177,9 +177,9 @@ public class MovieController {
     }
 
     // 평점 높은 영화 30개 조회
-    @GetMapping("/list/topRating")
-    public ResponseEntity<ResponseDto> getTopRatingMovieList() {
-        List<MovieListResponse> response = movieService.getTopRatingMovieList();
+    @PostMapping("/list/topRating")
+    public ResponseEntity<ResponseDto> getTopRatingMovieList(List<Integer> movieSeqs) {
+        List<MovieListResponse> response = movieService.getTopRatingMovieList(movieSeqs);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
