@@ -175,4 +175,13 @@ public class UserServiceImpl implements UserService{
 
         return movieDetail;
     }
+
+    @Override
+    public User getUserByUserSeq(Integer userSeq) {
+        User byUserSeq = userRepository.findByUserSeq(userSeq);
+        if(byUserSeq == null) {
+            throw new RestApiException(StatusCode.CAN_NOT_FIND_USER);
+        }
+        return byUserSeq;
+    }
 }
