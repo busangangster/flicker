@@ -1,5 +1,6 @@
 package com.flicker.bff.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
@@ -7,12 +8,15 @@ import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
 import com.flicker.bff.dto.user.*;
 import com.flicker.bff.dto.user.photocard.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -421,5 +425,23 @@ public class BffUserService {
     public Mono<ResponseEntity<ResponseDto>> checkAlreadyReview(Integer userSeq, Integer movieSeq) {
         String path = util.getUri("/review/check-already-review?userSeq="+userSeq+"&movieSeq="+movieSeq);
         return util.sendGetRequestAsync(userReviewBaseUrl,path);
+    }
+
+    public Mono<ResponseEntity<ResponseDto>> refresh(String refresh) {
+
+        String path = util.getUri("/refresh");
+        return util.sendPostRequestAsyncForTokenGenerate(userReviewBaseUrl,path,null,refresh);
+
+    }
+
+    public String getRefreshTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refresh".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 }
