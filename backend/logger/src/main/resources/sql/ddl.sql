@@ -41,3 +41,11 @@ create table user_action_logs
     timestamp timestamp default CURRENT_TIMESTAMP null
 );
 
+CREATE TRIGGER update_movie_review_info
+    AFTER UPDATE ON sentiment_review_logs
+    FOR EACH ROW
+BEGIN
+    UPDATE movie_review_info
+    SET sentiment_score = NEW.sentiment_score
+    WHERE review_seq = NEW.review_seq;
+END;
