@@ -179,7 +179,7 @@ const PhotoCardPage: React.FC = () => {
           clickEventForward={false}
           swipeDistance={30}
           showPageCorners={true}
-          disableFlipByClick={false}
+          disableFlipByClick={true}
           onInit={handleBookInit}
         >
           {pages.map((page) => (
