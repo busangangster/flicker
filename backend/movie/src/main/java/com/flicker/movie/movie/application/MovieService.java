@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -285,12 +286,14 @@ public class MovieService {
     }
 
     @Transactional
-    public List<MovieListResponse> getTopRatingMovieList() {
-        // 1. 평점 높은 영화 30개 조회
-        Pageable pageable = PageRequest.of(0, 30);
-        List<Movie> movieList = movieRepoUtil.findTopRatingMovieList(pageable);
-        // 2. MovieListResponse 리스트 생성
+    public List<MovieListResponse> getTopRatingMovieList(List<Integer> movieSeqs) {
+        // 1. 리뷰개수가 2000개 넘는 영화 조회
+        List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
+        // 2. movie_rating을 기준으로 정렬
+        movieList.sort(Comparator.comparingDouble(Movie::getMovieRating).reversed());
+        // 3. MovieListResponse 리스트 생성 (30개제한)
         return movieList.stream()
+                .limit(30)
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .toList();
     }
