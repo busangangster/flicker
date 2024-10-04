@@ -181,6 +181,7 @@ const MoviesPage: React.FC = () => {
         runningTime: movie.runningTime,
         audienceRating: movie.audienceRating,
       }));
+      console.log(response);
       setMovies(movies);
     } catch (error) {
       console.error("Error fetching movies by rating:", error);
@@ -232,7 +233,7 @@ const MoviesPage: React.FC = () => {
       ) : (
         <>
           <MoviesList
-            category="따끈따끈한 이번 달 신작 영화"
+            category="이번 달 신작 영화"
             movies={newMovies}
           />
           <MoviesList category="판타지 영화" movies={fantasyMovies} />

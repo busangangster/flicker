@@ -171,9 +171,7 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
                 </div>
                 <div className="rating flex items-center">
                   {renderStars(movie.movieRating ?? 0)}{" "}
-                  {/* movieRating이 undefined이면 0으로 설정 */}
                   <span className="ml-2">{movie.movieRating ?? 0}/5</span>{" "}
-                  {/* undefined일 때 0으로 표시 */}
                 </div>
               </div>
             </div>

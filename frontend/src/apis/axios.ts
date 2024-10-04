@@ -220,6 +220,45 @@ export const fetchMovieNew = async () => {
   }
 };
 
+// 행동기반 추천 영화 조회
+export const fetchMovieUserActing = async (userSeq: number) => {
+  try {
+    const response = await movieListApi.get(
+      `/recommendation/action/${userSeq}`
+    );
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+// 리뷰 기반 추천 영화 목록 조회
+export const fetchMovieUserReview = async (userSeq: number) => {
+  try {
+    const response = await movieListApi.get(`
+      /recommendation/review/${userSeq}`);
+    if (response?.data.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      console.log(movies);
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+  
+}
+
 // coldStart issue 처리
 export const addFavoriteMovies = async (
   userSeq: number,

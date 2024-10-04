@@ -9,7 +9,6 @@ import SignInPage from "../pages/auth/SignInPage";
 import ContactPage from "../pages/info/ContactPage";
 import ServiceDetailPage from "../pages/info/ServiceDetailPage";
 import MovieDetailPage from "../pages/movie/MovieDetailPage";
-import RecommendListPage from "../pages/movie/RecommendListPage";
 import RecommendPage from "../pages/movie/RecommendPage";
 import ReviewPage from "../pages/movie/ReviewPage";
 import SearchPage from "../pages/movie/SearchPage";
@@ -27,6 +26,8 @@ import MoviesPage from "../pages/movie/MoviesPage";
 import ProtectedRoute from "../components/ProtectedRoute";
 import MovieGenrePage from "../pages/movie/MovieGenrePage";
 import DisLikePage from "../pages/mypage/DisLikePage";
+import RecommendListReviewPage from "../pages/movie/RecommendListReviewPage";
+import RecommendListActionPage from "../pages/movie/RecommendListActionPage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -44,10 +45,18 @@ const AppRoutes: React.FC = () => {
       <Route path="/servicedetail" element={<ServiceDetailPage />} />
       <Route path="/moviedetail/:movieSeq" element={<MovieDetailPage />} />
       <Route
-        path="/recommendlist"
+        path="/recommendlist/action"
         element={
           <ProtectedRoute>
-            <RecommendListPage />
+            <RecommendListActionPage />
+          </ProtectedRoute>
+        }
+      />
+            <Route
+        path="/recommendlist/review"
+        element={
+          <ProtectedRoute>
+            <RecommendListReviewPage />
           </ProtectedRoute>
         }
       />
