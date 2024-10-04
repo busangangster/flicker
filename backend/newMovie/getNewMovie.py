@@ -26,22 +26,23 @@ response = []
 # Pydantic 모델 정의 (SQLAlchemy와 충돌 방지 위해 이름 변경)
 class ActorResponse(BaseModel):
     actor_name: str
-    role: Optional[str] = None
+    # role: Optional[str] = None
 
 class MovieResponse(BaseModel):
+    movie_seq: int
     movie_title: str
-    director: Optional[str]
+    # director: Optional[str]
     genre: Optional[str]
-    country: Optional[str]
-    movie_plot: Optional[str]
-    audience_rating: Optional[float]
+    # country: Optional[str]
+    # movie_plot: Optional[str]
+    # audience_rating: Optional[str]
     movie_year: int
-    running_time: Optional[int]
-    movie_rating: Optional[float]
-    movie_poster_url: Optional[str]
-    trailer_url: Optional[str]
-    background_url: Optional[str]
-    del_yn: Optional[str]
+    # running_time: Optional[str]
+    # movie_rating: Optional[float]
+    # movie_poster_url: Optional[str]
+    # trailer_url: Optional[str]
+    # background_url: Optional[str]
+    del_yn: str
     actors: Optional[List[ActorResponse]] = None
 
 def convert_movie_to_response(movie, actors=None):
@@ -49,46 +50,76 @@ def convert_movie_to_response(movie, actors=None):
     SQLAlchemy Movie 객체를 Pydantic MovieResponse 모델로 변환하는 함수.
     """
     if actors:
-        actors_response = [ActorResponse(actor_name=actor.actor_name, role=actor.role) for actor in actors]
+        actors_response = [ActorResponse(actor_name=actor.actor_name) for actor in actors]
     else:
         actors_response = None
 
     return MovieResponse(
+        movie_seq=movie.movie_seq,
         movie_title=movie.movie_title,
-        director=movie.director,
+        # director=movie.director,
         genre=movie.genre,
-        country=movie.country,
-        movie_plot=movie.movie_plot,
-        audience_rating=movie.audience_rating,
+        # country=movie.country,
+        # movie_plot=movie.movie_plot,
+        # audience_rating=movie.audience_rating,
         movie_year=movie.movie_year,
-        running_time=movie.running_time,
-        movie_rating=movie.movie_rating,
-        movie_poster_url=movie.movie_poster_url,
-        trailer_url=movie.trailer_url,
-        background_url=movie.background_url,
+        # running_time=movie.running_time,
+        # movie_rating=movie.movie_rating,
+        # movie_poster_url=movie.movie_poster_url,
+        # trailer_url=movie.trailer_url,
+        # background_url=movie.background_url,
         del_yn=movie.del_yn,
         actors=actors_response
     )
 
-def parse_actor_info(actor_info):
+def parse_cast_info(cast_info):
     """
-    배우 정보를 문자열에서 추출하여 (배우 이름, 역할) 형태의 튜플로 반환하는 함수.
+    전체 배우 정보를 문자열로 받아 배우 이름과 역할을 분리하여 리스트로 반환하는 함수.
     
     Parameters:
-    - actor_info (str): '배우이름 (역할)' 형태의 문자열
+    - cast_info (str): '배우1 (역할), 배우2 (역할)' 형태의 문자열
     
     Returns:
-    - (actor_name, role) 튜플
+    - List[Tuple[actor_name, role]] 형태의 리스트 반환
     """
-    match = re.match(r"(.+?)\s*\((.+)\)", actor_info)
-    if match:
-        actor_name = match.group(1).strip()
-        role = match.group(2).strip()
-    else:
-        # 괄호가 없으면 역할 정보가 없는 경우
-        actor_name = actor_info.strip()
-        role = None
-    return actor_name, role
+    # 괄호의 짝을 맞추고 괄호 밖의 쉼표로 분리
+    actor_list = []
+    buffer = ''
+    open_paren = 0  # 괄호가 열려 있는지 확인하는 변수
+
+    for char in cast_info:
+        if char == '(':
+            open_paren += 1
+            buffer += char
+        elif char == ')':
+            open_paren -= 1
+            buffer += char
+        elif char == ',' and open_paren == 0:
+            # 괄호가 닫혀있을 때만 쉼표로 구분
+            actor_list.append(buffer.strip())
+            buffer = ''
+        else:
+            buffer += char
+
+    # 마지막에 남은 buffer 추가
+    if buffer:
+        actor_list.append(buffer.strip())
+
+    # 각 배우 정보를 처리하여 (배우 이름, 역할) 형태의 튜플 리스트로 변환
+    parsed_actors = []
+    for actor_info in actor_list:
+        match = re.match(r"(.+?)\s*\((.+)\)", actor_info)
+        if match:
+            actor_name = match.group(1).strip()  # 배우 이름
+            role = match.group(2).strip()  # 괄호 안에 있는 내용 전체를 역할로
+        else:
+            # 괄호가 없는 경우, 역할 정보가 없으므로 빈 역할로 저장
+            actor_name = actor_info.strip()
+            role = None
+        parsed_actors.append((actor_name, role))  # 튜플 형태로 저장
+
+    return parsed_actors
+
 
 
 def initialize_driver():
@@ -114,7 +145,6 @@ def initialize_driver():
 
     except Exception as e:
         print(f"Error initializing driver: {e}")
-        sys.exit(1)
 
 def create_session():
     """
@@ -145,7 +175,12 @@ def save_movie_data_to_db(movie_title, plot, year, genre, country, image_url, ba
         existing_movie = session.query(DbMovie).filter_by(movie_title=movie_title, movie_year=year).first()
 
         if existing_movie:
-            response.append(convert_movie_to_response(existing_movie))  # 기존 영화 객체를 변환 후 응답에 추가
+            # 기존 영화의 배우 정보 조회
+            existing_movie_seq = existing_movie.movie_seq
+            existing_actors = session.query(DbActor).filter_by(movie_seq=existing_movie_seq).all()
+
+            # existing_movie와 관련된 배우 정보를 변환하여 응답에 추가
+            response.append(convert_movie_to_response(existing_movie, existing_actors))
             return  # 함수 종료
 
         # Movie 객체 생성 및 세션에 추가
@@ -167,11 +202,10 @@ def save_movie_data_to_db(movie_title, plot, year, genre, country, image_url, ba
         session.add(movie)
         session.flush()  # movie_seq를 얻기 위해 flush() 수행
 
-        # 배우 정보 문자열 파싱 및 처리
+        # 배우 정보 파싱 및 처리
+        parsed_actors = parse_cast_info(cast_info)  # cast_info 전체 문자열을 파싱하여 배우 정보 리스트 반환
         actor_list = []
-        for actor_info in cast_info:
-            actor_name, role = parse_actor_info(actor_info)
-
+        for actor_name, role in parsed_actors:
             # Actor 객체 생성 및 저장
             actor = DbActor(
                 actor_name=actor_name,
@@ -190,6 +224,9 @@ def save_movie_data_to_db(movie_title, plot, year, genre, country, image_url, ba
     except Exception as e:
         print(f"Error saving movie data to database: {e}")
         session.rollback()
+    finally:
+        session.close()
+
 
 def collect_movie_titles(driver):
     """
