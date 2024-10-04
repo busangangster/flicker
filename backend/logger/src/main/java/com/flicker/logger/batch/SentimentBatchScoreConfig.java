@@ -77,8 +77,8 @@ public Step sendToSentimentStep() {
     return new StepBuilder("sendSentimentStep", jobRepository)
             .<SentimentReview, SentimentResult> chunk(10, transactionManager)
             .reader(sentimentBatchKafkaReader())
-            .processor(sentimentBatchKafkaProcessor())
-            .writer(sentimentResultCompositeItemWritercompositeItemWriter())
+            .processor(sentimentBatchKafkaProcessor(kafkaTemplate))
+            .writer(sentimentKafkaWriter())
             .build();
 }
 
@@ -132,12 +132,23 @@ public Step sendToSentimentStep() {
 
     @Bean
     @StepScope
-    public ItemProcessor<SentimentReview, SentimentResult> sentimentBatchKafkaProcessor() {
+    public ItemProcessor<SentimentReview, SentimentResult> sentimentBatchKafkaProcessor(KafkaTemplate<String, String> kafkaTemplate) {
 
-        return item -> SentimentResult.builder()
-                .reviewSeq(item.getReviewSeq())
-                .sentimentScore(item.getSentimentScore())
-                .build();
+        return item -> {
+
+            SentimentResult result = SentimentResult.builder()
+                    .reviewSeq(item.getReviewSeq())
+                    .sentimentScore(item.getSentimentScore())
+                    .build();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String message = objectMapper.writeValueAsString(result);
+
+            kafkaTemplate.send("sentiment-result", message);
+
+            return result;
+        };
     }
 
     @Bean
@@ -174,19 +185,6 @@ public Step sendToSentimentStep() {
         };
     }
 
-    @Bean
-    @StepScope
-    public ItemWriter<SentimentResult> sentimentKafkaSendWriter(KafkaTemplate<String, String> kafkaTemplate) {
-
-        return item -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            String message = objectMapper.writeValueAsString(item);
-
-            kafkaTemplate.send("sentiment-result", message);
-            log.info("Movie rating sent to kafka : {}", message);
-        };
-    }
 
     @Bean
     @StepScope
@@ -199,13 +197,5 @@ public Step sendToSentimentStep() {
                         "WHERE review_seq = :reviewSeq")
                 .beanMapped()
                 .build();
-    }
-
-    @Bean
-    @StepScope
-    public CompositeItemWriter<SentimentResult> sentimentResultCompositeItemWritercompositeItemWriter() {
-        CompositeItemWriter<SentimentResult> writer = new CompositeItemWriter<>();
-        writer.setDelegates(Arrays.asList(sentimentKafkaSendWriter(kafkaTemplate), sentimentKafkaWriter()));
-        return writer;
     }
 }
