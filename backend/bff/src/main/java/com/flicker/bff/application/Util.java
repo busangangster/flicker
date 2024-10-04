@@ -102,51 +102,6 @@ public class Util {
         }
     }
 
-    // 로그인 처리용 토큰 포함 응답 생성  액세스 토큰은 잘 오는데 쿠키가 안오는 버전
-//    public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody) {
-//        try {
-//            // WebClient 인스턴스 생성
-//            WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
-//            return webClient.post()
-//                    .uri(path)
-//                    .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
-//                    .retrieve()
-//                    .toEntity(String.class)  // 응답을 ResponseEntity로 받음
-//                    .flatMap(responseEntity -> {
-//                        // 응답 헤더에서 JWT 토큰 읽기 (Authorization 헤더에 있다고 가정)
-//                        String jwtToken = responseEntity.getHeaders().getFirst("Authorization");
-//
-//                        if (jwtToken != null) {
-//                            ResponseDto emptyResponseDto = new ResponseDto(
-//                                    null,  // data는 필요 없으므로 null
-//                                    "Success",  // 성공 메시지
-//                                    200,  // HTTP 상태 코드
-//                                    StatusCode.SUCCESS.getServiceStatus()  // 서비스 상태 코드
-//                            );
-//
-//                            // ResponseEntity에 JWT 토큰을 포함하여 ResponseDto와 함께 반환
-//                            return Mono.just(ResponseEntity.ok()
-//                                    .header("Authorization", jwtToken)  // JWT 토큰을 헤더에 포함
-//                                    .body(emptyResponseDto));  // 빈 ResponseDto 본문 포함
-//                        } else {
-//                            return Mono.error(new RestApiException(StatusCode.UNAUTHORIZED_REQUEST, "JWT 토큰이 응답에 포함되지 않았습니다."));
-//                        }
-//                    })
-//                    .onErrorResume(e -> {
-//                        if (e instanceof RestApiException ex) {
-//                            // ResponseEntity<ResponseDto>를 생성하여 반환 (중첩을 피하기 위해 그대로 반환)
-//                            return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
-//                        } else {
-//                            // ResponseEntity<ResponseDto>를 생성하여 반환 (중첩을 피하기 위해 그대로 반환)
-//                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
-//                        }
-//                    });
-//        } catch (Exception e) {
-//            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
-//        }
-//    }
-
-
     // 로그인 처리용 토큰 포함 응답 생성  액세스 토큰과 쿠키가 모두 오는 버전
     public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsyncWithToken(String baseUrl, String path, T requestBody) {
         try {
@@ -243,6 +198,47 @@ public class Util {
         } catch (Exception e) {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient PUT 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
+    }
+
+    // 토큰 재발급을 위한 메서드
+    public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsyncForTokenGenerate(String baseUrl, String path, T requestBody, String token) {
+        // Build the WebClient request with the refresh token in the cookie
+        WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+        return webClient.post()
+                .uri(path)
+                .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
+                .cookie("refresh", token)
+                .retrieve()
+                .toEntity(String.class)
+                .flatMap(response -> {
+                    // 응답 헤더에서 JWT 토큰 읽기 (Authorization 헤더에 있다고 가정)
+                    String jwtToken = response.getHeaders().getFirst("Authorization");
+
+                    // 응답 헤더에서 Set-Cookie 읽기
+                    String setCookieHeader = response.getHeaders().getFirst("Set-Cookie");
+                    if (setCookieHeader != null) {
+                        // Set-Cookie 헤더가 존재할 경우 처리
+                        System.out.println("Set-Cookie 헤더: " + setCookieHeader);
+                    }
+
+                    if (jwtToken != null) {
+                        ResponseDto emptyResponseDto = new ResponseDto(
+                                null,  // data는 필요 없으므로 null
+                                "Success",  // 성공 메시지
+                                200,  // HTTP 상태 코드
+                                StatusCode.SUCCESS.getServiceStatus()  // 서비스 상태 코드
+                        );
+
+                        // ResponseEntity에 JWT 토큰을 포함하여 ResponseDto와 함께 반환
+                        return Mono.just(ResponseEntity.ok()
+                                .header("Authorization", jwtToken)  // JWT 토큰을 헤더에 포함
+                                .header("Set-Cookie", setCookieHeader)  // Set-Cookie 헤더 추가
+                                .body(emptyResponseDto));  // 빈 ResponseDto 본문 포함
+                    } else {
+                        return Mono.error(new RestApiException(StatusCode.UNAUTHORIZED_REQUEST, "JWT 토큰이 응답에 포함되지 않았습니다."));
+                    }
+                })
+                .onErrorResume(e -> Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, e.getMessage())));
     }
 
 

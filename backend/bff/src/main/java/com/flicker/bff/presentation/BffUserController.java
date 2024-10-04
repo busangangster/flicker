@@ -5,6 +5,9 @@ import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
 import com.flicker.bff.common.module.status.StatusCode;
 import com.flicker.bff.dto.user.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -165,5 +168,21 @@ public class BffUserController {
     @GetMapping("/review/check-already-review")
     public Mono<ResponseEntity<ResponseDto>> checkAlreadyReview(@RequestParam Integer userSeq, @RequestParam Integer movieSeq){
         return userService.checkAlreadyReview(userSeq,movieSeq);
+    }
+
+    @GetMapping("/refresh")
+    public Mono<ResponseEntity<ResponseDto>> refresh(HttpServletRequest request, HttpServletResponse response){
+
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh".equals(cookie.getName())) {
+                    refresh = cookie.getValue();
+                }
+            }
+        }
+
+        return userService.refresh(refresh);
     }
 }
