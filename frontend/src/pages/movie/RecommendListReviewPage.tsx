@@ -60,7 +60,7 @@ const RecommandListReviewPage: React.FC = () => {
       }}
     >
       <FaArrowLeft
-        className="bg-white opacity-90 rounded-md w-10 h-10 absolute top-28 left-40 text-gray-800 p-1 hover:bg-neutral-400"
+        className="bg-white opacity-90 rounded-md w-10 h-10 absolute top-40 left-20 text-gray-800 p-1 hover:bg-neutral-400"
         onClick={goToRecommend}
       />
       {/* 영화관 스타일 화면 */}
