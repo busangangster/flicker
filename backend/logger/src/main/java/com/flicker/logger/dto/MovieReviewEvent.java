@@ -16,6 +16,7 @@ public class MovieReviewEvent {
     private String type; // "review" or "movie"
     private String action; // "create" or "delete"
     private Double rating;
+    private Double sentimentScore;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;

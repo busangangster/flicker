@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /*
-* 스케쥴러 수동 실행을 위한 스케쥴러 (ADMIN)
-* */
+ * 스케쥴러 수동 실행을 위한 스케쥴러 (ADMIN)
+ * */
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
@@ -40,6 +40,18 @@ public class MainController {
                 .toJobParameters();
 
         jobLauncher.run(jobRegistry.getJob("SentimentScoreJob"), jobParameters);
+
+        return "ok";
+    }
+
+    @GetMapping("/test")
+    public String test() throws Exception {
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(jobRegistry.getJob("modelUpdateJob"), jobParameters);
 
         return "ok";
     }
