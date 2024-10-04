@@ -58,7 +58,6 @@ const MovieGenrePage: React.FC = () => {
       if (genre) {
         const encodedGenre = encodeURIComponent(genre);
         const response = await fetchMovieGenre(encodedGenre, page, 30);
-        console.log("가져온 영화 데이터:", response.length); // 실제로 가져온 데이터 개수 확인
 
         setMovies((prevMovies) => [...prevMovies, ...response]);
 

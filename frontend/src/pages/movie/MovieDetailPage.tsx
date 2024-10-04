@@ -52,9 +52,8 @@ const MovieDetailPage: React.FC = () => {
     isLoading: userIsLoading,
   } = useUserQuery();
 
-  const userSeq = userData?.userSeq; // 예시로 userSeq 고정값 사용
+  const userSeq = userData?.userSeq; 
 
-  // useQuery를 통해 movieDetail API 호출
   const {
     data: movieData,
     error: movieError,
@@ -153,11 +152,8 @@ const MovieDetailPage: React.FC = () => {
     try {
       if (isLiked) {
         await deletefavoriteMovies(userSeq, Number(movieSeq));
-        console.log("찜목록에서 삭제");
       } else {
         await addfavoriteMovies(userSeq, Number(movieSeq));
-        console.log("찜목록에 추가");
-
         Swal.fire({
           title: "찜 완료!",
           icon: "success",
@@ -190,10 +186,9 @@ const toggleDislike = async () => {
       } else {
         addDislikeMovies(userSeq, Number(movieSeq))
           .then(() => {
-            console.log("관심없음 목록에 추가");
 
             Swal.fire({
-              title: "무관심 추가 완룡!",
+              title: "무관심 추가 완료!",
               icon: "success",
               confirmButtonText: "확인",
             });

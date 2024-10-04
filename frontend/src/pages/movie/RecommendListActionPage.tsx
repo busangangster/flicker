@@ -25,7 +25,6 @@ const RecommandListActionPage: React.FC = () => {
     const fetchMovies = async () => {
       try {
         const moviesData = await fetchMovieUserActing(userSeq!);
-        console.log(moviesData);
         setMovies(moviesData); // 영화 데이터를 상태로 설정
         setIsLoading(false); // 로딩 완료
       } catch (error) {

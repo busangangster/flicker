@@ -56,7 +56,6 @@ const ReviewPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      console.log("Fetching reviews for page:", page);
       const newReviews = await fetchMovieReviews(
         Number(movieSeq),
         userSeq || 0,
@@ -64,7 +63,6 @@ const ReviewPage: React.FC = () => {
         page,
         10
       );
-      console.log("Fetched reviews:", newReviews);
 
       // 중복된 reviewSeq가 없도록 필터링
       const uniqueNewReviews = newReviews.filter(
