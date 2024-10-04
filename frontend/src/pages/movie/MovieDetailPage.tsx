@@ -116,19 +116,31 @@ const MovieDetailPage: React.FC = () => {
     similarMovies = [],
   } = movieData;
 
-
-  
+  // 줄거리가 없을 경우 기본 메시지 설정
   const MAX_LENGTH = 250;
   const isLongText = moviePlot && moviePlot.length > MAX_LENGTH;
-  const displayedText = moviePlot ? moviePlot.slice(0, MAX_LENGTH) : ""; // movieDetailResponse가 없으면 빈 문자열 반환
-  const extractVideoId = (url: string) => {
-    const videoIdMatch = url.match(
-      /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
-    );
-    return videoIdMatch ? videoIdMatch[1] : null;
-  };
+  const displayedText = moviePlot
+    ? moviePlot.slice(0, MAX_LENGTH)
+    : "줄거리를 준비 중입니다."; // moviePlot이 없을 경우 기본 메시지
 
-  const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
+  // moviePosterUrl가 없을 경우 대체 이미지 설정
+  const posterUrl = moviePosterUrl
+    ? moviePosterUrl
+    : "/assets/movie/noImage.png";
+
+    const extractVideoId = (url: string) => {
+      const videoIdMatch = url.match(
+        /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
+      );
+      return videoIdMatch ? videoIdMatch[1] : null;
+  };
+  
+  // trailerUrl이 없을 경우 대체 이미지 설정
+  const videoUrl = trailerUrl
+    ? `https://www.youtube.com/embed/${extractVideoId(trailerUrl)}`
+    : "/assets/movie/noVideo.png";
+
+
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -169,47 +181,46 @@ const MovieDetailPage: React.FC = () => {
     }
   };
 
-const toggleDislike = async () => {
-  if (!userSeq) {
-    console.error("User sequence is not available.");
-    return;
-  }
+  const toggleDislike = async () => {
+    if (!userSeq) {
+      console.error("User sequence is not available.");
+      return;
+    }
 
-  try {
-    // setDisLiked와 동시에 현재 상태값을 이용해서 API 호출을 분기 처리
-    setDisLiked((prevDisLiked) => {
-      // 현재 상태값을 기준으로 API 호출
-      if (prevDisLiked) {
-        deleteDislikeMovies(userSeq, Number(movieSeq))
-          .then(() => {
-            console.log("관심없음 목록에서 삭제");
-          })
-          .catch((error) => {
-            console.error("관심없음 목록 삭제 중 오류 발생:", error);
-          });
-      } else {
-        addDislikeMovies(userSeq, Number(movieSeq))
-          .then(() => {
-            console.log("관심없음 목록에 추가");
-
-            Swal.fire({
-              title: "무관심 추가 완룡!",
-              icon: "success",
-              confirmButtonText: "확인",
+    try {
+      // setDisLiked와 동시에 현재 상태값을 이용해서 API 호출을 분기 처리
+      setDisLiked((prevDisLiked) => {
+        // 현재 상태값을 기준으로 API 호출
+        if (prevDisLiked) {
+          deleteDislikeMovies(userSeq, Number(movieSeq))
+            .then(() => {
+              console.log("관심없음 목록에서 삭제");
+            })
+            .catch((error) => {
+              console.error("관심없음 목록 삭제 중 오류 발생:", error);
             });
-          })
-          .catch((error) => {
-            console.error("관심없음 목록 추가 중 오류 발생:", error);
-          });
-      }
+        } else {
+          addDislikeMovies(userSeq, Number(movieSeq))
+            .then(() => {
+              console.log("관심없음 목록에 추가");
 
-      return !prevDisLiked; // 상태 반전
-    });
-  } catch (error) {
-    console.error("API 호출 중 오류 발생:", error);
-  }
-};
+              Swal.fire({
+                title: "무관심 추가 완룡!",
+                icon: "success",
+                confirmButtonText: "확인",
+              });
+            })
+            .catch((error) => {
+              console.error("관심없음 목록 추가 중 오류 발생:", error);
+            });
+        }
 
+        return !prevDisLiked; // 상태 반전
+      });
+    } catch (error) {
+      console.error("API 호출 중 오류 발생:", error);
+    }
+  };
 
   const goToReview = () => {
     navigate(`/review/${movieSeq}`);
@@ -285,7 +296,7 @@ const toggleDislike = async () => {
           {/* Left Section: Movie Poster and Details */}
           <div className="flex flex-col lg:flex-row">
             <img
-              src={moviePosterUrl}
+              src={posterUrl}
               alt="Movie Poster"
               className="w-[270px] h-[410px] shadow-md border"
             />
@@ -335,11 +346,11 @@ const toggleDislike = async () => {
 
               {/* Movie details */}
               <div className="flex mt-4 text-white text-[16px]">
-                <span>{movieYear}</span>
-                <span className="px-4 text-gray-200">|</span>
-                <span>{runningTime}</span>
-                <span className="px-4 text-gray-200">|</span>
-                <span>{audienceRating}</span>
+                <span>{movieYear}&nbsp; &nbsp; &nbsp;</span>
+                <span>
+                  | &nbsp; &nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
+                </span>
+                <span>|&nbsp;&nbsp;&nbsp;{audienceRating}</span>
               </div>
               <p className="mt-4 text-lg">
                 {displayedText}
@@ -402,18 +413,21 @@ const toggleDislike = async () => {
 
         {/* Trailer */}
         <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[450px] ml-[50px] mt-[100px]">
-          <div className="relative w-full max-w-4xl h-full">
+          {trailerUrl ? (
             <iframe
-              src={`${trailerUrl}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
+              src={videoUrl}
               title="YouTube video player"
               className="w-full h-full rounded-lg shadow-md"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-            <button className="absolute inset-0 flex items-center justify-center text-white pointer-events-none">
-              <svg className="w-12 h-12" />
-            </button>
-          </div>
+          ) : (
+            <img
+              src="/assets/movie/noVideo.png"
+              alt="No video available"
+              className="w-full h-full rounded-lg shadow-md"
+            />
+          )}
         </div>
       </div>
 
