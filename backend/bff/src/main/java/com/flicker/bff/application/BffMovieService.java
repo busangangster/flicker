@@ -206,6 +206,10 @@ public class BffMovieService {
                                                         List<MovieListResponse> searchAndRecommendMovieListResponses = new ArrayList<>();
                                                         searchAndRecommendMovieListResponses.addAll(searchMovieListResponses);
                                                         searchAndRecommendMovieListResponses.addAll(RecommendMovieListResponses);
+                                                        // 리스트의 크기를 20개로 제한
+                                                        if (searchAndRecommendMovieListResponses.size() > 20) {
+                                                            searchAndRecommendMovieListResponses = searchAndRecommendMovieListResponses.subList(0, 20);
+                                                        }
                                                         return Mono.just(ResponseDto.response(StatusCode.SUCCESS, searchAndRecommendMovieListResponses));
                                                     });
                                         });
