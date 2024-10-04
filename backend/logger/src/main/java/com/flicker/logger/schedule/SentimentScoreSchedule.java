@@ -25,7 +25,8 @@ public class SentimentScoreSchedule {
      * 추천 서버에서 KOBERT 모델을 API로 호출한 결과를 가지고 테이블 업데이트 후
      * 감성분석 결과를 회원 서비스로 Kafka 발행
      * */
-    @Scheduled(cron = "0 */10 * * * ?")
+//    @Scheduled(cron = "0 */10 * * * ?")
+    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul")
     public void runRatingJob() throws Exception {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
