@@ -14,7 +14,7 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
         {images.map((image, index) => (
           <div
             key={index}
-            className="bg-white w-[250px] rounded-lg border border-gray-600 pt-3 pb-10 flex justify-center items-center shadow-lg photo-card-hover cursor-pointer"
+            className="bg-white w-[250px] h-[350px] rounded-lg border border-gray-600 pt-3 pb-10 flex justify-center items-center shadow-lg photo-card-hover cursor-pointer"
             onClick={() => onCardClick(image)} // 카드 클릭 시 상세 페이지 열기
           >
             <img

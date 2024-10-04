@@ -110,7 +110,7 @@ const RecommandListPage: React.FC = () => {
         backgroundPosition: "center",
       }}
     >
-      <FaArrowLeft className="bg-white opacity-90 rounded-md w-10 h-10 absolute top-28 left-40 text-gray-800 p-1 hover:bg-neutral-400"
+      <FaArrowLeft className="bg-white opacity-90 rounded-md w-10 h-10 absolute top-40 left-20 text-gray-800 p-1 hover:bg-neutral-400"
       onClick={goToRecommend}/>
       {/* 영화관 스타일 화면 */}
       <div className="relative w-[73%] h-[75vh] rounded-md overflow-hidden">
