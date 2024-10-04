@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
@@ -307,7 +307,9 @@ def write_movie_data(movie_soup, movie_title, genre, country, running_time, audi
             background_image_url = None
             if background_image_element:
                 style_attribute = background_image_element.get("style")
-                background_image_url = style_attribute[21:-1]
+                # 'url('로 시작하고 ')'로 끝나는 부분 추출
+                if 'url(' in style_attribute:
+                    background_image_url = style_attribute.split('url(')[1].split(')')[0].strip('"\'')
 
             # 예고편 URL 추출
             trailer_url = None
@@ -469,17 +471,17 @@ def create_session():
     """
     SQLAlchemy 세션을 생성하고 반환하는 함수.
     """
-    user = 'root'
-    password = 'ssafy'
-    host = '127.0.0.1'   
-    port = '3306'        
-    database = 'flicker'
-
     # user = 'root'
-    # password = '1234'
-    # host = '3.36.106.130'
-    # port = '32263' 
-    # database = 'moviedb' 
+    # password = 'ssafy'
+    # host = '127.0.0.1'   
+    # port = '3306'        
+    # database = 'flicker'
+
+    user = 'root'
+    password = '1234'
+    host = '3.36.106.130'
+    port = '32263' 
+    database = 'moviedb' 
     movieEngine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}")
 
     # 세션 생성기
