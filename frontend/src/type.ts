@@ -10,10 +10,12 @@ export interface ReviewType {
   likes: number;
   liked: boolean;
   top?: boolean;
+  isUserReview?: boolean;
 }
 
 export interface ReviewProps {
   review: ReviewType;
+  onDelete?: (reviewSeq: number) => Promise<void>;
   // onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
 }
 
@@ -257,4 +259,24 @@ export interface RatingData {
     reviewRatingCount: ReviewRatingCount[];
     totalCnt: number;
   };
+}
+
+// 리뷰 데이터 타입 정의
+export interface CheckReview {
+  reviewSeq: number;
+  userSeq: number;
+  nickname: string;
+  movieSeq: number;
+  reviewRating: number;
+  content: string;
+  createdAt: string;
+  spoiler: boolean;
+  likes: number;
+  liked: boolean;
+}
+
+// 리뷰 확인 응답 데이터 타입 정의
+export interface ReviewCheckResponse {
+  alreadyReview: boolean;
+  reviewDto: CheckReview | null; // 리뷰가 없는 경우 null
 }

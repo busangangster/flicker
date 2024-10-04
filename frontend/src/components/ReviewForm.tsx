@@ -7,8 +7,6 @@ import { IoMdCheckboxOutline, IoMdSquareOutline } from "react-icons/io";
 import { createReview } from "../apis/movieApi"; 
 import { useUserQuery } from "../hooks/useUserQuery";
 
-const currentUserNickname = "HyunJeong";
-
 const ReviewForm: React.FC<{
   onSubmit: (review: ReviewType) => void;
   movieSeq: number;
@@ -109,6 +107,9 @@ const ReviewForm: React.FC<{
       await submitReviewToApi(reviewData);
       onSubmit(newReview); // 화면에 리뷰 추가
       setIsFormSubmitted(true); // 폼이 제출되면 폼을 숨김
+
+      // 새로고침 추가
+      window.location.reload(); // 페이지 새로고침
     } catch (error) {
       console.error("리뷰 제출 중 오류 발생:", error);
     }
@@ -122,9 +123,9 @@ const ReviewForm: React.FC<{
     <form onSubmit={handleSubmit} className="border-b border-gray-700 mb-4">
       <div className="flex items-center mb-2">
         <div className="rounded-full bg-gray-500 w-8 h-8 flex items-center justify-center text-white font-bold">
-          {currentUserNickname.charAt(0)}
+          {data?.nickname.charAt(0)}
         </div>
-        <span className="ml-4 font-semibold ">{currentUserNickname}</span>
+        <span className="ml-4 font-semibold ">{data?.nickname}</span>
         <span className="text-gray-400 text-sm ml-2">'s flick record is</span>
         <div className="flex ml-2" onMouseLeave={handleMouseLeave}>
           {Array.from({ length: 5 }, (_, index) => (

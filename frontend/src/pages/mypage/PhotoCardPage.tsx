@@ -31,6 +31,23 @@ const PhotoCardPage: React.FC = () => {
     isLoading: isUserLoading,
   } = useUserQuery();
 
+  const userSeq = userData?.userSeq; // useUserQuery를 통해 가져온 userSeq
+
+  // useEffect는 항상 최상위에서 호출됩니다.
+  useEffect(() => {
+    if (userSeq) {
+      const fetchPhotocardData = async () => {
+        try {
+          const response = await getPhotocard(userSeq);
+          setPhotocardData(response.data);
+        } catch (error) {
+          console.error("포토카드 데이터를 불러오는데 실패했습니다.", error);
+        }
+      };
+      fetchPhotocardData();
+    }
+  }, [userSeq]); // userSeq가 변경될 때만 호출
+
   const handleBookInit = () => {
     if (book.current) {
       requestAnimationFrame(() => {
@@ -40,20 +57,6 @@ const PhotoCardPage: React.FC = () => {
       });
     }
   };
-
-  const userSeq = 181368;
-
-  useEffect(() => {
-    const fetchPhotocardData = async () => {
-      try {
-        const response = await getPhotocard(userSeq);
-        setPhotocardData(response.data);
-      } catch (error) {
-        console.error("포토카드 데이터를 불러오는데 실패했습니다.", error);
-      }
-    };
-    fetchPhotocardData();
-  }, [userSeq]);
 
   // 포토카드 클릭 시 모달 열기
   const handleCardClick = (card: {
@@ -80,6 +83,7 @@ const PhotoCardPage: React.FC = () => {
 
   if (isUserLoading) return <p>로딩 중...</p>;
   if (userError) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
+  if (!userData) return <p>유저 정보가 없습니다.</p>;
 
   const createPages = (photocardData: PhotocardDataItem[]) => {
     const imagesPerPage = 4;
@@ -131,9 +135,9 @@ const PhotoCardPage: React.FC = () => {
             made by {userData?.userId}
           </p>
           <img
-            src="https://via.placeholder.com/500x300"
+            src="/assets/background/photobookmain.png"
             alt="Cover Image"
-            className="mt-6"
+            className="mt-6 w-[600px] h-[400px]"
           />
         </div>
       ),

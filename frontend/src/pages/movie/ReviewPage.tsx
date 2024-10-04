@@ -10,6 +10,7 @@ import { useUserQuery } from "../../hooks/useUserQuery";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { fetchMovieDetail, fetchMovieReviews } from "../../apis/axios";
+import { checkAlreadyReview, deleteReview } from "../../apis/movieApi"; // API 호출 함수 추가
 import { throttle } from "lodash";
 import { useParams } from "react-router-dom";
 
@@ -19,12 +20,13 @@ const ReviewPage: React.FC = () => {
   const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq 받아오기
   const [reviews, setReviews] = useState<ReviewType[]>([]); // 서버에서 가져온 리뷰 데이터
   const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
-  const { data:userData } = useUserQuery(); // 유저 정보 가져오기
+  const { data: userData } = useUserQuery(); // 유저 정보 가져오기
   const [page, setPage] = useState(0); // 페이지 번호
   const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
   const [moviePosterUrl, setMoviePosterUrl] = useState<string>(""); // 영화 포스터 URL 상태 추가
-
+  const [alreadyReview, setAlreadyReview] = useState<boolean | null>(null); // 이미 리뷰 작성 여부 상태 (null일 때는 로딩 중)
+  const [userReview, setUserReview] = useState<ReviewType | null>(null); // 유저의 리뷰 저장 상태
 
   const userSeq = userData?.userSeq || 0;
 
@@ -43,11 +45,36 @@ const ReviewPage: React.FC = () => {
     fetchMovieData(); // 영화 상세 정보를 호출해서 포스터 URL 설정
   }, [movieSeq, userSeq]);
 
-
-  // isLoading 상태가 변경될 때마다 로그 출력
+  // 이미 작성한 리뷰가 있는지 확인하는 함수
   useEffect(() => {
-    console.log("isLoading 상태 변경:", isLoading);
-  }, [isLoading]);
+    const fetchReviewStatus = async () => {
+      try {
+        const response = await checkAlreadyReview(userSeq, Number(movieSeq)); // API 호출
+        setAlreadyReview(response.alreadyReview); // 리뷰 여부 상태 업데이트
+        if (response.alreadyReview && response.reviewDto) {
+          setUserReview(response.reviewDto); // 유저 리뷰 저장
+        }
+      } catch (error) {
+        console.error("리뷰 확인 중 오류가 발생했습니다.", error);
+      }
+    };
+
+    if (userSeq && movieSeq) {
+      fetchReviewStatus(); // API 호출
+    }
+  }, [userSeq, movieSeq]);
+  
+     const handleDeleteReview = async (reviewSeq: number) => {
+       try {
+         await deleteReview(reviewSeq, userSeq);
+         setReviews((prevReviews) =>
+           prevReviews.filter((review) => review.reviewSeq !== reviewSeq)
+         );
+       } catch (error) {
+         console.error("리뷰 삭제 중 오류 발생:", error);
+       }
+     };
+  
 
   // 데이터를 가져오는 함수
   const loadReviews = useCallback(async () => {
@@ -73,18 +100,13 @@ const ReviewPage: React.FC = () => {
       if (uniqueNewReviews.length > 0) {
         setReviews((prevReviews) => {
           const updatedReviews = [...prevReviews, ...uniqueNewReviews];
-          console.log("Updated reviews:", updatedReviews);
           return updatedReviews;
         });
-      } else {
-        console.log("No new unique reviews fetched.");
       }
 
       // 만약 필터링된 리뷰가 10개 미만이면 더 이상 불러올 데이터가 없다고 판단
       if (uniqueNewReviews.length < 10) {
         setHasMore(false); // 불러온 데이터가 10개 미만이면 더 이상 데이터 없음
-        console.log(hasMore);
-        console.log("done");
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -101,7 +123,6 @@ const ReviewPage: React.FC = () => {
   // 스크롤 이벤트를 감지하여 하단에 도달하면 페이지를 증가시킴
   const handleScroll = useCallback(
     throttle(() => {
-      // throttle 적용
       const scrollableElement = document.querySelector(".scroll-container");
       if (scrollableElement) {
         if (
@@ -110,11 +131,10 @@ const ReviewPage: React.FC = () => {
           !isLoading &&
           hasMore
         ) {
-          console.log("Bottom of container reached, loading next page");
           setPage((prevPage) => prevPage + 1); // 페이지 증가
         }
       }
-    }, 1000), // 1초에 한 번만 실행되도록 제한
+    }, 1000),
     [isLoading, hasMore]
   );
 
@@ -135,7 +155,6 @@ const ReviewPage: React.FC = () => {
   // 리뷰 데이터를 정렬하는 함수
   const getSortedReviews = () => {
     const sortedReviews = [...reviews];
-    console.log("Sorted reviews before rendering:", sortedReviews);
 
     if (sortOption === "최신순") {
       return sortedReviews.sort(
@@ -164,24 +183,10 @@ const ReviewPage: React.FC = () => {
     setSortOption(value);
   };
 
-  const handleAddReview = (newReview: ReviewType) => {
-    setReviews((prev: ReviewType[]) => [newReview, ...prev]);
-  };
-
-
-  // const handleLikeToggle = (reviewSeq: number) => {
-  //   setReviews((prevReviews) =>
-  //     prevReviews.map((review) =>
-  //       review.reviewSeq === reviewSeq
-  //         ? {
-  //             ...review,
-  //             liked: !review.liked,
-  //             likes: review.liked ? review.likes - 1 : review.likes + 1,
-  //           }
-  //         : review
-  //     )
-  //   );
-  // };
+const handleAddReview = (newReview: ReviewType) => {
+  newReview.isUserReview = true;
+  setReviews((prev: ReviewType[]) => [newReview, ...prev]);
+};
 
   const scrollToTop = () => {
     const scrollableElement = document.querySelector(".scroll-container");
@@ -209,20 +214,33 @@ const ReviewPage: React.FC = () => {
                 />
               </div>
             </div>
-            {userData ? (
-              <ReviewForm
-                onSubmit={handleAddReview}
-                movieSeq={Number(movieSeq)}
-              />
-            ) : (
-              ""
+
+            {/* API 응답 전까지는 아무것도 렌더링하지 않도록 */}
+            {alreadyReview !== null && (
+              <>
+                {/* 이미 리뷰를 작성한 경우, 리뷰 작성 폼을 숨기고 본인 리뷰를 최상단에 배치 */}
+                {!alreadyReview && userData && (
+                  <ReviewForm
+                    onSubmit={handleAddReview}
+                    movieSeq={Number(movieSeq)}
+                  />
+                )}
+
+                {userReview && (
+                  <Review
+                    key={userReview.reviewSeq}
+                    review={userReview} // 본인 리뷰 최상단에 표시
+                    onDelete={handleDeleteReview} // 삭제 함수 전달
+                  />
+                )}
+              </>
             )}
+
             {reviews.length > 0 ? (
               getSortedReviews().map((review) => (
                 <Review
                   key={review.reviewSeq}
                   review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
-                  // onLikeToggle={handleLikeToggle}
                 />
               ))
             ) : (
@@ -232,7 +250,6 @@ const ReviewPage: React.FC = () => {
           </div>
           <div className="w-1/4 pl-4">
             <div className="sticky top-20">
-              {" "}
               <div className="mb-6">
                 <img
                   src={moviePosterUrl || "default_poster_url"}

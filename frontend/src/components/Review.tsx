@@ -1,4 +1,3 @@
-// Review.tsx
 import React from "react";
 import starFull from "../assets/review/star.png";
 import starHalf from "../assets/review/star_half.png";
@@ -7,29 +6,35 @@ import thumbUpOutline from "../assets/review/thumb_up_outline.png";
 import thumbUp from "../assets/review/thumb_up.png";
 import { ReviewProps } from "../type";
 
-// const Review: React.FC<ReviewProps> = ({ review, onLikeToggle }) => {
-const Review: React.FC<ReviewProps> = ({ review }) => {
-
-  // console.log("Rendering review:", review);
-
-  const [showContent, setShowContent] = React.useState(!review.spoiler); // 스포일러 여부에 따른 내용 표시 여부
-  const MAX_LENGTH = 250; // 최대 길이 설정
-
+const Review: React.FC<ReviewProps> = ({ review, onDelete }) => {
+  const [showContent, setShowContent] = React.useState(!review.spoiler);
+  const MAX_LENGTH = 250;
   const content = review.content || "";
-
   const isLongContent = content.length > MAX_LENGTH;
   const [showMore, setShowMore] = React.useState(false);
 
   const toggleContent = () => {
-    console.log("스포일러 토글 클릭됨"); // 함수가 호출되는지 확인
     if (review.spoiler) {
       setShowContent((prev) => !prev);
-      console.log("showContent 상태:", !showContent); // 상태가 잘 변경되는지 확인
     }
   };
 
   const toggleShowMore = () => {
     setShowMore((prev) => !prev);
+  };
+
+  // 리뷰 삭제 처리
+  const handleDeleteReview = async () => {
+    if (onDelete) {
+      const confirmDelete = window.confirm(
+        "정말로 이 리뷰를 삭제하시겠습니까?"
+      );
+      if (confirmDelete) {
+        await onDelete(review.reviewSeq);
+        alert("리뷰가 삭제되었습니다.");
+        window.location.reload(); // 페이지 새로고침
+      }
+    }
   };
 
   return (
@@ -40,14 +45,13 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
           {review.nickname.charAt(0)}
         </div>
         <div className="ml-4 flex flex-col w-full">
-          <div className="flex items-center justify-between mb-1 ">
+          <div className="flex items-center justify-between mb-1">
             <div className="flex items-center">
               {/* 닉네임 및 별점 */}
               <span className="font-semibold">{review.nickname}</span>
               <span className="text-gray-400 text-sm ml-2">
                 's flick record is
               </span>
-              {/* 별점 표시 */}
               <span className="ml-2 text-[#4D7FFF] flex items-center">
                 {Array.from(
                   { length: Math.floor(review.reviewRating) },
@@ -76,20 +80,29 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
                 </span>
               </span>
             </div>
-            {/* 좋아요 버튼 */}
-            <button
-              className="flex items-center p-0 bg-transparent border-none outline-none"
-              // onClick={() => onLikeToggle(review.reviewSeq)} // 좋아요 토글 함수 호출
-            >
-              <img
-                src={review.liked ? thumbUp : thumbUpOutline}
-                alt="Thumb Up"
-                className="w-4 h-4 mr-1"
-              />
-              <span className=" text-gray-300">{review.likes}</span>
-            </button>
+
+            <div className="flex items-center">
+              {/* 본인 리뷰에만 삭제 버튼 추가 */}
+              {onDelete && (
+                <button
+                  onClick={handleDeleteReview}
+                  className="mr-3 text-white bg-[#44547B] px-2 py-1 rounded-md hover:bg-gray-700 text-sm border-none bg-transparent cursor-pointer"
+                >
+                  삭제
+                </button>
+              )}
+              {/* 좋아요 버튼 */}
+              <button className="flex items-center p-0 bg-transparent border-none outline-none">
+                <img
+                  src={review.liked ? thumbUp : thumbUpOutline}
+                  alt="Thumb Up"
+                  className="w-4 h-4 mr-1"
+                />
+                <span className=" text-gray-300">{review.likes}</span>
+              </button>
+            </div>
           </div>
-          {/* 리뷰 내용 표시 */}
+
           {showContent ? (
             <>
               <p className="text-white mt-1 mb-1" onClick={toggleContent}>
@@ -114,7 +127,6 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
               스포일러 내용이 포함되어 있어요! 클릭하면, 내용을 볼 수 있어요.
             </p>
           )}
-          {/* 작성 날짜 표시 */}
           <span className="text-gray-400 text-sm self-end mb-1">
             {new Date(review.createdAt).toLocaleDateString("ko-KR", {
               year: "numeric",
