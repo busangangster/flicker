@@ -368,7 +368,6 @@ public class MovieService {
             // 1. 개봉 영화 목록 조회
             List<NewMovie> newMovies = movieRepoUtil.findNewMovie();
             if (newMovies.isEmpty()) {
-                System.out.println("개봉 영화가 존재하지 않습니다.");
                 throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "개봉 영화가 존재하지 않습니다.");
             }
             // 2. 영화 번호 목록 추출
