@@ -221,8 +221,26 @@ public class ReviewService {
         return dto;
     }
 
-    public boolean checkAlreadyReview(Integer userSeq, Integer movieSeq){
+    public CheckAlreadyReviewDto checkAlreadyReview(Integer userSeq, Integer movieSeq){
         Review review = reviewRepository.findByUserSeqAndMovieSeq(userSeq, movieSeq);
-        return review != null;
+
+        if(review == null){
+            CheckAlreadyReviewDto dto = new CheckAlreadyReviewDto();
+
+            dto.setAlreadyReview(false);
+            dto.setReviewDto(null);
+
+            return dto;
+        }
+        else{
+            CheckAlreadyReviewDto dto = new CheckAlreadyReviewDto();
+
+            String nicknameByUserSeq = userService.getNicknameByUserSeq(userSeq);
+            dto.setReviewDto(reviewConverter.reviewToReviewDto(review,nicknameByUserSeq,userSeq));
+            dto.setAlreadyReview(true);
+
+            return dto;
+        }
+
     }
 }
