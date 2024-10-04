@@ -176,7 +176,7 @@ const PhotoCardPage: React.FC = () => {
             opacity: photocardData.length ? 1 : 0,
           }}
           maxShadowOpacity={0.5}
-          clickEventForward={true}
+          clickEventForward={false}
           swipeDistance={30}
           showPageCorners={true}
           disableFlipByClick={false}
