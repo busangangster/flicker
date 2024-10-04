@@ -243,4 +243,13 @@ public class ReviewService {
         }
 
     }
+
+    public List<Integer> getMostReviewMovieSeq(){
+        List<Integer> movieSeqWithAtLeast2000Reviews = reviewRepository.findMovieSeqWithAtLeast2000Reviews();
+
+        if(movieSeqWithAtLeast2000Reviews == null){
+            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT);
+        }
+        return movieSeqWithAtLeast2000Reviews;
+    }
 }

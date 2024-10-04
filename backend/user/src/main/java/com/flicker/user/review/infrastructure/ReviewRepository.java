@@ -28,4 +28,11 @@ public interface ReviewRepository extends JpaRepository<Review,Integer> {
             "WHERE r.movieSeq = :movieSeq " +
             "GROUP BY r.reviewRating")
     List<ReviewRatingCountDto> countReviewRatingsByMovieSeq(Integer movieSeq);
+
+    @Query("SELECT r.movieSeq " +
+            "FROM Review r " +
+            "GROUP BY r.movieSeq " +
+            "HAVING COUNT(r) >= 2000")
+    List<Integer> findMovieSeqWithAtLeast2000Reviews();
+
 }

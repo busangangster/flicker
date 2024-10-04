@@ -155,5 +155,12 @@ public class ReviewController {
         CheckAlreadyReviewDto checkAlreadyReviewDto = reviewService.checkAlreadyReview(userSeq, movieSeq);
         return ResponseDto.response(StatusCode.SUCCESS, checkAlreadyReviewDto);
     }
+    // /user/review/most-reviews
+    @GetMapping("/most-reviews")
+    public ResponseEntity<ResponseDto> mostReviews(){
+        List<Integer> mostReviewMovieSeq = reviewService.getMostReviewMovieSeq();
+        return ResponseDto.response(StatusCode.SUCCESS, mostReviewMovieSeq);
+
+    }
 
 }
