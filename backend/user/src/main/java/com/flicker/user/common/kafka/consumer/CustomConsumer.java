@@ -28,10 +28,14 @@ public class CustomConsumer {
             // JSON 문자열을 Log 객체로 변환
             SentimentResult logMessage = objectMapper.readValue(payload, SentimentResult.class);
 
+            System.out.println("sentiment-result logMessage = " + logMessage);
+
             UpdateSentimentScoreDto dto = new UpdateSentimentScoreDto();
             dto.setReviewSeq(logMessage.getReviewSeq());
             dto.setSentimentScore(logMessage.getSentimentScore());
             reviewService.updateSentimentScore(dto);
+
+            System.out.println("dto = " + dto);
 
             log.info("CONSUME TOPIC : " + topic);
             log.info("CONSUME PAYLOAD : " + logMessage);
