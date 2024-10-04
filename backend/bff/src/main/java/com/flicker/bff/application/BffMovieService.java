@@ -659,10 +659,60 @@ public class BffMovieService {
     }
 
     public Mono<ResponseEntity<ResponseDto>> getTopRatingMovieList() {
-        // 1. 외부 API의 경로를 설정합니다.
-        String path = util.getUri("/list/topRating");
-        // 2. 비동기 방식으로 GET 요청을 외부 API에 보냅니다.
-        return util.sendGetRequestAsync(movieBaseUrl, path);
+        // 1. 사용자 서버에서 리뷰개수가 2000개 이상인 영화 목록 조회
+        String topRatingMoviePath = util.getUri("/review/most-reviews");
+        return util.sendGetRequestAsync(userBaseUrl, topRatingMoviePath)
+                .flatMap(topRatingMovieResponse -> {
+                    ResponseDto topRatingMovieResponseDto;
+                    try {
+                        // JSON 데이터를 ResponseDto로 역직렬화
+                        topRatingMovieResponseDto = Objects.requireNonNull(topRatingMovieResponse.getBody());
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 개수가 2000개 이상인 영화 목록 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                    }
+                    // 상태 코드가 성공이 아닌 경우 처리
+                    if (topRatingMovieResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                        return Mono.error(new RestApiException(
+                                StatusCode.of(topRatingMovieResponseDto.getHttpStatus(), topRatingMovieResponseDto.getServiceStatus(), topRatingMovieResponseDto.getMessage()),
+                                topRatingMovieResponseDto.getData()
+                        ));
+                    }
+                    List<Integer> topRatingMovieSeqs;
+                    try {
+                        // topRatingMovieResponseDto의 데이터 필드를 List<Integer>로 변환
+                        topRatingMovieSeqs = objectMapper.convertValue(topRatingMovieResponseDto.getData(), new TypeReference<List<Integer>>() {
+                        });
+                    } catch (Exception e) {
+                        return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 개수가 2000개 이상인 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                    }
+                    String topMovieListPath = util.getUri("/list/topRating");
+                    return util.sendPostRequestAsync(movieBaseUrl, topMovieListPath, topRatingMovieSeqs)
+                            .flatMap(topMovieListResponse -> {
+                                ResponseDto topMovieListResponseDto;
+                                try {
+                                    // JSON 데이터를 ResponseDto로 역직렬화
+                                    topMovieListResponseDto = Objects.requireNonNull(topMovieListResponse.getBody());
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 개수가 2000개 이상이면서 평점이 높은 영화 목록 Body를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                }
+                                // 상태 코드가 성공이 아닌 경우 처리
+                                if (topMovieListResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
+                                    return Mono.error(new RestApiException(
+                                            StatusCode.of(topMovieListResponseDto.getHttpStatus(), topMovieListResponseDto.getServiceStatus(), topMovieListResponseDto.getMessage()),
+                                            topMovieListResponseDto.getData()
+                                    ));
+                                }
+                                List<MovieListResponse> topMovieListResponses;
+                                try {
+                                    // topMovieListResponseDto의 데이터 필드를 List<MovieListResponse>로 변환
+                                    topMovieListResponses = objectMapper.convertValue(topMovieListResponseDto.getData(), new TypeReference<List<MovieListResponse>>() {
+                                    });
+                                } catch (Exception e) {
+                                    return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 개수가 2000개 이상이면서 평점이 높은 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
+                                }
+                                return Mono.just(ResponseDto.response(StatusCode.SUCCESS, topMovieListResponses));
+                            });
+                });
     }
 
     public Mono<ResponseEntity<ResponseDto>> getRecommendationMovieListByActor(int userSeq) {
