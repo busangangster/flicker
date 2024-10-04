@@ -181,7 +181,6 @@ const MoviesPage: React.FC = () => {
         runningTime: movie.runningTime,
         audienceRating: movie.audienceRating,
       }));
-      console.log(response);
       setMovies(movies);
     } catch (error) {
       console.error("Error fetching movies by rating:", error);

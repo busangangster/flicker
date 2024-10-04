@@ -256,7 +256,6 @@ export const fetchMovieUserReview = async (userSeq: number) => {
     console.error("Error fetching movies:", error);
     throw error;
   }
-  
 }
 
 // coldStart issue 처리
@@ -432,3 +431,22 @@ export const fetchSideBarUserInfo = async (userSeq: number) => {
     throw error;
   }
 };
+
+export const fetchMoviesBySearch = async (keyword: string, userSeq: number, page: number, size: number) => {
+  try {
+    const response = await movieListApi.get(
+      `/search/${keyword}/${userSeq}/${page}/${size}`
+    );
+    if (response?.data?.data && Array.isArray(response.data?.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+}
+
