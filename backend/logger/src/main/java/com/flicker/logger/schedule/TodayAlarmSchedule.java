@@ -19,12 +19,30 @@ public class TodayAlarmSchedule {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-//    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
-    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void TodayAlarm() {
         log.info("Today Alarm Schedule");
         MovieAlarm alarm = new MovieAlarm();
         alarm.setType("Today");
+        alarm.setTimestamp(LocalDateTime.now());
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String message = objectMapper.writeValueAsString(alarm);
+            kafkaTemplate.send("alarm-movie", message);
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * MON", zone = "Asia/Seoul")
+    public void WeeklyAlarm() {
+
+        log.info("WeeklyAlarm Schedule");
+        MovieAlarm alarm = new MovieAlarm();
+        alarm.setType("ActionDelete");
         alarm.setTimestamp(LocalDateTime.now());
 
         try {
