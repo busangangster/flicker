@@ -1,7 +1,6 @@
 package com.flicker.logger.batch;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.flicker.logger.config.KafkaItemWriter;
 import com.flicker.logger.dto.MovieAverageRating;
 import com.flicker.logger.dto.MovieRating;
 import com.flicker.logger.dto.MovieReviewEvent;
@@ -14,7 +13,6 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -101,7 +99,7 @@ public class MovieRatingBatchConfig {
                 .name("movieRatingReader")
                 .sql("SELECT movie_seq, movie_count, movie_total_rating " +
                         "FROM data_db.movie_average_rating " +
-                        "WHERE movie_count > 0")
+                        "WHERE is_changed = true")
                 .rowMapper(new BeanPropertyRowMapper<>(MovieAverageRating.class))
                 .build();
     }
@@ -121,7 +119,7 @@ public class MovieRatingBatchConfig {
                 rating.setMovieTotalRating(reviewLog.getRating());
             } else if ("DELETE".equals(reviewLog.getAction())) {
                 rating.setMovieCount(-1);
-                rating.setMovieTotalRating(reviewLog.getRating());
+                rating.setMovieTotalRating((-1) * reviewLog.getRating());
             }
 
             rating.setMovieSeq(reviewLog.getMovieSeq());
@@ -133,7 +131,11 @@ public class MovieRatingBatchConfig {
     @Bean
     @StepScope
     public ItemProcessor<MovieAverageRating, MovieRating> sendToKafkaProcessor() {
-        return reviewLog -> new MovieRating(reviewLog.getMovieSeq(), reviewLog.getAverageRating());
+
+        return reviewLog -> MovieRating.builder()
+                .movieSeq(reviewLog.getMovieSeq())
+                .movieRating(reviewLog.getAverageRating())
+                .build();
     }
 
     @Bean
@@ -141,11 +143,12 @@ public class MovieRatingBatchConfig {
     public JdbcBatchItemWriter<MovieAverageRating> movieRatingWriter() {
         return new JdbcBatchItemWriterBuilder<MovieAverageRating>()
                 .dataSource(dataSource)
-                .sql("INSERT INTO data_db.movie_average_rating (movie_seq, movie_count, movie_total_rating) " +
-                        "VALUES (:movieSeq, :movieCount, :movieTotalRating) " +
+                .sql("INSERT INTO data_db.movie_average_rating (movie_seq, movie_count, movie_total_rating, is_changed) " +
+                        "VALUES (:movieSeq, :movieCount, :movieTotalRating, true) " +
                         "ON DUPLICATE KEY UPDATE " +
                         "movie_count = movie_count + :movieCount, " +  // 기존 값에 새로운 값 더하기
-                        "movie_total_rating = movie_total_rating + :movieTotalRating")  // 기존 값에 새로운 값 더하기
+                        "movie_total_rating = movie_total_rating + :movieTotalRating, " +
+                        "is_changed = true")  // 기존 값에 새로운 값 더하기
                 .beanMapped()
                 .build();
     }
@@ -171,15 +174,7 @@ public class MovieRatingBatchConfig {
 
     @Bean
     @StepScope
-    public ItemWriter<MovieRating> kafkaItemWriter(KafkaTemplate<String, String> kafkaTemplate) {
-
-        return item -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            String message = objectMapper.writeValueAsString(item);
-
-            kafkaTemplate.send("movie-rating", message);
-            log.info("Movie rating sent to kafka : {}", message);
-        };
+    public KafkaItemWriter<MovieRating> kafkaItemWriter(KafkaTemplate<String, String> kafkaTemplate) {
+        return new KafkaItemWriter<>(kafkaTemplate, "movie-rating");
     }
 }

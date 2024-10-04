@@ -21,6 +21,6 @@ public class MovieAverageRating {
     // 평균 평점 계산
     public Double getAverageRating() {
         if (movieCount == 0) return 0.0;
-        return movieTotalRating / movieCount;
+        return Math.round((movieTotalRating / movieCount) * 10.0) / 10.0;
     }
 }
