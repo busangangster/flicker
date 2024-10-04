@@ -384,17 +384,20 @@ public class BffUserService {
                 // 결과 만들기
                 ArrayList<PhotoCardDto> result = new ArrayList<>();
                 for(int i=0;i<movieListDtoList.size();i++){
+
                     PhotoCardDto photoCardDto = new PhotoCardDto();
-                    photoCardDto.setReviewDto(reviewListDto.get(i));
+
+                    MovieImageDto movieImageDto = new MovieImageDto();
+                    movieImageDto.setMoviePosterUrl(movieListDtoList.get(i).getMoviePosterUrl());
+                    movieImageDto.setMovieTitle(movieListDtoList.get(i).getMovieTitle());
+                    movieImageDto.setMovieYear(movieListDtoList.get(i).getMovieYear());
+                    movieImageDto.setBackgroundUrl(movieListDtoList.get(i).getBackgroundUrl());
+                    photoCardDto.setMovieImageDto(movieImageDto);
+
 
                     for(int j=0;j<reviewListDto.size();j++){
                         if(reviewListDto.get(j).getMovieSeq().equals(movieListDtoList.get(i).getMovieSeq())){
-                            MovieImageDto movieImageDto = new MovieImageDto();
-                            movieImageDto.setMoviePosterUrl(movieListDtoList.get(i).getMoviePosterUrl());
-                            movieImageDto.setMovieTitle(movieListDtoList.get(i).getMovieTitle());
-                            movieImageDto.setMovieYear(movieListDtoList.get(i).getMovieYear());
-                            movieImageDto.setBackgroundUrl(movieListDtoList.get(i).getBackgroundUrl());
-                            photoCardDto.setMovieImageDto(movieImageDto);
+                            photoCardDto.setReviewDto(reviewListDto.get(j));
                             result.add(photoCardDto);
                         }
                     }
