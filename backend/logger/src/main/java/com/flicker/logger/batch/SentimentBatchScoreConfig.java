@@ -30,7 +30,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,25 +62,25 @@ public class SentimentBatchScoreConfig {
         log.info("Sentiment batch score step started");
 
         return new StepBuilder("SentimentBatchScoreStep", jobRepository)
-                .<SentimentReviewEvent, SentimentReviewEvent> chunk(100, transactionManager)
+                .<SentimentReviewEvent, SentimentReviewEvent> chunk(1000, transactionManager)
                 .reader(sentimentBatchScoreReader())
-                .processor(sentimentBatchScoreProcessor())
-                .writer(sentimentScoreWriter(sentimentAnalysisService, jdbcBatchItemWriter(dataSource)))
-                .build();
-    }
+            .processor(sentimentBatchScoreProcessor())
+            .writer(sentimentScoreWriter(sentimentAnalysisService, jdbcBatchItemWriter(dataSource)))
+            .build();
+}
 
-    @Bean
-    public Step sendToSentimentStep() {
+@Bean
+public Step sendToSentimentStep() {
 
-        log.info("Sentiment sendToKafka batch score step started");
+    log.info("Sentiment sendToKafka batch score step started");
 
-        return new StepBuilder("sendSentimentStep", jobRepository)
-                .<SentimentReview, SentimentResult> chunk(10, transactionManager)
-                .reader(sentimentBatchKafkaReader())
-                .processor(sentimentBatchKafkaProcessor())
-                .writer(sentimentResultCompositeItemWritercompositeItemWriter())
-                .build();
-    }
+    return new StepBuilder("sendSentimentStep", jobRepository)
+            .<SentimentReview, SentimentResult> chunk(10, transactionManager)
+            .reader(sentimentBatchKafkaReader())
+            .processor(sentimentBatchKafkaProcessor())
+            .writer(sentimentResultCompositeItemWritercompositeItemWriter())
+            .build();
+}
 
     @Bean
     @StepScope
