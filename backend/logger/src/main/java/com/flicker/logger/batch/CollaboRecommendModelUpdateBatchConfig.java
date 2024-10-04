@@ -1,7 +1,7 @@
 package com.flicker.logger.batch;
 
 import com.flicker.logger.dto.MovieReviewEvent;
-import com.flicker.logger.service.ModelUpdateService;
+import com.flicker.logger.application.ModelUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

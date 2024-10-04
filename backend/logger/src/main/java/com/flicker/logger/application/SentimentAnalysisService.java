@@ -1,8 +1,8 @@
-package com.flicker.logger.service;
+package com.flicker.logger.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flicker.logger.dto.MovieReviewEvent;
 import com.flicker.logger.dto.SentimentResult;
+import com.flicker.logger.dto.SentimentReviewEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,16 +11,16 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Service
-public class ModelUpdateService {
+public class SentimentAnalysisService {
 
     private final WebClient webClient;
 
-    public ModelUpdateService(WebClient.Builder webClientBuilder,
+    public SentimentAnalysisService(WebClient.Builder webClientBuilder,
                               @Value("${external.api.base-url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
-    public void updateModel(List<MovieReviewEvent> reviews) {
+    public List<SentimentResult> batchAnalyze(List<SentimentReviewEvent> reviews) {
 
         try {
             // 요청 데이터를 JSON으로 직렬화하여 출력
@@ -31,11 +31,11 @@ public class ModelUpdateService {
             e.printStackTrace();
         }
 
-        webClient.post()
-                .uri("/update_model")
+        return webClient.post()
+                .uri("/sentiment_score")
                 .body(Mono.just(reviews), List.class)
                 .retrieve()
-                .bodyToFlux(MovieReviewEvent.class)
+                .bodyToFlux(SentimentResult.class)
                 .collectList()
                 .block();
     }
