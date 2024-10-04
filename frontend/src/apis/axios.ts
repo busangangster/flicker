@@ -1,3 +1,4 @@
+// import { favorite } from "/assets/service/favorite2.png";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -72,7 +73,6 @@ const movieDetailApi = axios.create({
 export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
   try {
     const response = await movieDetailApi.get(`/detail/${movieSeq}/${userSeq}`);
-    console.log("API Response:", response); // API 응답을 확인
     return response.data.data; // 반환된 데이터가 올바른지 확인
   } catch (error) {
     console.error("Error fetching movie detail:", error);
@@ -80,7 +80,7 @@ export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
   }
 };
 
-// 더미 리뷰 데이터 조회
+// 리뷰 데이터 조회
 const reviewApiClient = axios.create({
   baseURL: "http://j11e206.p.ssafy.io/api/bff/user", // 리뷰 API에 맞는 Base URL 설정
   headers: {
@@ -119,20 +119,17 @@ const movieListApi = axios.create({
   },
 });
 
+// 장르별 조회
 export const fetchMovieGenre = async (
   genre: string,
   page: number,
   size: number
 ) => {
   try {
-    // API 호출
     const response = await movieListApi.get(`/genre/${genre}/${page}/${size}`);
 
-    // 응답 구조가 올바른지 확인 후 처리
     if (response?.data?.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
-      // console.log(movies);
-      // return movies.map((movie: any) => movie.moviePosterUrl); // moviePosterUrl 추출
       return movies;
     } else {
       console.error("Unexpected response structure", response);
@@ -143,3 +140,313 @@ export const fetchMovieGenre = async (
     throw error;
   }
 };
+
+// 연도별 조회
+export const fetchMovieYear = async (
+  year: number,
+  page: number,
+  size: number
+) => {
+  try {
+    const response = await movieListApi.get(`/year/${year}/${page}/${size}`);
+
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+// 국가별 조회
+export const fetchMovieCountry = async (
+  country: string,
+  page: number,
+  size: number
+) => {
+  try {
+    const response = await movieListApi.get(
+      `/country/${country}/${page}/${size}`
+    );
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+// 별점 높은 영화 조회
+export const fetchMovieRating = async () => {
+  try {
+    const response = await movieListApi.get(`/topRating`);
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+// 이번 달 개봉 영화 조회
+export const fetchMovieNew = async () => {
+  try {
+    const response = await movieListApi.get(`/newMovie`);
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+// 행동기반 추천 영화 조회
+export const fetchMovieUserActing = async (userSeq: number) => {
+  try {
+    const response = await movieListApi.get(
+      `/recommendation/action/${userSeq}`
+    );
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
+
+// 리뷰 기반 추천 영화 목록 조회
+export const fetchMovieUserReview = async (userSeq: number) => {
+  try {
+    const response = await movieListApi.get(`
+      /recommendation/review/${userSeq}`);
+    if (response?.data.data && Array.isArray(response.data.data)) {
+      const movies = response.data.data;
+      console.log(movies);
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+}
+
+// coldStart issue 처리
+export const addFavoriteMovies = async (
+  userSeq: number,
+  movieSeqList: number[]
+) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/favorite-movie`;
+
+  try {
+    const response = await axios.post(
+      url,
+      {
+        movieSeqList: movieSeqList.map(String),
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // 요청 성공 시 결과 출력
+    console.log("Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding favorite movies:", error);
+    throw error; // 에러 처리
+  }
+};
+
+export const addfavoriteMovies = async (userSeq: number, movieSeq: number) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie/${movieSeq}`;
+  try {
+    const response = await axios.post(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Response:", response.data);
+  } catch (error) {
+    console.error("Error adding favorite movies:", error);
+    throw error; // 에러 처리
+  }
+};
+
+export const deletefavoriteMovies = async (
+  userSeq: number,
+  movieSeq: number
+) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie/${movieSeq}`;
+  try {
+    const response = await axios.delete(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Response:", response.data);
+  } catch (error) {
+    console.error("Error adding favorite movies:", error);
+    throw error; // 에러 처리
+  }
+};
+
+export const fetchFavoriteMovies = async (userSeq: number) => {
+  console.log("userSeq", userSeq);
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie`;
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Favorite movies response:", response.data.data); // API 응답 로그 출력
+
+    return response.data.data; // 서버에서 영화 데이터를 반환
+  } catch (error) {
+    console.error("Error fetching favorite movies:", error);
+    throw error;
+  }
+};
+
+export const fetchDislikeMovies = async (userSeq: number) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/dislike-movie`;
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data.data; // 서버에서 영화 데이터를 반환
+  } catch (error) {
+    console.error("Error fetching favorite movies:", error);
+    throw error;
+  }
+};
+
+export const addDislikeMovies = async (userSeq: number, movieSeq: number) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/dislike-movie/${movieSeq}`;
+  try {
+    const response = await axios.post(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Response:", response.data);
+  } catch (error) {
+    console.error("Error adding favorite movies:", error);
+    throw error; // 에러 처리
+  }
+};
+
+export const deleteDislikeMovies = async (
+  userSeq: number,
+  movieSeq: number
+) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/dislike-movie/${movieSeq}`;
+  try {
+    const response = await axios.delete(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Response:", response.data);
+  } catch (error) {
+    console.error("Error adding favorite movies:", error);
+    throw error; // 에러 처리
+  }
+};
+
+export const updateUserInfo = async (
+  userSeq: number,
+  data: { email: string; password: string; nickname: string }
+) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}`;
+
+  try {
+    const response = await axios.put(
+      url,
+      {
+        email: data.email,
+        password: data.password,
+        nickname: data.nickname,
+      }, // JSON 형식으로 body 전달
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data; // 응답 데이터 반환
+  } catch (error) {
+    console.error("Error updating user info:", error);
+    throw error;
+  }
+};
+
+export const fetchSideBarUserInfo = async (userSeq: number) => {
+  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/myPage`;
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error("Error fetching user page info:", error);
+    throw error;
+  }
+};
+
+export const fetchMoviesBySearch = async (keyword: string, userSeq: number, page: number, size: number) => {
+  try {
+    const response = await movieListApi.get(
+      `/search/${keyword}/${userSeq}/${page}/${size}`
+    );
+    if (response?.data?.data && Array.isArray(response.data?.data)) {
+      const movies = response.data.data;
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+}
+

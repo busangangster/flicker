@@ -19,7 +19,7 @@ const RecommendPage: React.FC = () => {
     setIsLeftOpen(true);
     setIsZoomed(true); // 문 아래쪽 부분 확대 시작
     setTimeout(() => {
-      navigate("/recommendlist");
+      navigate("/recommendlist/action");
     }, 1000); // 1초 후 이동
   };
 
@@ -28,7 +28,7 @@ const RecommendPage: React.FC = () => {
     setIsRightOpen(true);
     setIsZoomed(true); // 문 아래쪽 부분 확대 시작
     setTimeout(() => {
-      navigate("/recommendlist");
+      navigate("/recommendlist/review");
     }, 1000); // 1초 후 이동
   };
 
@@ -90,7 +90,7 @@ const RecommendPage: React.FC = () => {
         }}
       >
         {/* 왼쪽 문 */}
-        <img
+        {/* <img
           src={left_left_door}
           alt="left_left_door"
           className={`absolute h-[54.5vh] w-[8.5vw] door left-door-hover ${
@@ -113,10 +113,10 @@ const RecommendPage: React.FC = () => {
             top: "40vh",
           }}
           onClick={gotoLeftRecommend}
-        />
+        /> */}
 
         {/* 오른쪽 문 */}
-        <img
+        {/* <img
           src={right_left_door}
           alt="right_left_door"
           className={`absolute h-[54.5vh] w-[8.3vw] door left-door-hover ${
@@ -139,11 +139,11 @@ const RecommendPage: React.FC = () => {
             top: "40vh",
           }}
           onClick={gotoRightRecommend}
-        />
+        /> */}
 
         {/* f11 확대할 때의 문 */}
         {/* 왼쪽 문 */}
-        {/* <img
+        <img
           src={left_left_door}
           alt="left_left_door"
           className={`absolute h-[52vh] w-[10vw] door ${
@@ -166,10 +166,10 @@ const RecommendPage: React.FC = () => {
             top: "40vh",
           }}
           onClick={gotoLeftRecommend}
-        /> */}
+        />
 
         {/* 오른쪽 문 */}
-        {/* <img
+        <img
           src={right_left_door}
           alt="right_left_door"
           className={`absolute h-[52vh] w-[9.5vw] door ${
@@ -192,7 +192,7 @@ const RecommendPage: React.FC = () => {
             top: "40vh",
           }}
           onClick={gotoRightRecommend}
-        /> */}
+        />
       </div>
     </div>
   );

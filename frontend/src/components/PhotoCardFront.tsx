@@ -1,68 +1,35 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { PhotoCardFrontProps } from "../type";
 
 const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
   images,
   pageIndex,
+  onCardClick, // 클릭 핸들러 추가
 }) => {
-  const navigate = useNavigate();
-
-  const goToPhotoCardDetail = (
-    src: string,
-    movieSeq: number,
-    movieTitle: string,
-    movieYear: number,
-    reviewRating: number,
-    createdAt: string,
-    content: string,
-    likes: number,
-    backgroundUrl: string,
-  ) => {
-    navigate(`/mypage/photocarddetail/${movieSeq}`, {
-      state: {
-        src, 
-        movieTitle,
-        movieYear,
-        reviewRating,
-        createdAt,
-        content,
-        likes,
-        backgroundUrl,
-      },
-    });
-  };
-
   return (
-    <div className="grid grid-cols-2 grid-row-2 gap-4 p-4 bg-white h-full w-full page-content">
-      {images.map((image, index) => (
-        <div
-          key={index}
-          className="bg-white rounded-lg border border-gray-700 pl-3 pr-3 pt-3 pb-10 flex justify-center items-center shadow-lg photo-card-hover"
-        >
-          <img
-            src={image.src}
-            alt={image.alt}
-            className="border rounded-md object-cover w-full h-[320px]"
-            onClick={() =>
-              goToPhotoCardDetail(
-                image.src,
-                image.movieSeq,
-                image.movieTitle,
-                image.movieYear,
-                image.reviewRating,
-                image.createdAt,
-                image.content,
-                image.likes,
-                image.backgroundUrl,
-              )
-            }
-          />
-        </div>
-      ))}
-      <p className="text-lg text-gray-700 mt-1 text-right w-full">
+    <div className="bg-white flex flex-col justify-between h-full rounded-sm">
+      <div className="h-6" />
+
+      <div className="grid grid-cols-2 grid-row-2 gap-x-14 gap-y-6 px-28 flex-grow">
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="bg-white w-[250px] h-[350px] rounded-lg border border-gray-600 pt-3 pb-10 flex justify-center items-center shadow-lg photo-card-hover cursor-pointer"
+            onClick={() => onCardClick(image)} // 카드 클릭 시 상세 페이지 열기
+          >
+            <img
+              src={image.src}
+              alt={image.alt}
+              className="border rounded-md object-cover w-5/6"
+            />
+          </div>
+        ))}
+      </div>
+
+      <p className="text-lg text-gray-700 mt-1 text-center w-full">
         {pageIndex}
       </p>
+      <div className="h-6" />
     </div>
   );
 };

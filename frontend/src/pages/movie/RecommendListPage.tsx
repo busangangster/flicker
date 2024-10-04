@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules"; // Autoplay 모듈 추가
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
-import exit from "/assets/movie/exit.png";
+// import exit from "/assets/movie/exit.png";
+import { FaArrowLeft } from "react-icons/fa";
+
 
 // 목업 포스터 이미지 임의 설정
 const movieImg = [
@@ -108,15 +110,17 @@ const RecommandListPage: React.FC = () => {
         backgroundPosition: "center",
       }}
     >
+      <FaArrowLeft className="bg-white opacity-90 rounded-md w-10 h-10 absolute top-40 left-20 text-gray-800 p-1 hover:bg-neutral-400"
+      onClick={goToRecommend}/>
       {/* 영화관 스타일 화면 */}
       <div className="relative w-[73%] h-[75vh] rounded-md overflow-hidden">
-        <img
+        {/* <img
           src={exit}
           alt="exit"
           className="w-24 opacity-75 absolute top-0"
           onClick={goToRecommend}
-        />
-        <h2 className="text-center text-3xl font-bold text-black mb-[80px] mt-24">
+        /> */}
+        <h2 className="text-center text-3xl font-bold text-black mb-[80px] mt-24 ">
           My own movie theater
         </h2>
         <Swiper

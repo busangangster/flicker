@@ -6,9 +6,8 @@ import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
 import { useQuery } from "@tanstack/react-query";
-import { fetchFavoriteMovies } from "../../apis/axios";
+import { fetchDislikeMovies } from "../../apis/axios";
 import { useUserQuery } from "../../hooks/useUserQuery";
-import { useNavigate } from "react-router-dom";
 
 interface FavoriteMovie {
   movieSeq: number;
@@ -16,16 +15,15 @@ interface FavoriteMovie {
 }
 
 const FavoritePage: React.FC = () => {
-  const navigate = useNavigate();
   // 사용자 정보 가져오기
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
 
   // 즐겨찾기 영화 가져오기
   // 하나의 객체로 묶어서 전달해야함 !!
-  const { data: favoriteMovies } = useQuery({
-    queryKey: ["favoriteMovies", userSeq], // queryKey
-    queryFn: () => fetchFavoriteMovies(userSeq!), // queryFn
+  const { data: dislikeMovies } = useQuery({
+    queryKey: ["dislikeMovies", userSeq], // queryKey
+    queryFn: () => fetchDislikeMovies(userSeq!), // queryFn
     enabled: !!userSeq, // userSeq가 존재할 때만 쿼리 실행, options
   });
 
@@ -79,23 +77,17 @@ const FavoritePage: React.FC = () => {
     }
   };
 
-  const goToDetail = (movieSeq: number) => {
-    navigate(`/moviedetail/${movieSeq}`);
-  };
-
   const slides = [];
-  if (favoriteMovies) {
-    for (let i = 0; i < favoriteMovies.length; i += 10) {
-      slides.push(favoriteMovies.slice(i, i + 10));
+  if (dislikeMovies) {
+    for (let i = 0; i < dislikeMovies.length; i += 10) {
+      slides.push(dislikeMovies.slice(i, i + 10));
     }
   }
-
-  console.log(slides);
 
   return (
     <div className="bg-black p-8 rounded-lg w-[1200px] relative">
       <h2 className="text-2xl font-semibold italic text-white mb-6">
-        My Favorite Movies
+        My Dislike Movies
       </h2>
 
       {!isBeginning && (
@@ -137,8 +129,7 @@ const FavoritePage: React.FC = () => {
                   key={idx}
                   src={movie.moviePosterUrl}
                   alt={`Movie ${idx + 1}`}
-                  className="rounded-lg object-cover cursor-pointer"
-                  onClick={() => goToDetail(movie.movieSeq)}
+                  className="rounded-lg object-cover"
                   style={{ width: "250px", height: "300px" }}
                 />
               ))}
@@ -146,7 +137,6 @@ const FavoritePage: React.FC = () => {
           </SwiperSlide>
         ))}
       </Swiper>
-
       <style>
         {`
           .swiper-pagination {

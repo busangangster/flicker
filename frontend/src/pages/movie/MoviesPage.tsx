@@ -6,9 +6,14 @@ import MoviesList from "../../components/MoviesList";
 import SearchBar from "../../components/SearchBar";
 import Filter from "../../components/Filter";
 import TopTen from "../../components/TopTen";
-import { fetchMovieGenre } from "../../apis/axios";
-import { Movie } from "../../type"
-
+import {
+  fetchMovieCountry,
+  fetchMovieGenre,
+  fetchMovieYear,
+  fetchMovieRating,
+  fetchMovieNew,
+} from "../../apis/axios";
+import { Movie } from "../../type";
 
 const MoviesPage: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -18,13 +23,15 @@ const MoviesPage: React.FC = () => {
 
   // 각 장르별 영화 데이터 관리
   const [fantasyMovies, setFantasyMovies] = useState<Movie[]>([]);
-  const [familyMovies, setFamilyMovies] = useState<Movie[]>([]);
   const [sfMovies, setSfMovies] = useState<Movie[]>([]);
-  const [horrorMovies, setHorrorMovies] = useState<Movie[]>([]);
   const [romanceMovies, setRomanceMovies] = useState<Movie[]>([]);
   const [animeMovies, setAnimeMovies] = useState<Movie[]>([]);
   const [historyMovies, setHistoryMovies] = useState<Movie[]>([]);
   const [adventureMovies, setAdventureMovies] = useState<Movie[]>([]);
+  const [twentyfourMovies, setTwentyfourMovies] = useState<Movie[]>([]);
+  const [koreaMovies, setKoreaMovies] = useState<Movie[]>([]);
+  const [highRateMovies, setHighRateMovies] = useState<Movie[]>([]);
+  const [newMovies, setNewMovies] = useState<Movie[]>([]);
 
   const genres = [
     { value: "SF", label: "SF" },
@@ -59,7 +66,7 @@ const MoviesPage: React.FC = () => {
   ];
 
   // 장르별 영화 데이터를 가져오는 함수
-  const fetchMovies = async (
+  const fetchMoviesByGenre = async (
     genre: string,
     setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
   ) => {
@@ -67,12 +74,14 @@ const MoviesPage: React.FC = () => {
     try {
       const encodedGenre = encodeURIComponent(genre);
       const response = await fetchMovieGenre(encodedGenre, 1, 15);
-      // console.log(response);
-
-      // movieSeq와 moviePosterUrl을 함께 받아옴
       const movies = response.map((movie: Movie) => ({
         movieSeq: movie.movieSeq,
         moviePosterUrl: movie.moviePosterUrl,
+        movieTitle: movie.movieTitle,
+        movieYear: movie.movieYear,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
       }));
       setMovies(movies);
     } catch (error) {
@@ -82,16 +91,116 @@ const MoviesPage: React.FC = () => {
     }
   };
 
+  // 년도별 영화 데이터를 가져오는 함수
+  const fetchMoviesByYear = async (
+    year: number,
+    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+  ) => {
+    setLoading(true);
+    try {
+      const response = await fetchMovieYear(year, 1, 15);
+      const movies = response.map((movie: Movie) => ({
+        movieSeq: movie.movieSeq,
+        moviePosterUrl: movie.moviePosterUrl,
+        movieYear: movie.movieYear,
+        movieTitle: movie.movieTitle,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
+      }));
+      setMovies(movies);
+    } catch (error) {
+      console.error("Error fetching movies by year:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 국가별 영화 데이터를 가져오는 함수
+  const fetchMoviesByCountry = async (
+    country: string,
+    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+  ) => {
+    setLoading(true);
+    try {
+      const response = await fetchMovieCountry(country, 1, 15);
+      const movies = response.map((movie: Movie) => ({
+        movieSeq: movie.movieSeq,
+        moviePosterUrl: movie.moviePosterUrl,
+        movieYear: movie.movieYear,
+        movieTitle: movie.movieTitle,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
+      }));
+      setMovies(movies);
+    } catch (error) {
+      console.error("Error fetching movies by country:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 높은 별점의 영화 데이터를 가져오는 함수
+  const fetchMovieByRate = async (
+    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+  ) => {
+    setLoading(true);
+    try {
+      const response = await fetchMovieRating();
+      const movies = response.map((movie: Movie) => ({
+        movieSeq: movie.movieSeq,
+        moviePosterUrl: movie.moviePosterUrl,
+        movieYear: movie.movieYear,
+        movieTitle: movie.movieTitle,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
+      }));
+      setMovies(movies);
+    } catch (error) {
+      console.error("Error fetching movies by rating:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 이번 달 개봉 영화 데이터를 가져오는 함수
+  const fetchMovieByMonth = async (
+    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+  ) => {
+    setLoading(true);
+    try {
+      const response = await fetchMovieNew();
+      const movies = response.map((movie: Movie) => ({
+        movieSeq: movie.movieSeq,
+        moviePosterUrl: movie.moviePosterUrl,
+        movieYear: movie.movieYear,
+        movieTitle: movie.movieTitle,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
+      }));
+      setMovies(movies);
+    } catch (error) {
+      console.error("Error fetching movies by rating:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     // 각 장르에 맞는 영화 데이터를 가져옴
-    fetchMovies("판타지", setFantasyMovies);
-    fetchMovies("가족", setFamilyMovies);
-    fetchMovies("SF", setSfMovies);
-    fetchMovies("공포", setHorrorMovies);
-    fetchMovies("로맨스", setRomanceMovies);
-    fetchMovies("애니", setAnimeMovies);
-    fetchMovies("역사", setHistoryMovies);
-    fetchMovies("모험", setAdventureMovies);
+    fetchMoviesByGenre("판타지", setFantasyMovies);
+    fetchMoviesByGenre("SF", setSfMovies);
+    fetchMoviesByGenre("로맨스", setRomanceMovies);
+    fetchMoviesByGenre("애니", setAnimeMovies);
+    fetchMoviesByGenre("역사", setHistoryMovies);
+    fetchMoviesByGenre("모험", setAdventureMovies);
+    fetchMoviesByYear(2024, setTwentyfourMovies);
+    fetchMoviesByCountry("한국", setKoreaMovies);
+    fetchMovieByRate(setHighRateMovies);
+    fetchMovieByMonth(setNewMovies);
   }, []);
 
   // 장르 선택 시 해당 페이지로 이동
@@ -122,13 +231,17 @@ const MoviesPage: React.FC = () => {
         <p className="text-white">로딩 중...</p>
       ) : (
         <>
-          {/* 장르별로 영화 목록을 렌더링 */}
-          <MoviesList category="판타지 영화" movies={fantasyMovies} />
-          <MoviesList category="진심이 느껴지는 영화" movies={familyMovies} />
-          <MoviesList category="SF 영화" movies={sfMovies} />
           <MoviesList
-            category="심장 떨리게 무섭게 해줄게"
-            movies={horrorMovies}
+            category="이번 달 신작 영화"
+            movies={newMovies}
+          />
+          <MoviesList category="판타지 영화" movies={fantasyMovies} />
+          <MoviesList category="올해 개봉한 영화" movies={twentyfourMovies} />
+          <MoviesList category="SF 영화" movies={sfMovies} />
+          <MoviesList category="한국 영화" movies={koreaMovies} />
+          <MoviesList
+            category="주목할만한 별점 높은 영화"
+            movies={highRateMovies}
           />
           <MoviesList category="사탕같은 영화" movies={romanceMovies} />
           <MoviesList category="애니 좋아하는 사람 ~?" movies={animeMovies} />

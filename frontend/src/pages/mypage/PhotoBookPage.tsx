@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/common/Navbar";
 import photobook from "../../assets/photobook/photobook.png";
 import "../../css/PhotoBook.css";
 import { useUserQuery } from "../../hooks/useUserQuery";
@@ -14,20 +15,18 @@ const PhotoBookPage: React.FC = () => {
   if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
   const goToPhotoCard = () => {
-    // 사이드바를 먼저 점차적으로 사라지게 함
     const sidebarElement = document.querySelector(".SideBar") as HTMLElement;
     if (sidebarElement) {
       sidebarElement.style.transition = "opacity 0.3s ease";
       sidebarElement.style.opacity = "0";
     }
 
-    // 이미지와 텍스트 모두에 애니메이션 적용
     const photobookElement = document.querySelector(
       ".photobook-img"
     ) as HTMLElement;
     const textElements = document.querySelectorAll(
       ".photobook-text"
-    ) as NodeListOf<HTMLElement>; // 모든 텍스트 요소 선택
+    ) as NodeListOf<HTMLElement>;
     const coverImageElement = document.querySelector(
       ".cover-image"
     ) as HTMLElement;
@@ -35,7 +34,6 @@ const PhotoBookPage: React.FC = () => {
     if (photobookElement) {
       photobookElement.classList.add("book-animation-out");
     }
-    // 모든 .photobook-text 요소에 애니메이션 추가
     textElements.forEach((textElement) => {
       textElement.classList.add("text-animation-out");
     });
@@ -44,31 +42,42 @@ const PhotoBookPage: React.FC = () => {
     }
 
     setTimeout(() => {
-      navigate("/mypage/photocard");
+      navigate("/photocard");
     }, 400);
   };
 
   return (
-    <div className="bg-black p-8 rounded-lg w-[1200px] relative">
+    <div className="bg-black w-full min-h-screen flex flex-col items-center justify-center">
+      {/* NavBar 추가 */}
+      <header className="w-full fixed top-0 z-50">
+        <Navbar />
+      </header>
+
       {/* 클릭 가능한 전체 영역 */}
-      <div className="relative cursor-pointer" onClick={goToPhotoCard}>
+      <div
+        className="relative cursor-pointer mt-16 hover:scale-105 transition-transform duration-300 ease-in-out"
+        onClick={goToPhotoCard}
+      >
         {/* 이미지 */}
-        <img src={photobook} alt="photobook" className="photobook-img w-full" />
+        <img
+          src={photobook}
+          alt="photobook"
+          className="photobook-img w-[1200px] mx-auto"
+        />
         {/* 이미지 위의 텍스트 및 추가 요소 */}
-        <div className="absolute -top-10 left-10 w-full h-full flex flex-col items-center justify-center">
-          <h1 className="photobook-text text-5xl font-bold italic text-black mb-3">
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pl-32 pb-10">
+          <h1 className="photobook-text text-5xl font-bold italic text-black mb-4">
             MOVIE MEMORIES
           </h1>
           <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
           <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
-          <p className="photobook-text text-lg italic mt-2 text-black self-end mr-60">
+          <p className="photobook-text text-lg italic mt-3 text-black text-right self-end mr-60">
             made by {data.userId}
           </p>
           <img
-            // src="https://via.placeholder.com/600x400"
             src={photobookmain}
             alt="Cover Image"
-            className="cover-image w-[600px] h-[400px] mt-6"
+            className="cover-image w-3/5 h-1/2 mt-10"
           />
         </div>
       </div>

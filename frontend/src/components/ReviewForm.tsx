@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import starOutline from "../assets/review/star_outline.png";
 import starHalf from "../assets/review/star_half.png";
 import starFull from "../assets/review/star.png";
-import { ReviewType } from "../type";
+import { ReviewType, ReviewForm as ReviewFormData } from "../type"; 
 import { IoMdCheckboxOutline, IoMdSquareOutline } from "react-icons/io";
+import { createReview } from "../apis/movieApi"; 
+import { useUserQuery } from "../hooks/useUserQuery";
 
-// 현재 로그인한 유저의 닉네임 (임시로 처리)
-const currentUserNickname = "HyunJeong";
-
-const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
-  onSubmit,
-}) => {
+const ReviewForm: React.FC<{
+  onSubmit: (review: ReviewType) => void;
+  movieSeq: number;
+}> = ({ onSubmit, movieSeq }) => {
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
   const [isSpoiler, setIsSpoiler] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false); // 폼 제출 여부 상태 관리
-  const [isDragging, setIsDragging] = useState(false); // 드래그 상태 관리
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const { data } = useUserQuery();
 
   const handleRatingChange = (index: number, isLeftHalf: boolean) => {
     const newRating = isLeftHalf ? index + 0.5 : index + 1;
@@ -57,12 +58,31 @@ const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // 리뷰 작성 API 호출
+  const submitReviewToApi = async (reviewData: ReviewFormData) => {
+    try {
+      await createReview(reviewData);
+      alert("리뷰 작성이 성공적으로 완료되었습니다.");
+    } catch (error) {
+      alert("리뷰 작성에 실패했습니다.");
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // userSeq가 undefined인 경우 폼 제출을 막음
+    if (!data?.userSeq) {
+      alert("유저 정보가 없습니다.");
+      return;
+    }
+
     if (content.trim() === "" || rating === 0) {
       alert("별점과 내용을 모두 입력해주세요.");
       return;
     }
+
     const newReview = {
       reviewSeq: Date.now(),
       reviewRating: rating,
@@ -71,11 +91,28 @@ const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
       spoiler: isSpoiler,
       likes: 0,
       liked: false,
-      nickname: currentUserNickname,
+      nickname: data?.nickname,
       top: false,
     };
-    onSubmit(newReview);
-    setIsFormSubmitted(true); // 폼이 제출되면 폼을 숨김
+
+    // API로 보낼 데이터 구조
+    const reviewData: ReviewFormData = {
+      userSeq: data?.userSeq || 0,
+      movieSeq: movieSeq,
+      reviewRating: rating,
+      content: content,
+      isSpoiler: isSpoiler,
+    };
+    try {
+      await submitReviewToApi(reviewData);
+      onSubmit(newReview); // 화면에 리뷰 추가
+      setIsFormSubmitted(true); // 폼이 제출되면 폼을 숨김
+
+      // 새로고침 추가
+      window.location.reload(); // 페이지 새로고침
+    } catch (error) {
+      console.error("리뷰 제출 중 오류 발생:", error);
+    }
   };
 
   if (isFormSubmitted) {
@@ -86,9 +123,9 @@ const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
     <form onSubmit={handleSubmit} className="border-b border-gray-700 mb-4">
       <div className="flex items-center mb-2">
         <div className="rounded-full bg-gray-500 w-8 h-8 flex items-center justify-center text-white font-bold">
-          {currentUserNickname.charAt(0)}
+          {data?.nickname.charAt(0)}
         </div>
-        <span className="ml-4 font-semibold ">{currentUserNickname}</span>
+        <span className="ml-4 font-semibold ">{data?.nickname}</span>
         <span className="text-gray-400 text-sm ml-2">'s flick record is</span>
         <div className="flex ml-2" onMouseLeave={handleMouseLeave}>
           {Array.from({ length: 5 }, (_, index) => (
@@ -107,7 +144,7 @@ const ReviewForm: React.FC<{ onSubmit: (review: ReviewType) => void }> = ({
                 }
                 alt="Star"
                 className="w-5 h-5 cursor-pointer"
-                onDragStart={(e) => e.preventDefault()} // 드래그 금지
+                onDragStart={(e) => e.preventDefault()}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onMouseMove={(e) => handleMouseMove(index, e)}

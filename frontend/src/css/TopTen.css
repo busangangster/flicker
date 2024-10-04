@@ -26,12 +26,27 @@
 
 .swiper-button-prev-custom2,
 .swiper-button-next-custom2 {
+  color: white; /* SVG 색상 */
+  position: absolute;
+  top: 25%; /* 상단에 위치 */
+  height: 80%; /* 전체 높이 차지 */
+  width: 50px; /* 화살표가 차지할 너비 (원하는 대로 조정 가능) */
+  display: flex; /* 중앙 정렬을 위해 flex 사용 */
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  z-index: 3;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+}
+
+/* .swiper-button-prev-custom2,
+.swiper-button-next-custom2 {
   position: absolute;
   top: 60%;
   transform: translateY(-50%);
   z-index: 10;
   cursor: pointer;
-}
+} */
 
 .swiper-button-prev-custom2 {
   left: 0px;

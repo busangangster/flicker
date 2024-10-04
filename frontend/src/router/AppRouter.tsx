@@ -9,7 +9,6 @@ import SignInPage from "../pages/auth/SignInPage";
 import ContactPage from "../pages/info/ContactPage";
 import ServiceDetailPage from "../pages/info/ServiceDetailPage";
 import MovieDetailPage from "../pages/movie/MovieDetailPage";
-import RecommendListPage from "../pages/movie/RecommendListPage";
 import RecommendPage from "../pages/movie/RecommendPage";
 import ReviewPage from "../pages/movie/ReviewPage";
 import SearchPage from "../pages/movie/SearchPage";
@@ -20,12 +19,15 @@ import PhotoCardPage from "../pages/mypage/PhotoCardPage";
 import Mypage from "../pages/mypage/Mypage";
 import UserInfoEditPage from "../pages/mypage/UserInfoEditPage";
 import VerificationPage from "../pages/mypage/VerificationPage";
-import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
+// import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
 import Home from "../pages/Home";
 import MoviesPage from "../pages/movie/MoviesPage";
 import ProtectedRoute from "../components/ProtectedRoute";
 import MovieGenrePage from "../pages/movie/MovieGenrePage";
+import DisLikePage from "../pages/mypage/DisLikePage";
+import RecommendListReviewPage from "../pages/movie/RecommendListReviewPage";
+import RecommendListActionPage from "../pages/movie/RecommendListActionPage";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -43,10 +45,18 @@ const AppRoutes: React.FC = () => {
       <Route path="/servicedetail" element={<ServiceDetailPage />} />
       <Route path="/moviedetail/:movieSeq" element={<MovieDetailPage />} />
       <Route
-        path="/recommendlist"
+        path="/recommendlist/action"
         element={
           <ProtectedRoute>
-            <RecommendListPage />
+            <RecommendListActionPage />
+          </ProtectedRoute>
+        }
+      />
+            <Route
+        path="/recommendlist/review"
+        element={
+          <ProtectedRoute>
+            <RecommendListReviewPage />
           </ProtectedRoute>
         }
       />
@@ -62,7 +72,12 @@ const AppRoutes: React.FC = () => {
       <Route path="/search" element={<SearchPage />} />
       <Route path="/movies" element={<MoviesPage />} />{" "}
       <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />
-      {/* 장르별 페이지 추가 */}
+      <Route path="/photobook" element={<PhotoBookPage />} />
+      <Route path="/photocard" element={<PhotoCardPage />} />
+      {/* <Route
+        path="/photocarddetail/:movieSeq"
+        element={<PhotoCardDetailPage />}
+      /> */}
       <Route
         path="/mypage/*"
         element={
@@ -72,14 +87,8 @@ const AppRoutes: React.FC = () => {
         }
       >
         <Route path="favorite" element={<FavoritePage />} />
+        <Route path="dislike" element={<DisLikePage />} />
         <Route path="myinformation" element={<MyInformaitonPage />} />
-        <Route path="photobook" element={<PhotoBookPage />} />
-        <Route path="photocard" element={<PhotoCardPage />} />
-        <Route
-          path="photocarddetail/:movieSeq"
-          element={<PhotoCardDetailPage />}
-        />
-
         <Route path="userinfoedit" element={<UserInfoEditPage />} />
         <Route path="verification" element={<VerificationPage />} />
       </Route>

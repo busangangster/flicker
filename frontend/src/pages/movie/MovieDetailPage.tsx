@@ -1,66 +1,97 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // useParams 사용
+import { useParams, useNavigate, useLocation } from "react-router-dom"; // useParams 사용
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Navbar from "../../components/common/Navbar";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMovieDetail } from "../../apis/axios";
+import {
+  addDislikeMovies,
+  addfavoriteMovies,
+  deleteDislikeMovies,
+  deletefavoriteMovies,
+  fetchMovieDetail,
+} from "../../apis/axios";
 import PlotModal from "../../components/PlotModal";
 import { MovieDetail } from "../../type";
 import Review from "../../components/Review";
 import MoviesList from "../../components/MoviesList";
+import { IoBan } from "react-icons/io5";
+import { useUserQuery } from "../../hooks/useUserQuery";
+import Swal from "sweetalert2";
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq를 가져옴
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [interestOption, setInterestOption] = useState("관심 없음");
   const [isLiked, setIsLiked] = useState(false);
+  const [disLiked, setDisLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const location = useLocation();
 
+  // useEffect(() => {
+  //   // const handleClickOutside = (event: MouseEvent) => {
+  //   //   if (
+  //   //     dropdownRef.current &&
+  //   //     !dropdownRef.current.contains(event.target as Node)
+  //   //   ) {
+  //   //     setIsDropdownOpen(false);
+  //   //   }
+  //   // };
 
-  const userSeq = 2; // 예시로 userSeq 고정값 사용
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
+  const {
+    data: userData,
+    error: userError,
+    isLoading: userIsLoading,
+  } = useUserQuery();
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const userSeq = userData?.userSeq; 
 
-  // useQuery를 통해 movieDetail API 호출
-  const { data, error, isLoading } = useQuery<MovieDetail, Error>({
-    queryKey: ["movieDetail", movieSeq], // queryKey에 movieSeq 포함
+  const {
+    data: movieData,
+    error: movieError,
+    isLoading: movieIsLoading,
+  } = useQuery<MovieDetail, Error>({
+    queryKey: ["movieDetail", movieSeq],
     queryFn: async () => {
-      const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq);
-      console.log(movieDetail);
-      return movieDetail;
+      if (userSeq) {
+        const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq);
+        return movieDetail;
+      }
     },
+    enabled: !!userSeq && !!movieSeq, // `userSeq`와 `movieSeq`가 존재할 때만 쿼리 실행
   });
-  // console.log(data); // undefined
 
   useEffect(() => {
-    if (data) {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (movieData) {
       setIsLiked(bookMarkedMovie); // 초기 상태 설정
     }
-  }, [data]);
+  }, [movieData]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading movie details.</div>;
+  useEffect(() => {
+    if (movieData) {
+      setDisLiked(unlikedMovie); // 초기 상태 설정
+    }
+  }, [movieData]);
 
-  if (!data) return null; // data가 undefined일 경우를 처리
+  if (movieIsLoading) return <div>Loading...</div>;
+  if (movieError) return <div>유저 정보를 불러오는데 실패했습니다.</div>;
+  if (!movieData) return null; // data가 undefined일 경우를 처리
+
+  if (!userData) return null;
+  if (userIsLoading) return <p>Loading...</p>;
+  if (userError) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
   const {
     movieDetailResponse: {
@@ -79,24 +110,36 @@ const MovieDetailPage: React.FC = () => {
       actors,
     } = {}, // movieDetailResponse가 없을 경우를 대비해 기본값으로 빈 객체 설정
     bookMarkedMovie = false,
-    // unlikedMovie = false,
+    unlikedMovie = false,
     reviews = [],
     similarMovies = [],
-  } = data;
+  } = movieData;
 
-  console.log(data);
-
+  // 줄거리가 없을 경우 기본 메시지 설정
   const MAX_LENGTH = 250;
   const isLongText = moviePlot && moviePlot.length > MAX_LENGTH;
-  const displayedText = moviePlot ? moviePlot.slice(0, MAX_LENGTH) : ""; // movieDetailResponse가 없으면 빈 문자열 반환
-  const extractVideoId = (url: string) => {
-    const videoIdMatch = url.match(
-      /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
-    );
-    return videoIdMatch ? videoIdMatch[1] : null;
-  };
+  const displayedText = moviePlot
+    ? moviePlot.slice(0, MAX_LENGTH)
+    : "줄거리를 준비 중입니다."; // moviePlot이 없을 경우 기본 메시지
 
-  const videoId = trailerUrl ? extractVideoId(trailerUrl) : null;
+  // moviePosterUrl가 없을 경우 대체 이미지 설정
+  const posterUrl = moviePosterUrl
+    ? moviePosterUrl
+    : "/assets/movie/noImage.png";
+
+    const extractVideoId = (url: string) => {
+      const videoIdMatch = url.match(
+        /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
+      );
+      return videoIdMatch ? videoIdMatch[1] : null;
+  };
+  
+  // trailerUrl이 없을 경우 대체 이미지 설정
+  const videoUrl = trailerUrl
+    ? `https://www.youtube.com/embed/${extractVideoId(trailerUrl)}`
+    : "/assets/movie/noVideo.png";
+
+
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -110,24 +153,85 @@ const MovieDetailPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const toggleHeart = () => {
+  const toggleHeart = async () => {
+    if (!userSeq) {
+      console.error("User sequence is not available."); // userSeq가 없을 때 에러 처리
+      return;
+    }
+
     setIsLiked((prev) => !prev);
+
+    try {
+      if (isLiked) {
+        await deletefavoriteMovies(userSeq, Number(movieSeq));
+      } else {
+        await addfavoriteMovies(userSeq, Number(movieSeq));
+        Swal.fire({
+          title: "찜 완료!",
+          icon: "success",
+          confirmButtonText: "확인",
+        });
+      }
+    } catch (error) {
+      console.error("즐겨찾기 API 호출 중 오류 발생:", error);
+    }
+  };
+
+  const toggleDislike = async () => {
+    if (!userSeq) {
+      console.error("User sequence is not available.");
+      return;
+    }
+
+    try {
+      // setDisLiked와 동시에 현재 상태값을 이용해서 API 호출을 분기 처리
+      setDisLiked((prevDisLiked) => {
+        // 현재 상태값을 기준으로 API 호출
+        if (prevDisLiked) {
+          deleteDislikeMovies(userSeq, Number(movieSeq))
+            .then(() => {
+              console.log("관심없음 목록에서 삭제");
+            })
+            .catch((error) => {
+              console.error("관심없음 목록 삭제 중 오류 발생:", error);
+            });
+        } else {
+          addDislikeMovies(userSeq, Number(movieSeq))
+            .then(() => {
+              console.log("관심없음 목록에 추가");
+
+              Swal.fire({
+                title: "무관심 추가 완룡!",
+                icon: "success",
+                confirmButtonText: "확인",
+              });
+            })
+            .catch((error) => {
+              console.error("관심없음 목록 추가 중 오류 발생:", error);
+            });
+        }
+
+        return !prevDisLiked; // 상태 반전
+      });
+    } catch (error) {
+      console.error("API 호출 중 오류 발생:", error);
+    }
   };
 
   const goToReview = () => {
     navigate(`/review/${movieSeq}`);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
+  // const toggleDropdown = () => {
+  //   setIsDropdownOpen((prev) => !prev);
+  // };
 
-  const handleOptionClick = () => {
-    setInterestOption((prev) =>
-      prev === "관심 없음" ? "관심 없음 취소" : "관심 없음"
-    );
-    setIsDropdownOpen(false);
-  };
+  // const handleOptionClick = () => {
+  //   setInterestOption((prev) =>
+  //     prev === "관심 없음" ? "관심 없음 취소" : "관심 없음"
+  //   );
+  //   setIsDropdownOpen(false);
+  // };
 
   const renderCategoryContent = () => {
     switch (selectedCategory) {
@@ -188,7 +292,7 @@ const MovieDetailPage: React.FC = () => {
           {/* Left Section: Movie Poster and Details */}
           <div className="flex flex-col lg:flex-row">
             <img
-              src={moviePosterUrl}
+              src={posterUrl}
               alt="Movie Poster"
               className="w-[270px] h-[410px] shadow-md border"
             />
@@ -220,32 +324,29 @@ const MovieDetailPage: React.FC = () => {
                   >
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
-                  <button
-                    className="text-white text-3xl ml-2 relative z-20"
-                    onClick={toggleDropdown}
-                  >
-                    ⋮
-                    {isDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-40 bg-gray-200 text-black bg-opacity-90 rounded-md shadow-lg z-50 font-bold text-left">
-                        <div
-                          className="cursor-pointer px-4 py-2 text-base hover:bg-gray-400 rounded-md hover:bg-opacity-80 shadow-lg z-50"
-                          onClick={handleOptionClick}
-                        >
-                          {interestOption}
-                        </div>
-                      </div>
-                    )}
-                  </button>
+
+                  <div className="relative group">
+                    <IoBan
+                      className={`w-6 h-6 ml-3 ${
+                        disLiked ? "opacity-100" : "opacity-60"
+                      } hover:opacity-100`}
+                      onClick={toggleDislike}
+                    />
+                    {/* Tooltip */}
+                    <div className="absolute left-1/2 transform -translate-x-3/4 mt-2 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-32 text-center">
+                      {"관심 없음 목록에 추가하면 추천에서 제외됩니다."}
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Movie details */}
               <div className="flex mt-4 text-white text-[16px]">
-                <span>{movieYear}</span>
-                <span className="px-4 text-gray-200">|</span>
-                <span>{runningTime}</span>
-                <span className="px-4 text-gray-200">|</span>
-                <span>{audienceRating}</span>
+                <span>{movieYear}&nbsp; &nbsp; &nbsp;</span>
+                <span>
+                  | &nbsp; &nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
+                </span>
+                <span>|&nbsp;&nbsp;&nbsp;{audienceRating}</span>
               </div>
               <p className="mt-4 text-lg">
                 {displayedText}
@@ -258,7 +359,7 @@ const MovieDetailPage: React.FC = () => {
               <PlotModal
                 isopen={isModalOpen}
                 onClose={closeModal}
-                movieDetail={data}
+                movieDetail={movieData}
               />
               <div>
                 <div className="flex w-full h-[40px] bg-transparent border-b border-opacity-50 border-white text-white justify-start items-center space-x-4 mt-4 cursor-pointer">
@@ -285,15 +386,15 @@ const MovieDetailPage: React.FC = () => {
 
       {/* Reviews */}
       <div className="flex">
-        <div className="p-1 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-b border-white">
+        <div className="p-1 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-white">
           <div className="flex w-full justify-between items-center">
-            <h3 className="text-2xl font-bold text-white">Reviews</h3>
-            <div
-              className="text-white flex ml-auto items-center cursor-pointer italic underline"
+            <h3 className="text-[38px] font-bold text-white">Reviews</h3>
+            <button
+              className="text-white flex ml-auto items-center cursor-pointer text-[16px] italic h-[30px] w-[60px] bg-[#455467] rounded-md justify-center hover:bg-gray-500"
               onClick={goToReview}
             >
               more
-            </div>
+            </button>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
             {reviews.map((review) => (
@@ -307,22 +408,22 @@ const MovieDetailPage: React.FC = () => {
         </div>
 
         {/* Trailer */}
-        <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[400px] ml-[50px] mt-[100px]">
-          <div className="relative w-full max-w-4xl h-full">
+        <div className="w-[700px] bg-black text-white flex justify-center items-center m-4 p-4 h-[450px] ml-[50px] mt-[100px]">
+          {trailerUrl ? (
             <iframe
-              src={`${trailerUrl}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
+              src={videoUrl}
               title="YouTube video player"
               className="w-full h-full rounded-lg shadow-md"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-            <button className="absolute inset-0 flex items-center justify-center text-white pointer-events-none">
-              <svg className="w-12 h-12" />
-            </button>
-            <div className="absolute top-0 left-0 bg-black bg-opacity-50 text-white px-3 py-1 rounded-br-lg">
-              절찬 상영중
-            </div>
-          </div>
+          ) : (
+            <img
+              src="/assets/movie/noVideo.png"
+              alt="No video available"
+              className="w-full h-full rounded-lg shadow-md"
+            />
+          )}
         </div>
       </div>
 
@@ -330,7 +431,7 @@ const MovieDetailPage: React.FC = () => {
       <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
           category={`${movieTitle}과 유사한 장르 작품들`}
-          movies={similarMovies} // recommendedMovieList를 movies prop으로 전달
+          movies={similarMovies}
         />
       </div>
     </div>
