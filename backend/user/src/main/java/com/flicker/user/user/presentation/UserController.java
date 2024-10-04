@@ -8,10 +8,15 @@ import com.flicker.user.review.application.ReviewService;
 import com.flicker.user.review.dto.MyPageReviewCntDto;
 import com.flicker.user.review.dto.ReviewDto;
 import com.flicker.user.user.application.UserService;
+import com.flicker.user.user.domain.UserConverter;
+import com.flicker.user.user.domain.entity.User;
 import com.flicker.user.user.dto.*;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jdk.jshell.Snippet;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +31,7 @@ public class UserController {
     private final JWTUtil jwtUtil;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final UserConverter userConverter;
 
 
     // 회원 가입 (아이디 중복 체크)
@@ -236,6 +242,43 @@ public class UserController {
         return ResponseDto.response(StatusCode.SUCCESS, myPageReviewCnt);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        // Extract refresh token from cookie or header
+        
+        String refreshToken = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
 
+        if (refreshToken == null || !jwtUtil.validateToken(refreshToken)) {
+            return ResponseDto.response(StatusCode.FORBIDDEN_ACCESS,"refresh토큰 검증이 실패했습니다.");
+        }
+
+        // Get the username (or other subject data) from the refresh token
+        Integer userSeq = jwtUtil.getUserSeq(refreshToken);
+        User userByUserSeq = userService.getUserByUserSeq(userSeq);
+
+        UserLoginResDto dto = userConverter.toUserLoginResDto(userByUserSeq);
+
+        // Reissue new access token
+        String newAccessToken = jwtUtil.createToken("access", dto, "ROLE_USER", 600000L); // 10 minutes
+
+        // Optionally, send the new token back in the response headers or body
+        response.setHeader("Authorization", newAccessToken);
+
+        // Send refresh token back as cookie (if you want to refresh it as well)
+//        Cookie refreshTokenCookie = new Cookie("refresh", refreshToken);
+//        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setPath("/");
+//        response.addCookie(refreshTokenCookie);
+
+        return ResponseEntity.ok("Token refreshed successfully");
+    }
 
 }
