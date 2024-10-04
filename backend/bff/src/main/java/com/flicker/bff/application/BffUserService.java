@@ -387,13 +387,18 @@ public class BffUserService {
                     PhotoCardDto photoCardDto = new PhotoCardDto();
                     photoCardDto.setReviewDto(reviewListDto.get(i));
 
-                    MovieImageDto movieImageDto = new MovieImageDto();
-                    movieImageDto.setMoviePosterUrl(movieListDtoList.get(i).getMoviePosterUrl());
-                    movieImageDto.setMovieTitle(movieListDtoList.get(i).getMovieTitle());
-                    movieImageDto.setMovieYear(movieListDtoList.get(i).getMovieYear());
-                    movieImageDto.setBackgroundUrl(movieListDtoList.get(i).getBackgroundUrl());
-                    photoCardDto.setMovieImageDto(movieImageDto);
-                    result.add(photoCardDto);
+                    for(int j=0;j<reviewListDto.size();j++){
+                        if(reviewListDto.get(j).getMovieSeq().equals(movieListDtoList.get(i).getMovieSeq())){
+                            MovieImageDto movieImageDto = new MovieImageDto();
+                            movieImageDto.setMoviePosterUrl(movieListDtoList.get(i).getMoviePosterUrl());
+                            movieImageDto.setMovieTitle(movieListDtoList.get(i).getMovieTitle());
+                            movieImageDto.setMovieYear(movieListDtoList.get(i).getMovieYear());
+                            movieImageDto.setBackgroundUrl(movieListDtoList.get(i).getBackgroundUrl());
+                            photoCardDto.setMovieImageDto(movieImageDto);
+                            result.add(photoCardDto);
+                        }
+                    }
+
                 }
 
                 return Mono.just(ResponseDto.response(StatusCode.SUCCESS, result));
