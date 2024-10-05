@@ -77,7 +77,7 @@ public class SentimentBatchScoreConfig {
                 .<SentimentReview, SentimentResult> chunk(10, transactionManager)
                 .reader(sentimentBatchKafkaReader())
                 .processor(sentimentBatchKafkaProcessor())
-                .writer(sentimentResultCompositeItemWritercompositeItemWriter())
+                .writer(sentimentResultCompositeItemWriter())
                 .build();
     }
 
@@ -208,7 +208,7 @@ public class SentimentBatchScoreConfig {
 
     @Bean
     @StepScope
-    public CompositeItemWriter<SentimentResult> sentimentResultCompositeItemWritercompositeItemWriter() {
+    public CompositeItemWriter<SentimentResult> sentimentResultCompositeItemWriter() {
         CompositeItemWriter<SentimentResult> writer = new CompositeItemWriter<>();
         writer.setDelegates(Arrays.asList(sentimentKafkaSendWriter(kafkaTemplate), sentimentKafkaWriter()));
         return writer;
