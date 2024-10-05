@@ -91,6 +91,7 @@ public class CollaboRecommendModelUpdateBatchConfig {
             List<MovieReviewEvent> movieReviewEvents = new ArrayList<>();
             items.forEach(movieReviewEvent -> {
                 MovieReviewEvent review = new MovieReviewEvent();
+                review.setReviewSeq(movieReviewEvent.getReviewSeq());
                 review.setUserSeq(movieReviewEvent.getUserSeq());
                 review.setMovieSeq(movieReviewEvent.getMovieSeq());
                 review.setRating(movieReviewEvent.getRating());
