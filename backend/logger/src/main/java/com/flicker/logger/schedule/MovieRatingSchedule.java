@@ -9,8 +9,9 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,13 +29,15 @@ public class MovieRatingSchedule {
     @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
     public void runRatingJob() throws Exception{
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
-        String date = dateFormat.format(new Date());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String date = LocalDateTime.now().format(formatter);
+        String uniqueId = UUID.randomUUID().toString();  // 고유한 UUID 추가
 
         log.info("runRatingJob Schedule Start at {}", date);
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString("date", date)
+                .addString("runId", uniqueId)  // 고유한 값 추가
                 .toJobParameters();
 
         jobLauncher.run(jobRegistry.getJob("AverageRatingCalcJob"), jobParameters);
