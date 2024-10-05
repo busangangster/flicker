@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import starFull from "../assets/review/star.png";
 import starHalf from "../assets/review/star_half.png";
 import star_outline from "../assets/review/star_outline.png";
 import thumbUpOutline from "../assets/review/thumb_up_outline.png";
 import thumbUp from "../assets/review/thumb_up.png";
 import { ReviewProps } from "../type";
+import { likeReview, cancelLikeReview } from "../apis/movieApi";
 
-const Review: React.FC<ReviewProps> = ({ review, onDelete }) => {
-  const [showContent, setShowContent] = React.useState(!review.spoiler);
+const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete }) => {
+  const [showContent, setShowContent] = useState(!review.spoiler);
+  const [liked, setLiked] = useState(review.liked);
+  const [likes, setLikes] = useState(review.likes);
   const MAX_LENGTH = 250;
   const content = review.content || "";
   const isLongContent = content.length > MAX_LENGTH;
-  const [showMore, setShowMore] = React.useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const toggleContent = () => {
     if (review.spoiler) {
@@ -34,6 +37,25 @@ const Review: React.FC<ReviewProps> = ({ review, onDelete }) => {
         alert("리뷰가 삭제되었습니다.");
         window.location.reload(); // 페이지 새로고침
       }
+    }
+  };
+
+  // 좋아요 버튼 클릭 시 처리
+  const handleLikeToggle = async () => {
+    try {
+      if (liked) {
+        // 좋아요 취소
+        await cancelLikeReview(userSeq, review.reviewSeq);
+        setLiked(false);
+        setLikes((prevLikes) => prevLikes - 1);
+      } else {
+        // 좋아요 추가
+        await likeReview(userSeq, review.reviewSeq);
+        setLiked(true);
+        setLikes((prevLikes) => prevLikes + 1);
+      }
+    } catch (error) {
+      console.error("좋아요 처리 중 오류 발생:", error);
     }
   };
 
@@ -92,13 +114,16 @@ const Review: React.FC<ReviewProps> = ({ review, onDelete }) => {
                 </button>
               )}
               {/* 좋아요 버튼 */}
-              <button className="flex items-center p-0 bg-transparent border-none outline-none">
+              <button
+                className="flex items-center p-0 bg-transparent border-none outline-none"
+                onClick={handleLikeToggle}
+              >
                 <img
-                  src={review.liked ? thumbUp : thumbUpOutline}
+                  src={liked ? thumbUp : thumbUpOutline}
                   alt="Thumb Up"
                   className="w-4 h-4 mr-1"
                 />
-                <span className=" text-gray-300">{review.likes}</span>
+                <span className=" text-gray-300">{likes}</span>
               </button>
             </div>
           </div>
