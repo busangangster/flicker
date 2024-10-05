@@ -62,7 +62,7 @@ const PhotoBookPage: React.FC = () => {
         <img
           src={photobook}
           alt="photobook"
-          className="photobook-img w-[1200px] mx-auto"
+          className="photobook-img w-[1000px] mx-auto"
         />
         {/* 이미지 위의 텍스트 및 추가 요소 */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pl-32 pb-10">

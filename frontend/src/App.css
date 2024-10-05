@@ -1,24 +1,43 @@
+/* 공통 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: black;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
 /* 스크롤바 커스텀 */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px; /* 스크롤바의 너비 */
+  width: 8px !important; /* 스크롤바의 너비 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #000000; /* 스크롤바 트랙(배경) 색상 */
+  background: #000000 !important; /* 스크롤바 트랙(배경) 색상 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #ffffff; /* 스크롤바 손잡이 색상 */
-  border-radius: 10px; /* 손잡이의 둥글기 */
-  border: 2px solid #2d2d2d; /* 손잡이 주변에 여백 */
+  background-color: #ffffff !important; /* 스크롤바 손잡이 색상 */
+  border-radius: 10px !important; /* 손잡이의 둥글기 */
+  border: 2px solid #2d2d2d !important; /* 손잡이 주변에 여백 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #6b6b6b; /* 손잡이의 호버 색상 */
+  background-color: #6b6b6b !important; /* 손잡이의 호버 색상 */
 }
 
 .custom-scrollbar2::-webkit-scrollbar {
-  width: 6px; /* 스크롤바의 너비 */
+  width: 6px !important; /* 스크롤바의 너비 */
 }
 
 
@@ -31,3 +50,4 @@
 .custom-scrollbar2::-webkit-scrollbar-thumb:hover {
   background-color: #e1e1e1; /* 손잡이의 호버 색상 */
 }
+

@@ -4,7 +4,7 @@
   color: white; /* SVG 색상 */
   position: absolute;
   top: 20%; /* 상단에 위치 */
-  height: 113%; /* 전체 높이 차지 */
+  height: 80%; /* 전체 높이 차지 */
   width: 50px; /* 화살표가 차지할 너비 (원하는 대로 조정 가능) */
   display: flex; /* 중앙 정렬을 위해 flex 사용 */
   align-items: center; /* 수직 중앙 정렬 */

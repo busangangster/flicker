@@ -1,5 +1,4 @@
-// Navbar.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUserQuery } from "../../hooks/useUserQuery";
 
@@ -9,6 +8,37 @@ const Navbar: React.FC = () => {
   const [buttonText, setButtonText] = useState("MENU");
   const { data } = useUserQuery();
   const navigate = useNavigate();
+
+  const [isVisible, setIsVisible] = useState(true); // Navbar의 가시성 상태
+  const [scrollPosition, setScrollPosition] = useState(0); // 스크롤 위치 상태
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+
+      // 스크롤을 아래로 하면 Navbar를 숨기고, 위로 하면 다시 보여줌
+      if (currentScrollPos > scrollPosition && currentScrollPos > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setScrollPosition(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollPosition]);
+
+  const handleMouseEnter = () => {
+    // 마우스가 화면 상단에 있을 때 Navbar를 다시 보여줌
+    if (!isVisible && window.pageYOffset > 50) {
+      setIsVisible(true);
+    }
+  };
 
   const toggleMenu = () => {
     if (menuOpen) {
@@ -26,19 +56,17 @@ const Navbar: React.FC = () => {
 
   const handleForMeClick = () => {
     if (data) {
-      // 로그인된 경우 /recommend 페이지로 이동
       navigate("/recommend");
     } else {
-      // 로그인되지 않은 경우 /signin 페이지로 이동
       alert("로그인한 사용자만 접근 가능합니다 !");
       navigate("/signin");
     }
-  };  const handlePhotoBookClick = () => {
+  };
+
+  const handlePhotoBookClick = () => {
     if (data) {
-      // 로그인된 경우 /recommend 페이지로 이동
       navigate("/photobook");
     } else {
-      // 로그인되지 않은 경우 /signin 페이지로 이동
       alert("로그인한 사용자만 접근 가능합니다 !");
       navigate("/signin");
     }
@@ -53,8 +81,13 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className={`w-full bg-black absolute z-20`}>
-      <header className="flex items-center mx-auto border-b bg-black border-gray-400 w-full ">
+    <div
+      className={`w-full bg-black fixed z-20 transition-all duration-300 ${
+        isVisible ? "top-0" : "-top-16"
+      }`} // 스크롤에 따라 위치 조정
+      onMouseEnter={handleMouseEnter} // 마우스 호버 시 Navbar 표시
+    >
+      <header className="flex items-center mx-auto border-b bg-black border-gray-400 w-full">
         <div className="flex items-center justify-between w-full">
           {/* 로고 */}
           <div className="flex-none ml-[25px]">
@@ -73,8 +106,8 @@ const Navbar: React.FC = () => {
               <div
                 className={`absolute right-[180px] flex items-center space-x-4 mr-4 transition-transform duration-300 transform text-white ${
                   animateMenu
-                    ? "translate-x-0 opacity-100" // 열릴 때 애니메이션
-                    : "translate-x-[calc(100%-180px)] opacity-0" // 닫힐 때 애니메이션
+                    ? "translate-x-0 opacity-100"
+                    : "translate-x-[calc(100%-180px)] opacity-0"
                 }`}
                 style={{
                   transition: "transform 0.3s ease, opacity 0.3s ease",
@@ -83,31 +116,31 @@ const Navbar: React.FC = () => {
               >
                 <NavLink
                   to="/servicedetail"
-                  className="text-white font-semibold whitespace-nowrap"
+                  className="text-white font-semibold whitespace-nowrap hover:opacity-70"
                 >
                   About
                 </NavLink>
                 <button
                   onClick={handleForMeClick}
-                  className="text-white font-semibold whitespace-nowrap"
+                  className="text-white font-semibold whitespace-nowrap hover:opacity-70"
                 >
                   For You
                 </button>
                 <NavLink
                   to="/movies"
-                  className="text-white font-semibold whitespace-nowrap"
+                  className="text-white font-semibold whitespace-nowrap hover:opacity-70"
                 >
                   Movies
                 </NavLink>
                 <NavLink
                   to="/contact"
-                  className="text-white font-semibold whitespace-nowrap"
+                  className="text-white font-semibold whitespace-nowrap hover:opacity-70"
                 >
                   Contact
                 </NavLink>
                 <button
                   onClick={handlePhotoBookClick}
-                  className="text-white font-semibold whitespace-nowrap"
+                  className="text-white font-semibold whitespace-nowrap hover:opacity-70"
                 >
                   PhotoBook
                 </button>
@@ -115,14 +148,14 @@ const Navbar: React.FC = () => {
                   {data ? (
                     <button
                       onClick={goToMyPage}
-                      className="text-white font-semibold whitespace-nowrap"
+                      className="text-white font-semibold whitespace-nowrap hover:opacity-70"
                     >
                       Mypage
                     </button>
                   ) : (
                     <button
                       onClick={goToSignin}
-                      className="text-white font-semibold whitespace-nowrap"
+                      className="text-white font-semibold whitespace-nowrap hover:opacity-70"
                     >
                       Login
                     </button>

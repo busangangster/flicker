@@ -215,8 +215,8 @@ const MoviesPage: React.FC = () => {
         <Navbar />
       </header>
 
-      <div className="mt-[100px] flex justify-between items-end w-[1800px] pl-10">
-        <div className=" mt-10">
+      <div className="mt-[100px] flex justify-between items-end w-full pl-10 pr-5">
+        <div className=" mt-3">
           <Filter
             options={genres}
             onChange={handleGenreChange}

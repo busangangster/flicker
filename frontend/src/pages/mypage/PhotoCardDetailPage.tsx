@@ -5,17 +5,22 @@ import starHalf from "../../assets/review/star_half.png";
 import star_outline from "../../assets/review/star_outline.png";
 import "../../css/PhotoCard.css";
 import { PhotoCardFrontProps } from "../../type";
+import { useNavigate } from "react-router-dom";
 
 const PhotoCardDetailPage: React.FC<{
   card: PhotoCardFrontProps["images"][0] | null;
   handleCloseModal: () => void; // 모달 닫기 함수 추가
 }> = ({ card, handleCloseModal }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
     setIsFlipped(!isFlipped);
   };
 
+  const goToMovieDetail = () => {
+    if (card !== null) navigate(`/moviedetail/${card.movieSeq}`);
+  }
   
 
   // card가 undefined일 경우 렌더링하지 않음
@@ -54,9 +59,17 @@ const PhotoCardDetailPage: React.FC<{
           <p className="text-center text-sm mb-2 text-black">
             {card.movieYear}
           </p>
-          <h1 className="text-center text-2xl font-bold mb-4 text-black">
-            {card.movieTitle}
-          </h1>
+          <div className="relative group">
+            <h1
+              className="text-center text-2xl font-bold mb-4 text-black hover:opacity-70 cursor-pointer"
+              onClick={goToMovieDetail}
+            >
+              {card.movieTitle}
+            </h1>
+            <span className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-gray-500 bg-opacity-70 text-white text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+              {`영화 상세페이지로 이동`}
+            </span>
+          </div> 
           <hr className="mb-6 border-gray-600" />
           <div className="flex items-center justify-center mb-6">
             {Array.from({ length: 5 }, (_, index) => {

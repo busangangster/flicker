@@ -16,6 +16,7 @@ export interface ReviewType {
 export interface ReviewProps {
   review: ReviewType;
   onDelete?: (reviewSeq: number) => Promise<void>;
+  userSeq: number;
   // onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
 }
 
