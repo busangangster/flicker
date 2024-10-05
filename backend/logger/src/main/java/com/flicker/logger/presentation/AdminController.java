@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
-public class MainController {
+public class AdminController {
 
     private final JobLauncher jobLauncher;
     private final JobRegistry jobRegistry;
@@ -44,7 +44,7 @@ public class MainController {
         return "ok";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/model-update")
     public String test() throws Exception {
 
         JobParameters jobParameters = new JobParametersBuilder()

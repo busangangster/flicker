@@ -19,6 +19,7 @@ public class TodayAlarmSchedule {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
+    // Today Top 10 업데이트를 위한 알람 kafka 발행
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void TodayAlarm() {
         log.info("Today Alarm Schedule");
@@ -37,6 +38,7 @@ public class TodayAlarmSchedule {
         }
     }
 
+    // 주간 action log delete를 위한 batch 명령 kafka 발행
     @Scheduled(cron = "0 0 0 * * MON", zone = "Asia/Seoul")
     public void WeeklyAlarm() {
 
