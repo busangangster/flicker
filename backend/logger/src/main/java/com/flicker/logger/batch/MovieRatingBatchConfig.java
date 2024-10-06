@@ -1,6 +1,6 @@
 package com.flicker.logger.batch;
 
-import com.flicker.logger.config.KafkaItemWriter;
+import com.flicker.logger.application.KafkaItemWriter;
 import com.flicker.logger.dto.MovieAverageRating;
 import com.flicker.logger.dto.MovieRating;
 import com.flicker.logger.dto.MovieReviewEvent;

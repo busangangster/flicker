@@ -34,6 +34,7 @@ public class TodayAlarmSchedule {
             kafkaTemplate.send("alarm-movie", message);
 
         } catch (JsonProcessingException e) {
+            log.error("error occurred while Today Alarm Schedule {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -54,6 +55,7 @@ public class TodayAlarmSchedule {
             kafkaTemplate.send("alarm-movie", message);
 
         } catch (JsonProcessingException e) {
+            log.error("error occurred while WeeklyAlarm Schedule {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }

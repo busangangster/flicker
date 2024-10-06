@@ -1,6 +1,8 @@
 package com.flicker.logger.presentation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -15,44 +17,60 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
+@Slf4j  // 로그 사용을 위한 어노테이션 추가
 public class AdminController {
 
     private final JobLauncher jobLauncher;
     private final JobRegistry jobRegistry;
 
-    @GetMapping("/rating")
-    public String startBatchJob() throws Exception {
+    @GetMapping("/averageRating")
+    public void startBatchJob() {
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis())
                 .toJobParameters();
 
-        jobLauncher.run(jobRegistry.getJob("AverageRatingCalcJob"), jobParameters);
-
-        return "ok";
+        try {
+            log.info("Starting AverageRatingCalcJob at {}", System.currentTimeMillis());
+            jobLauncher.run(jobRegistry.getJob("AverageRatingCalcJob"), jobParameters);
+        } catch (JobExecutionException e) {
+            log.error("Error occurred while executing AverageRatingCalcJob: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error occurred: {}", e.getMessage(), e);
+        }
     }
 
-    @GetMapping("/rating2")
-    public String startBatchJob2() throws Exception {
+    @GetMapping("/sentimentScore")
+    public void startSentimentBatchJob() {
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis())
                 .toJobParameters();
 
-        jobLauncher.run(jobRegistry.getJob("SentimentScoreJob"), jobParameters);
-
-        return "ok";
+        try {
+            log.info("Starting SentimentScoreJob at {}", System.currentTimeMillis());
+            jobLauncher.run(jobRegistry.getJob("SentimentScoreJob"), jobParameters);
+        } catch (JobExecutionException e) {
+            log.error("Error occurred while executing SentimentScoreJob: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error occurred: {}", e.getMessage(), e);
+        }
     }
 
     @GetMapping("/model-update")
-    public String test() throws Exception {
+    public void modelUpdateJob() {
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis())
                 .toJobParameters();
 
-        jobLauncher.run(jobRegistry.getJob("modelUpdateJob"), jobParameters);
-
-        return "ok";
+        try {
+            log.info("Starting modelUpdateJob at {}", System.currentTimeMillis());
+            jobLauncher.run(jobRegistry.getJob("modelUpdateJob"), jobParameters);
+        } catch (JobExecutionException e) {
+            log.error("Error occurred while executing modelUpdateJob: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error occurred: {}", e.getMessage(), e);
+        }
     }
 }
