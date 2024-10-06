@@ -2,6 +2,7 @@ package com.flicker.logger.schedule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -27,7 +28,7 @@ public class MovieRatingSchedule {
     * 업데이트 된 영화 정보를 기준으로 카프카 이벤트 발생
     * */
     @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
-    public void runRatingJob() throws Exception{
+    public void runRatingJob() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String date = LocalDateTime.now().format(formatter);
@@ -40,6 +41,14 @@ public class MovieRatingSchedule {
                 .addString("runId", uniqueId)  // 고유한 값 추가
                 .toJobParameters();
 
-        jobLauncher.run(jobRegistry.getJob("AverageRatingCalcJob"), jobParameters);
+        try {
+            jobLauncher.run(jobRegistry.getJob("AverageRatingCalcJob"), jobParameters);
+        } catch (JobExecutionException e) {
+
+            log.error("Error occurred while executing AverageRatingCalcJob: {}", e.getMessage(), e);
+        } catch (Exception e) {
+
+            log.error("Unexpected error occurred: {}", e.getMessage(), e);
+        }
     }
 }

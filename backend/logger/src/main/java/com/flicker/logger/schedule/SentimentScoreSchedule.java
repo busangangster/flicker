@@ -2,6 +2,7 @@ package com.flicker.logger.schedule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.configuration.JobRegistry;
@@ -9,10 +10,8 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.UUID;
 
 @Configuration
@@ -29,7 +28,7 @@ public class SentimentScoreSchedule {
      * 감성분석 결과를 회원 서비스로 Kafka 발행
      * */
     @Scheduled(cron = "0 */10 * * * ?", zone = "Asia/Seoul")
-    public void runRatingJob() throws Exception {
+    public void runRatingJob() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String date = LocalDateTime.now().format(formatter);
@@ -42,6 +41,15 @@ public class SentimentScoreSchedule {
                 .addString("runId", uniqueId)  // 고유한 값 추가
                 .toJobParameters();
 
-        jobLauncher.run(jobRegistry.getJob("SentimentScoreJob"), jobParameters);
+        try {
+            jobLauncher.run(jobRegistry.getJob("SentimentScoreJob"), jobParameters);
+        } catch (JobExecutionException e) {
+
+            log.error("Error occurred while executing SentimentScoreJob: {}", e.getMessage(), e);
+        } catch (Exception e) {
+
+            log.error("Unexpected error occurred: {}", e.getMessage(), e);
+        }
+
     }
 }
