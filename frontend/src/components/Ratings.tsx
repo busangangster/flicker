@@ -77,10 +77,10 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
       {
         label: "Ratings",
         data: yValues,
-        backgroundColor: yValues.map((value, index) =>
+        backgroundColor: yValues.map(( index) =>
           index === maxIndex ? "#6282D3" : "#8694B8"
         ),
-        borderColor: yValues.map((value, index) =>
+        borderColor: yValues.map(( index) =>
           index === maxIndex ? "#6282D3" : "#8694B8"
         ),
         borderWidth: 0.5,

@@ -149,7 +149,6 @@ const MovieGenrePage: React.FC = () => {
         ) : (
           <SelectionList
             movies={movies}
-            
           />
         )}
       </div>
