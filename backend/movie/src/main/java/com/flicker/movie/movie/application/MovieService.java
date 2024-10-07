@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -194,9 +191,23 @@ public class MovieService {
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
         // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
         List<Movie> movieList = request.getMovieSeqListRequest().stream()
-                .map(seqRequest -> movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear()))
-                .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
+                .map(seqRequest -> {
+                    Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
+                    System.out.println("Found Movie: " + (movie != null ? movie.toString() : "null"));
+                    return movie;
+                })
+                .filter(movie -> {
+                    boolean isNotNull = movie != null;
+                    System.out.println("Filter 1 (Non-null): " + isNotNull);
+                    return isNotNull;
+                })
+                .filter(movie -> {
+                    boolean isNotUnlike = !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq());
+                    System.out.println("Filter 2 (Not Unlike Movie): MovieSeq = " + movie.getMovieSeq() + ", Result = " + isNotUnlike);
+                    return isNotUnlike;
+                })
                 .toList();
+        System.out.println("MovieList: " + movieList);
         System.out.println("MovieList: " + movieList);
         // 2. MovieListResponse 리스트 생성 및 반환
         return movieList.stream()
