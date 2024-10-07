@@ -187,7 +187,7 @@ public class MovieService {
         return new MovieDetailResponse(movie, movie.getMovieDetail(), movie.getActors());
     }
 
-//    @Transactional
+    @Transactional
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
         System.out.println("request = " + request);
         // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
