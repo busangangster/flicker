@@ -63,7 +63,7 @@ export default instance;
 
 // 영화 상세정보 조회
 const movieDetailApi = axios.create({
-  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}/api/bff/movie/`, // Base URL 설정
+  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}`, // Base URL 설정
   headers: {
     "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
   },
@@ -81,7 +81,7 @@ export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
 
 // 리뷰 데이터 조회
 const reviewApiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_BFF_USER_URL}/api/bff/user`, // 리뷰 API에 맞는 Base URL 설정
+  baseURL: `${import.meta.env.VITE_BFF_USER_URL}`, // 리뷰 API에 맞는 Base URL 설정
   headers: {
     "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
   },
