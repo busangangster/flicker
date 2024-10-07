@@ -34,17 +34,13 @@ const MovieGenrePage: React.FC = () => {
     { value: "서부극", label: "서부극" },
     { value: "스릴러", label: "스릴러" },
     { value: "스포츠", label: "스포츠" },
-    { value: "시대극", label: "시대극" },
     { value: "애니메이션", label: "애니메이션" },
     { value: "액션", label: "액션" },
     { value: "역사", label: "역사" },
-    { value: "예능", label: "예능" },
     { value: "음악", label: "음악" },
     { value: "재난", label: "재난" },
-    { value: "전기", label: "전기" },
     { value: "전쟁", label: "전쟁" },
     { value: "코미디", label: "코미디" },
-    { value: "키즈", label: "키즈" },
     { value: "판타지", label: "판타지" },
   ];
 
