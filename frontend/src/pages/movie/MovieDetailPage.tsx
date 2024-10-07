@@ -201,7 +201,7 @@ const MovieDetailPage: React.FC = () => {
               console.log("관심없음 목록에 추가");
 
               Swal.fire({
-                title: "무관심 추가 완룡!",
+                title: "무관심 추가 완료!",
                 icon: "success",
                 confirmButtonText: "확인",
               });
@@ -211,7 +211,7 @@ const MovieDetailPage: React.FC = () => {
             });
         }
 
-        return !prevDisLiked; // 상태 반전
+        return !prevDisLiked; 
       });
     } catch (error) {
       console.error("API 호출 중 오류 발생:", error);
