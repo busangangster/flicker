@@ -304,30 +304,19 @@ public class BffMovieService {
                                                 MovieListRequest movieListRequest = new MovieListRequest(recommendResponse, userMovieDetail.getUnlikedMovies());
                                                 String movieListPath = util.getUri("/list/recommendation");
 
-                                                System.out.println("영화 추천 서버에 요청");
-                                                System.out.println("movieListRequest = " + movieListRequest);
-
                                                 return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                         .flatMap(movieListResponse -> {
-                                                            System.out.println("영화 추천 서버에서 받아옴");
                                                             ResponseDto movieListResponseDto;
                                                             try {
                                                                 // JSON 데이터를 ResponseDto로 역직렬화
                                                                 movieListResponseDto = Objects.requireNonNull(movieListResponse.getBody());
-                                                                System.out.println("movieListResponse.getBody() = " + movieListResponse.getBody());
                                                             } catch (Exception e) {
-                                                                System.out.println("역직렬화 하다가 에러가 남");
-                                                                System.out.println("movieListResponse" + movieListResponse.getBody());
                                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 상세 조회 연관 추천 영화 목록 Body을 역직렬화하는데 오류 발생: " + e.getMessage()));
                                                             }
-                                                            
 
-                                                            System.out.println(movieListResponseDto.getServiceStatus());
-                                                            System.out.println("movieListResponseDto = " + movieListResponseDto);
                                                             
                                                             // 상태 코드가 성공이 아닌 경우 처리
                                                             if (movieListResponseDto.getServiceStatus() != StatusCode.SUCCESS.getServiceStatus()) {
-                                                                System.out.println("상태 코드가 성공이 아닌 경우 처리");
                                                                 return Mono.error(new RestApiException(
                                                                         StatusCode.of(movieListResponseDto.getHttpStatus(), movieListResponseDto.getServiceStatus(), movieListResponseDto.getMessage()),
                                                                         movieListResponseDto.getData()
@@ -339,11 +328,8 @@ public class BffMovieService {
                                                                 movieListResponses = objectMapper.convertValue(movieListResponseDto.getData(), new TypeReference<List<MovieListResponse>>() {
                                                                 });
                                                             } catch (Exception e) {
-                                                                System.out.println("사용자 상세 조회 연관 추천 영화 목록 데이터를 역직렬화하는데 오류 발생");
                                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 상세 조회 연관 추천 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                                                             }
-
-                                                            System.out.println("movieListResponses = " + movieListResponses);
 
                                                             // 변환된 목록을 movieDetailReviewRecommendResponse에 설정
                                                             movieDetailAndReviewAndRecommendResponse.setSimilarMovies(movieListResponses);

@@ -121,7 +121,6 @@ public class Util {
                         String setCookieHeader = responseEntity.getHeaders().getFirst("Set-Cookie");
                         if (setCookieHeader != null) {
                             // Set-Cookie 헤더가 존재할 경우 처리
-                            System.out.println("Set-Cookie 헤더: " + setCookieHeader);
                         }
 
                         if (jwtToken != null) {
@@ -170,7 +169,6 @@ public class Util {
                         String setCookieHeader = responseEntity.getHeaders().getFirst("Set-Cookie");
                         if (setCookieHeader != null) {
                             // Set-Cookie 헤더가 존재할 경우 처리
-                            System.out.println("Set-Cookie 헤더: " + setCookieHeader);
                         }
 
                         if (jwtToken != null) {
@@ -220,7 +218,6 @@ public class Util {
                     String setCookieHeader = response.getHeaders().getFirst("Set-Cookie");
                     if (setCookieHeader != null) {
                         // Set-Cookie 헤더가 존재할 경우 처리
-                        System.out.println("Set-Cookie 헤더: " + setCookieHeader);
                     }
 
                     if (jwtToken != null) {
