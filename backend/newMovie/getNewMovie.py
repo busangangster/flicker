@@ -44,8 +44,9 @@ class MovieResponse(BaseModel):
     # background_url: Optional[str]
     del_yn: str
     actors: Optional[List[ActorResponse]] = None
+    new_check: bool
 
-def convert_movie_to_response(movie, actors=None):
+def convert_movie_to_response(movie, actors=None, new_check= False):
     """
     SQLAlchemy Movie 객체를 Pydantic MovieResponse 모델로 변환하는 함수.
     """
@@ -69,7 +70,8 @@ def convert_movie_to_response(movie, actors=None):
         # trailer_url=movie.trailer_url,
         # background_url=movie.background_url,
         del_yn=movie.del_yn,
-        actors=actors_response
+        actors=actors_response,
+        new_check=new_check
     )
 
 def parse_cast_info(cast_info):
@@ -180,7 +182,7 @@ def save_movie_data_to_db(movie_title, plot, year, genre, country, image_url, ba
             existing_actors = session.query(DbActor).filter_by(movie_seq=existing_movie_seq).all()
 
             # existing_movie와 관련된 배우 정보를 변환하여 응답에 추가
-            response.append(convert_movie_to_response(existing_movie, existing_actors))
+            response.append(convert_movie_to_response(existing_movie, existing_actors, False))
             return  # 함수 종료
 
         # Movie 객체 생성 및 세션에 추가
@@ -219,7 +221,7 @@ def save_movie_data_to_db(movie_title, plot, year, genre, country, image_url, ba
         session.commit()
 
         # 저장된 Movie와 Actor 리스트를 응답 객체로 변환하여 추가
-        response.append(convert_movie_to_response(movie, actor_list))
+        response.append(convert_movie_to_response(movie, actor_list, True))
 
     except Exception as e:
         print(f"Error saving movie data to database: {e}")
@@ -473,4 +475,4 @@ def getNewMovieList():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    uvicorn.run(app, host="0.0.0.0", port=8082)
