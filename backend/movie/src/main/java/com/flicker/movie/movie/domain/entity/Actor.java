@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자를 protected로 제한하여 외부에서 직접 호출하지 못하게 함
 @AllArgsConstructor // 모든 필드를 매개변수로 갖는 생성자 자동 생성
 @Builder // Builder 패턴을 통해 객체를 생성할 수 있도록 설정
-@ToString // 객체 정보를 출력할 때 사용되는 toString 메서드를 자동으로 생성
 @Getter // 모든 필드에 대해 getter 메서드 자동 생성
 public class Actor {
 
