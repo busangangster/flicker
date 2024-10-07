@@ -192,12 +192,23 @@ public class MovieService {
         System.out.println("request = " + request);
         // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
         try {
-            List<Movie> movieList = request.getMovieSeqListRequest().stream()
-                    .map(seqRequest -> movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear()))
-                    .filter(Objects::nonNull) // null인 movie 객체 필터링
-                    .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
-                    .toList();
+//            List<Movie> movieList = request.getMovieSeqListRequest().stream()
+//                    .map(seqRequest -> movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear()))
+//                    .filter(Objects::nonNull) // null인 movie 객체 필터링
+//                    .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
+//                    .toList();
+            List<Movie> movieList = new ArrayList<>();
+            for (MovieSeqListRequest seqRequest : request.getMovieSeqListRequest()) {
+                Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
+                if (movie != null) {
+                    System.out.println("!request.getUnlikeMovieSeqList().contains(movie.getMovieSeq()) = " + !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq()));
+                    if (!request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) {
+                        movieList.add(movie);
+                    }
+                }
+            }
             System.out.println("movieList = " + movieList);
+            
             // 2. MovieListResponse 리스트 생성 및 반환
             return movieList.stream()
                     .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
