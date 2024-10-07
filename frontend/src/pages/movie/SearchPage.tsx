@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchMoviesBySearch } from "../../apis/axios";
 import Navbar from "../../components/common/Navbar";
@@ -7,7 +7,7 @@ import SelectionList from "../../components/SelectionList";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { Movie } from "../../type";
 import { IoIosArrowRoundBack } from "react-icons/io";
-
+import { throttle } from "lodash"; // lodash로 스크롤 이벤트를 최적화
 
 const SearchPage: React.FC = () => {
   const location = useLocation();
@@ -21,44 +21,62 @@ const SearchPage: React.FC = () => {
   const userSeq = userData?.userSeq;
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   useEffect(() => {
-    // 새로운 검색어가 들어올 때, 기존 영화 데이터를 초기화하고 페이지를 0으로 리셋
     setMovies([]); // 기존 데이터 초기화
     setPage(0); // 페이지 초기화
   }, [searchQuery]);
 
   useEffect(() => {
     const fetchMovies = async () => {
+      if (!userSeq || !searchQuery || page > 3 || isLoading) return; // 조건이 맞지 않으면 중단
+
+      setIsLoading(true); // 로딩 시작
       try {
-        if (userSeq && page <= 3) {
-          const newMovies = await fetchMoviesBySearch(
-            searchQuery,
-            userSeq,
-            page,
-            15
-          );
-          setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-          if (newMovies.length < 15 || page === 3) {
-            setHasMore(false);
-          }
+        const newMovies = await fetchMoviesBySearch(
+          searchQuery,
+          userSeq,
+          page,
+          20
+        );
+        setMovies((prevMovies) => [...prevMovies, ...newMovies]);
+        if (newMovies.length < 15 || page === 3) {
+          setHasMore(false);
         }
       } catch (error) {
         console.error("Error fetching search results:", error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
       }
     };
 
-    if (searchQuery && userSeq) {
-      fetchMovies();
-    }
-  }, [searchQuery, page, userSeq]);
+    fetchMovies();
+  }, [searchQuery, page, userSeq, isLoading]);
 
-  const loadMoreMovies = () => {
-    if (page < 3) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
+  // 스크롤 이벤트 감지하여 페이지 증가
+  const handleScroll = useCallback(
+    throttle(() => {
+      const scrollableElement = document.documentElement;
+      if (
+        scrollableElement.scrollTop + window.innerHeight >=
+          scrollableElement.scrollHeight - 50 &&
+        hasMore &&
+        !isLoading
+      ) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }, 1000),
+    [hasMore, isLoading]
+  );
+
+  // 스크롤 이벤트 추가
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <div className="flex flex-col bg-black h-screen text-white overflow-y-auto">
@@ -81,11 +99,14 @@ const SearchPage: React.FC = () => {
       <h1 className="text-2xl font-bold text-gray-300 mt-8 mb-4 ml-16">
         "{searchQuery}" 검색 결과
       </h1>
+
       <SelectionList
         movies={movies}
-        loadMoreMovies={loadMoreMovies}
+        loadMoreMovies={() => setPage((prevPage) => prevPage + 1)}
         hasMore={hasMore}
       />
+
+      {isLoading && <p className="text-center text-gray-500">로딩 중...</p>}
     </div>
   );
 };
