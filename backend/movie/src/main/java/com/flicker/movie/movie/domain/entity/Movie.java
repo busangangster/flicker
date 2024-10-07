@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@ToString(exclude = "actors")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

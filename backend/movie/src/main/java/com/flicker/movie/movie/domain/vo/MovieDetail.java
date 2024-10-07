@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Embeddable
 @Getter
 @Builder
-@ToString
 @AllArgsConstructor
 public class MovieDetail {
 
