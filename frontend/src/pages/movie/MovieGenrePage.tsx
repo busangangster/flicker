@@ -123,7 +123,7 @@ const MovieGenrePage: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto">
         <div className="mt-[100px] flex justify-between items-end w-full pl-10">
-          <div className="mt-10 ml-51">
+          <div className="mt-3 ml-51">
             <Filter
               options={genres}
               onChange={handleGenreChange}
