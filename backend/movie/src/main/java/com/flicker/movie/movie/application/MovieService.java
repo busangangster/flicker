@@ -197,7 +197,10 @@ public class MovieService {
 //                    .filter(Objects::nonNull) // null인 movie 객체 필터링
 //                    .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
 //                    .toList();
-            List<Movie> movieList = new ArrayList<>();
+        
+        List<Movie> movieList = new ArrayList<>();
+        try {
+
             for (MovieSeqListRequest seqRequest : request.getMovieSeqListRequest()) {
                 Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
                 if (movie != null) {
@@ -209,11 +212,18 @@ public class MovieService {
             }
 
             System.out.println("movieList = " + movieList);
-            
-            // 2. MovieListResponse 리스트 생성 및 반환
-            return movieList.stream()
-                    .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
-                    .collect(Collectors.toList());
+
+
+        }
+        catch (Exception e) {
+            System.out.println("문제 발생");
+            e.printStackTrace();
+        }
+
+        // 2. MovieListResponse 리스트 생성 및 반환
+        return movieList.stream()
+                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                .collect(Collectors.toList());
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "추천된 영화가 존재하지 않습니다.");
