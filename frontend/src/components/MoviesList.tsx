@@ -86,7 +86,7 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   };
 
   return (
-    <div className="relative h-[300px] w-[1800px] flex-shrink-0 mb-[100px]">
+    <div className="relative w-full flex-shrink-0 mb-[50px]">
       <h3 className="text-white mb-[10px] text-[27px] ml-[50px] mt-[20px]">
         {category}
       </h3>

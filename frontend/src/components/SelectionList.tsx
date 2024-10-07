@@ -45,7 +45,7 @@ const SelectionList: React.FC<SelectionListProps> = ({
     <div className="grid grid-cols-6 gap-x-5 gap-y-12 px-16 py-8 w-full scroll-container">
       {movies.length > 0 ? (
         movies.map((movie) => (
-          <div key={movie.movieSeq} className="w-[270px] h-[350px]">
+          <div key={movie.movieSeq} className="w-full h-[350px]">
             <img
               src={movie.moviePosterUrl}
               alt={`Movie Poster ${movie.movieSeq}`}

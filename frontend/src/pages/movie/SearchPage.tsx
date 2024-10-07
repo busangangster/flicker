@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { fetchMoviesBySearch } from "../../apis/axios";
 import Navbar from "../../components/common/Navbar";
 import SearchBar from "../../components/SearchBar";
 import SelectionList from "../../components/SelectionList";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { Movie } from "../../type";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import { throttle } from "lodash"; // lodash로 스크롤 이벤트를 최적화
 
 const SearchPage: React.FC = () => {
@@ -19,6 +20,7 @@ const SearchPage: React.FC = () => {
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   useEffect(() => {
@@ -78,11 +80,15 @@ const SearchPage: React.FC = () => {
 
   return (
     <div className="flex flex-col bg-black h-screen text-white overflow-y-auto">
-      <header className="sticky top-0 bg-transparent z-10">
+      <header className="sticky top-0 bg-transparent z-20">
         <Navbar />
+        <IoIosArrowRoundBack
+          onClick={() => navigate(-1)} // 뒤로가기 기능
+          className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+        />
       </header>
 
-      <div className="mt-[100px] flex justify-end items-end w-[1800px]">
+      <div className="mt-[100px] flex justify-end items-end w-full pr-5">
         <SearchBar
           initialSearchQuery={searchQuery}
           isExpanded={isExpanded}

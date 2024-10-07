@@ -153,7 +153,7 @@ const PhotoCardPage: React.FC = () => {
 
       <div className="flex w-full justify-center items-center mt-16">
         <HTMLFlipBook
-          width={800}
+          width={700}
           height={800}
           size="fixed"
           minWidth={300}

@@ -4,7 +4,9 @@ import { SwiperSlide, Swiper } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules"; // Autoplay 모듈 추가
 import { Swiper as SwiperInstance, NavigationOptions } from "swiper/types";
 // import exit from "/assets/movie/exit.png";
-import { FaArrowLeft } from "react-icons/fa";
+// import { FaArrowLeft } from "react-icons/fa";
+import { IoIosArrowRoundBack } from "react-icons/io";
+
 
 
 // 목업 포스터 이미지 임의 설정
@@ -103,15 +105,17 @@ const RecommandListPage: React.FC = () => {
       }`}
       style={{
         backgroundColor: "black",
-        backgroundImage: isLoaded
-          ? `url(/assets/movie/theater3.jpg)`
-          : "none",
+        backgroundImage: isLoaded ? `url(/assets/movie/theater3.jpg)` : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <FaArrowLeft className="bg-white opacity-90 rounded-md w-10 h-10 absolute top-40 left-20 text-gray-800 p-1 hover:bg-neutral-400"
-      onClick={goToRecommend}/>
+      <header className="sticky top-0 bg-transparent z-20">
+        <IoIosArrowRoundBack
+          onClick={goToRecommend} // 뒤로가기 기능
+          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+        />
+      </header>
       {/* 영화관 스타일 화면 */}
       <div className="relative w-[73%] h-[75vh] rounded-md overflow-hidden">
         {/* <img

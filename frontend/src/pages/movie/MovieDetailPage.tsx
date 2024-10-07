@@ -19,6 +19,7 @@ import MoviesList from "../../components/MoviesList";
 import { IoBan } from "react-icons/io5";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import Swal from "sweetalert2";
+import { IoIosArrowRoundBack } from "react-icons/io";
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -285,6 +286,10 @@ const MovieDetailPage: React.FC = () => {
         {/* Header with Navbar */}
         <header className="sticky top-0 bg-transparent z-20">
           <Navbar />
+          <IoIosArrowRoundBack
+            onClick={() => navigate(-1)} // 뒤로가기 기능
+            className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+          />
         </header>
 
         {/* Top section */}
@@ -390,10 +395,10 @@ const MovieDetailPage: React.FC = () => {
           <div className="flex w-full justify-between items-center">
             <h3 className="text-[38px] font-bold text-white">Reviews</h3>
             <button
-              className="text-white flex ml-auto items-center cursor-pointer text-[16px] italic h-[30px] w-[60px] bg-[#455467] rounded-md justify-center hover:bg-gray-500"
+              className="text-white flex ml-auto items-center cursor-pointer text-[16px] italic px-3 py-0.5 bg-[#455467] rounded-lg justify-center hover:bg-gray-500"
               onClick={goToReview}
             >
-              more
+              more reviews
             </button>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
@@ -402,6 +407,7 @@ const MovieDetailPage: React.FC = () => {
                 key={review.reviewSeq}
                 review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
                 // onLikeToggle={handleLikeToggle}
+                userSeq={userData.userSeq}
               />
             ))}
           </div>
@@ -428,7 +434,7 @@ const MovieDetailPage: React.FC = () => {
       </div>
 
       {/* Recommended movies */}
-      <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
+      <div className="h-[300px] w-full flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
           category={`${movieTitle}과 유사한 장르 작품들`}
           movies={similarMovies}
