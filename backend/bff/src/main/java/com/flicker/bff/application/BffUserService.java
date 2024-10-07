@@ -49,7 +49,6 @@ public class BffUserService {
 
     // 2. 로그인
     public Mono<ResponseEntity<ResponseDto>> loginUser(UserLoginReqDto request) {
-        System.out.println("loginService");
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/login");
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
