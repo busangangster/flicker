@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Application, Sprite, Assets, Texture } from "pixi.js";
+import { Application, Sprite, Assets, Texture, Graphics } from "pixi.js";
 import { ExtendedSprite } from "../type";
 import gsap from "gsap";
 
@@ -207,7 +207,8 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           width: number,
           height: number,
           borderColor: string,
-          borderWidth: number
+          borderWidth: number,
+          borderRadius: number
         ) => {
           const canvas = document.createElement("canvas");
           canvas.width = width;
@@ -215,33 +216,74 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           const ctx = canvas.getContext("2d");
 
           if (ctx) {
+            // Function to draw a rounded rectangle
+            const drawRoundedRect = (
+              ctx: CanvasRenderingContext2D,
+              x: number,
+              y: number,
+              width: number,
+              height: number,
+              radius: number
+            ) => {
+              ctx.beginPath();
+              ctx.moveTo(x + radius, y);
+              ctx.lineTo(x + width - radius, y);
+              ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+              ctx.lineTo(x + width, y + height - radius);
+              ctx.quadraticCurveTo(
+                x + width,
+                y + height,
+                x + width - radius,
+                y + height
+              );
+              ctx.lineTo(x + radius, y + height);
+              ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+              ctx.lineTo(x, y + radius);
+              ctx.quadraticCurveTo(x, y, x + radius, y);
+              ctx.closePath();
+            };
+
+            // Draw the filled rounded rectangle for the background
             ctx.fillStyle = "#ffffff";
-            ctx.fillRect(
-              borderWidth,
-              borderWidth,
-              width - borderWidth * 2,
-              height - borderWidth * 2
-            );
-            ctx.lineWidth = borderWidth;
-            ctx.strokeStyle = borderColor;
-            ctx.strokeRect(
+            drawRoundedRect(
+              ctx,
               borderWidth / 2,
               borderWidth / 2,
               width - borderWidth,
-              height - borderWidth
+              height - borderWidth,
+              borderRadius
             );
+            ctx.fill();
+
+            // Draw the border around the rounded rectangle
+            ctx.lineWidth = borderWidth;
+            ctx.strokeStyle = borderColor;
+            drawRoundedRect(
+              ctx,
+              borderWidth / 2,
+              borderWidth / 2,
+              width - borderWidth,
+              height - borderWidth,
+              borderRadius
+            );
+            ctx.stroke();
           }
 
           return Texture.from(canvas);
         };
 
-        // Create card background texture
+        // Create card background texture with rounded corners
         const backgroundTexture = createCardBackgroundTexture(
           220,
           310,
           "#000000",
-          4
+          4,
+          8 // Apply 8px border radius
         );
+
+        // Function to set up each card
+
+        // ... 생략된 코드 ...
 
         // Function to set up each card
         function setupCard(
@@ -258,9 +300,25 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           sprite.height = 310;
           sprite.position.set(-110, -155);
 
+          // Create a mask to round the corners of the sprite
+          const maskGraphics = new Graphics();
+          maskGraphics.beginFill(0xffffff);
+          maskGraphics.drawRoundedRect(
+            -110, // x position (match the sprite's x position)
+            -155, // y position (match the sprite's y position)
+            220, // Width of the sprite
+            310, // Height of the sprite
+            8 // Border radius
+          );
+          maskGraphics.endFill();
+
+          // Apply the mask to the sprite
+          sprite.mask = maskGraphics;
+
           const cardContainer = new Sprite() as ExtendedSprite;
           cardContainer.addChild(cardBackground);
           cardContainer.addChild(sprite);
+          cardContainer.addChild(maskGraphics);
 
           const angle = (index / cardCount) * Math.PI * 2 * spacingFactor;
           cardContainer.x = centerX + radiusX * Math.cos(angle);
@@ -453,18 +511,19 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
     <div className="relative w-full h-full">
       {carouselOpacity === 1 && (
         <div
-          className="fixed flex top-[200px] left-[600px]"
+          className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
           style={{
             color: "#fff",
             zIndex: 10,
+            pointerEvents: "none", // 텍스트가 마우스 이벤트를 막지 않도록 설정
           }}
         >
-          <p className="text-[57px] italic ">FIND YOUR OWN TASTE !</p>
+          <p className="text-[57px] italic">FIND YOUR OWN TASTE !</p>
         </div>
       )}
       <div
         ref={pixiContainerRef}
-        className={`w-full h-full ${className}`}
+        className={`w-full h-full ${className} rounded-md`}
         style={{
           position: "absolute",
           top: "50%",

@@ -65,18 +65,17 @@ const ReviewPage: React.FC = () => {
       fetchReviewStatus(); // API 호출
     }
   }, [userSeq, movieSeq]);
-  
-     const handleDeleteReview = async (reviewSeq: number) => {
-       try {
-         await deleteReview(reviewSeq, userSeq);
-         setReviews((prevReviews) =>
-           prevReviews.filter((review) => review.reviewSeq !== reviewSeq)
-         );
-       } catch (error) {
-         console.error("리뷰 삭제 중 오류 발생:", error);
-       }
-     };
-  
+
+  const handleDeleteReview = async (reviewSeq: number) => {
+    try {
+      await deleteReview(reviewSeq, userSeq);
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => review.reviewSeq !== reviewSeq)
+      );
+    } catch (error) {
+      console.error("리뷰 삭제 중 오류 발생:", error);
+    }
+  };
 
   // 데이터를 가져오는 함수
   const loadReviews = useCallback(async () => {
@@ -88,7 +87,7 @@ const ReviewPage: React.FC = () => {
       const newReviews = await fetchMovieReviews(
         Number(movieSeq),
         userSeq || 0,
-        "like",
+        "date",
         page,
         10
       );
@@ -185,10 +184,10 @@ const ReviewPage: React.FC = () => {
     setSortOption(value);
   };
 
-const handleAddReview = (newReview: ReviewType) => {
-  newReview.isUserReview = true;
-  setReviews((prev: ReviewType[]) => [newReview, ...prev]);
-};
+  const handleAddReview = (newReview: ReviewType) => {
+    newReview.isUserReview = true;
+    setReviews((prev: ReviewType[]) => [newReview, ...prev]);
+  };
 
   const scrollToTop = () => {
     const scrollableElement = document.querySelector(".scroll-container");
@@ -199,13 +198,13 @@ const handleAddReview = (newReview: ReviewType) => {
 
   return (
     <div className="scroll-container flex flex-col bg-black h-screen overflow-y-auto text-white">
-        <header className="sticky top-0 bg-transparent z-20">
-          <Navbar />
-          <IoIosArrowRoundBack
-            onClick={() => navigate(-1)} // 뒤로가기 기능
-            className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
-          />
-        </header>
+      <header className="sticky top-0 bg-transparent z-20">
+        <Navbar />
+        <IoIosArrowRoundBack
+          onClick={() => navigate(-1)} // 뒤로가기 기능
+          className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+        />
+      </header>
       <div className="flex justify-center mt-[120px] ">
         <div className="w-1/4"></div>
         <div className="flex w-3/5 p-4">
@@ -235,8 +234,8 @@ const handleAddReview = (newReview: ReviewType) => {
                   <Review
                     key={userReview.reviewSeq}
                     review={userReview} // 본인 리뷰 최상단에 표시
-                    onDelete={handleDeleteReview} 
-                    userSeq={userSeq} 
+                    onDelete={handleDeleteReview}
+                    userSeq={userSeq}
                   />
                 )}
               </>
