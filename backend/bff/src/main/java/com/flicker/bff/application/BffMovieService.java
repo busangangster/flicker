@@ -315,6 +315,8 @@ public class BffMovieService {
                                                                 // JSON 데이터를 ResponseDto로 역직렬화
                                                                 movieListResponseDto = Objects.requireNonNull(movieListResponse.getBody());
                                                             } catch (Exception e) {
+                                                                System.out.println("역직렬화 하다가 에러가 남");
+                                                                System.out.println("movieListResponse" + movieListResponse.getBody());
                                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 상세 조회 연관 추천 영화 목록 Body을 역직렬화하는데 오류 발생: " + e.getMessage()));
                                                             }
 
