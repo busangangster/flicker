@@ -191,16 +191,21 @@ public class MovieService {
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
         System.out.println("request = " + request);
         // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
-        List<Movie> movieList = request.getMovieSeqListRequest().stream()
-                .map(seqRequest -> movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear()))
-                .filter(Objects::nonNull) // null인 movie 객체 필터링
-                .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
-                .toList();
-        System.out.println("movieList = " + movieList);
-        // 2. MovieListResponse 리스트 생성 및 반환
-        return movieList.stream()
-                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
-                .collect(Collectors.toList());
+        try {
+            List<Movie> movieList = request.getMovieSeqListRequest().stream()
+                    .map(seqRequest -> movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear()))
+                    .filter(Objects::nonNull) // null인 movie 객체 필터링
+                    .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
+                    .toList();
+            System.out.println("movieList = " + movieList);
+            // 2. MovieListResponse 리스트 생성 및 반환
+            return movieList.stream()
+                    .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "추천된 영화가 존재하지 않습니다.");
+        }
     }
 
     @Transactional
