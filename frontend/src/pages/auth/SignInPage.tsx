@@ -55,7 +55,7 @@ const SignInPage: React.FC = () => {
       });
 
       if (response) {
-        alert("로그인 성공! \nFlicker에서 반짝이는 순간을 기록하세요.");
+        // alert("로그인 성공! \nFlicker에서 반짝이는 순간을 기록하세요.");
         navigate("/"); // 메인 페이지로 이동
       } else {
         throw new Error("로그인 응답이 없습니다.");

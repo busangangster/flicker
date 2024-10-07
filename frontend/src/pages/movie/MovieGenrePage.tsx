@@ -95,8 +95,8 @@ const MovieGenrePage: React.FC = () => {
         <Navbar />
       </header>
 
-      <div className="mt-[100px] flex justify-between items-end w-[1800px] pl-10 ml-5">
-        <div className=" mt-10">
+      <div className="mt-[100px] flex justify-between items-end w-full pl-10">
+        <div className=" mt-3">
           <Filter
             options={genres}
             onChange={handleGenreChange}
@@ -107,7 +107,7 @@ const MovieGenrePage: React.FC = () => {
       </div>
       <div className="mt-10 mb-4">
         <span
-          className="text-gray-300 text-2xl ml-16 cursor-pointer hover:underline"
+          className="text-gray-300 text-2xl ml-10 cursor-pointer hover:underline"
           onClick={goBack}
         >
           영화

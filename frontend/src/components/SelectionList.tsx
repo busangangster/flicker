@@ -42,7 +42,7 @@ const SelectionList: React.FC<SelectionListProps> = ({
   }, [handleScroll]);
 
   return (
-    <div className="grid grid-cols-6 gap-x-5 gap-y-12 px-16 py-8 w-full scroll-container">
+    <div className="grid grid-cols-6 gap-x-5 gap-y-12 px-10 py-8 w-full scroll-container">
       {movies.length > 0 ? (
         movies.map((movie) => (
           <div key={movie.movieSeq} className="w-full h-[350px]">

@@ -45,7 +45,7 @@ export const signin = async (
     handleApiError(error as any);
     throw error;
   }
-};
+};  
 
 // 토큰 검증 API
 export const verifyToken = async () => {

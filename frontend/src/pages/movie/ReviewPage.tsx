@@ -20,7 +20,7 @@ gsap.registerPlugin(ScrollToPlugin);
 const ReviewPage: React.FC = () => {
   const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq 받아오기
   const [reviews, setReviews] = useState<ReviewType[]>([]); // 서버에서 가져온 리뷰 데이터
-  const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
+  const [sortOption, setSortOption] = useState("좋아요 많은 순"); // 기본 정렬 옵션
   const { data: userData } = useUserQuery(); // 유저 정보 가져오기
   const [page, setPage] = useState(0); // 페이지 번호
   const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태
@@ -154,7 +154,10 @@ const ReviewPage: React.FC = () => {
   }, [handleScroll]);
 
   // 리뷰 데이터를 정렬하는 함수
-  const getSortedReviews = () => {
+  const getSortedReviews = async () => {
+    // 리뷰 정렬할 때마다 최신 데이터를 다시 받아옴
+    await loadReviews();
+
     const sortedReviews = [...reviews];
 
     if (sortOption === "최신순") {
@@ -175,13 +178,15 @@ const ReviewPage: React.FC = () => {
   };
 
   const filterOptions = [
-    { value: "최신순", label: "최신순" },
     { value: "좋아요 많은 순", label: "좋아요 많은 순" },
+    { value: "최신순", label: "최신순" },
     { value: "오래된 순", label: "오래된 순" },
   ];
 
-  const handleFilterChange = (value: string) => {
+  const handleFilterChange = async (value: string) => {
     setSortOption(value);
+    const sortedReviews = await getSortedReviews(); // 필터 변경 시 정렬된 리뷰를 다시 받아옴
+    setReviews(sortedReviews); // 정렬된 리뷰 상태 업데이트
   };
 
   const handleAddReview = (newReview: ReviewType) => {
@@ -215,7 +220,7 @@ const ReviewPage: React.FC = () => {
                 <Filter
                   options={filterOptions}
                   onChange={handleFilterChange}
-                  defaultValue="최신순"
+                  defaultValue="좋아요 많은 순"
                 />
               </div>
             </div>
@@ -242,7 +247,7 @@ const ReviewPage: React.FC = () => {
             )}
 
             {reviews.length > 0 ? (
-              getSortedReviews().map((review) => (
+              reviews.map((review) => (
                 <Review
                   key={review.reviewSeq}
                   review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
