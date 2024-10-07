@@ -189,48 +189,48 @@ public class MovieService {
 
     @Transactional
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
-        // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
-        List<Movie> movieList = request.getMovieSeqListRequest().stream()
-                .map(seqRequest -> {
-                    try {
-                        System.out.println("Searching for Movie: Title = " + seqRequest.getMovieTitle() + ", Year = " + seqRequest.getMovieYear());
-                        Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
-                        System.out.println("Found Movie: " + (movie != null ? movie.toString() : "null")); // 이 출력문 확인
-                        return movie;
-                    } catch (Exception e) {
-                        System.err.println("Exception in map stage: " + e.getMessage());
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .filter(movie -> {
-                    try {
-                        boolean isNotNull = movie != null;
-                        System.out.println("Filter 1 (Non-null): " + isNotNull);
-                        return isNotNull;
-                    } catch (Exception e) {
-                        System.err.println("Exception in Filter 1: " + e.getMessage());
-                        e.printStackTrace();
-                        return false;
-                    }
-                })
-                .filter(movie -> {
-                    try {
-                        boolean isNotUnlike = !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq());
-                        System.out.println("Filter 2 (Not Unlike Movie): MovieSeq = " + movie.getMovieSeq() + ", Result = " + isNotUnlike);
-                        return isNotUnlike;
-                    } catch (Exception e) {
-                        System.err.println("Exception in Filter 2: " + e.getMessage());
-                        e.printStackTrace();
-                        return false;
-                    }
-                })
-                .toList();
-        System.out.println("MovieList: " + movieList);
-        // 2. MovieListResponse 리스트 생성 및 반환
-        return movieList.stream()
-                .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
-                .collect(Collectors.toList());
+        System.out.println("getRecommendationList 메서드 시작");
+
+        List<Movie> movieList = new ArrayList<>();
+        // for 문을 사용하여 movieSeqListRequest의 각 요소에 대해 movie를 찾습니다.
+        for (MovieSeqListRequest seqRequest : request.getMovieSeqListRequest()) {
+            try {
+                System.out.println("Searching for Movie: Title = " + seqRequest.getMovieTitle() + ", Year = " + seqRequest.getMovieYear());
+                Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
+                System.out.println("Found Movie: " + (movie != null ? movie.toString() : "null"));
+                // movie가 null이 아닌 경우 리스트에 추가
+                if (movie != null) {
+                    movieList.add(movie);
+                }
+            } catch (Exception e) {
+                System.err.println("Exception while searching for movie: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        // 비선호 영화 필터링
+        List<Movie> filteredMovieList = new ArrayList<>();
+        for (Movie movie : movieList) {
+            try {
+                // 비선호 영화가 아닌 경우만 필터링
+                if (!request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) {
+                    System.out.println("Movie added to filtered list: " + movie.getMovieSeq());
+                    filteredMovieList.add(movie);
+                }
+            } catch (Exception e) {
+                System.err.println("Exception in filtering stage: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Filtered MovieList: " + filteredMovieList);
+
+        // MovieListResponse 리스트 생성 및 반환
+        List<MovieListResponse> movieListResponses = new ArrayList<>();
+        for (Movie movie : filteredMovieList) {
+            movieListResponses.add(new MovieListResponse(movie, movie.getMovieDetail()));
+        }
+
+        return movieListResponses;
     }
 
     @Transactional
