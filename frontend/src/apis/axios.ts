@@ -262,9 +262,7 @@ export const fetchMovieBasedOnActor = async (userSeq: number) => {
   try {
     const url = `/recommendActor/${userSeq}`;
     const response = await movieListApi.get(url);
-    // console.log(response.data.data);
     if (response?.data.data) {
-      // console.log(response);
       const movies = response.data.data;
       console.log(movies);
       return movies;

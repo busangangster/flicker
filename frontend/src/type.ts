@@ -222,8 +222,8 @@ export interface Movie {
 
 export interface SelectionListProps {
   movies: Movie[];
-  loadMoreMovies: () => void; // loadMoreMovies 함수 추가
-  hasMore: boolean; // hasMore 값 추가
+  // loadMoreMovies: () => void; // loadMoreMovies 함수 추가
+  // hasMore: boolean; // hasMore 값 추가
 }
 
 export interface MoviesListProps {
