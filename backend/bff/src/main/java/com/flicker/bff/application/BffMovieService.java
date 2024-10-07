@@ -305,6 +305,8 @@ public class BffMovieService {
                                                 String movieListPath = util.getUri("/list/recommendation");
 
                                                 System.out.println("영화 추천 서버에 요청");
+                                                System.out.println("movieListRequest = " + movieListRequest);
+
                                                 return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                         .flatMap(movieListResponse -> {
                                                             System.out.println("영화 추천 서버에서 받아옴");
