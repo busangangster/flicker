@@ -152,8 +152,12 @@ public class MovieController {
     @PostMapping("/list/recommendation")
     public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody RecommendMovieListRequest request) {
         System.out.println("request = " + request);
-        List<MovieListResponse> response = movieService.getRecommendationList(request);
-
+        List<MovieListResponse> response = null;
+        try {
+           response = movieService.getRecommendationList(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 

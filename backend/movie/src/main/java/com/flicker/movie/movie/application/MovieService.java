@@ -215,9 +215,9 @@ public class MovieService {
 
 
         }
-        catch (Exception e) {
+        catch (Throwable  t) {
             System.out.println("문제 발생");
-            e.printStackTrace();
+            t.printStackTrace();
         }
 
         // 2. MovieListResponse 리스트 생성 및 반환
