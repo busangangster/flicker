@@ -192,19 +192,38 @@ public class MovieService {
         // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
         List<Movie> movieList = request.getMovieSeqListRequest().stream()
                 .map(seqRequest -> {
-                    Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
-                    System.out.println("Found Movie: " + (movie != null ? movie.toString() : "null"));
-                    return movie;
+                    try {
+                        System.out.println("Searching for Movie: Title = " + seqRequest.getMovieTitle() + ", Year = " + seqRequest.getMovieYear());
+                        Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
+                        System.out.println("Found Movie: " + (movie != null ? movie.toString() : "null")); // 이 출력문 확인
+                        return movie;
+                    } catch (Exception e) {
+                        System.err.println("Exception in map stage: " + e.getMessage());
+                        e.printStackTrace();
+                        return null;
+                    }
                 })
                 .filter(movie -> {
-                    boolean isNotNull = movie != null;
-                    System.out.println("Filter 1 (Non-null): " + isNotNull);
-                    return isNotNull;
+                    try {
+                        boolean isNotNull = movie != null;
+                        System.out.println("Filter 1 (Non-null): " + isNotNull);
+                        return isNotNull;
+                    } catch (Exception e) {
+                        System.err.println("Exception in Filter 1: " + e.getMessage());
+                        e.printStackTrace();
+                        return false;
+                    }
                 })
                 .filter(movie -> {
-                    boolean isNotUnlike = !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq());
-                    System.out.println("Filter 2 (Not Unlike Movie): MovieSeq = " + movie.getMovieSeq() + ", Result = " + isNotUnlike);
-                    return isNotUnlike;
+                    try {
+                        boolean isNotUnlike = !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq());
+                        System.out.println("Filter 2 (Not Unlike Movie): MovieSeq = " + movie.getMovieSeq() + ", Result = " + isNotUnlike);
+                        return isNotUnlike;
+                    } catch (Exception e) {
+                        System.err.println("Exception in Filter 2: " + e.getMessage());
+                        e.printStackTrace();
+                        return false;
+                    }
                 })
                 .toList();
         System.out.println("MovieList: " + movieList);
