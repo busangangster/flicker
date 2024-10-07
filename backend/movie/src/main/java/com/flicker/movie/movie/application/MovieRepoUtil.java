@@ -286,10 +286,8 @@ public class MovieRepoUtil {
      */
     public Movie findByMovieTitleAndYear(String movieTitle, Integer movieYear) {
         try {
-            System.out.println("호출됨");
             return movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
         } catch (Exception e) {
-            System.out.println("findByMovieTitleAndYear Error: " + e.getMessage());
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "제목,년도로 영화 정보 조회 중 오류가 발생했습니다.");
         }
     }
