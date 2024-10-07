@@ -44,7 +44,7 @@ const Sidebar: React.FC = () => {
         <img
           src="/assets/George.jpg"
           alt="Profile"
-          className="rounded-[90px] w-[220px] h-[170px] mb-2"
+          className="rounded-full w-[150px] h-[150px] mb-2"
         />
         <span className="text-white font-semibold mt-3 text-[20px] mb-8">
           {userData?.nickname}

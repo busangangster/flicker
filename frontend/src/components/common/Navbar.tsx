@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
       }`} // 스크롤에 따라 위치 조정
       onMouseEnter={handleMouseEnter} // 마우스 호버 시 Navbar 표시
     >
-      <header className="flex items-center mx-auto border-b bg-black border-gray-400 w-full">
+      <header className="flex items-center mx-auto border-b bg-black border-gray-700 w-full">
         <div className="flex items-center justify-between w-full">
           {/* 로고 */}
           <div className="flex-none ml-[25px]">
