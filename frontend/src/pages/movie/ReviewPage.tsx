@@ -20,7 +20,7 @@ gsap.registerPlugin(ScrollToPlugin);
 const ReviewPage: React.FC = () => {
   const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq 받아오기
   const [reviews, setReviews] = useState<ReviewType[]>([]); // 서버에서 가져온 리뷰 데이터
-  const [sortOption, setSortOption] = useState("최신순"); // 기본 정렬 옵션
+  const [sortOption, setSortOption] = useState("좋아요 많은 순"); // 기본 정렬 옵션
   const { data: userData } = useUserQuery(); // 유저 정보 가져오기
   const [page, setPage] = useState(0); // 페이지 번호
   const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태
@@ -215,7 +215,7 @@ const ReviewPage: React.FC = () => {
                 <Filter
                   options={filterOptions}
                   onChange={handleFilterChange}
-                  defaultValue="최신순"
+                  defaultValue="좋아요 많은 순"
                 />
               </div>
             </div>

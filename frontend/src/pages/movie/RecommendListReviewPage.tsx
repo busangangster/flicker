@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules"; // Autoplay 모듈 추가
 import { IoIosArrowRoundBack } from "react-icons/io";
-// import { FaArrowLeft } from "react-icons/fa";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { Movie } from "../../type";
 import { fetchMovieUserReview } from "../../apis/axios";
@@ -77,11 +76,6 @@ const RecommandListReviewPage: React.FC = () => {
           <Swiper
             slidesPerView={6}
             spaceBetween={10}
-            // onSwiper={handleSwiper}
-            // navigation={{
-            //   // nextEl: nextRef.current,
-            //   // prevEl: prevRef.current,
-            // }}
             autoplay={{
               delay: 0,
               disableOnInteraction: false,

@@ -257,6 +257,27 @@ export const fetchMovieUserReview = async (userSeq: number) => {
   }
 }
 
+// 최근 작성한 영화 리뷰에 출연한 배우 기반 연관 영화 추천
+export const fetchMovieBasedOnActor = async (userSeq: number) => {
+  try {
+    const url = `/recommendActor/${userSeq}`;
+    const response = await movieListApi.get(url);
+    // console.log(response.data.data);
+    if (response?.data.data) {
+      // console.log(response);
+      const movies = response.data.data;
+      console.log(movies);
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+}
+
 // coldStart issue 처리
 export const addFavoriteMovies = async (
   userSeq: number,

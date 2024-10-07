@@ -11,13 +11,15 @@ export interface ReviewType {
   liked: boolean;
   top?: boolean;
   isUserReview?: boolean;
+  
 }
 
 export interface ReviewProps {
   review: ReviewType;
   onDelete?: (reviewSeq: number) => Promise<void>;
   userSeq: number;
-  // onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
+  onShowMore?: (reviewSeq: number) => void; // 추가된 prop
+  isDetailPage?: boolean; // 추가된 prop
 }
 
 export interface FilterOptions {

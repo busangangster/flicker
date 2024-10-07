@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppRouter from "./router/AppRouter.tsx";
-import ScrollToTop from "./components/ScrollToTop.tsx";
+// import ScrollToTop from "./components/ScrollToTop.tsx";
 import "./App.css";
 // import ErrorBoundaryWrapper from "./components/ErrorBoundary.tsx";
 
@@ -13,9 +13,9 @@ const App: React.FC = () => {
     // <ErrorBoundaryWrapper>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <ScrollToTop>
+        {/* <ScrollToTop> */}
           <AppRouter />
-        </ScrollToTop>
+        {/* </ScrollToTop> */}
       </BrowserRouter>
     </QueryClientProvider>
     // </ErrorBoundaryWrapper>
