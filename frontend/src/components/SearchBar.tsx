@@ -70,7 +70,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             placeholder="제목, 사람, 장르"
             value={searchQuery}
             onChange={handleSearchChange}
-            className={`bg-transparent border-none outline-none ml-2 text-white text-lg w-full pr-8 transition-all duration-400 ${
+            className={`bg-transparent border-none outline-none text-white text-lg w-full pr-8 transition-all duration-400 ${
               isExpanded ? "opacity-100" : "w-0 opacity-0"
             }`}
           />

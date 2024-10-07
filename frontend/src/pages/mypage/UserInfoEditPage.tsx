@@ -61,7 +61,6 @@ const UserInfoEditPage: React.FC = () => {
       nickname,
     };
 
-    console.log(updatedData);
     mutation.mutate(updatedData); // mutate로 업데이트 데이터 전송
   };
 

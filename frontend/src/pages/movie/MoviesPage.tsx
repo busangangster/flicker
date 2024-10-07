@@ -12,8 +12,10 @@ import {
   fetchMovieYear,
   fetchMovieRating,
   fetchMovieNew,
+  fetchMovieBasedOnActor,
 } from "../../apis/axios";
 import { Movie } from "../../type";
+import { useUserQuery } from "../../hooks/useUserQuery";
 
 const MoviesPage: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -32,6 +34,9 @@ const MoviesPage: React.FC = () => {
   const [koreaMovies, setKoreaMovies] = useState<Movie[]>([]);
   const [highRateMovies, setHighRateMovies] = useState<Movie[]>([]);
   const [newMovies, setNewMovies] = useState<Movie[]>([]);
+  const [ActorMovies, setActorMovies] = useState<Movie[]>([]);
+  const { data: userData } = useUserQuery();
+  const userSeq = userData?.userSeq;
 
   const genres = [
     { value: "SF", label: "SF" },
@@ -189,19 +194,49 @@ const MoviesPage: React.FC = () => {
     }
   };
 
+  // 최근 작성한 영화 리뷰에 출연한 배우 기반 연관 영화 가져오는 함수
+  const fetchMovieByActor = async (
+    userSeq: number,
+    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+  ) => {
+    setLoading(true);
+    try {
+      const response = await fetchMovieBasedOnActor(userSeq);
+      console.log(response);
+      const movies = response.movieListResponses.map((movie: Movie) => ({
+        movieSeq: movie.movieSeq,
+        moviePosterUrl: movie.moviePosterUrl,
+        movieYear: movie.movieYear,
+        movieTitle: movie.movieTitle,
+        movieRating: movie.movieRating,
+        runningTime: movie.runningTime,
+        audienceRating: movie.audienceRating,
+      }));
+      // API 응답 데이터 구조에 맞춰서 처리
+      setMovies(movies);
+    } catch (error) {
+      console.error("Error fetching movies by rating:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // 각 장르에 맞는 영화 데이터를 가져옴
-    fetchMoviesByGenre("판타지", setFantasyMovies);
-    fetchMoviesByGenre("SF", setSfMovies);
-    fetchMoviesByGenre("로맨스", setRomanceMovies);
-    fetchMoviesByGenre("애니", setAnimeMovies);
-    fetchMoviesByGenre("역사", setHistoryMovies);
-    fetchMoviesByGenre("모험", setAdventureMovies);
-    fetchMoviesByYear(2024, setTwentyfourMovies);
-    fetchMoviesByCountry("한국", setKoreaMovies);
-    fetchMovieByRate(setHighRateMovies);
-    fetchMovieByMonth(setNewMovies);
-  }, []);
+    if (userSeq) {
+      // 각 장르에 맞는 영화 데이터를 가져옴
+      fetchMoviesByGenre("판타지", setFantasyMovies);
+      fetchMoviesByGenre("SF", setSfMovies);
+      fetchMoviesByGenre("로맨스", setRomanceMovies);
+      fetchMoviesByGenre("애니", setAnimeMovies);
+      fetchMoviesByGenre("역사", setHistoryMovies);
+      fetchMoviesByGenre("모험", setAdventureMovies);
+      fetchMoviesByYear(2024, setTwentyfourMovies);
+      fetchMoviesByCountry("한국", setKoreaMovies);
+      fetchMovieByRate(setHighRateMovies);
+      fetchMovieByMonth(setNewMovies);
+      fetchMovieByActor(userSeq!, setActorMovies);
+    }
+  }, [userSeq]);
 
   // 장르 선택 시 해당 페이지로 이동
   const handleGenreChange = (value: string) => {
@@ -231,9 +266,10 @@ const MoviesPage: React.FC = () => {
         <p className="text-white">로딩 중...</p>
       ) : (
         <>
+          <MoviesList category="이번 달 신작 영화" movies={newMovies} />
           <MoviesList
-            category="이번 달 신작 영화"
-            movies={newMovies}
+            category="최근 작성한 리뷰에 등장한 배우가 출연한 영화"
+            movies={ActorMovies}
           />
           <MoviesList category="판타지 영화" movies={fantasyMovies} />
           <MoviesList category="올해 개봉한 영화" movies={twentyfourMovies} />
@@ -246,7 +282,7 @@ const MoviesPage: React.FC = () => {
           <MoviesList category="사탕같은 영화" movies={romanceMovies} />
           <MoviesList category="애니 좋아하는 사람 ~?" movies={animeMovies} />
           <MoviesList
-            category="OO을 잊은 민족에게 미래란 없다"
+            category="역사을 잊은 민족에게 미래란 없다"
             movies={historyMovies}
           />
           <MoviesList category="모험 떠나볼래 ?" movies={adventureMovies} />

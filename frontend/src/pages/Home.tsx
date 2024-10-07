@@ -251,7 +251,7 @@ const Home: React.FC = () => {
           <iframe
             src={`https://www.youtube.com/embed/${backgroundVideoUrl}?autoplay=1&mute=1&loop=1&playlist=${backgroundVideoUrl}`}
             title="YouTube video player"
-            className="w-full h-[1030px] overflow-hidden"
+            className="w-full h-[1300px] overflow-hidden"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>

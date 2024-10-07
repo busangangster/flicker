@@ -49,6 +49,10 @@ const MovieDetailPage: React.FC = () => {
   //   };
   // }, []);
 
+    const handleShowMore = (reviewSeq: number) => {
+      navigate(`/review/${movieSeq}?reviewSeq=${reviewSeq}`);
+  };
+  
   const {
     data: userData,
     error: userError,
@@ -434,8 +438,9 @@ const MovieDetailPage: React.FC = () => {
               <Review
                 key={review.reviewSeq}
                 review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
-                // onLikeToggle={handleLikeToggle}
                 userSeq={userData.userSeq}
+                onShowMore={handleShowMore} // onShowMore prop 추가
+                isDetailPage={true} // MovieDetailPage에서 사용하는 경우만 true
               />
             ))}
           </div>

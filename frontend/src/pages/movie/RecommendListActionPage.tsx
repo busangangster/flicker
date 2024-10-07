@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules"; // Autoplay 모듈 추가
-// import { FaArrowLeft } from "react-icons/fa";
 import { fetchMovieUserActing } from "../../apis/axios";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { Movie } from "../../type";
@@ -66,10 +65,7 @@ const RecommandListActionPage: React.FC = () => {
           className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
         />
       </header>
-      {/* <FaArrowLeft
-        className="bg-white opacity-90 rounded-md w-10 h-10 absolute top-40 left-20 text-gray-800 p-1 hover:bg-neutral-400"
-        onClick={goToRecommend}
-      /> */}
+
       {/* 영화관 스타일 화면 */}
       <div className="relative w-[73%] h-[75vh] rounded-md overflow-hidden">
         <h2 className="text-center text-3xl font-bold text-black mb-[80px] mt-24 ">
@@ -81,11 +77,6 @@ const RecommandListActionPage: React.FC = () => {
           <Swiper
             slidesPerView={6}
             spaceBetween={10}
-            // onSwiper={handleSwiper}
-            // navigation={{
-            //   // nextEl: nextRef.current,
-            //   // prevEl: prevRef.current,
-            // }}
             autoplay={{
               delay: 0,
               disableOnInteraction: false,

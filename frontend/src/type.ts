@@ -11,13 +11,15 @@ export interface ReviewType {
   liked: boolean;
   top?: boolean;
   isUserReview?: boolean;
+  
 }
 
 export interface ReviewProps {
   review: ReviewType;
   onDelete?: (reviewSeq: number) => Promise<void>;
   userSeq: number;
-  // onLikeToggle: (reviewSeq: number) => void; // 좋아요 토글 함수
+  onShowMore?: (reviewSeq: number) => void; // 추가된 prop
+  isDetailPage?: boolean; // 추가된 prop
 }
 
 export interface FilterOptions {
@@ -220,8 +222,8 @@ export interface Movie {
 
 export interface SelectionListProps {
   movies: Movie[];
-  loadMoreMovies: () => void; // loadMoreMovies 함수 추가
-  hasMore: boolean; // hasMore 값 추가
+  // loadMoreMovies: () => void; // loadMoreMovies 함수 추가
+  // hasMore: boolean; // hasMore 값 추가
 }
 
 export interface MoviesListProps {

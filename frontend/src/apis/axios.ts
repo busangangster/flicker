@@ -1,4 +1,3 @@
-// import { favorite } from "/assets/service/favorite2.png";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -64,7 +63,7 @@ export default instance;
 
 // 영화 상세정보 조회
 const movieDetailApi = axios.create({
-  baseURL: "http://j11e206.p.ssafy.io/api/bff/movie/", // Base URL 설정
+  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}`, // Base URL 설정
   headers: {
     "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
   },
@@ -82,7 +81,7 @@ export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
 
 // 리뷰 데이터 조회
 const reviewApiClient = axios.create({
-  baseURL: "http://j11e206.p.ssafy.io/api/bff/user", // 리뷰 API에 맞는 Base URL 설정
+  baseURL: `${import.meta.env.VITE_BFF_USER_URL}`, // 리뷰 API에 맞는 Base URL 설정
   headers: {
     "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
   },
@@ -113,7 +112,7 @@ export const fetchMovieReviews = async (
 
 // 영화 리스트 조회
 const movieListApi = axios.create({
-  baseURL: "http://j11e206.p.ssafy.io/api/bff/movie/list",
+  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}/list`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -258,12 +257,31 @@ export const fetchMovieUserReview = async (userSeq: number) => {
   }
 }
 
+// 최근 작성한 영화 리뷰에 출연한 배우 기반 연관 영화 추천
+export const fetchMovieBasedOnActor = async (userSeq: number) => {
+  try {
+    const url = `/recommendActor/${userSeq}`;
+    const response = await movieListApi.get(url);
+    if (response?.data.data) {
+      const movies = response.data.data;
+      console.log(movies);
+      return movies;
+    } else {
+      console.error("Unexpected response structure", response);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+}
+
 // coldStart issue 처리
 export const addFavoriteMovies = async (
   userSeq: number,
   movieSeqList: number[]
 ) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/favorite-movie`;
+  const url = `${import.meta.env.VITE_BFF_USER_URL}/${userSeq}/favorite-movie`;
 
   try {
     const response = await axios.post(
@@ -288,7 +306,9 @@ export const addFavoriteMovies = async (
 };
 
 export const addfavoriteMovies = async (userSeq: number, movieSeq: number) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie/${movieSeq}`;
+  const url = `${
+    import.meta.env.VITE_BFF_USER_URL
+  }/${userSeq}/bookmark-movie/${movieSeq}`;
   try {
     const response = await axios.post(url, {
       headers: {
@@ -306,7 +326,9 @@ export const deletefavoriteMovies = async (
   userSeq: number,
   movieSeq: number
 ) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie/${movieSeq}`;
+  const url = `${
+    import.meta.env.VITE_BFF_USER_URL
+  }/${userSeq}/bookmark-movie/${movieSeq}`;
   try {
     const response = await axios.delete(url, {
       headers: {
@@ -322,7 +344,7 @@ export const deletefavoriteMovies = async (
 
 export const fetchFavoriteMovies = async (userSeq: number) => {
   console.log("userSeq", userSeq);
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/bookmark-movie`;
+  const url = `${import.meta.env.VITE_BFF_USER_URL}/${userSeq}/bookmark-movie`;
 
   try {
     const response = await axios.get(url, {
@@ -340,7 +362,7 @@ export const fetchFavoriteMovies = async (userSeq: number) => {
 };
 
 export const fetchDislikeMovies = async (userSeq: number) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/dislike-movie`;
+  const url = `${import.meta.env.VITE_BFF_USER_URL}/${userSeq}/dislike-movie`;
 
   try {
     const response = await axios.get(url, {
@@ -356,7 +378,9 @@ export const fetchDislikeMovies = async (userSeq: number) => {
 };
 
 export const addDislikeMovies = async (userSeq: number, movieSeq: number) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/dislike-movie/${movieSeq}`;
+  const url = `${
+    import.meta.env.VITE_BFF_USER_URL
+  }/${userSeq}/dislike-movie/${movieSeq}`;
   try {
     const response = await axios.post(url, {
       headers: {
@@ -374,7 +398,9 @@ export const deleteDislikeMovies = async (
   userSeq: number,
   movieSeq: number
 ) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/dislike-movie/${movieSeq}`;
+  const url = `${
+    import.meta.env.VITE_BFF_USER_URL
+  }/${userSeq}/dislike-movie/${movieSeq}`;
   try {
     const response = await axios.delete(url, {
       headers: {
@@ -392,7 +418,7 @@ export const updateUserInfo = async (
   userSeq: number,
   data: { email: string; password: string; nickname: string }
 ) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}`;
+  const url = `${import.meta.env.VITE_BFF_USER_URL}/${userSeq}`;
 
   try {
     const response = await axios.put(
@@ -417,7 +443,7 @@ export const updateUserInfo = async (
 };
 
 export const fetchSideBarUserInfo = async (userSeq: number) => {
-  const url = `http://j11e206.p.ssafy.io/api/bff/user/${userSeq}/myPage`;
+  const url = `${import.meta.env.VITE_BFF_USER_URL}/${userSeq}/myPage`;
 
   try {
     const response = await axios.get(url, {

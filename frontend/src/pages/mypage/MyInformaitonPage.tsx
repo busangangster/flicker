@@ -5,7 +5,6 @@ import { useUserQuery } from "../../hooks/useUserQuery";
 const MyInformationPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // 유저 정보 쿼리
   const { data, error, isLoading, refetch } = useUserQuery();
 
   // 페이지에 도착할 때마다 데이터를 강제로 다시 가져오도록 설정
