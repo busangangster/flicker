@@ -518,7 +518,9 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
             pointerEvents: "none", // 텍스트가 마우스 이벤트를 막지 않도록 설정
           }}
         >
-          <p className="text-[57px] italic">FIND YOUR OWN TASTE !</p>
+          <p className="text-[57px] italic bg-gradient-to-r from-gray-400 via-white to-gray-400 text-transparent bg-clip-text pr-2">
+            FIND YOUR OWN TASTE !
+          </p>
         </div>
       )}
       <div

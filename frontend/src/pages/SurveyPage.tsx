@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../App.css";
 import { useUserQuery } from "../hooks/useUserQuery";
 import { addFavoriteMovies } from "../apis/axios";
+import { useNavigate } from "react-router-dom"
 
 
 
@@ -26,8 +27,8 @@ const movies = Array.from({ length: 30 }, (_, i) => ({
 
 const Survey: React.FC = () => {
   const [selectedMovies, setSelectedMovies] = useState<number[]>([]);
-
-    const { data, error, isLoading } = useUserQuery();
+  const navigate = useNavigate();
+  const { data, error, isLoading } = useUserQuery();
 
     if (!data) return <p>유저 정보가 없습니다.</p>;
     if (isLoading) return <p>로딩 중...</p>;
@@ -44,22 +45,25 @@ const Survey: React.FC = () => {
     }
   };
 
+
   const handleSubmit = async () => {
     const selectedMovieSeqs = selectedMovies.map((id) => movieSeqs[id]);
     try {
       await addFavoriteMovies(data.userSeq, selectedMovieSeqs); 
       console.log("Favorite movies submitted successfully");
+      navigate("/home")
     } catch (error) {
       console.error("Failed to submit favorite movies:", error);
     }
   }
+
 
   return (
     <div className="flex p-8 h-full bg-black justify-center w-screen">
       <div className="flex flex-col text-white">
         <div className="text-[70px] font-bold mb-4 mt-[40px]">Flicker</div>
         <h1 className="text-[50px] font-bold mb-4 leading-[75px] mt-[20px] ">
-          { data.nickname}님,
+          {data.nickname}님,
           <br />
           좋아하는 영화를 <br />
           3개 선택하세요 !
@@ -68,8 +72,10 @@ const Survey: React.FC = () => {
           {data.nickname}님의 취향에 꼭 맞는 영화를 추천하는데 도움이 돼요.
         </p>
         <button
-          className={`px-4 py-2 w-[240px] h-[50px] bg-blue-500 text-white rounded-[10px] ${
-            selectedMovies.length < 3 ? "opacity-50" : ""
+          className={`px-4 py-2 w-[240px] h-[50px] bg-[#4D7FFF] text-white rounded-[10px] ${
+            selectedMovies.length < 3
+              ? "opacity-50"
+              : "hover:bg-[#3256B0] taransition-transform duration-300 ese-in-out"
           }`}
           disabled={selectedMovies.length < 3} // 3개 선택하지 않으면 비활성화
           onClick={handleSubmit} // 선택 완료 버튼 클릭 시 서버로 전송

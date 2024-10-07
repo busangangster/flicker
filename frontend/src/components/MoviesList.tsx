@@ -138,7 +138,6 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
       )}
 
       <Swiper
-        slidesPerView={8}
         spaceBetween={20}
         slidesOffsetBefore={50}
         navigation={{
@@ -147,6 +146,44 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
         }}
         onSwiper={handleSwiper}
         modules={[Navigation, Pagination]}
+        breakpoints={{
+          320: {
+            slidesPerView: 2, // 작은 화면 (모바일)
+            spaceBetween: 10,
+          },
+          640: {
+            slidesPerView: 3, // 중간 화면 (작은 태블릿)
+            spaceBetween: 15,
+          },
+          768: {
+            slidesPerView: 4, // 태블릿
+            spaceBetween: 20,
+          },
+          1024: {
+            slidesPerView: 6, // 작은 데스크탑
+            spaceBetween: 20,
+          },
+          1280: {
+            slidesPerView: 7, // 큰 데스크탑
+            spaceBetween: 20,
+          },
+          1700: {
+            slidesPerView: 8,
+            spaceBetween: 25,
+          },
+          1920: {
+            slidesPerView: 9,
+            spaceBetween: 28,
+          },
+          2150: {
+            slidesPerView: 10,
+            spaceBetween: 30,
+          },
+          2300: {
+            slidesPerView: 11,
+            spaceBetween: 30,
+          },
+        }}
       >
         {movies.map((movie) => (
           <SwiperSlide

@@ -39,8 +39,9 @@
 .custom-scrollbar2::-webkit-scrollbar {
   width: 6px !important; /* 스크롤바의 너비 */
 }
-
-
+.custom-scrollbar2::-webkit-scrollbar-track {
+  background: #5D5D5D !important; /* 스크롤바 트랙(배경) 색상 */
+}
 
 .custom-scrollbar2::-webkit-scrollbar-thumb {
   background-color: #bcbcbc; /* 스크롤바 손잡이 색상 */

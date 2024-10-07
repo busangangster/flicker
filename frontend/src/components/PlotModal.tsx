@@ -28,14 +28,14 @@ const PlotModal: React.FC<PlotModalProps> = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 ">
-      <div className="bg-[#5D5D5D] rounded-lg p-10 w-[500px] h-[75vh] overflow-y-auto">
-        <div className="flex justify-end items-end mb-4 text-gray-300">
+      <div className="bg-[#5D5D5D] rounded-lg p-10 w-[500px] overflow-y-auto">
+        <div className="flex justify-end items-end text-gray-300 text-lg hover:opacity-60">
           <button onClick={onClose}>✖</button>
         </div>
+        <div className="text-[35px] font-bold mb-6">{movieTitle}</div>
         <div className="flex">
-          <div className="flex-col text-white font-semibold">
-            <span className="text-[35px] font-bold">{movieTitle}</span>
-            <div className="mt-6 text-lg">
+          <div className="flex-col text-white font-semibold self-end mb-2">
+            <div className="text-lg">
               <span>개봉년도</span>
               <span className="text-gray-300 ml-6">{movieYear}</span>
             </div>
@@ -49,18 +49,18 @@ const PlotModal: React.FC<PlotModalProps> = ({
             </div>
             <div className="mt-4 text-lg">
               <span>국가</span>
-              <span className="text-gray-300 ml-14">{country}</span>
+              <span className="text-gray-300 ml-14">&nbsp;{country}</span>
             </div>
           </div>
           <img
             src={moviePosterUrl}
             alt="Movie Poster"
-            className="w-[100x] h-[170px] mt-16 ml-24 opacity-85 "
+            className="w-[100x] h-[170px] ml-24 opacity-85 mb-2 self-end rounded-sm"
           />
         </div>
         {/* <p className="text-black mt-5"></p> */}
         <hr className="mt-4" />
-        <div className="bg-gray w-full h-[330px] mt-5 overflow-y-scroll custom-scrollbar2 text-white pt-2">
+        <div className="bg-gray w-full h-[250px] mt-5 overflow-y-scroll custom-scrollbar2 text-white">
           {moviePlot}
         </div>
       </div>

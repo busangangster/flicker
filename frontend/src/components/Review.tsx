@@ -7,7 +7,7 @@ import thumbUp from "../assets/review/thumb_up.png";
 import { ReviewProps } from "../type";
 import { likeReview, cancelLikeReview } from "../apis/movieApi";
 
-const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete }) => {
+const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, isDetailPage }) => {
   const [showContent, setShowContent] = useState(!review.spoiler);
   const [liked, setLiked] = useState(review.liked);
   const [likes, setLikes] = useState(review.likes);
@@ -22,10 +22,19 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete }) => {
     }
   };
 
-  const toggleShowMore = () => {
-    setShowMore((prev) => !prev);
-  };
+  // const toggleShowMore = () => {
+  //   setShowMore((prev) => !prev);
+  // };
 
+
+  const handleShowMoreClick = () => {
+    if (isDetailPage && onShowMore) {
+      onShowMore(review.reviewSeq); // isDetailPage가 true일 때만 onShowMore 호출
+    } else {
+      setShowMore((prev) => !prev);
+    }
+  };
+  
   // 리뷰 삭제 처리
   const handleDeleteReview = async () => {
     if (onDelete) {
@@ -137,7 +146,7 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete }) => {
                 {isLongContent && (
                   <button
                     className="text-gray-400 ml-2 underline"
-                    onClick={toggleShowMore}
+                    onClick={handleShowMoreClick}
                   >
                     {showMore ? "접기" : "더보기"}
                   </button>
