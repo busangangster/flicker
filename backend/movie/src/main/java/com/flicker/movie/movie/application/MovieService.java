@@ -208,7 +208,6 @@ public class MovieService {
                 })
                 .toList();
         System.out.println("MovieList: " + movieList);
-        System.out.println("MovieList: " + movieList);
         // 2. MovieListResponse 리스트 생성 및 반환
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
