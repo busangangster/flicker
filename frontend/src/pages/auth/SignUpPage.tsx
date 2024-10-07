@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { signUp } from "../../apis/authApi";
 import calendar_white from "../../assets/icons/calendar_white.png";
 import { SignUpParams } from "../../type";
+import { IoIosArrowRoundBack } from "react-icons/io";
 
 // background 이미지 목록
 const backgrounds = [
@@ -142,6 +143,12 @@ const SignUpPage: React.FC = () => {
       className="min-h-screen w-screen bg-black flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
+      <header className="sticky top-0 bg-transparent z-20">
+        <IoIosArrowRoundBack
+          onClick={() => navigate(-1)}
+          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+        />
+      </header>
       <form onSubmit={handleSubmit} className="w-full max-w-2xl p-8">
         <h2 className="text-3xl font-bold mb-8 text-white text-center">
           회원가입

@@ -55,7 +55,7 @@ const Survey: React.FC = () => {
   }
 
   return (
-    <div className="flex p-8 h-screen bg-black justify-center w-screen">
+    <div className="flex p-8 h-full bg-black justify-center w-screen">
       <div className="flex flex-col text-white">
         <div className="text-[70px] font-bold mb-4 mt-[40px]">Flicker</div>
         <h1 className="text-[50px] font-bold mb-4 leading-[75px] mt-[20px] ">

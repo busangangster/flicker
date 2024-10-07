@@ -1,12 +1,11 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useQuery, useQueryClient } from "@tanstack/react-query"; // react-query 사용
 import { fetchSideBarUserInfo } from "../apis/axios";
 import { useUserQuery } from "../hooks/useUserQuery"; // useUserQuery 가져오기
 
 const Sidebar: React.FC = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient(); // react-query 캐시 무효화
 
   // 로그인한 유저의 정보를 가져오는 useUserQuery 사용
@@ -19,7 +18,6 @@ const Sidebar: React.FC = () => {
     queryFn: () => fetchSideBarUserInfo(userSeq!), // userSeq가 있을 때만 fetch 함수 호출
     enabled: !!userSeq, // userSeq가 존재할 때만 쿼리 실행
   });
-
 
   if (isLoading) return <p>로딩 중...</p>;
   if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
@@ -35,7 +33,7 @@ const Sidebar: React.FC = () => {
     });
 
     alert("로그아웃되었습니다.");
-    navigate("/home"); // 로그아웃 후 리디렉트
+    window.location.replace("/home"); // /home으로 이동하면서 새로고침
   };
 
   return (

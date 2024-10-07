@@ -434,7 +434,7 @@ const MovieDetailPage: React.FC = () => {
       </div>
 
       {/* Recommended movies */}
-      <div className="h-[300px] w-[1700px] flex-shrink-0 mb-[100px] mt-[20px]">
+      <div className="h-[300px] w-full flex-shrink-0 mb-[100px] mt-[20px]">
         <MoviesList
           category={`${movieTitle}과 유사한 장르 작품들`}
           movies={similarMovies}

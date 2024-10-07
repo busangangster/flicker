@@ -49,7 +49,7 @@ const PhotoCardDetailPage: React.FC<{
           <img
             src="/assets/common/x.png"
             alt="Back Button"
-            className="w-4 h-4 absolute top-4 right-4 cursor-pointer"
+            className="w-4 h-4 absolute top-4 right-4 cursor-pointer hover:opacity-80"
             onClick={handleCloseModal}
           />
           <h2 className="text-center text-xl italic mb-3 text-black">
@@ -61,12 +61,12 @@ const PhotoCardDetailPage: React.FC<{
           </p>
           <div className="relative group">
             <h1
-              className="text-center text-2xl font-bold mb-4 text-black hover:opacity-70 cursor-pointer"
+              className="text-center text-2xl font-bold mb-4 text-black cursor-pointer"
               onClick={goToMovieDetail}
             >
               {card.movieTitle}
             </h1>
-            <span className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-gray-500 bg-opacity-70 text-white text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-gray-500 bg-opacity-70 text-white text-xs p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
               {`영화 상세페이지로 이동`}
             </span>
           </div> 

@@ -28,7 +28,7 @@ const MyPage: React.FC = () => {
             <SideBar />
           </div>
         )}
-        <div className="items-center justify-center flex h-[900px] flex-grow mt-[90px]">
+        <div className="items-center justify-center flex flex-grow mt-[90px]">
           <Outlet />
         </div>
       </div>

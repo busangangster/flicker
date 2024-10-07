@@ -1,6 +1,8 @@
 // frontend/src/pages/auth/PasswordResetPage.tsx
 import React, { useState, useEffect } from "react";
 import axios from "../../apis/axios";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const backgrounds = [
   "/assets/background/background1.png",
@@ -15,6 +17,8 @@ const PasswordResetPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState(""); // 랜덤 배경 이미지 상태
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     // 랜덤한 배경 이미지 선택
@@ -47,6 +51,12 @@ const PasswordResetPage: React.FC = () => {
       className="min-h-screen w-screen bg-black flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
+      <header className="sticky top-0 bg-transparent z-20">
+        <IoIosArrowRoundBack
+          onClick={() => navigate(-1)}
+          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+        />
+      </header>
       <form onSubmit={handleSubmit} className="w-full max-w-xl p-8">
         <h2 className="text-3xl font-bold mb-6 text-white text-center">
           비밀번호 재설정
