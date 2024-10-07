@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import "swiper/css"; // Swiper 기본 CSS
-import "swiper/css/navigation"; // 네비게이션 모듈 사용 시 필요한 CSS
+import "swiper/css";
+import "swiper/css/navigation";
 import "../css/TopTen.css";
 import { getTopTenMovies } from "../apis/movieApi";
-import { TopTenMovie } from "../type"; // 타입 정의
+import { TopTenMovie } from "../type";
 import { useNavigate } from "react-router-dom";
 
-// Font import for Rubik Doodle Shadow
 const GOOGLE_FONT_LINK =
   "https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap";
 
@@ -18,12 +17,11 @@ const TopTen: React.FC = () => {
   const nextRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
-  // Fetch top 10 movies from backend
   useEffect(() => {
     const getMovies = async () => {
       try {
-        const response = await getTopTenMovies(); // API 호출
-        setMovies(response.data); // API 응답 데이터 설정
+        const response = await getTopTenMovies();
+        setMovies(response.data);
       } catch (error) {
         console.error("영화 목록을 불러오는 데 실패했습니다.", error);
       }
@@ -31,35 +29,34 @@ const TopTen: React.FC = () => {
 
     getMovies();
 
-    // Load the Google font for Rubik Doodle Shadow
     const fontLink = document.createElement("link");
     fontLink.href = GOOGLE_FONT_LINK;
     fontLink.rel = "stylesheet";
     document.head.appendChild(fontLink);
   }, []);
 
-  const goToDetail = (movieSeq:number) => {
-    navigate(`/moviedetail/${movieSeq}`)
-  }
+  const goToDetail = (movieSeq: number) => {
+    navigate(`/moviedetail/${movieSeq}`);
+  };
 
   return (
-    <div className="flex items-center h-[450px] mb-8">
+    <div className="flex items-center h-[450px] mb-8 max-w-full px-0 xl:px-0 ">
       {/* Left Side: Static text "TODAY TOP 10" */}
-      <div className="today-top-10 flex flex-col justify-center text-right mr-8 text-white ml-10">
+      <div className="today-top-10 flex flex-col justify-center text-right mr-8 text-white flex-shrink-0">
         <h1
-          className="text-[60px] mb-4 mt-14"
+          className="text-[40px] md:text-[60px] xl:text-[70px] mb-4 mt-14 ml-10"
           style={{ fontFamily: "Rubik Doodle Shadow, cursive" }}
         >
           TODAY
         </h1>
         <h1
-          className="text-[70px] mr-1 mb-2"
+          className="text-[50px] md:text-[60px] xl:text-[70px] mr-1 mb-2"
           style={{ fontFamily: "Rubik Doodle Shadow, cursive" }}
         >
           TOP
         </h1>
         <h1
-          className="text-[70px] mr-2"
+          className="text-[50px] md:text-[60px] xl:text-[70px] mr-2"
           style={{ fontFamily: "Rubik Doodle Shadow, cursive" }}
         >
           10
@@ -67,13 +64,11 @@ const TopTen: React.FC = () => {
       </div>
 
       {/* Right Side: Movie posters with Swiper */}
-      <div className="movie-swiper-container relative w-[1500px]">
-        {/* Swiper Navigation Buttons */}
+      <div className="movie-swiper-container relative w-full xl:w-5/6 overflow-hidden">
         <div ref={prevRef} className="swiper-button-prev-custom2">
-          {/* SVG for Left Arrow */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-10 w-10 text-white"
+            className="h-8 w-8 xl:h-10 xl:w-10 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -88,10 +83,9 @@ const TopTen: React.FC = () => {
         </div>
 
         <div ref={nextRef} className="swiper-button-next-custom2">
-          {/* SVG for Right Arrow */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-10 w-10 text-white"
+            className="h-8 w-8 xl:h-10 xl:w-10 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -105,18 +99,46 @@ const TopTen: React.FC = () => {
           </svg>
         </div>
 
-        {/* Movie Poster Swiper */}
         <Swiper
-          slidesPerView={6} // Number of visible posters
-          loop={true} // Infinite scrolling
-          spaceBetween={30}
+          slidesPerView={2}
+          spaceBetween={10}
+          breakpoints={{
+            640: {
+              slidesPerView: 3,
+              spaceBetween: 15,
+            },
+            1024: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            1280: {
+              slidesPerView: 5,
+              spaceBetween: 25,
+            },
+            1700: {
+              slidesPerView: 6,
+              spaceBetween: 30,
+            },
+            1920: {
+              slidesPerView: 6,
+              spaceBetween: 35,
+            },
+            2150: {
+              slidesPerView: 7,
+              spaceBetween: 40,
+            },
+            2300: {
+              slidesPerView: 8,
+              spaceBetween: 45,
+            },
+          }}
+          loop={true}
           navigation={{
             prevEl: prevRef.current,
             nextEl: nextRef.current,
           }}
           modules={[Navigation]}
           onSwiper={(swiper) => {
-            // Type guard to check if navigation is not false
             if (
               swiper.params.navigation &&
               typeof swiper.params.navigation !== "boolean"
@@ -132,29 +154,27 @@ const TopTen: React.FC = () => {
             movies.map((movie, index) => (
               <SwiperSlide key={movie.movieSeq} className="swiper-slide-item">
                 <div className="movie-poster-container relative flex flex-col items-center">
-                  {/* Number Overlay */}
                   <span
-                    className="movie-number text-white text-[70px] mb-4 relative"
+                    className="movie-number text-white text-[40px] md:text-[60px] xl:text-[70px] mb-4 relative"
                     style={{
-                      left: "-75px",
+                      left: "-70px",
                       top: "30px",
                       fontFamily: "Rubik Doodle Shadow, cursive",
                     }}
                   >
                     {index + 1}
                   </span>
-                  {/* Movie Poster */}
                   <img
                     src={movie.moviePosterUrl}
                     alt={movie.movieTitle}
                     onClick={() => goToDetail(movie.movieSeq)}
-                    className="h-[350px] rounded-lg object-cover transform transition-transform duration-300 hover:-translate-y-2"
+                    className="h-[250px] md:h-[300px] xl:h-[350px] rounded-lg object-cover transform transition-transform duration-300 hover:-translate-y-2"
                   />
                 </div>
               </SwiperSlide>
             ))
           ) : (
-            <p className="text-white">Loading...</p> // 데이터 로딩 중 표시
+            <p className="text-white">Loading...</p>
           )}
         </Swiper>
       </div>

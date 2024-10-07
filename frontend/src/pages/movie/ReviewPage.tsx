@@ -12,7 +12,8 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { fetchMovieDetail, fetchMovieReviews } from "../../apis/axios";
 import { checkAlreadyReview, deleteReview } from "../../apis/movieApi"; // API 호출 함수 추가
 import { throttle } from "lodash";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { IoIosArrowRoundBack } from "react-icons/io";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -27,6 +28,7 @@ const ReviewPage: React.FC = () => {
   const [moviePosterUrl, setMoviePosterUrl] = useState<string>(""); // 영화 포스터 URL 상태 추가
   const [alreadyReview, setAlreadyReview] = useState<boolean | null>(null); // 이미 리뷰 작성 여부 상태 (null일 때는 로딩 중)
   const [userReview, setUserReview] = useState<ReviewType | null>(null); // 유저의 리뷰 저장 상태
+  const navigate = useNavigate();
 
   const userSeq = userData?.userSeq || 0;
 
@@ -63,18 +65,17 @@ const ReviewPage: React.FC = () => {
       fetchReviewStatus(); // API 호출
     }
   }, [userSeq, movieSeq]);
-  
-     const handleDeleteReview = async (reviewSeq: number) => {
-       try {
-         await deleteReview(reviewSeq, userSeq);
-         setReviews((prevReviews) =>
-           prevReviews.filter((review) => review.reviewSeq !== reviewSeq)
-         );
-       } catch (error) {
-         console.error("리뷰 삭제 중 오류 발생:", error);
-       }
-     };
-  
+
+  const handleDeleteReview = async (reviewSeq: number) => {
+    try {
+      await deleteReview(reviewSeq, userSeq);
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => review.reviewSeq !== reviewSeq)
+      );
+    } catch (error) {
+      console.error("리뷰 삭제 중 오류 발생:", error);
+    }
+  };
 
   // 데이터를 가져오는 함수
   const loadReviews = useCallback(async () => {
@@ -86,7 +87,7 @@ const ReviewPage: React.FC = () => {
       const newReviews = await fetchMovieReviews(
         Number(movieSeq),
         userSeq || 0,
-        "like",
+        "date",
         page,
         10
       );
@@ -183,10 +184,10 @@ const ReviewPage: React.FC = () => {
     setSortOption(value);
   };
 
-const handleAddReview = (newReview: ReviewType) => {
-  newReview.isUserReview = true;
-  setReviews((prev: ReviewType[]) => [newReview, ...prev]);
-};
+  const handleAddReview = (newReview: ReviewType) => {
+    newReview.isUserReview = true;
+    setReviews((prev: ReviewType[]) => [newReview, ...prev]);
+  };
 
   const scrollToTop = () => {
     const scrollableElement = document.querySelector(".scroll-container");
@@ -197,8 +198,12 @@ const handleAddReview = (newReview: ReviewType) => {
 
   return (
     <div className="scroll-container flex flex-col bg-black h-screen overflow-y-auto text-white">
-      <header className="sticky top-0 bg-transparent z-10">
+      <header className="sticky top-0 bg-transparent z-20">
         <Navbar />
+        <IoIosArrowRoundBack
+          onClick={() => navigate(-1)} // 뒤로가기 기능
+          className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+        />
       </header>
       <div className="flex justify-center mt-[120px] ">
         <div className="w-1/4"></div>
@@ -225,12 +230,12 @@ const handleAddReview = (newReview: ReviewType) => {
                     movieSeq={Number(movieSeq)}
                   />
                 )}
-
                 {userReview && (
                   <Review
                     key={userReview.reviewSeq}
                     review={userReview} // 본인 리뷰 최상단에 표시
-                    onDelete={handleDeleteReview} // 삭제 함수 전달
+                    onDelete={handleDeleteReview}
+                    userSeq={userSeq}
                   />
                 )}
               </>
@@ -241,6 +246,7 @@ const handleAddReview = (newReview: ReviewType) => {
                 <Review
                   key={review.reviewSeq}
                   review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
+                  userSeq={userSeq}
                 />
               ))
             ) : (

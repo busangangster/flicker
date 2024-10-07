@@ -106,3 +106,30 @@ export const checkAlreadyReview = async (
     throw error;
   }
 };
+
+// 리뷰 좋아요
+export const likeReview = async (userSeq: number, reviewSeq: number) => {
+  try {
+    const response = await axios.post(`/api/bff/user/review/likeReview`, {
+      userSeq,
+      reviewSeq, 
+    });
+    return response.data;
+  } catch (error) {
+    console.error("리뷰 좋아요가 실패되었어요.", error);
+    throw error;
+  }
+};
+
+// 리뷰 좋아요 취소
+export const cancelLikeReview = async (userSeq: number, reviewSeq: number) => {
+  try {
+    const response = await axios.delete(
+      `/api/bff/user/review/likeReview?userSeq=${userSeq}&reviewSeq=${reviewSeq}`
+    );
+    return response.data; 
+  } catch (error) {
+    console.error("리뷰 좋아요 취소 중 오류 발생:", error);
+    throw error; 
+  }
+};

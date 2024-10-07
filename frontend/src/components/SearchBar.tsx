@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
-import { SearchBarProps } from "../type"
+import { IoIosSearch } from "react-icons/io";
+import { SearchBarProps } from "../type";
 
 const SearchBar: React.FC<SearchBarProps> = ({
   initialSearchQuery = "",
@@ -57,27 +58,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
       } relative`}
     >
       <div className="flex items-center w-full">
-        <svg
-          onClick={handleClick}
-          width="32 "
-          height="32"
-          viewBox="0 0 32 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className={`cursor-pointer transition-transform duration-400 ${
-            isExpanded ? "translate-x-[-50px]" : ""
-          }`}
-        >
-          <circle cx="14" cy="14" r="9" stroke="white" strokeWidth="2" />
-          <line
-            x1="20"
-            y1="20"
-            x2="28"
-            y2="28"
-            stroke="white"
-            strokeWidth="2"
-          />
-        </svg>
+        {/* 아이콘을 감싸는 div에 크기 조절 */}
+        <div className="cursor-pointer" onClick={handleClick}>
+          <IoIosSearch size={30} className="text-white" />{" "}
+          {/* 아이콘 크기만 조정 */}
+        </div>
 
         <form onSubmit={handleSearchSubmit} className="relative w-full">
           <input
@@ -85,7 +70,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             placeholder="제목, 사람, 장르"
             value={searchQuery}
             onChange={handleSearchChange}
-            className={`bg-transparent border-none outline-none text-white text-lg w-full pr-8 transition-all duration-400 ${
+            className={`bg-transparent border-none outline-none ml-2 text-white text-lg w-full pr-8 transition-all duration-400 ${
               isExpanded ? "opacity-100" : "w-0 opacity-0"
             }`}
           />
