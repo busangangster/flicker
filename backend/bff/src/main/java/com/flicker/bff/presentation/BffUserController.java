@@ -25,14 +25,12 @@ public class BffUserController {
     @PostMapping()
     public Mono<ResponseEntity<ResponseDto>> registerUser(@RequestBody UserRegisterReqDto request) {
 //        return userService.(request);
-        System.out.println("회원가입 요청");
         return userService.registerUser(request);
     }
 
     // 2. 로그인
     @PostMapping("/login")
     public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserLoginReqDto request) {
-        System.out.println("login");
         return userService.loginUser(request);
     }
 
@@ -64,9 +62,7 @@ public class BffUserController {
     // 5. 리뷰 목록
     @GetMapping("/movies/{movieSeq}")
     public Mono<ResponseEntity<ResponseDto>> getMovieReview(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "10")Integer size, @RequestParam(value = "option", defaultValue = "like")String option) {
-        System.out.println("리뷰 목록 요청");
-        System.out.println("movieSeq = " + movieSeq);
-        System.out.println("myUserSeq = " + myUserSeq);
+
 
 
 
