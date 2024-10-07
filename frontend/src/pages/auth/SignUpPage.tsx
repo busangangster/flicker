@@ -108,7 +108,7 @@ const SignUpPage: React.FC = () => {
       alert(
         "회원가입이 완료되었어요. \n앞으로 Flicker에서 소중한 기록을 남겨보세요!"
       );
-      navigate("/");
+      navigate("/signin");
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       alert("회원가입 실패");

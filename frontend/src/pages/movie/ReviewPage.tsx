@@ -154,7 +154,10 @@ const ReviewPage: React.FC = () => {
   }, [handleScroll]);
 
   // 리뷰 데이터를 정렬하는 함수
-  const getSortedReviews = () => {
+  const getSortedReviews = async () => {
+    // 리뷰 정렬할 때마다 최신 데이터를 다시 받아옴
+    await loadReviews();
+
     const sortedReviews = [...reviews];
 
     if (sortOption === "최신순") {
@@ -175,13 +178,15 @@ const ReviewPage: React.FC = () => {
   };
 
   const filterOptions = [
-    { value: "최신순", label: "최신순" },
     { value: "좋아요 많은 순", label: "좋아요 많은 순" },
+    { value: "최신순", label: "최신순" },
     { value: "오래된 순", label: "오래된 순" },
   ];
 
-  const handleFilterChange = (value: string) => {
+  const handleFilterChange = async (value: string) => {
     setSortOption(value);
+    const sortedReviews = await getSortedReviews(); // 필터 변경 시 정렬된 리뷰를 다시 받아옴
+    setReviews(sortedReviews); // 정렬된 리뷰 상태 업데이트
   };
 
   const handleAddReview = (newReview: ReviewType) => {
@@ -242,7 +247,7 @@ const ReviewPage: React.FC = () => {
             )}
 
             {reviews.length > 0 ? (
-              getSortedReviews().map((review) => (
+              reviews.map((review) => (
                 <Review
                   key={review.reviewSeq}
                   review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달

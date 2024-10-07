@@ -20,6 +20,7 @@ import { IoBan } from "react-icons/io5";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import Swal from "sweetalert2";
 import { IoIosArrowRoundBack } from "react-icons/io";
+// import { getReviewRating } from "../../apis/movieApi"; // API 호출 함수 가져오기
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const MovieDetailPage: React.FC = () => {
   const [disLiked, setDisLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
+  // const [totalCnt, setTotalCnt] = useState<number>(0);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
 
@@ -57,7 +59,7 @@ const MovieDetailPage: React.FC = () => {
     isLoading: userIsLoading,
   } = useUserQuery();
 
-  const userSeq = userData?.userSeq; 
+  const userSeq = userData?.userSeq;
 
   const {
     data: movieData,
@@ -77,6 +79,24 @@ const MovieDetailPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // 리뷰 데이터 불러오기 - getReviewRating 호출
+  // useEffect(() => {
+  //   const fetchReviewRating = async () => {
+  //     if (movieSeq) {
+  //       try {
+  //         const ratingData: RatingData = await getReviewRating(
+  //           Number(movieSeq)
+  //         );
+  //         setTotalCnt(ratingData.data.totalCnt); // 총 리뷰 수를 상태에 저장
+  //       } catch (error) {
+  //         console.error("리뷰 데이터를 불러오는 데 실패했습니다.", error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchReviewRating();
+  // }, [movieSeq]);
 
   useEffect(() => {
     if (movieData) {
@@ -132,19 +152,17 @@ const MovieDetailPage: React.FC = () => {
     ? moviePosterUrl
     : "/assets/movie/noImage.png";
 
-    const extractVideoId = (url: string) => {
-      const videoIdMatch = url.match(
-        /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
-      );
-      return videoIdMatch ? videoIdMatch[1] : null;
+  const extractVideoId = (url: string) => {
+    const videoIdMatch = url.match(
+      /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/e\/|watch\?v=|watch\?.+&v=)([^&\n?#]+)/
+    );
+    return videoIdMatch ? videoIdMatch[1] : null;
   };
-  
+
   // trailerUrl이 없을 경우 대체 이미지 설정
   const videoUrl = trailerUrl
     ? `https://www.youtube.com/embed/${extractVideoId(trailerUrl)}`
     : "/assets/movie/noVideo.png";
-
-
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -216,7 +234,7 @@ const MovieDetailPage: React.FC = () => {
             });
         }
 
-        return !prevDisLiked; 
+        return !prevDisLiked;
       });
     } catch (error) {
       console.error("API 호출 중 오류 발생:", error);
@@ -352,15 +370,24 @@ const MovieDetailPage: React.FC = () => {
               {/* Movie details */}
               <div className="flex mt-4 text-white text-[16px]">
                 <span>{movieYear}&nbsp; &nbsp; &nbsp;</span>
-                <span>
-                  | &nbsp; &nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
-                </span>
-                <span>|&nbsp;&nbsp;&nbsp;{audienceRating}</span>
+
+                {runningTime && (
+                  <span>
+                    | &nbsp; &nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
+                  </span>
+                )}
+
+                {audienceRating && (
+                  <span>|&nbsp;&nbsp;&nbsp;{audienceRating}</span>
+                )}
               </div>
               <p className="mt-4 text-lg">
                 {displayedText}
                 {isLongText && (
-                  <button className="text-gray-400 ml-2" onClick={openModal}>
+                  <button
+                    className="text-gray-400 ml-2 hover:text-gray-500"
+                    onClick={openModal}
+                  >
                     더보기
                   </button>
                 )}
@@ -397,12 +424,13 @@ const MovieDetailPage: React.FC = () => {
       <div className="flex">
         <div className="p-1 bg-black text-black w-[800px] h-[400px] mt-[100px] ml-[150px] border-white">
           <div className="flex w-full justify-between items-center">
-            <h3 className="text-[38px] font-bold text-white">Reviews</h3>
+            <div className="text-[38px] font-bold text-white">Reviews</div>
             <button
-              className="text-white flex ml-auto items-center cursor-pointer text-[16px] italic px-3 py-0.5 bg-[#455467] rounded-lg justify-center hover:bg-gray-500"
+              className="text-gray-200 flex ml-auto items-center cursor-pointer text-[16px] px-3 justify-center hover:opacity-80 underline"
+              lang="ko"
               onClick={goToReview}
             >
-              more reviews
+              전체보기
             </button>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">

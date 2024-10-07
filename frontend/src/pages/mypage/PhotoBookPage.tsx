@@ -55,7 +55,7 @@ const PhotoBookPage: React.FC = () => {
 
       {/* 클릭 가능한 전체 영역 */}
       <div
-        className="relative cursor-pointer mt-16 hover:scale-105 transition-transform duration-300 ease-in-out"
+        className="relative cursor-pointer mt-16 hover:scale-105 taransition-transform duration-300 ese-in-out"
         onClick={goToPhotoCard}
       >
         {/* 이미지 */}

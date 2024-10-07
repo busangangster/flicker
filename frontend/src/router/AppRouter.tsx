@@ -36,7 +36,6 @@ const AppRoutes: React.FC = () => {
       <Route path="/home" element={<Home />} />
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/landing" element={<LandingPage />} />
-      <Route path="/survey" element={<SurveyPage />} />
       <Route path="/passwordreset" element={<PasswordResetPage />} />
       <Route path="/passwordreset/:token" element={<PasswordChangePage />} />
       <Route path="/signup" element={<SignUpPage />} />
@@ -52,7 +51,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-            <Route
+      <Route
         path="/recommendlist/review"
         element={
           <ProtectedRoute>
@@ -65,6 +64,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <RecommendPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/survey"
+        element={
+          <ProtectedRoute>
+            <SurveyPage />
           </ProtectedRoute>
         }
       />
