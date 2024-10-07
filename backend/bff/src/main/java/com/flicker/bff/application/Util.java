@@ -96,6 +96,8 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
+                            e.printStackTrace();
+                            System.out.println("e.getMessage() = " + e.getMessage());
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
