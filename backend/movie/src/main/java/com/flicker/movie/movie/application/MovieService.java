@@ -80,7 +80,6 @@ public class MovieService {
         customProducer.send(movieInfoEvent, "movieInfo");
     }
 
-    @Transactional
     public List<MovieListResponse> getAllMovieList(int page, int size) {
         // 1. Pageable 객체 생성
         Pageable pageable = PageRequest.of(page, size);
@@ -92,7 +91,7 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
+
     public List<MovieListResponse> getMovieListByGenre(String genre, int page, int size) {
         // 1. Pageable 객체 생성
         Pageable pageable = PageRequest.of(page, size);
@@ -104,7 +103,7 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
+
     public List<MovieListResponse> getMovieListByActor(String actorName, int page, int size) {
         // 1. Pageable 객체 생성
         Pageable pageable = PageRequest.of(page, size);
@@ -116,7 +115,7 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
+
     public List<MovieListResponse> getMovieListByCountry(String country, int page, int size) {
         // 1. Pageable 객체 생성
         Pageable pageable = PageRequest.of(page, size);
@@ -128,7 +127,7 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
+
     public List<MovieListResponse> getMovieListByYear(int year, int page, int size) {
         // 1. Pageable 객체 생성
         Pageable pageable = PageRequest.of(page, size);
@@ -142,7 +141,6 @@ public class MovieService {
     }
 
     // TODO: ElasticSearch 활용 ( 검색 속도 개선 필요 )
-    @Transactional
     public List<MovieListResponse> getMovieListByKeyword(String keyword, int userSeq, int page, int size) {
         // 1. MongoUserAction 객체 생성
         MongoUserAction mongoUserAction = movieBuilderUtil.buildMongoUserAction(userSeq, keyword, "SEARCH", LocalDateTime.now(), null);
@@ -175,7 +173,6 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
     public MovieDetailResponse getMovieDetail(int movieSeq, int userSeq) {
         // 1. 영화 정보 조회
         Movie movie = movieRepoUtil.findById(movieSeq);
@@ -187,7 +184,6 @@ public class MovieService {
         return new MovieDetailResponse(movie, movie.getMovieDetail(), movie.getActors());
     }
 
-    @Transactional
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
         System.out.println("request = " + request);
         // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
@@ -230,7 +226,6 @@ public class MovieService {
 //        }
     }
 
-    @Transactional
     public List<UserActionResponse> getUserActionList(int userSeq) {
         // 1. 사용자 행동 로그 조회
         List<MongoUserAction> userActionList = movieRepoUtil.findUserActionListForMongoDB(userSeq);
@@ -244,7 +239,6 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
     public List<MovieListResponse> getTopMovieList() {
         // 1. Redis에서 TopMovieList 조회
         RedisTopMovie redisTopMovie = movieRepoUtil.findTopMovieListForRedis();
@@ -287,7 +281,6 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
     public List<MovieListResponse> getMovieListByMovieSeqList(List<Integer> request) {
         // 1. 영화 ID 리스트로 영화 목록 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(request);
@@ -297,7 +290,6 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
     public List<WordCloudResponse> getWordCloud(int movieSeq) {
         // 1. 영화 정보 조회
         Movie movie = movieRepoUtil.findById(movieSeq);
@@ -312,7 +304,6 @@ public class MovieService {
                 .toList();
     }
 
-    @Transactional
     public List<MovieListResponse> getTopRatingMovieList(List<Integer> movieSeqs) {
         // 1. 리뷰개수가 2000개 넘는 영화 조회
         List<Movie> movieList = movieRepoUtil.findBySeqIn(movieSeqs);
@@ -338,7 +329,6 @@ public class MovieService {
     }
 
     // Top10 키워드 추출
-    @Transactional
     public List<String> findTopKeywords(List<MongoUserAction> userActions) {
         // 키워드의 빈도를 계산하고 상위 10개를 추출
         return userActions.stream()
@@ -351,7 +341,6 @@ public class MovieService {
     }
 
     // 영화 제목 목록의 영화 번호 추출
-    @Transactional
     public List<Integer> findMovieSeqsByKeywords(List<String> movieTitles) {
         List<Integer> movieSeqs = new ArrayList<>();
         for (String movieTitle : movieTitles) {
@@ -363,7 +352,6 @@ public class MovieService {
         return movieSeqs;
     }
 
-    @Transactional
     public RecommendActorResponse getRecommendActor(int userSeq) {
         // 랜덤으로 해당 유저의 사용자 추천 배우 중 1명 뽑기
         List<RecommendActor> recommendActors = movieRepoUtil.findRecommendActor(userSeq);
@@ -392,7 +380,7 @@ public class MovieService {
         initSearchResultForRedisAndMongoDB();
     }
 
-    @Transactional
+
     public List<MovieListResponse> getNewMovieList() {
         // 1. redis에서 개봉 영화 목록 조회
         RedisNewMovie redisNewMovie = movieRepoUtil.findNewMovieForRedis();

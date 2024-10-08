@@ -4,7 +4,6 @@ import com.flicker.movie.common.module.response.ResponseDto;
 import com.flicker.movie.common.module.status.StatusCode;
 import com.flicker.movie.movie.application.ActorService;
 import com.flicker.movie.movie.application.MovieService;
-import com.flicker.movie.movie.domain.entity.RecommendActor;
 import com.flicker.movie.movie.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,24 +13,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /*
-    * MovieController 클래스는 영화 정보, 배우 정보를 등록, 수정, 삭제하는 API 요청을 처리한다.
-    * MovieService, ActorService를 주입받는다.
-    * createMovie() 메서드는 영화 정보, 배우 정보를 등록한다.
-    * updateMovie() 메서드는 영화 정보를 수정한다.
-    * updateMovieRating() 메서드는 영화 평점을 수정한다.
-    * deleteMovie() 메서드는 영화 정보를 삭제한다.
-    * addActor() 메서드는 영화 배우를 추가한다.
-    * deleteActor() 메서드는 영화 배우를 삭제한다.
-    * updateActor() 메서드는 영화 배우를 수정한다.
-    * getAllMovieList() 메서드는 모든 영화 리스트를 조회한다.
-    * getMovieListByGenre() 메서드는 장르별 영화 리스트를 조회한다.
-    * getMovieListByActor() 메서드는 배우별 영화 리스트를 조회한다.
-    * getMovieListByKeyword() 메서드는 키워드를 포함하는 영화 리스트를 조회한다.
-    * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
-    * getMovieListByMovieSeqList() 메서드는 영화 ID 리스트로 영화 리스트를 조회한다.
-    * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
-    * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
-    * getTopMovieList() 메서드는 Top10 영화 리스트를 조회한다.
+ * MovieController 클래스는 영화 정보, 배우 정보를 등록, 수정, 삭제하는 API 요청을 처리한다.
+ * MovieService, ActorService를 주입받는다.
+ * createMovie() 메서드는 영화 정보, 배우 정보를 등록한다.
+ * updateMovie() 메서드는 영화 정보를 수정한다.
+ * updateMovieRating() 메서드는 영화 평점을 수정한다.
+ * deleteMovie() 메서드는 영화 정보를 삭제한다.
+ * addActor() 메서드는 영화 배우를 추가한다.
+ * deleteActor() 메서드는 영화 배우를 삭제한다.
+ * updateActor() 메서드는 영화 배우를 수정한다.
+ * getAllMovieList() 메서드는 모든 영화 리스트를 조회한다.
+ * getMovieListByGenre() 메서드는 장르별 영화 리스트를 조회한다.
+ * getMovieListByActor() 메서드는 배우별 영화 리스트를 조회한다.
+ * getMovieListByKeyword() 메서드는 키워드를 포함하는 영화 리스트를 조회한다.
+ * getMovieDetail() 메서드는 영화 상세 정보를 조회한다.
+ * getMovieListByMovieSeqList() 메서드는 영화 ID 리스트로 영화 리스트를 조회한다.
+ * getRecommendationList() 메서드는 추천된 영화 리스트를 조회한다.
+ * getUserActionList() 메서드는 사용자 행동 로그를 조회한다.
+ * getTopMovieList() 메서드는 Top10 영화 리스트를 조회한다.
  */
 @RequiredArgsConstructor
 @RestController
@@ -151,13 +150,7 @@ public class MovieController {
     // 추천된 영화 목록 조회
     @GetMapping("/list/recommendation")
     public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody RecommendMovieListRequest request) {
-        System.out.println("request = " + request);
-        List<MovieListResponse> response = null;
-        try {
-           response = movieService.getRecommendationList(request);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<MovieListResponse> response = movieService.getRecommendationList(request);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
