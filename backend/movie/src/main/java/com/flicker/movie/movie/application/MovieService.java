@@ -402,4 +402,10 @@ public class MovieService {
                 .toList();
     }
 
+    public String getMoviePoster(int movieSeq) {
+        // 1. 영화 정보 조회
+        Movie movie = movieRepoUtil.findById(movieSeq);
+        // 2. 영화 포스터 조회
+        return movie.getMovieDetail().getMoviePosterUrl();
+    }
 }
