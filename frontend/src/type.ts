@@ -11,7 +11,18 @@ export interface ReviewType {
   liked: boolean;
   top?: boolean;
   isUserReview?: boolean;
-  
+}
+
+export interface UseMoviesByActorResult {
+  movies: Movie[];
+  actorName: string;
+  movieTitle: string;
+}
+
+export interface ActorMoviesResponse {
+  actorName: string;
+  movieTitle: string;
+  movieListResponses: Movie[];
 }
 
 export interface ReviewProps {

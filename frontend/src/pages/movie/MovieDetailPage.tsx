@@ -33,26 +33,10 @@ const MovieDetailPage: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
 
-  // useEffect(() => {
-  //   // const handleClickOutside = (event: MouseEvent) => {
-  //   //   if (
-  //   //     dropdownRef.current &&
-  //   //     !dropdownRef.current.contains(event.target as Node)
-  //   //   ) {
-  //   //     setIsDropdownOpen(false);
-  //   //   }
-  //   // };
-
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
-
-    const handleShowMore = (reviewSeq: number) => {
-      navigate(`/review/${movieSeq}?reviewSeq=${reviewSeq}`);
+  const handleShowMore = (reviewSeq: number) => {
+    navigate(`/review/${movieSeq}?reviewSeq=${reviewSeq}`);
   };
-  
+
   const {
     data: userData,
     error: userError,
@@ -69,11 +53,12 @@ const MovieDetailPage: React.FC = () => {
     queryKey: ["movieDetail", movieSeq],
     queryFn: async () => {
       if (userSeq) {
-        const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq);
+        const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq); 
         return movieDetail;
       }
     },
     enabled: !!userSeq && !!movieSeq, // `userSeq`와 `movieSeq`가 존재할 때만 쿼리 실행
+    // staleTime: 1000 * 60 * 5, // 5분 동안 데이터 신선하게 유지
   });
 
   useEffect(() => {
@@ -315,15 +300,18 @@ const MovieDetailPage: React.FC = () => {
         </header>
 
         {/* Top section */}
+        {/* Top section */}
         <div className="relative flex items-end text-white p-3 w-[1100px] h-[480px] bg-transparent ml-[50px] mt-[120px] overflow-hidden">
           {/* Left Section: Movie Poster and Details */}
-          <div className="flex flex-col lg:flex-row">
+          <div className="flex flex-col lg:flex-row w-full">
             <img
               src={posterUrl}
               alt="Movie Poster"
               className="w-[270px] h-[410px] shadow-md border"
             />
-            <div className="mt-4 ml-[60px] flex-1">
+            <div className="mt-4 ml-[60px] flex-1 w-[500px]">
+              {" "}
+              {/* 고정된 너비 설정 */}
               <div className="flex items-center justify-between w-full">
                 <h2 className="text-4xl font-bold flex-1 flex items-center overflow-hidden">
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis">
@@ -331,11 +319,13 @@ const MovieDetailPage: React.FC = () => {
                   </span>
                   <span className="flex items-end ml-4 flex-shrink-0">
                     <span className="text-blue-500 text-2xl">⭐</span>
-                    <span className="text-2xl">{movieRating}</span>
+                    <span className="text-2xl" lang="ko">
+                      {movieRating}
+                    </span>
                   </span>
                 </h2>
 
-                {/* Heart icon */}
+                {/* Heart and Dislike icons */}
                 <div
                   className="flex items-end ml-auto relative flex-shrink-0"
                   ref={dropdownRef}
@@ -366,17 +356,17 @@ const MovieDetailPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
               {/* Movie details */}
-              <div className="flex mt-4 text-white text-[16px]">
-                <span>{movieYear}&nbsp; &nbsp; &nbsp;</span>
-
+              <div
+                className="flex mt-4 text-white text-[16px] w-full"
+                lang="ko"
+              >
+                <span>{movieYear}&nbsp;&nbsp;&nbsp;</span>
                 {runningTime && (
                   <span>
-                    | &nbsp; &nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
+                    | &nbsp;&nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
                   </span>
                 )}
-
                 {audienceRating && (
                   <span>|&nbsp;&nbsp;&nbsp;{audienceRating}</span>
                 )}

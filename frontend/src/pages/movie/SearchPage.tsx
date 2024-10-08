@@ -25,9 +25,6 @@ const SearchPage: React.FC = () => {
   const MAX_PAGE = initalPage + 3;
 
   const loadMoreMovies = async (isInitialLoad = false) => {
-    console.log("loadMoreMovies called"); // 호출 시점 확인
-    console.log("Current page:", page);
-    console.log("Current searchQuery:", searchQuery);
 
     if (isLoading || !hasMore || page > MAX_PAGE || !userSeq || !searchQuery)
       return;
@@ -53,8 +50,6 @@ const SearchPage: React.FC = () => {
               index === self.findIndex((m) => m.movieSeq === movie.movieSeq)
           );
 
-          console.log("업데이트된 영화 목록:", uniqueMovies);
-
           return uniqueMovies;
         });
         if (response.length < 20 || page >= MAX_PAGE) {
@@ -71,10 +66,6 @@ const SearchPage: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("SearchPage mounted or searchQuery/userSeq changed");
-    console.log("searchQuery:", searchQuery);
-    console.log("userSeq:", userSeq);
-
     setMovies([]);
     setPage(initalPage);
     setHasMore(true);

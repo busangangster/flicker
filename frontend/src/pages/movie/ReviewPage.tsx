@@ -9,52 +9,48 @@ import { ReviewType } from "../../type";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { fetchMovieDetail, fetchMovieReviews } from "../../apis/axios";
-import { checkAlreadyReview, deleteReview } from "../../apis/movieApi"; // API 호출 함수 추가
+import { fetchMovieReviews } from "../../apis/axios";
+import {
+  checkAlreadyReview,
+  deleteReview,
+  getMoviePoster,
+} from "../../apis/movieApi";
 import { throttle } from "lodash";
 import { useParams, useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { useQuery } from "@tanstack/react-query";
 
 gsap.registerPlugin(ScrollToPlugin);
 
 const ReviewPage: React.FC = () => {
-  const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq 받아오기
-  const [reviews, setReviews] = useState<ReviewType[]>([]); // 서버에서 가져온 리뷰 데이터
-  const [sortOption, setSortOption] = useState("좋아요 많은 순"); // 기본 정렬 옵션
-  const { data: userData } = useUserQuery(); // 유저 정보 가져오기
-  const [page, setPage] = useState(0); // 페이지 번호
-  const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태
-  const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
-  const [moviePosterUrl, setMoviePosterUrl] = useState<string>(""); // 영화 포스터 URL 상태 추가
-  const [alreadyReview, setAlreadyReview] = useState<boolean | null>(null); // 이미 리뷰 작성 여부 상태 (null일 때는 로딩 중)
-  const [userReview, setUserReview] = useState<ReviewType | null>(null); // 유저의 리뷰 저장 상태
+  const { movieSeq } = useParams<{ movieSeq: string }>();
+  const [reviews, setReviews] = useState<ReviewType[]>([]);
+  const [sortOption, setSortOption] = useState("좋아요 많은 순");
+  const { data: userData } = useUserQuery();
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [alreadyReview, setAlreadyReview] = useState<boolean | null>(null);
+  const [userReview, setUserReview] = useState<ReviewType | null>(null);
   const navigate = useNavigate();
 
   const userSeq = userData?.userSeq || 0;
+  console.log(userSeq);
 
-  useEffect(() => {
-    const fetchMovieData = async () => {
-      try {
-        const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq); // 영화 상세 정보 API 호출
-        if (movieDetail?.movieDetailResponse?.moviePosterUrl) {
-          setMoviePosterUrl(movieDetail.movieDetailResponse.moviePosterUrl); // 포스터 URL 설정
-        }
-      } catch (error) {
-        console.error("Error fetching movie details:", error);
-      }
-    };
+  // react-query로 getMoviePoster 요청
+  const { data: moviePosterUrl } = useQuery({
+    queryKey: ["moviePoster", movieSeq],
+    queryFn: () => getMoviePoster(Number(movieSeq)),
+    enabled: !!movieSeq,
+  });
 
-    fetchMovieData(); // 영화 상세 정보를 호출해서 포스터 URL 설정
-  }, [movieSeq, userSeq]);
-
-  // 이미 작성한 리뷰가 있는지 확인하는 함수
   useEffect(() => {
     const fetchReviewStatus = async () => {
       try {
-        const response = await checkAlreadyReview(userSeq, Number(movieSeq)); // API 호출
-        setAlreadyReview(response.alreadyReview); // 리뷰 여부 상태 업데이트
+        const response = await checkAlreadyReview(userSeq, Number(movieSeq));
+        setAlreadyReview(response.alreadyReview);
         if (response.alreadyReview && response.reviewDto) {
-          setUserReview(response.reviewDto); // 유저 리뷰 저장
+          setUserReview(response.reviewDto);
         }
       } catch (error) {
         console.error("리뷰 확인 중 오류가 발생했습니다.", error);
@@ -62,7 +58,7 @@ const ReviewPage: React.FC = () => {
     };
 
     if (userSeq && movieSeq) {
-      fetchReviewStatus(); // API 호출
+      fetchReviewStatus();
     }
   }, [userSeq, movieSeq]);
 
@@ -77,9 +73,8 @@ const ReviewPage: React.FC = () => {
     }
   };
 
-  // 데이터를 가져오는 함수
   const loadReviews = useCallback(async () => {
-    if (isLoading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 중단
+    if (isLoading || !hasMore) return;
 
     setIsLoading(true);
 
@@ -87,41 +82,31 @@ const ReviewPage: React.FC = () => {
       const newReviews = await fetchMovieReviews(
         Number(movieSeq),
         userSeq || 0,
-        "date",
+        sortOption === "좋아요 많은 순"
+          ? "like"
+          : sortOption === "최신순"
+          ? "date"
+          : "old", // 정렬 옵션 적용
         page,
-        10
+        100
       );
 
-      // 중복된 reviewSeq가 없도록 필터링
-      const uniqueNewReviews = newReviews.filter(
-        (newReview: { reviewSeq: number }) =>
-          !reviews.some((review) => review.reviewSeq === newReview.reviewSeq)
-      );
+      setReviews((prevReviews) => [...prevReviews, ...newReviews]);
 
-      if (uniqueNewReviews.length > 0) {
-        setReviews((prevReviews) => {
-          const updatedReviews = [...prevReviews, ...uniqueNewReviews];
-          return updatedReviews;
-        });
-      }
-
-      // 만약 필터링된 리뷰가 10개 미만이면 더 이상 불러올 데이터가 없다고 판단
-      if (uniqueNewReviews.length < 10) {
-        setHasMore(false); // 불러온 데이터가 10개 미만이면 더 이상 데이터 없음
+      if (newReviews.length < 100) {
+        setHasMore(false);
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
     } finally {
-      setIsLoading(false); // 로딩 완료 후
+      setIsLoading(false);
     }
-  }, [movieSeq, userSeq, page, hasMore, isLoading, reviews]);
+  }, [movieSeq, userSeq, page, hasMore, isLoading, sortOption]);
 
-  // 페이지 변경 시 새로운 데이터를 가져옴
   useEffect(() => {
-    loadReviews(); // 초기 데이터 및 페이지 변경 시 데이터 로딩
-  }, [page]);
+    loadReviews();
+  }, [page, sortOption]);
 
-  // 스크롤 이벤트를 감지하여 하단에 도달하면 페이지를 증가시킴
   const handleScroll = useCallback(
     throttle(() => {
       const scrollableElement = document.querySelector(".scroll-container");
@@ -132,14 +117,13 @@ const ReviewPage: React.FC = () => {
           !isLoading &&
           hasMore
         ) {
-          setPage((prevPage) => prevPage + 1); // 페이지 증가
+          setPage((prevPage) => prevPage + 1);
         }
       }
     }, 1000),
     [isLoading, hasMore]
   );
 
-  // 스크롤 이벤트 추가 및 제거
   useEffect(() => {
     const scrollableElement = document.querySelector(".scroll-container");
     if (scrollableElement) {
@@ -153,30 +137,6 @@ const ReviewPage: React.FC = () => {
     };
   }, [handleScroll]);
 
-  // 리뷰 데이터를 정렬하는 함수
-  const getSortedReviews = async () => {
-    // 리뷰 정렬할 때마다 최신 데이터를 다시 받아옴
-    await loadReviews();
-
-    const sortedReviews = [...reviews];
-
-    if (sortOption === "최신순") {
-      return sortedReviews.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-    } else if (sortOption === "오래된 순") {
-      return sortedReviews.sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-    } else if (sortOption === "좋아요 많은 순") {
-      return sortedReviews.sort((a, b) => b.likes - a.likes);
-    }
-
-    return sortedReviews;
-  };
-
   const filterOptions = [
     { value: "좋아요 많은 순", label: "좋아요 많은 순" },
     { value: "최신순", label: "최신순" },
@@ -185,8 +145,9 @@ const ReviewPage: React.FC = () => {
 
   const handleFilterChange = async (value: string) => {
     setSortOption(value);
-    const sortedReviews = await getSortedReviews(); // 필터 변경 시 정렬된 리뷰를 다시 받아옴
-    setReviews(sortedReviews); // 정렬된 리뷰 상태 업데이트
+    setPage(0); // 페이지 초기화
+    setReviews([]); // 리뷰 초기화
+    setHasMore(true); // 더 가져올 수 있도록 설정
   };
 
   const handleAddReview = (newReview: ReviewType) => {
@@ -206,8 +167,8 @@ const ReviewPage: React.FC = () => {
       <header className="sticky top-0 bg-transparent z-20">
         <Navbar />
         <IoIosArrowRoundBack
-          onClick={() => navigate(-1)} // 뒤로가기 기능
-          className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+          onClick={() => navigate(-1)}
+          className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60"
         />
       </header>
       <div className="flex justify-center mt-[120px] ">
@@ -225,10 +186,8 @@ const ReviewPage: React.FC = () => {
               </div>
             </div>
 
-            {/* API 응답 전까지는 아무것도 렌더링하지 않도록 */}
             {alreadyReview !== null && (
               <>
-                {/* 이미 리뷰를 작성한 경우, 리뷰 작성 폼을 숨기고 본인 리뷰를 최상단에 배치 */}
                 {!alreadyReview && userData && (
                   <ReviewForm
                     onSubmit={handleAddReview}
@@ -238,7 +197,7 @@ const ReviewPage: React.FC = () => {
                 {userReview && (
                   <Review
                     key={userReview.reviewSeq}
-                    review={userReview} // 본인 리뷰 최상단에 표시
+                    review={userReview}
                     onDelete={handleDeleteReview}
                     userSeq={userSeq}
                   />
@@ -250,12 +209,12 @@ const ReviewPage: React.FC = () => {
               reviews.map((review) => (
                 <Review
                   key={review.reviewSeq}
-                  review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
+                  review={{ ...review, top: false }}
                   userSeq={userSeq}
                 />
               ))
             ) : (
-              <div>리뷰가 없습니다</div> // 리뷰가 없는 경우 처리
+              <div>리뷰가 없습니다</div>
             )}
             {isLoading && <div>Loading...</div>}
           </div>

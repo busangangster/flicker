@@ -34,7 +34,7 @@ const PlotModal: React.FC<PlotModalProps> = ({
         </div>
         <div className="text-[35px] font-bold mb-6">{movieTitle}</div>
         <div className="flex">
-          <div className="flex-col text-white font-semibold self-end mb-2">
+          <div className="flex-col text-white font-semibold self-end mb-2" lang="ko">
             <div className="text-lg">
               <span>개봉년도</span>
               <span className="text-gray-300 ml-6">{movieYear}</span>

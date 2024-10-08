@@ -106,7 +106,7 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
                     className="w-5 h-5"
                   />
                 ))}
-                <span className="ml-2 text-white font-bold">
+                <span className="ml-2 text-white font-bold" lang="ko">
                   {review.reviewRating}
                 </span>
               </span>
@@ -132,7 +132,9 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
                   alt="Thumb Up"
                   className="w-4 h-4 mr-1"
                 />
-                <span className=" text-gray-300">{likes}</span>
+                <span className=" text-gray-300" lang="ko">
+                  {likes}
+                </span>
               </button>
             </div>
           </div>
@@ -161,7 +163,7 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
               스포일러 내용이 포함되어 있어요! 클릭하면, 내용을 볼 수 있어요.
             </p>
           )}
-          <span className="text-gray-400 text-sm self-end mb-1">
+          <span className="text-gray-400 text-sm self-end mb-1" lang="ko">
             {new Date(review.createdAt).toLocaleDateString("ko-KR", {
               year: "numeric",
               month: "2-digit",

@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUserQuery } from "../../hooks/useUserQuery";
+import { useQueryClient } from "@tanstack/react-query";
+
+
+function ClearCacheButton() {
+  const queryClient = useQueryClient();
+
+  const clearCache = () => {
+    // 전체 캐시 삭제
+    queryClient.clear();
+    console.log("캐시가 초기화되었습니다.");
+  };
+
+  return clearCache; // clearCache 함수 자체를 반환
+}
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +25,9 @@ const Navbar: React.FC = () => {
 
   const [isVisible, setIsVisible] = useState(true); // Navbar의 가시성 상태
   const [scrollPosition, setScrollPosition] = useState(0); // 스크롤 위치 상태
+
+  const clearCache = ClearCacheButton(); // 함수 호출이 아닌 함수 자체를 변수로 할당
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -114,6 +131,12 @@ const Navbar: React.FC = () => {
                   display: menuOpen || animateMenu ? "flex" : "none",
                 }}
               >
+                <button
+                  className="text-white font-semibold whitespace-nowrap hover:opacity-70"
+                  onClick={clearCache}
+                >
+                  cache initalize
+                </button>
                 <NavLink
                   to="/servicedetail"
                   className="text-white font-semibold whitespace-nowrap hover:opacity-70"
