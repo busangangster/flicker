@@ -832,4 +832,10 @@ public class BffMovieService {
         // 2. 비동기 방식으로 GET 요청을 외부 API에 보냅니다.
         return util.sendGetRequestAsync(movieBaseUrl, path);
     }
+
+    public Mono<ResponseEntity<ResponseDto>> getMoviePoster(int movieSeq) {
+        // 1. 영화 서버에서 영화 포스터 가져오기
+        String path = util.getUri("/poster/" + movieSeq);
+        return util.sendGetRequestAsync(movieBaseUrl, path);
+    }
 }
