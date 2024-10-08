@@ -181,4 +181,9 @@ public class BffUserController {
 
         return userService.refresh(refresh);
     }
+
+    @GetMapping("/check-first-login/{userSeq}")
+    public Mono<ResponseEntity<ResponseDto>> checkFirstLogin(@PathVariable Integer userSeq){
+        return userService.checkFirstLogin(userSeq);
+    }
 }
