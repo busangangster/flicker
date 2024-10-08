@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
 import "../../css/PhotoBook.css";
 import Navbar from "../../components/common/Navbar";
@@ -7,10 +7,12 @@ import { getPhotocard } from "../../apis/photocardApi";
 import PhotoCardFront from "../../components/PhotoCardFront";
 import PhotoCardDetailPage from "./PhotoCardDetailPage"; // Detail 페이지 추가
 import { IFlipBook, Page, PhotocardDataItem } from "../../type";
+import { useQuery } from "@tanstack/react-query";
+
 
 const PhotoCardPage: React.FC = () => {
   const book = useRef<IFlipBook | null>(null);
-  const [photocardData, setPhotocardData] = useState<PhotocardDataItem[]>([]);
+  // const [photocardData, setPhotocardData] = useState<PhotocardDataItem[]>([]);
   const [selectedCard, setSelectedCard] = useState<{
     src: string;
     alt: string;
@@ -34,19 +36,17 @@ const PhotoCardPage: React.FC = () => {
   const userSeq = userData?.userSeq; // useUserQuery를 통해 가져온 userSeq
 
   // useEffect는 항상 최상위에서 호출됩니다.
-  useEffect(() => {
-    if (userSeq) {
-      const fetchPhotocardData = async () => {
-        try {
-          const response = await getPhotocard(userSeq);
-          setPhotocardData(response.data);
-        } catch (error) {
-          console.error("포토카드 데이터를 불러오는데 실패했습니다.", error);
-        }
-      };
-      fetchPhotocardData();
-    }
-  }, [userSeq]); // userSeq가 변경될 때만 호출
+  const {
+    data: photocardResponse,
+    error: photocardError,
+    isLoading: isPhotocardLoading,
+  } = useQuery({
+    queryKey: ["photocardData", userSeq], // queryKey로 캐시를 관리
+    queryFn: () => getPhotocard(userSeq!), // userSeq가 있을 때만 getPhotocard 호출
+    enabled: !!userSeq, // userSeq가 있을 때만 쿼리 실행
+    retry: 1, // 실패 시 1번 재시도
+    refetchOnWindowFocus: false, // 창 포커스 시 다시 불러오지 않도록 설정
+  });
 
   const handleBookInit = () => {
     if (book.current) {
@@ -117,33 +117,53 @@ const PhotoCardPage: React.FC = () => {
         className: (i / imagesPerPage) % 2 === 0 ? "left-page" : "right-page",
       });
     }
+    // 페이지가 홀수일 때 빈 페이지 추가
+    if (pages.length % 2 !== 0) {
+      pages.push({
+        id: pages.length + 1,
+        content: (
+          <div className="flex flex-col items-center justify-center h-full p-4 bg-[#FFFDF8] rounded-sm">
+            <h1 className="text-5xl font-bold italic text-gray-400">
+              Empty Page
+            </h1>
+          </div>
+        ),
+        className: "right-page", // 짝수 페이지의 경우 빈 페이지는 오른쪽에 추가
+      });
+    }
 
     return pages;
   };
 
-  const pages: Page[] = [
-    {
-      id: 1,
-      content: (
-        <div className="flex flex-col items-center justify-center h-full p-4 bg-[#FFFDF8] rounded-sm">
-          <h1 className="text-5xl font-bold italic text-black mb-3">
-            MOVIE MEMORIES
-          </h1>
-          <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
-          <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
-          <p className="text-lg italic mt-2 text-gray-700 self-end mr-16 mb-10">
-            made by {userData?.userId}
-          </p>
-          <img
-            src="/assets/background/photobookmain.png"
-            alt="Cover Image"
-            className="mt-6 w-[600px] h-[400px]"
-          />
-        </div>
-      ),
-    },
-    ...createPages(photocardData),
-  ];
+
+  const photocardData = photocardResponse?.data || [];
+
+  if (isPhotocardLoading) return <p>포토카드 데이터를 불러오는 중입니다...</p>;
+  if (photocardError) return <p>포토카드 데이터를 불러오는 데 실패했습니다.</p>;
+
+const pages: Page[] = [
+  {
+    id: 1,
+    content: (
+      <div className="flex flex-col items-center justify-center h-full p-4 bg-[#FFFDF8] rounded-sm">
+        <h1 className="text-5xl font-bold italic text-black mb-3">
+          MOVIE MEMORIES
+        </h1>
+        <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
+        <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
+        <p className="text-lg italic mt-2 text-gray-700 self-end mr-16 mb-10">
+          made by {userData?.userId}
+        </p>
+        <img
+          src="/assets/background/photobookmain.png"
+          alt="Cover Image"
+          className="mt-6 w-[600px] h-[400px]"
+        />
+      </div>
+    ),
+  },
+  ...createPages(photocardData), // photocardData가 배열로 처리됨
+];
 
   return (
     <div className="bg-black min-h-screen flex flex-col justify-center items-center">
