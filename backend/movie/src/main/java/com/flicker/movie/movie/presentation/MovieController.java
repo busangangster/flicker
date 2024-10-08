@@ -142,7 +142,7 @@ public class MovieController {
     }
 
     // 영화 ID 리스트로 영화 목록 조회
-    @PostMapping("/list/movieId")
+    @GetMapping("/list/movieId")
     public ResponseEntity<ResponseDto> getMovieListByMovieSeqList(@RequestBody List<Integer> request) {
         List<MovieListResponse> response = movieService.getMovieListByMovieSeqList(request);
         return ResponseDto.response(StatusCode.SUCCESS, response);
@@ -183,7 +183,7 @@ public class MovieController {
     }
 
     // 평점 높은 영화 30개 조회
-    @PostMapping("/list/topRating")
+    @GetMapping("/list/topRating")
     public ResponseEntity<ResponseDto> getTopRatingMovieList(@RequestBody List<Integer> movieSeqs) {
         List<MovieListResponse> response = movieService.getTopRatingMovieList(movieSeqs);
         return ResponseDto.response(StatusCode.SUCCESS, response);
