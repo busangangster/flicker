@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchMoviesBySearch } from "../../apis/axios";
 import Navbar from "../../components/common/Navbar";
@@ -15,42 +15,80 @@ const SearchPage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
+  const [page, setPage] = useState<number>(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      if (!userSeq || !searchQuery) return;
+  const initalPage = 0;
+  const MAX_PAGE = initalPage + 3;
 
-      setIsLoading(true);
-      try {
-        // 페이지를 0으로 고정하고 한 번만 호출
-        const newMovies = await fetchMoviesBySearch(
-          searchQuery,
-          userSeq,
-          0,
-          20
-        );
+
+  const loadMoreMovies = async () => {
+    if (isLoading || !hasMore || page > MAX_PAGE || !userSeq || !searchQuery) return;
+
+    setIsLoading(true);
+    try {
+      console.log(`페이지 ${page}에 대해 영화 데이터를 로드 중...`);
+      
+      if (searchQuery) {
+        const response = await fetchMoviesBySearch(searchQuery, userSeq, page, 20);
+
+        console.log("새로운 영화 데이터", response);
+
         setMovies((preMovies) => {
-          const allMovies = [...preMovies, ...newMovies];
+          const allMovies = [...preMovies, ...response];
           const uniqueMovies = allMovies.filter(
             (movie, index, self) => index === self.findIndex((m) => m.movieSeq === movie.movieSeq)
           );
+
+          console.log("업데이트된 영화 목록:", uniqueMovies);
+
           return uniqueMovies;
         });
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-      } finally {
-        setIsLoading(false);
+        if (response.length < 20 || page >= MAX_PAGE) {
+          setHasMore(false);
+        } else {
+          setPage((prevPage) => prevPage + 1);
+        }
       }
-    };
+    } catch (error) {
+      console.error("Error fetching more movies:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-    fetchMovies();
-  }, [searchQuery, userSeq]);
+  useEffect(() => {
+    setMovies([]);
+    setPage(initalPage);
+    setHasMore(true);
+    loadMoreMovies();
+  },[searchQuery,userSeq])
+
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 40 &&
+      hasMore &&
+      !isLoading &&
+      page <= MAX_PAGE
+    ) {
+      loadMoreMovies();
+    }
+  }, [hasMore, isLoading, page]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
+
 
   return (
-    <div className="flex flex-col bg-black h-screen text-white overflow-y-auto">
+    <div className="flex flex-col bg-black min-h-screen text-white overflow-y-auto">
       <header className="sticky top-0 bg-transparent z-20">
         <Navbar />
         <IoIosArrowRoundBack
