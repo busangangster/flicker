@@ -4,16 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
+//import com.flicker.bff.common.module.status.StatusCode;
 import com.flicker.bff.common.module.status.StatusCode;
 import com.flicker.bff.dto.movie.MovieSeqListRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -55,10 +53,19 @@ public class Util {
 //                    .filter(ExchangeFilterFunctions.retry(3))  // 최대 3번까지 재시도
 //                    .build();
             // WebClient 인스턴스 생성
+
+
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
             return webClient.get()
                     .uri(path)
                     .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                        if (clientResponse.statusCode() == HttpStatus.NOT_FOUND) {
+                            // 404 상태 코드에 대한 예외 발생
+                            return Mono.error(new RestApiException(StatusCode.NOT_FOUND, "리소스를 찾을 수 없습니다."));
+                        }
+                        return Mono.error(new RestApiException(StatusCode.NOT_FOUND, "클라이언트 오류 발생"));
+                    })
                     .bodyToMono(String.class)  // 응답을 문자열로 받음
                     .flatMap(response -> {
                         try {
@@ -70,6 +77,16 @@ public class Util {
                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
                         }
                     })
+                    .retryWhen(
+                            Retry.max(3) // 최대 3번 재시도
+                                    .filter(throwable -> {
+                                        if (throwable instanceof RestApiException ex) {
+                                            // 404 예외일 경우 재시도 조건으로 사용
+                                            return ex.getStatusCode() == StatusCode.NOT_FOUND;
+                                        }
+                                        return false;
+                                    })
+                    )
                     .onErrorResume(e -> {
                         if (e instanceof RestApiException ex) {
                             ex.printStackTrace();
@@ -78,12 +95,7 @@ public class Util {
                             e.printStackTrace();
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생: " + e.getMessage()));
                         }
-                    })
-                    .retryWhen(
-                            Retry.max(3) // 최대 3번 재시도
-                                    .filter(throwable -> throwable instanceof WebClientResponseException &&
-                                            ((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND)
-                    );
+                    });
         } catch (Exception e) {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient GET 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
