@@ -291,17 +291,30 @@ public class MovieService {
     }
 
     public List<WordCloudResponse> getWordCloud(int movieSeq) {
-        // 1. 영화 정보 조회
-        Movie movie = movieRepoUtil.findById(movieSeq);
-        // 2. 워드 클라우드 조회
-        List<WordCloud> wordClouds = movie.getWordClouds();
-        // 3. WordCloud 정렬
-        wordClouds.sort((o1, o2) -> o2.getCount() - o1.getCount());
-        // 4. WordCloudResponse 리스트 생성 ( 상위 12개 )
-        return wordClouds.stream()
-                .limit(12)
-                .map(WordCloudResponse::new)
-                .toList();
+        List<WordCloudResponse> result = new ArrayList<>();
+
+        try {
+            // 1. 영화 정보 조회
+            System.out.println("find movieSeq = " + movieSeq);
+            Movie movie = movieRepoUtil.findById(movieSeq);
+            System.out.println("movie = " + movie);
+            // 2. 워드 클라우드 조회
+            List<WordCloud> wordClouds = movie.getWordClouds();
+            System.out.println("정렬전 wordClouds = " + wordClouds);
+            // 3. WordCloud 정렬
+            wordClouds.sort((o1, o2) -> o2.getCount() - o1.getCount());
+            System.out.println("정렬된 wordClouds = " + wordClouds);
+
+            // 4. WordCloudResponse 리스트 생성 ( 상위 12개 )
+            result = wordClouds.stream()
+                    .limit(12)
+                    .map(WordCloudResponse::new)
+                    .toList();
+            System.out.println("wordCloud List = " + wordClouds);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return result;
     }
 
     public List<MovieListResponse> getTopRatingMovieList(List<Integer> movieSeqs) {

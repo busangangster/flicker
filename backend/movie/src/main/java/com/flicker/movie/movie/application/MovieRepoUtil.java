@@ -45,6 +45,7 @@ public class MovieRepoUtil {
      * @throws RestApiException 영화 정보를 찾을 수 없을 때 발생
      */
     public Movie findById(int movieSeq) {
+        System.out.println("JPA 호출 movieSeq = " + movieSeq);
         return movieRepository.findById(movieSeq)
                 .orElseThrow(() -> new RestApiException(StatusCode.NOT_FOUND, "해당 영화 정보를 찾을 수 없습니다."));
     }
