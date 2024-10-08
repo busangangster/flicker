@@ -36,7 +36,4 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>, MovieRep
 
     // 영화 제목이 같은 것 중에서 DEL_YN이 'N'이고, 영화 연도가 최신인 영화 한 건만 조회
     Optional<Movie> findFirstByMovieDetail_MovieTitleAndDelYNOrderByMovieDetail_MovieYearDescMovieSeqDesc(String movieTitle, String delYN);
-
-    // DEL_YN이 N이고, 영화 평점 내림차순으로 영화 목록 조회
-    List<Movie> findByDelYNOrderByMovieRatingDesc(String n, Pageable pageable);
 }
