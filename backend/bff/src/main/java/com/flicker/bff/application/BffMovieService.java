@@ -230,12 +230,7 @@ public class BffMovieService {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/wordCloud/" + movieSeq);
         // 2. 비동기 방식으로 POST 요청을 외부 API에 보냅니다.
-        System.out.println("서비스 코드 시작 : path로 요청 보냄" + path);
-
-        Mono<ResponseEntity<ResponseDto>> responseEntityMono = util.sendGetRequestAsync(movieBaseUrl, path);
-
-        System.out.println("서비스 코드 종료 : "+responseEntityMono);
-        return responseEntityMono;
+        return util.sendGetRequestAsync(movieBaseUrl, path);
     }
 
     // 영화 상세조회
@@ -314,7 +309,6 @@ public class BffMovieService {
                                                             ResponseDto movieListResponseDto;
                                                             try {
                                                                 // JSON 데이터를 ResponseDto로 역직렬화
-                                                                System.out.println("movieListResponseDto = " + movieListResponse.getBody());
                                                                 movieListResponseDto = Objects.requireNonNull(movieListResponse.getBody());
                                                             } catch (Exception e) {
                                                                 return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "사용자 상세 조회 연관 추천 영화 목록 Body을 역직렬화하는데 오류 발생: " + e.getMessage()));
