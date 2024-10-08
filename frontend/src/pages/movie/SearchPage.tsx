@@ -24,23 +24,33 @@ const SearchPage: React.FC = () => {
   const initalPage = 0;
   const MAX_PAGE = initalPage + 3;
 
+  const loadMoreMovies = async (isInitialLoad = false) => {
+    console.log("loadMoreMovies called"); // 호출 시점 확인
+    console.log("Current page:", page);
+    console.log("Current searchQuery:", searchQuery);
 
-  const loadMoreMovies = async () => {
-    if (isLoading || !hasMore || page > MAX_PAGE || !userSeq || !searchQuery) return;
+    if (isLoading || !hasMore || page > MAX_PAGE || !userSeq || !searchQuery)
+      return;
 
     setIsLoading(true);
     try {
       console.log(`페이지 ${page}에 대해 영화 데이터를 로드 중...`);
-      
+
       if (searchQuery) {
-        const response = await fetchMoviesBySearch(searchQuery, userSeq, page, 20);
+        const response = await fetchMoviesBySearch(
+          searchQuery,
+          userSeq,
+          page,
+          20
+        );
 
         console.log("새로운 영화 데이터", response);
 
         setMovies((preMovies) => {
           const allMovies = [...preMovies, ...response];
           const uniqueMovies = allMovies.filter(
-            (movie, index, self) => index === self.findIndex((m) => m.movieSeq === movie.movieSeq)
+            (movie, index, self) =>
+              index === self.findIndex((m) => m.movieSeq === movie.movieSeq)
           );
 
           console.log("업데이트된 영화 목록:", uniqueMovies);
@@ -49,7 +59,7 @@ const SearchPage: React.FC = () => {
         });
         if (response.length < 20 || page >= MAX_PAGE) {
           setHasMore(false);
-        } else {
+        } else if (!isInitialLoad) {
           setPage((prevPage) => prevPage + 1);
         }
       }
@@ -58,14 +68,18 @@ const SearchPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
+    console.log("SearchPage mounted or searchQuery/userSeq changed");
+    console.log("searchQuery:", searchQuery);
+    console.log("userSeq:", userSeq);
+
     setMovies([]);
     setPage(initalPage);
     setHasMore(true);
-    loadMoreMovies();
-  },[searchQuery,userSeq])
+    loadMoreMovies(true);
+  }, [location.search, userSeq]);
 
   const handleScroll = useCallback(() => {
     if (
@@ -85,7 +99,6 @@ const SearchPage: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
-
 
   return (
     <div className="flex flex-col bg-black min-h-screen text-white overflow-y-auto">
