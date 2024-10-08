@@ -77,10 +77,10 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
       {
         label: "Ratings",
         data: yValues,
-        backgroundColor: yValues.map((value, index) =>
+        backgroundColor: yValues.map((index) =>
           index === maxIndex ? "#6282D3" : "#8694B8"
         ),
-        borderColor: yValues.map((value, index) =>
+        borderColor: yValues.map((index) =>
           index === maxIndex ? "#6282D3" : "#8694B8"
         ),
         borderWidth: 0.5,
@@ -134,7 +134,7 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
     layout: {
       padding: {
         right: 10,
-        top: 30
+        top: 30,
       },
     },
     clip: false as const,
@@ -150,12 +150,18 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
     >
       <div className="flex justify-between items-center mb-1">
         <p className="font-semibold text-lg mr-2">RATINGS</p>
-        <span className="text-sm">{totalCnt} Flickers</span>
+        <span className="text-sm">
+          <span lang="ko">{totalCnt}</span> Flickers
+        </span>
       </div>
       <div className="border-t border-gray-700 mb-4"></div>
       <div className="relative ml-3">
         <Bar data={data} options={options} />
-        <div className="absolute right-7 top-0 flex items-center text-2xl font-bold transform translate-x-1/2">
+        <div
+          className="absolute right-8 top-0 flex items-center text-2xl font-bold transform translate-x-1/2"
+          lang="ko"
+        >
+          <span className="text-lg mr-1">☆</span>
           {averageRating.toFixed(2)}
         </div>
       </div>

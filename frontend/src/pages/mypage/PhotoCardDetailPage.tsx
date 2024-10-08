@@ -34,7 +34,7 @@ const PhotoCardDetailPage: React.FC<{
       onClick={handleCardClick}
     >
       <div className={`photo-card ${isFlipped ? "flipped" : ""}`}>
-        <div className="photo-card-front bg-white p-4 opacity-95 shadow-xl rounded-lg">
+        <div className="photo-card-front bg-white p-4 opacity-95 shadow-2xl shadow-black rounded-lg ">
           <img
             src={card.src}
             alt="Front"
@@ -45,31 +45,36 @@ const PhotoCardDetailPage: React.FC<{
           </h2>
         </div>
 
-        <div className="photo-card-back bg-white p-10 opacity-95 shadow-xl rounded-lg relative">
+        <div className="photo-card-back bg-white p-10 opacity-95 shadow-xl shadow-neutral-600  rounded-lg relative">
           <img
             src="/assets/common/x.png"
             alt="Back Button"
-            className="w-4 h-4 absolute top-4 right-4 cursor-pointer hover:opacity-80"
+            className="w-4 h-4 absolute top-4 right-4 cursor-pointer hover:opacity-70"
             onClick={handleCloseModal}
           />
           <h2 className="text-center text-xl italic mb-3 text-black">
             My Photo Card
           </h2>
           <hr className="mb-2 border-gray-600" />
-          <p className="text-center text-sm mb-2 text-black">
+          <p className="text-center text-sm mb-2 text-black" lang="ko">
             {card.movieYear}
           </p>
           <div className="relative group">
-            <h1
-              className="text-center text-2xl font-bold mb-4 text-black cursor-pointer"
-              onClick={goToMovieDetail}
-            >
+            <h1 className="text-center text-2xl font-bold mb-2 text-black">
               {card.movieTitle}
             </h1>
-            <span className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-gray-500 bg-opacity-70 text-white text-xs p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex justify-end">
+              <div
+                className="text-neutral-600 text-xs mb-1 underline hover:text-black cursor-pointer ml-auto"
+                onClick={goToMovieDetail}
+              >
+                영화 상세페이지
+              </div>
+            </div>
+            {/* <span className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-gray-500 bg-opacity-70 text-white text-xs p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
               {`영화 상세페이지로 이동`}
-            </span>
-          </div> 
+            </span> */}
+          </div>
           <hr className="mb-6 border-gray-600" />
           <div className="flex items-center justify-center mb-6">
             {Array.from({ length: 5 }, (_, index) => {
@@ -105,7 +110,7 @@ const PhotoCardDetailPage: React.FC<{
                 );
               }
             })}
-            <span className="ml-3 text-xl text-black font-bold">
+            <span className="ml-3 text-2xl text-black font-bold" lang="ko">
               {card.reviewRating.toFixed(1)}
             </span>
           </div>
@@ -114,8 +119,11 @@ const PhotoCardDetailPage: React.FC<{
             <h3 className="font-semibold mb-2 ml-2 text-black text-lg italic">
               info
             </h3>
-            <div className="border border-gray-500 rounded-sm p-4 text-black font-semibold">
-              <p>{card.createdAt.slice(0, 10)}</p>
+            <div
+              className="border border-gray-500 rounded-sm p-4 text-black font-semibold"
+              lang="ko"
+            >
+              <p>{card.createdAt.slice(0, 10).replace(/-/g, ".")}</p>
             </div>
           </div>
 
@@ -130,7 +138,7 @@ const PhotoCardDetailPage: React.FC<{
                   alt="Thumb Up"
                   className="w-5 h-5 mr-1 cursor-pointer"
                 />
-                <span className="text-gray-600 font-semibold">
+                <span className="text-gray-600 font-semibold" lang="ko">
                   {card.likes}
                 </span>
               </div>
@@ -141,6 +149,7 @@ const PhotoCardDetailPage: React.FC<{
           </div>
         </div>
       </div>
+      <div className="absolute left-0 bottom-0 w-[100px] h-[100px] hover-trigger"></div>
     </div>
   );
 };

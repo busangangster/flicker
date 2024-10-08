@@ -62,3 +62,7 @@
 .photo-card-hover:hover {
   transform: translateY(-10px); /* 호버 시 위로 10px 이동 */
 }
+
+.photo-card-container .hover-trigger:hover ~ .photo-card {
+  transform: rotateY(180deg);
+}

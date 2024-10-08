@@ -14,14 +14,17 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
         {images.map((image, index) => (
           <div
             key={index}
-            className="bg-white w-[250px] h-[350px] rounded-lg border border-gray-600 pt-3 pb-10 flex justify-center items-center shadow-lg photo-card-hover cursor-pointer"
+            className="bg-white w-[250px] h-[350px] rounded-lg border border-gray-600 pt-3 pb-5 flex flex-col justify-center items-center shadow-lg photo-card-hover cursor-pointer"
             onClick={() => onCardClick(image)} // 카드 클릭 시 상세 페이지 열기
           >
             <img
               src={image.src}
               alt={image.alt}
-              className="border rounded-md object-cover w-5/6"
+              className="border rounded-md object-cover w-5/6 mb-2" // 이미지 아래에 간격 추가
             />
+            <div className="text-gray-600 text-sm self-end mr-6" lang="ko">
+              {image.createdAt.slice(0, 10).replace(/-/g, ".")}
+            </div>
           </div>
         ))}
       </div>
