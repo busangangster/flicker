@@ -1,5 +1,8 @@
 package com.flicker.logger.presentation;
 
+import com.flicker.logger.application.WordCloudUpdateService;
+import com.flicker.logger.dto.KeywordCount;
+import com.flicker.logger.dto.WordCloudResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobExecutionException;
@@ -10,6 +13,8 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /*
  * 스케쥴러 수동 실행을 위한 스케쥴러 (ADMIN)
@@ -22,6 +27,7 @@ public class AdminController {
 
     private final JobLauncher jobLauncher;
     private final JobRegistry jobRegistry;
+    private final WordCloudUpdateService wordCloudUpdateService;
 
     @GetMapping("/averageRating")
     public void startBatchJob() {

@@ -2,6 +2,7 @@ package com.flicker.logger.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.logger.dto.WordCloudRequest;
+import com.flicker.logger.dto.WordCloudResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,4 +39,16 @@ public class WordCloudUpdateService {
                 .collectList()
                 .block();
     }
+
+    public List<WordCloudResult> getWordCloudUpdate () {
+
+        // FastAPI 서버로 POST 요청 후, 응답을 WordCloudResponse 객체로 매핑
+        return webClient.post()
+                .uri("/wordcloud_update")
+                .retrieve()
+                .bodyToFlux(WordCloudResult.class)  // 응답 데이터를 WordCloudResponse로 처리
+                .collectList()
+                .block();
+    }
+
 }
