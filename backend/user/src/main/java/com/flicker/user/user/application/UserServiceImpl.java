@@ -184,4 +184,15 @@ public class UserServiceImpl implements UserService{
         }
         return byUserSeq;
     }
+
+    @Override
+    public boolean isFirstLoginUser(Integer userSeq) {
+
+        User byUserSeq = userRepository.findByUserSeq(userSeq);
+
+        if(byUserSeq.getFavoriteMovies() == null || byUserSeq.getFavoriteMovies().isEmpty()){
+            return true;
+        }
+        return false;
+    }
 }

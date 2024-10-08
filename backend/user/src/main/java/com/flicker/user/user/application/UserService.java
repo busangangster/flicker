@@ -25,4 +25,6 @@ public interface UserService {
     public boolean deleteBookmarkMovie(Integer userSeq, Integer movieSeq);
 
     public MovieDetail getMovieDetail(Integer userSeq, Integer movieSeq);
+
+    public boolean isFirstLoginUser(Integer userSeq);
 }
