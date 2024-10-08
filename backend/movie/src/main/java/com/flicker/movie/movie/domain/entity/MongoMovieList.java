@@ -10,7 +10,6 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-@ToString
 @Builder
 @Document(collection = "movies")  // MongoDB 컬렉션 이름
 public class MongoMovieList {
