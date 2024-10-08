@@ -451,4 +451,9 @@ public class BffUserService {
         }
         return null;
     }
+
+    public Mono<ResponseEntity<ResponseDto>> checkFirstLogin(Integer userSeq) {
+        String path = util.getUri("/first-login-check/"+userSeq);
+        return util.sendGetRequestAsync(userReviewBaseUrl,path);
+    }
 }
