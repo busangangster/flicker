@@ -31,6 +31,7 @@ const ReviewPage: React.FC = () => {
   const navigate = useNavigate();
 
   const userSeq = userData?.userSeq || 0;
+  console.log(userSeq);
 
   useEffect(() => {
     const fetchMovieData = async () => {

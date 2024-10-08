@@ -35,6 +35,8 @@ const MoviesPage: React.FC = () => {
   const [highRateMovies, setHighRateMovies] = useState<Movie[]>([]);
   const [newMovies, setNewMovies] = useState<Movie[]>([]);
   const [ActorMovies, setActorMovies] = useState<Movie[]>([]);
+  const [actorName, setActorName] = useState<string>("");
+  const [movieTitle, setMovieTitle] = useState<string>("");
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
 
@@ -202,7 +204,8 @@ const MoviesPage: React.FC = () => {
     setLoading(true);
     try {
       const response = await fetchMovieBasedOnActor(userSeq);
-      console.log(response);
+      setActorName(response.actorName);
+      setMovieTitle(response.movieTitle);
       const movies = response.movieListResponses.map((movie: Movie) => ({
         movieSeq: movie.movieSeq,
         moviePosterUrl: movie.moviePosterUrl,
@@ -268,7 +271,7 @@ const MoviesPage: React.FC = () => {
         <>
           <MoviesList category="이번 달 신작 영화" movies={newMovies} />
           <MoviesList
-            category="최근 작성한 리뷰에 등장한 배우가 출연한 영화"
+            category={`재밌게 본 "${movieTitle}"에 출연한 "${actorName}"와 관련된 영화`}
             movies={ActorMovies}
           />
           <MoviesList category="판타지 영화" movies={fantasyMovies} />

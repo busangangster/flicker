@@ -1,5 +1,7 @@
-import axios from "axios";
+import axios  from "axios";
 import Cookies from "js-cookie";
+import axiosRetry from "axios-retry";
+
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -115,6 +117,25 @@ const movieListApi = axios.create({
   baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}/list`,
   headers: {
     "Content-Type": "application/json",
+  },
+  timeout: 40000,
+});
+
+axiosRetry(movieListApi, {
+  retries: 3, // 최대 3번 재시도
+  retryDelay: (retryCount) => {
+    console.log(`Retry attempt: ${retryCount}`);
+    return retryCount * 3000; // 각 재시도마다 3초씩 지연
+  },
+  retryCondition: (error) => {
+    console.error("Error occurred:", error.message);
+    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
+    return error.response?.status >= 500 || error.code === "ECONNABORTED";
+  },
+  onRetry: (retryCount, error, requestConfig) => {
+    console.log(`Retrying... Attempt #${retryCount}`);
+    console.log("Request Config:", requestConfig);
+    console.error("Error Details:", error);
   },
 });
 
@@ -264,7 +285,6 @@ export const fetchMovieBasedOnActor = async (userSeq: number) => {
     const response = await movieListApi.get(url);
     if (response?.data.data) {
       const movies = response.data.data;
-      console.log(movies);
       return movies;
     } else {
       console.error("Unexpected response structure", response);

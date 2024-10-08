@@ -168,7 +168,7 @@ const TopTen: React.FC = () => {
                     src={movie.moviePosterUrl}
                     alt={movie.movieTitle}
                     onClick={() => goToDetail(movie.movieSeq)}
-                    className="h-[250px] md:h-[300px] xl:h-[350px] rounded-lg object-cover transform transition-transform duration-300 hover:-translate-y-2"
+                    className="h-[250px] md:h-[300px] xl:h-[350px] rounded-lg object-cover transform transition-transform duration-300 hover:-translate-y-2 cursor-pointer"
                   />
                 </div>
               </SwiperSlide>

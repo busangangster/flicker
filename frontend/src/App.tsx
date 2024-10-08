@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppRouter from "./router/AppRouter.tsx";
 // import ScrollToTop from "./components/ScrollToTop.tsx";
 import "./App.css";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 // import ErrorBoundaryWrapper from "./components/ErrorBoundary.tsx";
 
 const queryClient = new QueryClient();
@@ -13,9 +15,8 @@ const App: React.FC = () => {
     // <ErrorBoundaryWrapper>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        {/* <ScrollToTop> */}
-          <AppRouter />
-        {/* </ScrollToTop> */}
+        <AppRouter />
+        <ReactQueryDevtools initialIsOpen={false} /> {/* DevTools 추가 */}
       </BrowserRouter>
     </QueryClientProvider>
     // </ErrorBoundaryWrapper>
