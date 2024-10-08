@@ -352,7 +352,7 @@ public class BffUserService {
             
             // 영화 정보 받아오는 요청 보내기
             String path = util.getUri("/list/movieId");
-            return util.sendPostRequestAsync(movieBaseUrl, path, movieSeqList).flatMap(getResponseTwo -> {
+            return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, path, movieSeqList).flatMap(getResponseTwo -> {
 
                 //바로 받는 코드
                 ResponseDto movieDto;
