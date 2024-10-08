@@ -10,6 +10,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -321,5 +322,40 @@ public class Util {
                 .bodyToMono(new ParameterizedTypeReference<List<MovieSeqListRequest>>() {}) // 반환 타입 지정
                 .onErrorResume(e -> Mono.error(e instanceof RestApiException ? e : new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 서버 POST 요청 중 오류 발생: " + e.getMessage())));
     }
+
+    public <T> Mono<ResponseEntity<ResponseDto>> sendGetWithRequestBodyRequestAsync(String baseUrl, String path, T requestBody) {
+        try {
+            // WebClient 인스턴스 생성
+            WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
+            return webClient.method(HttpMethod.GET)
+                    .uri(path)
+                    .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
+                    .retrieve()
+                    .bodyToMono(String.class)  // 응답을 문자열로 받음
+                    .flatMap(response -> {
+                        try {
+                            // 받은 응답을 ResponseDto로 변환
+                            ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
+                            return Mono.just(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData()));
+                        } catch (JsonProcessingException e) {
+                            // JSON 변환 중 오류 발생 시 예외 처리
+                            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
+                        }
+                    })
+                    .onErrorResume(e -> {
+                        // WebClient 오류 처리
+                        if (e instanceof RestApiException ex) {
+                            return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
+                        } else {
+                            e.printStackTrace();
+                            System.out.println("e.getMessage() = " + e.getMessage());
+                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
+                        }
+                    });
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+        }
+    }
+
 
 }

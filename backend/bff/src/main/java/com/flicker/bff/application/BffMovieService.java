@@ -304,7 +304,7 @@ public class BffMovieService {
                                                 MovieListRequest movieListRequest = new MovieListRequest(recommendResponse, userMovieDetail.getUnlikedMovies());
                                                 String movieListPath = util.getUri("/list/recommendation");
 
-                                                return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
+                                                return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                         .flatMap(movieListResponse -> {
                                                             ResponseDto movieListResponseDto;
                                                             try {
