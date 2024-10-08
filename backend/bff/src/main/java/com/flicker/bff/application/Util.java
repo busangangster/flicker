@@ -328,6 +328,7 @@ public class Util {
     }
 
 
+    // 추천 서버에 요청할 때 사용하는 WebClient POST 요청 메서드
     public <T> Mono<List<MovieSeqListRequest>> sendPostRequestToRecommendServer(String baseUrl, String path, T requestBody) {
         WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
 
@@ -339,6 +340,7 @@ public class Util {
                 .onErrorResume(e -> Mono.error(e instanceof RestApiException ? e : new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "추천 서버 POST 요청 중 오류 발생: " + e.getMessage())));
     }
 
+    // 공통으로 사용할 WebClient GET 요청 메서드 (비동기 처리, RequestBody 포함)
     public <T> Mono<ResponseEntity<ResponseDto>> sendGetWithRequestBodyRequestAsync(String baseUrl, String path, T requestBody) {
         try {
             // WebClient 인스턴스 생성
@@ -363,7 +365,7 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
+                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET(body) 요청 중 오류 발생: " + e.getMessage()));
                         }
                     })
                     .retryWhen(
@@ -372,7 +374,7 @@ public class Util {
                                             ((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND)
                     );
         } catch (Exception e) {
-            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient GET(body) 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
 
