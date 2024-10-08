@@ -106,7 +106,7 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
                     className="w-5 h-5"
                   />
                 ))}
-                <span className="ml-2 text-white font-bold">
+                <span className="ml-2 text-white font-bold" lang="ko">
                   {review.reviewRating}
                 </span>
               </span>
@@ -132,7 +132,9 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
                   alt="Thumb Up"
                   className="w-4 h-4 mr-1"
                 />
-                <span className=" text-gray-300">{likes}</span>
+                <span className=" text-gray-300" lang="ko">
+                  {likes}
+                </span>
               </button>
             </div>
           </div>
