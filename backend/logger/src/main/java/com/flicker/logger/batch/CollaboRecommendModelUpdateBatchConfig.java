@@ -1,5 +1,6 @@
 package com.flicker.logger.batch;
 
+import com.flicker.logger.dto.ModelUpdateRequest;
 import com.flicker.logger.dto.MovieReviewEvent;
 import com.flicker.logger.application.ModelUpdateService;
 import lombok.RequiredArgsConstructor;
@@ -88,16 +89,17 @@ public class CollaboRecommendModelUpdateBatchConfig {
     public ItemWriter<MovieReviewEvent> modelUpdateItemReader(ModelUpdateService modelUpdateService) {
 
         return items -> {
-            List<MovieReviewEvent> movieReviewEvents = new ArrayList<>();
+            List<ModelUpdateRequest> movieReviewEvents = new ArrayList<>();
             items.forEach(movieReviewEvent -> {
-                MovieReviewEvent review = new MovieReviewEvent();
-                review.setReviewSeq(movieReviewEvent.getReviewSeq());
-                review.setUserSeq(movieReviewEvent.getUserSeq());
-                review.setMovieSeq(movieReviewEvent.getMovieSeq());
-                review.setRating(movieReviewEvent.getRating());
-                review.setAction(movieReviewEvent.getAction());
-                review.setSentimentScore(movieReviewEvent.getSentimentScore());
-                movieReviewEvents.add(review);
+                ModelUpdateRequest req = ModelUpdateRequest.builder()
+                        .reviewSeq(movieReviewEvent.getReviewSeq())
+                        .userSeq(movieReviewEvent.getUserSeq())
+                        .movieSeq(movieReviewEvent.getMovieSeq())
+                        .rating(movieReviewEvent.getRating())
+                        .action(movieReviewEvent.getAction())
+                        .sentimentScore(movieReviewEvent.getSentimentScore())
+                        .build();
+                movieReviewEvents.add(req);
             });
             modelUpdateService.updateModel(movieReviewEvents);
         };

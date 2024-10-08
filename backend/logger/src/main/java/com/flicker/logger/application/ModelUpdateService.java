@@ -1,6 +1,7 @@
 package com.flicker.logger.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flicker.logger.dto.ModelUpdateRequest;
 import com.flicker.logger.dto.MovieReviewEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class ModelUpdateService {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
-    public void updateModel(List<MovieReviewEvent> reviews) {
+    public void updateModel(List<ModelUpdateRequest> reviews) {
 
         try {
             // 요청 데이터를 JSON으로 직렬화하여 출력
