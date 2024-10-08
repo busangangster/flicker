@@ -19,6 +19,17 @@ import axios from "./axios";
 //   }
 // };
 
+// 영화 포스터 url 받기
+export const getMoviePoster = async (movieSeq: number): Promise<string> => {
+  try {
+    const response = await axios.get(`api/bff/movie/poster/${movieSeq}`);
+    return response.data.data; 
+  } catch (error) {
+    console.error('Error fetching movie poster:', error);
+    throw error;
+  }
+};
+
 // top10 영화 목록 조회
 export const getTopTenMovies = async () => {
   try {

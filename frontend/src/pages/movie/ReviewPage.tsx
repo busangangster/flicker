@@ -9,11 +9,16 @@ import { ReviewType } from "../../type";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { fetchMovieDetail, fetchMovieReviews } from "../../apis/axios";
-import { checkAlreadyReview, deleteReview } from "../../apis/movieApi";
+import { fetchMovieReviews } from "../../apis/axios";
+import {
+  checkAlreadyReview,
+  deleteReview,
+  getMoviePoster,
+} from "../../apis/movieApi";
 import { throttle } from "lodash";
 import { useParams, useNavigate } from "react-router-dom";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { useQuery } from "@tanstack/react-query";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -25,27 +30,18 @@ const ReviewPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [moviePosterUrl, setMoviePosterUrl] = useState<string>("");
   const [alreadyReview, setAlreadyReview] = useState<boolean | null>(null);
   const [userReview, setUserReview] = useState<ReviewType | null>(null);
   const navigate = useNavigate();
 
   const userSeq = userData?.userSeq || 0;
 
-  useEffect(() => {
-    const fetchMovieData = async () => {
-      try {
-        const movieDetail = await fetchMovieDetail(Number(movieSeq), userSeq);
-        if (movieDetail?.movieDetailResponse?.moviePosterUrl) {
-          setMoviePosterUrl(movieDetail.movieDetailResponse.moviePosterUrl);
-        }
-      } catch (error) {
-        console.error("Error fetching movie details:", error);
-      }
-    };
-
-    fetchMovieData();
-  }, [movieSeq, userSeq]);
+  // react-query로 getMoviePoster 요청 (주어진 형식에 맞춰 수정)
+  const { data: moviePosterUrl } = useQuery({
+    queryKey: ["moviePoster", movieSeq],
+    queryFn: () => getMoviePoster(Number(movieSeq)),
+    enabled: !!movieSeq, 
+  });
 
   useEffect(() => {
     const fetchReviewStatus = async () => {
