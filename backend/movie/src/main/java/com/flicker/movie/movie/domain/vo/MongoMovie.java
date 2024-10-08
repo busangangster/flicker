@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@ToString
 @Builder
 public class MongoMovie {
     private int movieSeq;

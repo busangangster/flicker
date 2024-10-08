@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
 @Builder
 @Document(collection = "user_action")  // MongoDB 컬렉션 이름
 public class MongoUserAction {

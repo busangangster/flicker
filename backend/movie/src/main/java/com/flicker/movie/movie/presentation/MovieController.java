@@ -149,7 +149,7 @@ public class MovieController {
     }
 
     // 추천된 영화 목록 조회
-    @PostMapping("/list/recommendation")
+    @GetMapping("/list/recommendation")
     public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody RecommendMovieListRequest request) {
         System.out.println("request = " + request);
         List<MovieListResponse> response = null;
