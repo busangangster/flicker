@@ -171,9 +171,7 @@ public class MovieController {
     // 영화 워드클라우드 조회
     @GetMapping("/wordCloud/{movieSeq}")
     public ResponseEntity<ResponseDto> getWordCloud(@PathVariable int movieSeq) {
-        System.out.println("메서드 호출 movieSeq = " + movieSeq);
         List<WordCloudResponse> response = movieService.getWordCloud(movieSeq);
-        System.out.println("메서드 종료 response = " + response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
