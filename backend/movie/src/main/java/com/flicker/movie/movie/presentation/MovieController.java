@@ -193,6 +193,13 @@ public class MovieController {
     @GetMapping("/list/newMovie")
     public ResponseEntity<ResponseDto> getNewMovieList() {
         List<MovieListResponse> response = movieService.getNewMovieList();
+
+        int sum = 0;
+        for(int i=0;i<100_000_000;i++){
+            for(int j=0;j<10;j++){
+                sum += i;
+            }
+        }
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 }
