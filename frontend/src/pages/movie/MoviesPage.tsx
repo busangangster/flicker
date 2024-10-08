@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import "../../css/MoviesPage.css";
@@ -6,39 +6,47 @@ import MoviesList from "../../components/MoviesList";
 import SearchBar from "../../components/SearchBar";
 import Filter from "../../components/Filter";
 import TopTen from "../../components/TopTen";
-import {
-  fetchMovieCountry,
-  fetchMovieGenre,
-  fetchMovieYear,
-  fetchMovieRating,
-  fetchMovieNew,
-  fetchMovieBasedOnActor,
-} from "../../apis/axios";
-import { Movie } from "../../type";
 import { useUserQuery } from "../../hooks/useUserQuery";
+import useMoviesByGenre from "../../hooks/movie/useMovieByGenre";
+import useMoviesByMonth from "../../hooks/movie/useMovieByMonth";
+import useMoviesByCountry from "../../hooks/movie/useMovieByCountry";
+import useMoviesByRate from "../../hooks/movie/useMovieByRate";
+import useMoviesByYear from "../../hooks/movie/useMovieByYear";
+import useMoviesByActor from "../../hooks/movie/useMovieByActor";
 
 const MoviesPage: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState("");
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-
-  // 각 장르별 영화 데이터 관리
-  const [fantasyMovies, setFantasyMovies] = useState<Movie[]>([]);
-  const [sfMovies, setSfMovies] = useState<Movie[]>([]);
-  const [romanceMovies, setRomanceMovies] = useState<Movie[]>([]);
-  const [animeMovies, setAnimeMovies] = useState<Movie[]>([]);
-  const [historyMovies, setHistoryMovies] = useState<Movie[]>([]);
-  const [adventureMovies, setAdventureMovies] = useState<Movie[]>([]);
-  const [twentyfourMovies, setTwentyfourMovies] = useState<Movie[]>([]);
-  const [koreaMovies, setKoreaMovies] = useState<Movie[]>([]);
-  const [highRateMovies, setHighRateMovies] = useState<Movie[]>([]);
-  const [newMovies, setNewMovies] = useState<Movie[]>([]);
-  const [ActorMovies, setActorMovies] = useState<Movie[]>([]);
-  const [actorName, setActorName] = useState<string>("");
-  const [movieTitle, setMovieTitle] = useState<string>("");
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
+
+  const { data: fantasyMovies, isLoading: isFantasyLoading } =
+    useMoviesByGenre("판타지");
+  const { data: sfMovies, isLoading: isSfLoading } = useMoviesByGenre("SF");
+  const { data: romanceMovies, isLoading: isRomanceLoading } =
+    useMoviesByGenre("로맨스");
+  const { data: animeMovies, isLoading: isAnimeLoading } =
+    useMoviesByGenre("애니");
+  const { data: historyMovies, isLoading: isHistoryLoading } =
+    useMoviesByGenre("역사");
+  const { data: adventureMovies, isLoading: isAdventureLoading } =
+    useMoviesByGenre("모험");
+  const { data: newMovies, isLoading: isNewMoviesLoading } = useMoviesByMonth();
+  const { data: koreaMovies, isLoading: isKoreaMoveisLoading } =
+    useMoviesByCountry("한국");
+  const { data: twentyfourMovies, isLoading: isTwentyfourMoviesLoading } =
+    useMoviesByYear(2024);
+  const { data: highRateMovies, isLoading: isHightRateMoviesLoading } =
+    useMoviesByRate();
+const { data: actorData, isLoading: isActorMoviesLoading } = useMoviesByActor(
+  userSeq!
+);
+
+const actorMovies = actorData?.movies || [];
+const actorName = actorData?.actorName || "";
+const movieTitle = actorData?.movieTitle || "";
+
 
   const genres = [
     { value: "SF", label: "SF" },
@@ -72,175 +80,6 @@ const MoviesPage: React.FC = () => {
     { value: "판타지", label: "판타지" },
   ];
 
-  // 장르별 영화 데이터를 가져오는 함수
-  const fetchMoviesByGenre = async (
-    genre: string,
-    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
-  ) => {
-    setLoading(true);
-    try {
-      const encodedGenre = encodeURIComponent(genre);
-      const response = await fetchMovieGenre(encodedGenre, 1, 15);
-      const movies = response.map((movie: Movie) => ({
-        movieSeq: movie.movieSeq,
-        moviePosterUrl: movie.moviePosterUrl,
-        movieTitle: movie.movieTitle,
-        movieYear: movie.movieYear,
-        movieRating: movie.movieRating,
-        runningTime: movie.runningTime,
-        audienceRating: movie.audienceRating,
-      }));
-      setMovies(movies);
-    } catch (error) {
-      console.error("Error fetching movies:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 년도별 영화 데이터를 가져오는 함수
-  const fetchMoviesByYear = async (
-    year: number,
-    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
-  ) => {
-    setLoading(true);
-    try {
-      const response = await fetchMovieYear(year, 1, 15);
-      const movies = response.map((movie: Movie) => ({
-        movieSeq: movie.movieSeq,
-        moviePosterUrl: movie.moviePosterUrl,
-        movieYear: movie.movieYear,
-        movieTitle: movie.movieTitle,
-        movieRating: movie.movieRating,
-        runningTime: movie.runningTime,
-        audienceRating: movie.audienceRating,
-      }));
-      setMovies(movies);
-    } catch (error) {
-      console.error("Error fetching movies by year:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 국가별 영화 데이터를 가져오는 함수
-  const fetchMoviesByCountry = async (
-    country: string,
-    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
-  ) => {
-    setLoading(true);
-    try {
-      const response = await fetchMovieCountry(country, 1, 15);
-      const movies = response.map((movie: Movie) => ({
-        movieSeq: movie.movieSeq,
-        moviePosterUrl: movie.moviePosterUrl,
-        movieYear: movie.movieYear,
-        movieTitle: movie.movieTitle,
-        movieRating: movie.movieRating,
-        runningTime: movie.runningTime,
-        audienceRating: movie.audienceRating,
-      }));
-      setMovies(movies);
-    } catch (error) {
-      console.error("Error fetching movies by country:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 높은 별점의 영화 데이터를 가져오는 함수
-  const fetchMovieByRate = async (
-    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
-  ) => {
-    setLoading(true);
-    try {
-      const response = await fetchMovieRating();
-      const movies = response.map((movie: Movie) => ({
-        movieSeq: movie.movieSeq,
-        moviePosterUrl: movie.moviePosterUrl,
-        movieYear: movie.movieYear,
-        movieTitle: movie.movieTitle,
-        movieRating: movie.movieRating,
-        runningTime: movie.runningTime,
-        audienceRating: movie.audienceRating,
-      }));
-      setMovies(movies);
-    } catch (error) {
-      console.error("Error fetching movies by rating:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 이번 달 개봉 영화 데이터를 가져오는 함수
-  const fetchMovieByMonth = async (
-    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
-  ) => {
-    setLoading(true);
-    try {
-      const response = await fetchMovieNew();
-      const movies = response.map((movie: Movie) => ({
-        movieSeq: movie.movieSeq,
-        moviePosterUrl: movie.moviePosterUrl,
-        movieYear: movie.movieYear,
-        movieTitle: movie.movieTitle,
-        movieRating: movie.movieRating,
-        runningTime: movie.runningTime,
-        audienceRating: movie.audienceRating,
-      }));
-      setMovies(movies);
-    } catch (error) {
-      console.error("Error fetching movies by rating:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 최근 작성한 영화 리뷰에 출연한 배우 기반 연관 영화 가져오는 함수
-  const fetchMovieByActor = async (
-    userSeq: number,
-    setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
-  ) => {
-    setLoading(true);
-    try {
-      const response = await fetchMovieBasedOnActor(userSeq);
-      setActorName(response.actorName);
-      setMovieTitle(response.movieTitle);
-      const movies = response.movieListResponses.map((movie: Movie) => ({
-        movieSeq: movie.movieSeq,
-        moviePosterUrl: movie.moviePosterUrl,
-        movieYear: movie.movieYear,
-        movieTitle: movie.movieTitle,
-        movieRating: movie.movieRating,
-        runningTime: movie.runningTime,
-        audienceRating: movie.audienceRating,
-      }));
-      // API 응답 데이터 구조에 맞춰서 처리
-      setMovies(movies);
-    } catch (error) {
-      console.error("Error fetching movies by rating:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (userSeq) {
-      // 각 장르에 맞는 영화 데이터를 가져옴
-      fetchMoviesByGenre("판타지", setFantasyMovies);
-      fetchMoviesByGenre("SF", setSfMovies);
-      fetchMoviesByGenre("로맨스", setRomanceMovies);
-      fetchMoviesByGenre("애니", setAnimeMovies);
-      fetchMoviesByGenre("역사", setHistoryMovies);
-      fetchMoviesByGenre("모험", setAdventureMovies);
-      fetchMoviesByYear(2024, setTwentyfourMovies);
-      fetchMoviesByCountry("한국", setKoreaMovies);
-      fetchMovieByRate(setHighRateMovies);
-      fetchMovieByMonth(setNewMovies);
-      fetchMovieByActor(userSeq!, setActorMovies);
-    }
-  }, [userSeq]);
-
   // 장르 선택 시 해당 페이지로 이동
   const handleGenreChange = (value: string) => {
     setSelectedGenre(value);
@@ -265,32 +104,74 @@ const MoviesPage: React.FC = () => {
         <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
       </div>
       <TopTen />
-      {loading ? (
-        <p className="text-white">로딩 중...</p>
-      ) : (
+ (
         <>
-          <MoviesList category="이번 달 신작 영화" movies={newMovies} />
-          <MoviesList
-            category={`재밌게 본 "${movieTitle}"에 출연한 "${actorName}"와 관련된 영화`}
-            movies={ActorMovies}
-          />
-          <MoviesList category="판타지 영화" movies={fantasyMovies} />
-          <MoviesList category="올해 개봉한 영화" movies={twentyfourMovies} />
-          <MoviesList category="SF 영화" movies={sfMovies} />
-          <MoviesList category="한국 영화" movies={koreaMovies} />
-          <MoviesList
-            category="주목할만한 별점 높은 영화"
-            movies={highRateMovies}
-          />
-          <MoviesList category="사탕같은 영화" movies={romanceMovies} />
-          <MoviesList category="애니 좋아하는 사람 ~?" movies={animeMovies} />
-          <MoviesList
-            category="역사을 잊은 민족에게 미래란 없다"
-            movies={historyMovies}
-          />
-          <MoviesList category="모험 떠나볼래 ?" movies={adventureMovies} />
+          {isNewMoviesLoading ? (
+            <p className="text-white">이번 달 신작 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="이번 달 신작 영화" movies={newMovies || []} />
+          )}
+          {isActorMoviesLoading ? (
+            <p className="text-white">영화 로딩 중...</p>
+          ) : (
+            <MoviesList
+              category={`재밌게 본 "${movieTitle}"에 출연한 "${actorName}"와 관련된 영화`}
+              movies={actorMovies || []}
+            />
+          )}
+          {isFantasyLoading ? (
+            <p className="text-white">판타지 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="판타지 영화" movies={fantasyMovies || []} />
+          )}
+          {isTwentyfourMoviesLoading ? (
+            <p className="text-white">올해 개봉한 영화 로딩 중...</p>
+          ) : (
+            <MoviesList
+              category="올해 개봉한 영화"
+              movies={twentyfourMovies || []}
+            />
+          )}{" "}
+          {isSfLoading ? (
+            <p className="text-white">SF 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="SF 영화" movies={sfMovies || []} />
+          )}
+          {isKoreaMoveisLoading ? (
+            <p className="text-white">한국 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="한국 영화" movies={koreaMovies || []} />
+          )}
+          {isHightRateMoviesLoading ? (
+            <p className="text-white">별점 높은 영화 로딩 중...</p>
+          ) : (
+            <MoviesList
+              category="별점 높은 영화"
+              movies={highRateMovies || []}
+            />
+          )}
+          {isRomanceLoading ? (
+            <p className="text-white">로맨스 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="로맨스 영화" movies={romanceMovies || []} />
+          )}
+          {isAnimeLoading ? (
+            <p className="text-white">애니메이션 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="애니메이션 영화" movies={animeMovies || []} />
+          )}
+          {isHistoryLoading ? (
+            <p className="text-white">역사 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="역사 영화" movies={historyMovies || []} />
+          )}
+          {isAdventureLoading ? (
+            <p className="text-white">모험 영화 로딩 중...</p>
+          ) : (
+            <MoviesList category="모험 영화" movies={adventureMovies || []} />
+          )}
         </>
-      )}
+      )
     </div>
   );
 };

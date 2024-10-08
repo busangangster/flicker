@@ -1,6 +1,7 @@
 import axios  from "axios";
 import Cookies from "js-cookie";
 import axiosRetry from "axios-retry";
+import { ActorMoviesResponse } from "../type";
 
 
 const instance = axios.create({
@@ -130,7 +131,10 @@ axiosRetry(movieListApi, {
   retryCondition: (error) => {
     console.error("Error occurred:", error.message);
     // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
-    return error.response?.status >= 500 || error.code === "ECONNABORTED";
+    return (
+      (error.response && error.response.status >= 500) ||
+      error.code === "ECONNABORTED"
+    );
   },
   onRetry: (retryCount, error, requestConfig) => {
     console.log(`Retrying... Attempt #${retryCount}`);
@@ -138,6 +142,7 @@ axiosRetry(movieListApi, {
     console.error("Error Details:", error);
   },
 });
+
 
 // 장르별 조회
 export const fetchMovieGenre = async (
@@ -262,8 +267,7 @@ export const fetchMovieUserActing = async (userSeq: number) => {
 // 리뷰 기반 추천 영화 목록 조회
 export const fetchMovieUserReview = async (userSeq: number) => {
   try {
-    const response = await movieListApi.get(`
-      /recommendation/review/${userSeq}`);
+    const response = await movieListApi.get(`/recommendation/review/${userSeq}`);
     if (response?.data.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
       console.log(movies);
@@ -279,22 +283,23 @@ export const fetchMovieUserReview = async (userSeq: number) => {
 }
 
 // 최근 작성한 영화 리뷰에 출연한 배우 기반 연관 영화 추천
-export const fetchMovieBasedOnActor = async (userSeq: number) => {
+export const fetchMovieBasedOnActor = async (
+  userSeq: number
+): Promise<ActorMoviesResponse> => {
   try {
     const url = `/recommendActor/${userSeq}`;
     const response = await movieListApi.get(url);
     if (response?.data.data) {
-      const movies = response.data.data;
-      return movies;
+      return response.data.data as ActorMoviesResponse;
     } else {
       console.error("Unexpected response structure", response);
-      return [];
+      throw new Error("Invalid response structure");
     }
   } catch (error) {
     console.error("Error fetching movies:", error);
     throw error;
   }
-}
+};
 
 // coldStart issue 처리
 export const addFavoriteMovies = async (
