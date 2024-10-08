@@ -24,3 +24,16 @@ class CollaboMovieResponse(BaseModel):
 
 class CollaboMovieRequest(BaseModel):
     userSeq: int
+
+# 모델 정의
+class ModelUpdateRequest(BaseModel):
+    userSeq: int
+    movieSeq: int
+    reviewSeq: int
+    action: str
+    rating: float
+    sentimentScore: Optional[float] = None
+
+class WordCloudRequest(BaseModel):
+    movieSeq: int
+    content: str

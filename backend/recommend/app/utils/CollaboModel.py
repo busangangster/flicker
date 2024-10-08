@@ -1,41 +1,39 @@
-import sqlite3
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.neighbors import NearestNeighbors
 import faiss
-import multiprocessing as mp
-import time
-from tqdm import tqdm
+import sqlite3
+import asyncio
 
-# 전역 변수로 선언
+# 글로벌 변수로 PCA 결과와 test 데이터 저장
+pca_cache = None
 test = None
 
 
-def updatePcaResultOptimal():
+def load_pca_from_cache():
+    """캐시에 있는 PCA 결과를 반환"""
+    global pca_cache
+    if pca_cache is not None:
+        return pca_cache
+    else:
+        # 캐시가 비어있으면 기본 PCA 결과를 로드 (초기 로딩)
+        return pd.read_csv("pca_result_optimal.csv")
+
+
+async def updatePcaResultOptimal():
+    global test, pca_cache
     # SQLite 데이터베이스 연결
-    global test
     conn = sqlite3.connect('recommend.db')
 
     # SQL 쿼리로 데이터를 읽어와 데이터프레임으로 변환
-    query = '''SELECT * FROM review'''
-    test = pd.read_sql_query(query, conn)
+    query = '''SELECT * FROM review_info'''
+    new_test = pd.read_sql_query(query, conn)
 
-    # userName이 null인 행을 제거
-    test = test.dropna(subset=['userName'])
-
-    print("DB to DataFrame 추출 완")
-
-    # 필요한 열만 선택
-    test1 = test[['userName', 'movieTitle', 'grade']]
+    # user_seq가 null인 행을 제거
+    new_test = new_test.dropna(subset=['user_seq'])
 
     # 피벗 테이블로 변환 (유저-영화-평점)
-    pivot_test = test1.pivot_table(index='userName', columns='movieTitle', values='grade', aggfunc='first')
-
-    pd.DataFrame(pivot_test.index).to_csv("userIndex.csv", index=False)
-
-    print("피벗테이블 추출 완료")
+    pivot_test = new_test.pivot_table(index='user_seq', columns='movie_seq', values='review_rating', aggfunc='first')
 
     # 결측값을 0으로 채움
     pivot_test = pivot_test.fillna(0)
@@ -45,100 +43,114 @@ def updatePcaResultOptimal():
     pca_optimal = PCA(n_components=optimal_components, svd_solver='randomized')
     pca_result_optimal = pca_optimal.fit_transform(pivot_test)
 
+    # PCA 결과 저장
+    pca_result_optimal = pd.DataFrame(pca_result_optimal)
+    pca_result_optimal['user_seq'] = pivot_test.index
     pd.DataFrame(pca_result_optimal).to_csv("pca_result_optimal.csv", index=False)
+
+    # 캐시에 새로운 PCA 결과 저장
+    pca_cache = pca_result_optimal
+    test = new_test
+
+    print("update success")
 
     # 데이터베이스 연결 종료
     conn.close()
 
 
 def find_nearest_neighbors_faiss(data, target_idx, n_neighbors=100):
-    # DataFrame을 numpy 배열로 변환
     if isinstance(data, pd.DataFrame):
         data = data.to_numpy()
 
-    # 데이터가 C-contiguous인지 확인하고 변환
     data = np.ascontiguousarray(data, dtype=np.float32)
 
-    # 데이터 차원과 크기
     d = data.shape[1]
 
-    # FAISS 인덱스 (코사인 유사도를 위한 L2 normalization 후 거리 계산)
     index = faiss.IndexFlatL2(d)
-
-    # 인덱스에 데이터 추가
     faiss.normalize_L2(data)  # 코사인 유사도 위해 L2 정규화
     index.add(data)
 
-    # 타겟 데이터에 대한 유사도 검색
     target_data = data[target_idx].reshape(1, -1)
     D, I = index.search(target_data, n_neighbors)
 
     return I[0], D[0]  # 인덱스와 거리 반환
 
 
-def recommendMovieByUserTime(userName):
-    start_time = time.time()
+def recommendMovieByUserTime(userSeq):
+    global pca_cache, test
+    if test is None:
+        raise Exception("Test data not loaded. Please load the data first.")
 
-    # 1. 평점 기반 필터링 (1차 필터링)
-    user_index = pd.read_csv("userIndex.csv")
-    pca_result_optimal = pd.read_csv("pca_result_optimal.csv")
-    print(f"데이터 로드 완료 시간: {time.time() - start_time:.4f} 초")
+    pca_result_optimal = load_pca_from_cache()
+    user_idx = pca_result_optimal[pca_result_optimal['user_seq'] == userSeq].index[0]
 
-    # 유저 인덱스 찾기
-    user_idx = user_index[user_index['userName'] == userName].index[0]
     indices, distances = find_nearest_neighbors_faiss(pca_result_optimal, user_idx, n_neighbors=100)
-    print(f"유사한 사용자 검색 완료 시간: {time.time() - start_time:.4f} 초")
 
-    # 유사한 사용자 정보 저장
-    similar_users = indices[0:101]
-    result = pd.DataFrame({
-        'similar_user_idx': similar_users
-    })
-    result['userName'] = user_index.iloc[similar_users]['userName'].values
-
-    # 1차 필터링 (유사한 유저 데이터만 사용)
-    neardf = pd.merge(test, result[['userName']], on='userName', how='inner')
-    print(f"1차 필터링 완료 시간: {time.time() - start_time:.4f} 초")
+    nUserSeq = pca_result_optimal.loc[indices, 'user_seq'].values
+    kUserDf = test[test['user_seq'].isin(nUserSeq)]
 
     # 감성 점수 기반 필터링 (2차 필터링)
-    pivot_df = neardf.pivot_table(index='userName', columns='movieTitle', values='sentimentScore')
+    pivot_df = kUserDf.pivot_table(index='user_seq', columns='movie_seq', values='sentiment_score')
     pivot_df = pivot_df.fillna(0)
 
-    # NearestNeighbors로 유사한 50명의 사용자 찾기
-    n_neighbors = 50
-    nbrs = NearestNeighbors(n_neighbors=n_neighbors, metric='cosine').fit(pivot_df)
-    distances, indices = nbrs.kneighbors(pivot_df.loc[[userName]])
-    print(f"2차 필터링 및 감성 점수 기반 유사 사용자 검색 완료 시간: {time.time() - start_time:.4f} 초")
+    optimal_components = 5
+    pca_optimal = PCA(n_components=optimal_components, svd_solver='randomized')
+    pca_result_optimal2 = pca_optimal.fit_transform(pivot_df)
 
-    # 상위 50명의 유사한 사용자 이름 리스트 추출
-    similar_users_list = pivot_df.index[indices[0]].tolist()
+    pca_result_optimal2 = pd.DataFrame(pca_result_optimal2)
+    pca_result_optimal2['user_seq'] = pivot_df.index
+    user_idx = pca_result_optimal2[pca_result_optimal2['user_seq'] == userSeq].index[0]
 
-    # 3. "userName" 사용자가 시청한 영화 목록
-    watched_movies = test.loc[test['userName'] == userName, 'movieTitle'].tolist()
+    indices, distances = find_nearest_neighbors_faiss(pca_result_optimal2, user_idx, n_neighbors=51)
 
-    # 유사한 사용자들이 시청한 영화 중에서 사용자가 보지 않은 영화 추출 및 평점 평균 계산
-    similar_users_df = pd.DataFrame(similar_users_list, columns=['userName'])
-    neardf = pd.merge(test, similar_users_df[['userName']], on='userName', how='inner')
+    kuserList = pca_result_optimal2.loc[indices[1:], 'user_seq'].values
+    watched_movie = list(set(test[test['user_seq'] == userSeq]['movie_seq']))
+    filtered_df = test[test['user_seq'].isin(kuserList) & ~test['movie_seq'].isin(watched_movie)]
 
-    # movieTitle을 기준으로 grade의 평균 점수 계산
-    movie_grade_mean = neardf.groupby('movieTitle')['grade'].mean().reset_index()
+    result_df = filtered_df.groupby('movie_seq')['sentiment_score'].mean().reset_index()
 
-    # 사용자가 이미 본 영화를 제외하고 추천 목록 생성
-    filtered_movies = movie_grade_mean[~movie_grade_mean['movieTitle'].isin(watched_movies)]
+    # 평균값을 기준으로 내림차순 정렬
+    result_df = result_df.sort_values(by='sentiment_score', ascending=False)
 
-    # 평점 기준 내림차순 정렬
-    sorted_movies = filtered_movies.sort_values(by='grade', ascending=False)
-    print(f"영화 평점 정렬 완료 시간: {time.time() - start_time:.4f} 초")
+    # 결과 출력
+    return searchMovieTitleByMovieSeq(result_df['movie_seq'][:30].values)
 
-    # 최신 연도를 기준으로 영화 필터링
-    latest_movies = test.groupby('movieTitle')['year'].idxmax().apply(lambda idx: test.loc[idx])
 
-    # 인덱스 리셋하여 movieTitle이 중복되지 않도록 설정
-    latest_movies = latest_movies.reset_index(drop=True)
+def searchMovieTitleByMovieSeq(movie_list):
+    conn = sqlite3.connect('recommend.db')
+    cursor = conn.cursor()
 
-    # 추천된 영화와 최신 영화를 병합
-    recommended_latest_movies = pd.merge(sorted_movies, latest_movies[['movieTitle', 'year']], on='movieTitle')
-    print(f"최신 영화 필터링 및 추천 목록 병합 완료 시간: {time.time() - start_time:.4f} 초")
+    result_list = []
 
-    # 최종 결과 반환
-    return recommended_latest_movies[['movieTitle', 'year']].head(30).values.tolist()
+    for movie_seq in movie_list:
+        cursor.execute("SELECT movie_title, movie_year FROM movie_info WHERE movie_seq = ?", (int(movie_seq),))
+
+        result = cursor.fetchone()
+
+        if result:
+            result_list.append(list(result))
+
+    return sorted(result_list, key=lambda x: x[1], reverse=True)
+
+
+async def load_initial_data():
+    """애플리케이션 시작 시 초기 PCA 결과와 test 데이터 로드"""
+    global pca_cache, test
+    try:
+        # 기존 PCA 결과를 캐시에 로드
+        pca_cache = pd.read_csv("pca_result_optimal.csv")
+        print("PCA result loaded into cache.")
+
+        # SQLite 데이터베이스 연결
+        conn = sqlite3.connect('recommend.db')
+
+        # SQL 쿼리로 데이터를 읽어와 test 변수에 저장
+        query = '''SELECT * FROM review_info'''
+        test = pd.read_sql_query(query, conn)
+        print("Test data loaded.")
+
+        # 데이터베이스 연결 종료
+        conn.close()
+
+    except Exception as e:
+        print(f"Error loading data: {e}")
