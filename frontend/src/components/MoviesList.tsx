@@ -185,35 +185,39 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
           },
         }}
       >
-        {movies.map((movie) => (
-          <SwiperSlide
-            key={movie.movieSeq}
-            className="flex justify-center items-center mt-4 card-wrapper" // 카드 스타일 추가
-          >
-            <div className="card">
-              <div className="poster">
-                <img
-                  src={movie.moviePosterUrl}
-                  alt={`Movie ${movie.movieSeq}`}
-                  onClick={() => goToDetail(movie.movieSeq)}
-                  className="card-poster"
-                />
-              </div>
-              <div className="details">
-                <h1 className="text-[20px]">{movie.movieTitle}</h1>
-                <div className="text-[15px]">
-                  {`${movie.movieYear || "정보 없음"} • ${
-                    movie.runningTime || "정보 없음"
-                  } • ${movie.audienceRating || "정보 없음"}`}
+        {movies && movies.length > 0 ? (
+          movies.map((movie) => (
+            <SwiperSlide
+              key={movie.movieSeq}
+              className="flex justify-center items-center mt-4 card-wrapper" // 카드 스타일 추가
+            >
+              <div className="card">
+                <div className="poster">
+                  <img
+                    src={movie.moviePosterUrl}
+                    alt={`Movie ${movie.movieSeq}`}
+                    onClick={() => goToDetail(movie.movieSeq)}
+                    className="card-poster"
+                  />
                 </div>
-                <div className="rating flex items-center">
-                  {renderStars(movie.movieRating ?? 0)}{" "}
-                  <span className="ml-2">{movie.movieRating ?? 0}/5</span>{" "}
+                <div className="details">
+                  <h1 className="text-[20px]">{movie.movieTitle}</h1>
+                  <div className="text-[15px]">
+                    {`${movie.movieYear || "정보 없음"} • ${
+                      movie.runningTime || "정보 없음"
+                    } • ${movie.audienceRating || "정보 없음"}`}
+                  </div>
+                  <div className="rating flex items-center">
+                    {renderStars(movie.movieRating ?? 0)}{" "}
+                    <span className="ml-2">{movie.movieRating ?? 0}/5</span>{" "}
+                  </div>
                 </div>
               </div>
-            </div>
-          </SwiperSlide>
-        ))}
+            </SwiperSlide>
+          ))
+        ) : (
+          <p className="text-white ml-[50px]">영화 데이터가 없습니다.</p>
+        )}
       </Swiper>
     </div>
   );
