@@ -147,4 +147,9 @@ public class BffMovieController {
         return bffMovieService.getNewMovieList();
     }
 
+    // 포스터 URL 조회
+    @GetMapping("/poster/{movieSeq}")
+    public Mono<ResponseEntity<ResponseDto>> getMoviePoster(@PathVariable int movieSeq) {
+        return bffMovieService.getMoviePoster(movieSeq);
+    }
 }
