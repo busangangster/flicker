@@ -195,4 +195,10 @@ public class MovieController {
         List<MovieListResponse> response = movieService.getNewMovieList();
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
+
+    @GetMapping("/poster/{movieSeq}")
+    public ResponseEntity<ResponseDto> getMoviePoster(@PathVariable int movieSeq) {
+        String response = movieService.getMoviePoster(movieSeq);
+        return ResponseDto.response(StatusCode.SUCCESS, response);
+    }
 }
