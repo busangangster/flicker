@@ -564,7 +564,7 @@ public class BffMovieService {
                     }
                     // 2. 영화서버에서 해당 영화의 정보를 가져옴
                     String listMoviePath = util.getUri("/list/movieId");
-                    return util.sendPostRequestAsync(movieBaseUrl, listMoviePath, likeMovieSeqs)
+                    return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, listMoviePath, likeMovieSeqs)
                             .flatMap(listMovieResponse -> {
                                 ResponseDto listMovieResponseDto;
                                 try {
@@ -691,7 +691,7 @@ public class BffMovieService {
                         return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "리뷰 개수가 2000개 이상인 영화 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                     }
                     String topMovieListPath = util.getUri("/list/topRating");
-                    return util.sendPostRequestAsync(movieBaseUrl, topMovieListPath, topRatingMovieSeqs)
+                    return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, topMovieListPath, topRatingMovieSeqs)
                             .flatMap(topMovieListResponse -> {
                                 ResponseDto topMovieListResponseDto;
                                 try {
