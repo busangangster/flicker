@@ -78,7 +78,7 @@ public class Util {
                         }
                     })
                     .retryWhen(
-                            Retry.max(3) // 최대 3번 재시도
+                            Retry.backoff(10, Duration.ofSeconds(1))  // 최대 3번 재시도, 각 재시도 사이 2초 간격
                                     .filter(throwable -> {
                                         if (throwable instanceof RestApiException ex) {
                                             // 404 예외일 경우 재시도 조건으로 사용
