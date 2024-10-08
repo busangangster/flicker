@@ -11,14 +11,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
@@ -44,6 +48,12 @@ public class Util {
     // 공통으로 사용할 WebClient GET 요청 메서드 (비동기 처리)
     public Mono<ResponseEntity<ResponseDto>> sendGetRequestAsync(String baseUrl, String path) {
         try {
+
+//            WebClient webClient = WebClient.builder()
+//                    .baseUrl(baseUrl)
+//                    .filter(ExchangeFilterFunctions.statusError(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("4xx error occurred"))))
+//                    .filter(ExchangeFilterFunctions.retry(3))  // 최대 3번까지 재시도
+//                    .build();
             // WebClient 인스턴스 생성
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
             return webClient.get()
@@ -68,7 +78,12 @@ public class Util {
                             e.printStackTrace();
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생: " + e.getMessage()));
                         }
-                    });
+                    })
+                    .retryWhen(
+                            Retry.max(3) // 최대 3번 재시도
+                                    .filter(throwable -> throwable instanceof WebClientResponseException &&
+                                            ((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND)
+                    );
         } catch (Exception e) {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient GET 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
@@ -353,7 +368,12 @@ public class Util {
                             System.out.println("e.getMessage() = " + e.getMessage());
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
                         }
-                    });
+                    })
+                    .retryWhen(
+                            Retry.max(3) // 최대 3번 재시도
+                                    .filter(throwable -> throwable instanceof WebClientResponseException &&
+                                            ((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND)
+                    );
         } catch (Exception e) {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient POST 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
