@@ -281,4 +281,11 @@ public class UserController {
         return ResponseEntity.ok("Token refreshed successfully");
     }
 
+    @GetMapping("/first-login-check/{userSeq}")
+    public ResponseEntity<ResponseDto> getFirstLoginCheck(@PathVariable(value = "userSeq")Integer userSeq){
+
+        return ResponseDto.response(StatusCode.SUCCESS,userService.isFirstLoginUser(userSeq));
+
+    }
+
 }
