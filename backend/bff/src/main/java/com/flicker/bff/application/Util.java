@@ -68,16 +68,6 @@ public class Util {
                             return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
                         }
                     })
-                    .retryWhen(
-                            Retry.backoff(3, Duration.ofSeconds(1))  // 최대 3번 재시도, 각 재시도 사이 2초 간격
-                                    .filter(throwable -> {
-                                        if (throwable instanceof RestApiException ex) {
-                                            // 404 예외일 경우 재시도 조건으로 사용
-                                            return ex.getStatusCode() == StatusCode.NOT_FOUND;
-                                        }
-                                        return false;
-                                    })
-                    )
                     .onErrorResume(e -> {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
@@ -367,12 +357,7 @@ public class Util {
                         } else {
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET(body) 요청 중 오류 발생: " + e.getMessage()));
                         }
-                    })
-                    .retryWhen(
-                            Retry.max(3) // 최대 3번 재시도
-                                    .filter(throwable -> throwable instanceof WebClientResponseException &&
-                                            ((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND)
-                    );
+                    });
         } catch (Exception e) {
             throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient GET(body) 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
