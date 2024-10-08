@@ -286,17 +286,12 @@ public class MovieRepoUtil {
      */
     public Movie findByMovieTitleAndYear(String movieTitle, Integer movieYear) {
         try {
-            System.out.println("JPA 유틸에서 리파지토리 접근 전");
             Movie n = movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
             if (n == null) {
-                System.out.println("영화 정보가 존재하지 않습니다.");
                 throw new RestApiException(StatusCode.NOT_FOUND, "영화 정보가 존재하지 않습니다.");
             }
-            System.out.println("n.getMovieSeq() = " + n.getMovieSeq());
-            System.out.println("n.getMovieDetail().getMovieTitle() = " + n.getMovieDetail().getMovieTitle());
             return n;
         } catch (Exception e) {
-            System.out.println("제목,년도로 영화 정보 조회 중 오류가 발생했습니다.");
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "제목,년도로 영화 정보 조회 중 오류가 발생했습니다.");
         }
     }
