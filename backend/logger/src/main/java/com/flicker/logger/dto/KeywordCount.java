@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class WordCloud {
+public class KeywordCount {
 
     private String keyword;
     private int count;

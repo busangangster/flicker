@@ -5,16 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
-public class WordCloudResult {
+public class WordCloudReviewEvent {
 
-    private int movieSeq;
-    private List<KeywordCount> keywordCounts;
-
+    private Integer userSeq;
+    private Double rating;
+    private Integer movieSeq;
+    private String content;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timeStamp;
-
+    private LocalDateTime timestamp;
 }

@@ -1,10 +1,13 @@
 package com.flicker.logger.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.logger.dto.MovieReviewEvent;
 import com.flicker.logger.dto.SentimentReviewEvent;
 import com.flicker.logger.dto.UserAction;
+import com.flicker.logger.dto.WordCloudReviewEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -100,6 +103,33 @@ public class ReviewConsumer {
                     userAction.getTimestamp());
 
             log.info("Saved UserAction {}", userAction);
+        } catch (Exception e) {
+            log.error("Error processing message: {}", payload, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @KafkaListener(topics = "wordcloud-review")
+    public void listenWordCloudReview(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String payload) {
+
+        log.info("Received WordCloudReview message {}", payload);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            WordCloudReviewEvent reviewLog = objectMapper.readValue(payload, WordCloudReviewEvent.class);
+
+            String sql = "INSERT INTO wordcloud_review_logs (user_seq, content, timestamp, rating, movie_seq) " +
+                    "VALUES(?,?,?,?,?)";
+
+            jdbcTemplate.update(sql,
+                    reviewLog.getUserSeq(),
+                    reviewLog.getContent(),
+                    reviewLog.getTimestamp(),
+                    reviewLog.getRating(),
+                    reviewLog.getMovieSeq());
+
         } catch (Exception e) {
             log.error("Error processing message: {}", payload, e);
             throw new RuntimeException(e);
