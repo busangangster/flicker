@@ -121,12 +121,7 @@ public class BffMovieController {
     // 영화 워드 클라우드 조회
     @GetMapping("/wordCloud/{movieSeq}")
     public Mono<ResponseEntity<ResponseDto>> getMovieWordCloud(@PathVariable int movieSeq) {
-        System.out.println("워드 클라우드 컨트롤러 시작");
-
-        Mono<ResponseEntity<ResponseDto>> movieWordCloud = bffMovieService.getMovieWordCloud(movieSeq);
-
-        System.out.println("워드 클라우드 컨트롤러 종료");
-        return movieWordCloud;
+        return bffMovieService.getMovieWordCloud(movieSeq);
     }
 
     // 평점 높은 영화 목록 조회

@@ -46,15 +46,6 @@ public class Util {
     // 공통으로 사용할 WebClient GET 요청 메서드 (비동기 처리)
     public Mono<ResponseEntity<ResponseDto>> sendGetRequestAsync(String baseUrl, String path) {
         try {
-
-//            WebClient webClient = WebClient.builder()
-//                    .baseUrl(baseUrl)
-//                    .filter(ExchangeFilterFunctions.statusError(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("4xx error occurred"))))
-//                    .filter(ExchangeFilterFunctions.retry(3))  // 최대 3번까지 재시도
-//                    .build();
-            // WebClient 인스턴스 생성
-
-
             WebClient webClient = webClientBuilder.baseUrl(baseUrl).build();
             return webClient.get()
                     .uri(path)
@@ -89,10 +80,8 @@ public class Util {
                     )
                     .onErrorResume(e -> {
                         if (e instanceof RestApiException ex) {
-                            ex.printStackTrace();
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            e.printStackTrace();
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
@@ -126,8 +115,6 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            e.printStackTrace();
-                            System.out.println("e.getMessage() = " + e.getMessage());
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
                         }
                     });
@@ -376,8 +363,6 @@ public class Util {
                         if (e instanceof RestApiException ex) {
                             return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
                         } else {
-                            e.printStackTrace();
-                            System.out.println("e.getMessage() = " + e.getMessage());
                             return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient POST 요청 중 오류 발생: " + e.getMessage()));
                         }
                     })
