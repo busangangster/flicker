@@ -319,7 +319,9 @@ const MovieDetailPage: React.FC = () => {
                   </span>
                   <span className="flex items-end ml-4 flex-shrink-0">
                     <span className="text-blue-500 text-2xl">⭐</span>
-                    <span className="text-2xl">{movieRating}</span>
+                    <span className="text-2xl" lang="ko">
+                      {movieRating}
+                    </span>
                   </span>
                 </h2>
 
@@ -355,11 +357,14 @@ const MovieDetailPage: React.FC = () => {
                 </div>
               </div>
               {/* Movie details */}
-              <div className="flex mt-4 text-white text-[16px] w-full">
-                <span>{movieYear}&nbsp; &nbsp; &nbsp;</span>
+              <div
+                className="flex mt-4 text-white text-[16px] w-full"
+                lang="ko"
+              >
+                <span>{movieYear}&nbsp;&nbsp;&nbsp;</span>
                 {runningTime && (
                   <span>
-                    | &nbsp; &nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
+                    | &nbsp;&nbsp;&nbsp;{runningTime}&nbsp;&nbsp;&nbsp;
                   </span>
                 )}
                 {audienceRating && (

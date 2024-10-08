@@ -37,11 +37,11 @@ const ReviewPage: React.FC = () => {
   const userSeq = userData?.userSeq || 0;
   console.log(userSeq);
 
-  // react-query로 getMoviePoster 요청 (주어진 형식에 맞춰 수정)
+  // react-query로 getMoviePoster 요청
   const { data: moviePosterUrl } = useQuery({
     queryKey: ["moviePoster", movieSeq],
     queryFn: () => getMoviePoster(Number(movieSeq)),
-    enabled: !!movieSeq, 
+    enabled: !!movieSeq,
   });
 
   useEffect(() => {
@@ -82,9 +82,13 @@ const ReviewPage: React.FC = () => {
       const newReviews = await fetchMovieReviews(
         Number(movieSeq),
         userSeq || 0,
-        "date", // 기본적으로 날짜 순으로 불러옴
+        sortOption === "좋아요 많은 순"
+          ? "like"
+          : sortOption === "최신순"
+          ? "date"
+          : "old", // 정렬 옵션 적용
         page,
-        100 // 더 큰 범위로 한 번에 불러옴
+        100
       );
 
       setReviews((prevReviews) => [...prevReviews, ...newReviews]);
@@ -97,11 +101,11 @@ const ReviewPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [movieSeq, userSeq, page, hasMore, isLoading]);
+  }, [movieSeq, userSeq, page, hasMore, isLoading, sortOption]);
 
   useEffect(() => {
     loadReviews();
-  }, [page]);
+  }, [page, sortOption]);
 
   const handleScroll = useCallback(
     throttle(() => {
@@ -133,26 +137,6 @@ const ReviewPage: React.FC = () => {
     };
   }, [handleScroll]);
 
-  const getSortedReviews = () => {
-    const sortedReviews = [...reviews];
-
-    if (sortOption === "최신순") {
-      return sortedReviews.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-    } else if (sortOption === "오래된 순") {
-      return sortedReviews.sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-    } else if (sortOption === "좋아요 많은 순") {
-      return sortedReviews.sort((a, b) => b.likes - a.likes);
-    }
-
-    return sortedReviews;
-  };
-
   const filterOptions = [
     { value: "좋아요 많은 순", label: "좋아요 많은 순" },
     { value: "최신순", label: "최신순" },
@@ -162,8 +146,8 @@ const ReviewPage: React.FC = () => {
   const handleFilterChange = async (value: string) => {
     setSortOption(value);
     setPage(0); // 페이지 초기화
-    const sortedReviews = getSortedReviews();
-    setReviews(sortedReviews);
+    setReviews([]); // 리뷰 초기화
+    setHasMore(true); // 더 가져올 수 있도록 설정
   };
 
   const handleAddReview = (newReview: ReviewType) => {
@@ -222,7 +206,7 @@ const ReviewPage: React.FC = () => {
             )}
 
             {reviews.length > 0 ? (
-              getSortedReviews().map((review) => (
+              reviews.map((review) => (
                 <Review
                   key={review.reviewSeq}
                   review={{ ...review, top: false }}
