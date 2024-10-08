@@ -440,20 +440,6 @@ public class MovieRepoUtil {
     }
 
     /**
-     * 평점이 높은 영화 목록을 조회하는 메서드입니다.
-     *
-     * @return 조회된 영화 목록
-     * @throws RestApiException 평점이 높은 영화 목록 조회 중 오류가 발생할 경우 발생
-     */
-    public List<Movie> findTopRatingMovieList(Pageable pageable) {
-        try {
-            return movieRepository.findByDelYNOrderByMovieRatingDesc("N", pageable);
-        } catch (Exception e) {
-            throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "평점이 높은 영화 목록 조회 중 오류가 발생했습니다.");
-        }
-    }
-
-    /**
      * 추천된 배우 목록을 저장하는 메서드입니다.
      *
      * @param recommendActors 저장할 배우 목록
