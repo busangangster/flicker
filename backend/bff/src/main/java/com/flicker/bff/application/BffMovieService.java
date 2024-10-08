@@ -180,7 +180,7 @@ public class BffMovieService {
                                             // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
                                             MovieListRequest movieListRequest = new MovieListRequest(recommendResponse, unlikeMovieSeqs);
                                             String movieListPath = util.getUri("/list/recommendation");
-                                            return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
+                                            return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                     .flatMap(movieListResponse -> {
                                                         ResponseDto movieListResponseDto;
                                                         try {
@@ -420,7 +420,7 @@ public class BffMovieService {
                                             // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
                                             MovieListRequest movieListRequest = new MovieListRequest(recommendResponse, unlikeMovieSeqs);
                                             String movieListpath = util.getUri("/list/recommendation");
-                                            return util.sendPostRequestAsync(movieBaseUrl, movieListpath, movieListRequest)
+                                            return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, movieListpath, movieListRequest)
                                                     .flatMap(movieListResponse -> {
                                                         ResponseDto movieListResponseDto;
                                                         try {
@@ -498,7 +498,7 @@ public class BffMovieService {
                                 // 3. 추천 영화 목록을 가져와서 영화 서버에 요청
                                 MovieListRequest movieListRequest = new MovieListRequest(recommendResponse, unlikeMovieSeqs);
                                 String movieListPath = util.getUri("/list/recommendation");
-                                return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
+                                return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                         .flatMap(movieListResponse -> {
                                             ResponseDto movieListResponseDto;
                                             try {
@@ -624,7 +624,7 @@ public class BffMovieService {
                                                         // 5. 추천 영화 목록을 가져와서 영화 서버에 요청
                                                         MovieListRequest movieListRequest = new MovieListRequest(recommendResponse, unlikeMovieSeqs);
                                                         String movieListPath = util.getUri("/list/recommendation");
-                                                        return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
+                                                        return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                                 .flatMap(movieListResponse -> {
                                                                     ResponseDto movieListResponseDto;
                                                                     try {
@@ -783,7 +783,7 @@ public class BffMovieService {
                                             // 4. 추천 영화 목록을 가져와서 영화 서버에 요청
                                             MovieListRequest movieListRequest = new MovieListRequest(recommendResponse, unlikeMovieSeqs);
                                             String movieListPath = util.getUri("/list/recommendation");
-                                            return util.sendPostRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
+                                            return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, movieListPath, movieListRequest)
                                                     .flatMap(movieListResponse -> {
                                                         ResponseDto movieListResponseDto;
                                                         try {
