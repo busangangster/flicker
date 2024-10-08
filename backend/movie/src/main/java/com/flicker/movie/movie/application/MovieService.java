@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -185,45 +188,20 @@ public class MovieService {
     }
 
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
-        System.out.println("request = " + request);
-        // 1. 추천된 영화 리스트 조회 및 비선호 영화 필터링
-//        try {
-//            List<Movie> movieList = request.getMovieSeqListRequest().stream()
-//                    .map(seqRequest -> movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear()))
-//                    .filter(Objects::nonNull) // null인 movie 객체 필터링
-//                    .filter(movie -> !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) // 비선호 영화 필터링
-//                    .toList();
-        
+        // 1. 추천된 영화 목록 조회
         List<Movie> movieList = new ArrayList<>();
-        try {
-
-            for (MovieSeqListRequest seqRequest : request.getMovieSeqListRequest()) {
-                Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
-                if (movie != null) {
-                    System.out.println("!request.getUnlikeMovieSeqList().contains(movie.getMovieSeq()) = " + !request.getUnlikeMovieSeqList().contains(movie.getMovieSeq()));
-                    if (!request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) {
-                        movieList.add(movie);
-                    }
+        for (MovieSeqListRequest seqRequest : request.getMovieSeqListRequest()) {
+            Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
+            if (movie != null) {
+                if (!request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) {
+                    movieList.add(movie);
                 }
             }
-
-            System.out.println("movieList = " + movieList);
-
-
         }
-        catch (Throwable  t) {
-            System.out.println("문제 발생");
-            t.printStackTrace();
-        }
-
         // 2. MovieListResponse 리스트 생성 및 반환
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
                 .collect(Collectors.toList());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "추천된 영화가 존재하지 않습니다.");
-//        }
     }
 
     public List<UserActionResponse> getUserActionList(int userSeq) {
