@@ -71,8 +71,8 @@ public class MovieRepoUtil {
      * @throws RestApiException 중복된 영화가 존재할 경우 발생
      */
     public void isDuplicatedMovie(String movieTitle, int movieYear) {
-        Movie movie = movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
-        if (movie != null) {
+        Optional<Movie> movie = movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
+        if (movie.isPresent()) {
             throw new RestApiException(StatusCode.DUPLICATE_MOVIE, "중복된 영화 정보가 존재합니다.");
         }
     }
@@ -286,11 +286,8 @@ public class MovieRepoUtil {
      */
     public Movie findByMovieTitleAndYear(String movieTitle, Integer movieYear) {
         try {
-            Movie n = movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
-            if (n == null) {
-                throw new RestApiException(StatusCode.NOT_FOUND, "영화 정보가 존재하지 않습니다.");
-            }
-            return n;
+            Optional<Movie> movie = movieRepository.findByMovieDetail_MovieTitleAndMovieDetail_MovieYearAndDelYN(movieTitle, movieYear, "N");
+            return movie.orElse(null);
         } catch (Exception e) {
             throw new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "제목,년도로 영화 정보 조회 중 오류가 발생했습니다.");
         }

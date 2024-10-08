@@ -151,7 +151,6 @@ public class MovieController {
     @GetMapping("/list/recommendation")
     public ResponseEntity<ResponseDto> getRecommendationList(@RequestBody RecommendMovieListRequest request) {
         List<MovieListResponse> response = movieService.getRecommendationList(request);
-        System.out.println("response = " + response);
         return ResponseDto.response(StatusCode.SUCCESS, response);
     }
 
