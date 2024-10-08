@@ -189,22 +189,14 @@ public class MovieService {
 
     public List<MovieListResponse> getRecommendationList(RecommendMovieListRequest request) {
         // 1. 추천된 영화 목록 조회
-        System.out.println("request = " + request);
         List<Movie> movieList = new ArrayList<>();
-        try {
-            for (MovieSeqListRequest seqRequest : request.getMovieSeqListRequest()) {
-                Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
-                if (movie != null) {
-                    if (!request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) {
-                        movieList.add(movie);
-                    }
-                }
+        for (MovieSeqListRequest seqRequest : request.getMovieSeqListRequest()) {
+            Movie movie = movieRepoUtil.findByMovieTitleAndYear(seqRequest.getMovieTitle(), seqRequest.getMovieYear());
+            if (movie == null || request.getUnlikeMovieSeqList().contains(movie.getMovieSeq())) {
+                continue;
             }
-        } catch (Throwable e) {
-            e.printStackTrace();
-            throw new RestApiException(StatusCode.NO_SUCH_ELEMENT, "추천된 영화가 존재하지 않습니다.");
+            movieList.add(movie);
         }
-        System.out.println("movieList = " + movieList);
         // 2. MovieListResponse 리스트 생성 및 반환
         return movieList.stream()
                 .map(movie -> new MovieListResponse(movie, movie.getMovieDetail()))
