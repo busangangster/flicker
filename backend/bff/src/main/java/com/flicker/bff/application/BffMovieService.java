@@ -230,7 +230,12 @@ public class BffMovieService {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/wordCloud/" + movieSeq);
         // 2. 비동기 방식으로 POST 요청을 외부 API에 보냅니다.
-        return util.sendGetRequestAsync(movieBaseUrl, path);
+        System.out.println("서비스 코드 시작 : path로 요청 보냄" + path);
+
+        Mono<ResponseEntity<ResponseDto>> responseEntityMono = util.sendGetRequestAsync(movieBaseUrl, path);
+
+        System.out.println("서비스 코드 종료 : "+responseEntityMono);
+        return responseEntityMono;
     }
 
     // 영화 상세조회
