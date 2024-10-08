@@ -145,7 +145,6 @@ public class ReviewService {
     }
 
 
-    @Transactional
     public List<ReviewDto> getUserReviews(Integer userSeq){
 
         List<Review> allByUserSeq = reviewRepository.findAllByUserSeq(userSeq);
