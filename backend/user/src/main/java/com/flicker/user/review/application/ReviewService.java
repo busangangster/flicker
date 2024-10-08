@@ -107,7 +107,6 @@ public class ReviewService {
         return review.removeLikeReview(dto.getUserSeq());
     }
 
-    @Transactional
     public List<ReviewDto> getMovieReviews(Integer movieSeq, Integer myUserSeq, String option, Pageable pageable) {
 
         Pageable sortedPageable;
@@ -133,7 +132,6 @@ public class ReviewService {
         return reviewDtoList;
     }
 
-    @Transactional
     public List<ReviewDto> getPopularMovieReviews(Integer movieSeq, Integer myUserSeq) {
         List<Review> result = reviewRepository.findTop3ByMovieSeqAndIsSpoilerFalseAndContentIsNotNullOrderByLikesDesc(movieSeq);
         List<ReviewDto> reviewDtoList = new ArrayList<>();
@@ -147,7 +145,7 @@ public class ReviewService {
     }
 
 
-
+    @Transactional
     public List<ReviewDto> getUserReviews(Integer userSeq){
 
         List<Review> allByUserSeq = reviewRepository.findAllByUserSeq(userSeq);
