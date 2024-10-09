@@ -15,8 +15,7 @@ const instance = axios.create({
 
 axiosRetry(instance, {
   retries: 3, // 최대 3번 재시도
-  retryDelay: (retryCount) => {
-    console.log(`Retry attempt: ${retryCount}`);
+  retryDelay: () => {
     return 500; // 각 재시도마다 3초씩 지연
   },
   retryCondition: (error) => {
@@ -99,8 +98,7 @@ const movieDetailApi = axios.create({
 //
 axiosRetry(movieDetailApi, {
   retries: 3, // 최대 3번 재시도
-  retryDelay: (retryCount) => {
-    console.log(`Retry attempt: ${retryCount}`);
+  retryDelay: () => {
     return 500; // 각 재시도마다 3초씩 지연
   },
   retryCondition: (error) => {
@@ -131,8 +129,7 @@ const reviewApiClient = axios.create({
 // 리뷰 데이터 retry
 axiosRetry(reviewApiClient, {
   retries: 3, // 최대 3번 재시도
-  retryDelay: (retryCount) => {
-    console.log(`Retry attempt: ${retryCount}`);
+  retryDelay: () => {
     return 500; // 각 재시도마다 3초씩 지연
   },
   retryCondition: (error) => {
@@ -163,8 +160,7 @@ const movieListApi = axios.create({
 // 영화 리스트 retry
 axiosRetry(movieListApi, {
   retries: 3, // 최대 3번 재시도
-  retryDelay: (retryCount) => {
-    console.log(`Retry attempt: ${retryCount}`);
+  retryDelay: () => {
     return 500; // 각 재시도마다 3초씩 지연
   },
   retryCondition: (error) => {
@@ -231,7 +227,6 @@ export const fetchMovieGenre = async (
       const movies = response.data.data;
       return movies;
     } else {
-      console.error("Unexpected response structure", response);
       return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
     }
   } catch (error) {
@@ -344,7 +339,6 @@ export const fetchMovieUserReview = async (userSeq: number) => {
     const response = await movieListApi.get(`/recommendation/review/${userSeq}`);
     if (response?.data.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
-      console.log(movies);
       return movies;
     } else {
       console.error("Unexpected response structure", response);
@@ -394,9 +388,6 @@ export const addFavoriteMovies = async (
         },
       }
     );
-
-    // 요청 성공 시 결과 출력
-    console.log("Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error adding favorite movies:", error);

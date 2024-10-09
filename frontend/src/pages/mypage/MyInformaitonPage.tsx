@@ -12,8 +12,6 @@ const MyInformationPage: React.FC = () => {
     refetch(); // 데이터를 다시 불러오는 작업
   }, []);
 
-  console.log(data);
-
   const goToVerification = () => {
     navigate("/mypage/verification");
   };

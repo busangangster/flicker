@@ -90,7 +90,6 @@ const FavoritePage: React.FC = () => {
     }
   }
 
-  console.log(slides);
 
   return (
     <div className="bg-black p-8 rounded-lg w-[1200px] relative">

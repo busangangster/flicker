@@ -47,7 +47,6 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
     isCarouselMovedRef.current = true;
     setCarouselOpacity(0.25);
     isMovingRef.current = false;
-    console.log("moveCardsDown: Carousel moved down");
   };
 
   // Carousel을 원래 위치로 되돌리는 함수
@@ -60,7 +59,6 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
     isCarouselMovedRef.current = false;
     setCarouselOpacity(1);
     isMovingRef.current = false;
-    console.log("moveCardsUp: Carousel moved up");
   };
 
   // 카드 클릭 이벤트 핸들러

@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
-
 function ClearCacheButton() {
   const queryClient = useQueryClient();
 

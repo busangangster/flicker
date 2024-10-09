@@ -20,8 +20,6 @@ export const signin = async (
   params: SignInParams
 ): Promise<SignInResponse | ""> => {
   try {
-    console.log("로그인 요청 데이터:", params);
-
     const response = await axios.post<SignInResponse>(
       "/api/bff/user/login",
       params
@@ -35,7 +33,6 @@ export const signin = async (
     );
     // const { accessToken, refreshToken } = response.data || {};
     localStorage.setItem("accessToken", accessToken);
-    console.log("accessToken 저장 완료");
 
     // JWT 토큰을 로컬 스토리지와 쿠키에 저장
     // Cookies.set("refreshToken", refreshToken, { expires: 1 }); // 1일간 유지

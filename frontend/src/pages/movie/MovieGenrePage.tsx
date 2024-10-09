@@ -52,7 +52,7 @@ const MovieGenrePage: React.FC = () => {
 
     setLoading(true);
     try {
-      console.log(`페이지 ${page}에 대해 영화 데이터를 로드 중...`); // 페이지 로드 시점 확인
+      // console.log(`페이지 ${page}에 대해 영화 데이터를 로드 중...`); // 페이지 로드 시점 확인
 
       if (genre) {
         const encodedGenre = encodeURIComponent(genre);
