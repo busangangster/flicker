@@ -22,10 +22,6 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
     }
   };
 
-  // const toggleShowMore = () => {
-  //   setShowMore((prev) => !prev);
-  // };
-
 
   const handleShowMoreClick = () => {
     if (isDetailPage && onShowMore) {

@@ -4,6 +4,8 @@ import { signUp } from "../../apis/authApi";
 import calendar_white from "../../assets/icons/calendar_white.png";
 import { SignUpParams } from "../../type";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import Modal from "../../components/common/Modal"; // Modal 컴포넌트 불러오기
+import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa"; // 모달에 사용할 아이콘 불러오기
 
 // background 이미지 목록
 const backgrounds = [
@@ -23,7 +25,7 @@ const SignUpPage: React.FC = () => {
     passCheck: "",
     nickname: "",
     birthDate: "",
-    gender: "", // 기본값을 'M'으로 설정
+    gender: "",
   });
 
   const [errors, setErrors] = useState({
@@ -38,6 +40,14 @@ const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState(""); // 랜덤 배경 이미지 상태
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    description: "",
+    icon: FaCheckCircle,
+    buttonText: "확인",
+  }); // 모달의 내용 관리
 
   useEffect(() => {
     // 랜덤한 배경 이미지 선택
@@ -85,7 +95,6 @@ const SignUpPage: React.FC = () => {
     validateField(name, value);
   };
 
-  // 성별을 "M" 또는 "F"로만 설정하도록 타입을 강제
   const handleGenderChange = (gender: "M" | "F") => {
     setFormData({ ...formData, gender });
     setErrors({ ...errors, gender: "" });
@@ -105,13 +114,31 @@ const SignUpPage: React.FC = () => {
 
     try {
       await signUp(formData);
-      alert(
-        "회원가입이 완료되었어요. \n앞으로 Flicker에서 소중한 기록을 남겨보세요!"
-      );
-      navigate("/signin");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+      // 회원가입 성공 시 모달 띄우기
+      setModalContent({
+        title: "회원가입 완료",
+        description:
+          "회원가입이 완료되었어요. \n앞으로 Flicker에서 소중한 기록을 남겨보세요!",
+        icon: FaCheckCircle,
+        buttonText: "확인",
+      });
+      setIsModalOpen(true);
+
+      // 모달 닫은 후 로그인 페이지로 이동
+      setTimeout(() => {
+        navigate("/signin");
+      },3000);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      alert("회원가입 실패");
+      // 회원가입 실패 시 모달 띄우기
+      setModalContent({
+        title: "회원가입 실패",
+        description: "회원가입에 실패했습니다. 다시 시도해주세요.",
+        icon: FaExclamationCircle,
+        buttonText: "확인",
+      });
+      setIsModalOpen(true);
     }
   };
 
@@ -146,7 +173,7 @@ const SignUpPage: React.FC = () => {
       <header className="sticky top-0 bg-transparent z-20">
         <IoIosArrowRoundBack
           onClick={() => navigate(-1)}
-          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60"
         />
       </header>
       <form onSubmit={handleSubmit} className="w-full max-w-2xl p-8">
@@ -158,7 +185,7 @@ const SignUpPage: React.FC = () => {
           <div className="flex w-full">
             <input
               type="text"
-              name="userId" // 수정: name="id"에서 name="userId"으로 변경
+              name="userId"
               placeholder="아이디"
               value={formData.userId}
               onChange={handleChange}
@@ -294,6 +321,17 @@ const SignUpPage: React.FC = () => {
           회원가입
         </button>
       </form>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <Modal
+          onClose={() => setIsModalOpen(false)}
+          title={modalContent.title}
+          description={modalContent.description}
+          icon={modalContent.icon}
+          buttonText={modalContent.buttonText}
+        />
+      )}
     </div>
   );
 };

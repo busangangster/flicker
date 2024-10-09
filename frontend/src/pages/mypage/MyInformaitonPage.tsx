@@ -12,10 +12,9 @@ const MyInformationPage: React.FC = () => {
     refetch(); // 데이터를 다시 불러오는 작업
   }, []);
 
-  console.log(data);
-
   const goToVerification = () => {
-    navigate("/mypage/verification");
+    // navigate("/mypage/verification");
+    navigate("/mypage/userinfoedit");
   };
 
   if (isLoading) return <p>로딩 중...</p>;

@@ -17,9 +17,11 @@ import { MovieDetail } from "../../type";
 import Review from "../../components/Review";
 import MoviesList from "../../components/MoviesList";
 import { IoBan } from "react-icons/io5";
+import { GoHeartFill } from "react-icons/go";
 import { useUserQuery } from "../../hooks/useUserQuery";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import Modal from "../../components/common/Modal"
 // import { getReviewRating } from "../../apis/movieApi"; // API 호출 함수 가져오기
 
 const MovieDetailPage: React.FC = () => {
@@ -27,6 +29,8 @@ const MovieDetailPage: React.FC = () => {
   const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq를 가져옴
   const [isLiked, setIsLiked] = useState(false);
   const [disLiked, setDisLiked] = useState(false);
+  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false); // FavoriteModal 상태 추가
+  const [isDislikeModalOpen, setIsDislikeModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
   // const [totalCnt, setTotalCnt] = useState<number>(0);
@@ -174,11 +178,12 @@ const MovieDetailPage: React.FC = () => {
         await deletefavoriteMovies(userSeq, Number(movieSeq));
       } else {
         await addfavoriteMovies(userSeq, Number(movieSeq));
-        Swal.fire({
-          title: "찜 완료!",
-          icon: "success",
-          confirmButtonText: "확인",
-        });
+        setIsFavoriteModalOpen(true); // FavoriteModal 열기
+        // Swal.fire({
+        //   title: "찜 완료!",
+        //   icon: "success",
+        //   confirmButtonText: "확인",
+        // });
       }
     } catch (error) {
       console.error("즐겨찾기 API 호출 중 오류 발생:", error);
@@ -207,12 +212,12 @@ const MovieDetailPage: React.FC = () => {
           addDislikeMovies(userSeq, Number(movieSeq))
             .then(() => {
               console.log("관심없음 목록에 추가");
-
-              Swal.fire({
-                title: "무관심 추가 완료!",
-                icon: "success",
-                confirmButtonText: "확인",
-              });
+              setIsDislikeModalOpen(true); // DislikeModal 열기
+              // Swal.fire({
+              //   title: "무관심 추가 완료!",
+              //   icon: "success",
+              //   confirmButtonText: "확인",
+              // });
             })
             .catch((error) => {
               console.error("관심없음 목록 추가 중 오류 발생:", error);
@@ -314,11 +319,14 @@ const MovieDetailPage: React.FC = () => {
               {/* 고정된 너비 설정 */}
               <div className="flex items-center justify-between w-full">
                 <h2 className="text-4xl font-bold flex-1 flex items-center overflow-hidden">
-                  <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                  <span
+                    className="whitespace-nowrap overflow-hidden text-ellipsis"
+                    lang="ko"
+                  >
                     {movieTitle}
                   </span>
                   <span className="flex items-end ml-4 flex-shrink-0">
-                    <span className="text-blue-500 text-2xl">⭐</span>
+                    <span className="text-[#E3C202] text-2xl mr-1">★</span>
                     <span className="text-2xl" lang="ko">
                       {movieRating}
                     </span>
@@ -371,7 +379,7 @@ const MovieDetailPage: React.FC = () => {
                   <span>|&nbsp;&nbsp;&nbsp;{audienceRating}</span>
                 )}
               </div>
-              <p className="mt-4 text-lg">
+              <p className="mt-4 text-lg" lang="ko">
                 {displayedText}
                 {isLongText && (
                   <button
@@ -463,6 +471,25 @@ const MovieDetailPage: React.FC = () => {
           movies={similarMovies}
         />
       </div>
+      {/* Favorite and Dislike Modals */}
+      {isFavoriteModalOpen && (
+        <Modal
+          onClose={() => setIsFavoriteModalOpen(false)}
+          title="찜 완료!"
+          icon={GoHeartFill}
+          buttonText="확인"
+        />
+      )}
+
+      {/* 무관심 모달 */}
+      {isDislikeModalOpen && (
+        <Modal
+          onClose={() => setIsDislikeModalOpen(false)}
+          title="무관심 추가 완료!"
+          icon={IoBan}
+          buttonText="확인"
+        />
+      )}
     </div>
   );
 };

@@ -86,7 +86,7 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
   };
 
   return (
-    <div className="relative w-full flex-shrink-0 mb-[50px]">
+    <div className="relative w-full flex-shrink-0 mb-[50px]" lang="ko">
       <h3 className="text-white mb-[10px] text-[27px] ml-[50px] mt-[20px]">
         {category}
       </h3>
@@ -203,9 +203,9 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
                 <div className="details">
                   <h1 className="text-[20px]">{movie.movieTitle}</h1>
                   <div className="text-[15px]">
-                    {`${movie.movieYear || "정보 없음"} • ${
-                      movie.runningTime || "정보 없음"
-                    } • ${movie.audienceRating || "정보 없음"}`}
+                    {`${movie.movieYear || "없음"} • ${
+                      movie.runningTime || "없음"
+                    } • ${movie.audienceRating || "없음"}`}
                   </div>
                   <div className="rating flex items-center">
                     {renderStars(movie.movieRating ?? 0)}{" "}

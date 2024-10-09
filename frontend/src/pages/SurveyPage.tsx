@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import "../App.css";
 import { useUserQuery } from "../hooks/useUserQuery";
 import { addFavoriteMovies } from "../apis/axios";
-import { useNavigate } from "react-router-dom"
-
-
+import { useNavigate } from "react-router-dom";
 
 const movieSeqs = [
   20020, 16767, 24350, 17263, 20205, 23601, 20616, 24782, 23165, 17648, 22716,
   16864, 17898, 24602, 20403, 23024, 16281, 22427, 19771, 18193, 22626, 21560,
   26284, 24484, 25767, 25767, 22910, 26112, 20977, 21932,
-]; 
+];
 
 const imagePaths = Array.from(
   { length: 30 },
@@ -20,22 +18,18 @@ const imagePaths = Array.from(
 const movies = Array.from({ length: 30 }, (_, i) => ({
   id: i,
   title: `Movie ${i + 1}`,
-  image: imagePaths[i], 
-  movieSeq: movieSeqs[i], 
+  image: imagePaths[i],
+  movieSeq: movieSeqs[i],
 }));
-
 
 const Survey: React.FC = () => {
   const [selectedMovies, setSelectedMovies] = useState<number[]>([]);
   const navigate = useNavigate();
   const { data, error, isLoading } = useUserQuery();
 
-    if (!data) return <p>유저 정보가 없습니다.</p>;
-    if (isLoading) return <p>로딩 중...</p>;
+  if (!data) return <p>유저 정보가 없습니다.</p>;
+  if (isLoading) return <p>로딩 중...</p>;
   if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
-  
-  console.log(data);
-  
 
   const handleSelect = (id: number) => {
     if (selectedMovies.includes(id)) {
@@ -45,18 +39,15 @@ const Survey: React.FC = () => {
     }
   };
 
-
   const handleSubmit = async () => {
     const selectedMovieSeqs = selectedMovies.map((id) => movieSeqs[id]);
     try {
-      await addFavoriteMovies(data.userSeq, selectedMovieSeqs); 
-      console.log("Favorite movies submitted successfully");
-      navigate("/home")
+      await addFavoriteMovies(data.userSeq, selectedMovieSeqs);
+      navigate("/home");
     } catch (error) {
       console.error("Failed to submit favorite movies:", error);
     }
-  }
-
+  };
 
   return (
     <div className="flex p-8 h-full bg-black justify-center w-screen">

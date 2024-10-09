@@ -10,6 +10,28 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true, // for cross-origin requests
+  // timeout: 40000,
+});
+
+axiosRetry(instance, {
+  retries: 3, // 최대 3번 재시도
+  retryDelay: () => {
+    return 500; // 각 재시도마다 3초씩 지연
+  },
+  retryCondition: (error) => {
+    console.error("Error occurred:", error.message);
+    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
+    return (
+      (error.response &&
+        (error.response.status >= 500 || error.response.status === 404)) ||
+      error.code === "ECONNABORTED"
+    );
+  },
+  onRetry: (retryCount, error, requestConfig) => {
+    console.log(`Retrying... Attempt #${retryCount}`);
+    console.log("Request Config:", requestConfig);
+    console.error("Error Details:", error);
+  },
 });
 
 // 요청 인터셉터 : JWT 토큰을 요청 헤더에 포함
@@ -70,17 +92,30 @@ const movieDetailApi = axios.create({
   headers: {
     "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
   },
+  // timeout: 40000,
 });
 
-export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
-  try {
-    const response = await movieDetailApi.get(`/detail/${movieSeq}/${userSeq}`);
-    return response.data.data; // 반환된 데이터가 올바른지 확인
-  } catch (error) {
-    console.error("Error fetching movie detail:", error);
-    throw error; // 에러 발생 시 처리
-  }
-};
+//
+axiosRetry(movieDetailApi, {
+  retries: 3, // 최대 3번 재시도
+  retryDelay: () => {
+    return 500; // 각 재시도마다 3초씩 지연
+  },
+  retryCondition: (error) => {
+    console.error("Error occurred:", error.message);
+    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
+    return (
+      (error.response &&
+        (error.response.status >= 500 || error.response.status === 404)) ||
+      error.code === "ECONNABORTED"
+    );
+  },
+  onRetry: (retryCount, error, requestConfig) => {
+    console.log(`Retrying... Attempt #${retryCount}`);
+    console.log("Request Config:", requestConfig);
+    console.error("Error Details:", error);
+  },
+});
 
 // 리뷰 데이터 조회
 const reviewApiClient = axios.create({
@@ -88,8 +123,63 @@ const reviewApiClient = axios.create({
   headers: {
     "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
   },
+  // timeout: 40000,
 });
 
+// 리뷰 데이터 retry
+axiosRetry(reviewApiClient, {
+  retries: 3, // 최대 3번 재시도
+  retryDelay: () => {
+    return 500; // 각 재시도마다 3초씩 지연
+  },
+  retryCondition: (error) => {
+    console.error("Error occurred:", error.message);
+    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
+    return (
+      (error.response &&
+        (error.response.status >= 500 || error.response.status === 404)) ||
+      error.code === "ECONNABORTED"
+    );
+  },
+  onRetry: (retryCount, error, requestConfig) => {
+    console.log(`Retrying... Attempt #${retryCount}`);
+    console.log("Request Config:", requestConfig);
+    console.error("Error Details:", error);
+  },
+});
+
+// 영화 리스트 조회
+const movieListApi = axios.create({
+  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}/list`,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  // timeout: 40000,
+});
+
+// 영화 리스트 retry
+axiosRetry(movieListApi, {
+  retries: 3, // 최대 3번 재시도
+  retryDelay: () => {
+    return 500; // 각 재시도마다 3초씩 지연
+  },
+  retryCondition: (error) => {
+    console.error("Error occurred:", error.message);
+    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
+    return (
+      (error.response &&
+        (error.response.status >= 500 || error.response.status === 404)) ||
+      error.code === "ECONNABORTED"
+    );
+  },
+  onRetry: (retryCount, error, requestConfig) => {
+    console.log(`Retrying... Attempt #${retryCount}`);
+    console.log("Request Config:", requestConfig);
+    console.error("Error Details:", error);
+  },
+});
+
+// 영화 리뷰 가져오기 
 export const fetchMovieReviews = async (
   movieId: number,
   userSeq: number,
@@ -113,36 +203,16 @@ export const fetchMovieReviews = async (
   }
 };
 
-// 영화 리스트 조회
-const movieListApi = axios.create({
-  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}/list`,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 40000,
-});
-
-axiosRetry(movieListApi, {
-  retries: 3, // 최대 3번 재시도
-  retryDelay: (retryCount) => {
-    console.log(`Retry attempt: ${retryCount}`);
-    return retryCount * 3000; // 각 재시도마다 3초씩 지연
-  },
-  retryCondition: (error) => {
-    console.error("Error occurred:", error.message);
-    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
-    return (
-      (error.response && error.response.status >= 500) ||
-      error.code === "ECONNABORTED"
-    );
-  },
-  onRetry: (retryCount, error, requestConfig) => {
-    console.log(`Retrying... Attempt #${retryCount}`);
-    console.log("Request Config:", requestConfig);
-    console.error("Error Details:", error);
-  },
-});
-
+// 영화 상세정보 조회
+export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
+  try {
+    const response = await movieDetailApi.get(`/detail/${movieSeq}/${userSeq}`);
+    return response.data.data; // 반환된 데이터가 올바른지 확인
+  } catch (error) {
+    console.error("Error fetching movie detail:", error);
+    throw error; 
+  }
+};
 
 // 장르별 조회
 export const fetchMovieGenre = async (
@@ -157,7 +227,6 @@ export const fetchMovieGenre = async (
       const movies = response.data.data;
       return movies;
     } else {
-      console.error("Unexpected response structure", response);
       return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
     }
   } catch (error) {
@@ -270,7 +339,6 @@ export const fetchMovieUserReview = async (userSeq: number) => {
     const response = await movieListApi.get(`/recommendation/review/${userSeq}`);
     if (response?.data.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
-      console.log(movies);
       return movies;
     } else {
       console.error("Unexpected response structure", response);
@@ -320,9 +388,6 @@ export const addFavoriteMovies = async (
         },
       }
     );
-
-    // 요청 성공 시 결과 출력
-    console.log("Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error adding favorite movies:", error);
@@ -368,7 +433,6 @@ export const deletefavoriteMovies = async (
 };
 
 export const fetchFavoriteMovies = async (userSeq: number) => {
-  console.log("userSeq", userSeq);
   const url = `${import.meta.env.VITE_BFF_USER_URL}/${userSeq}/bookmark-movie`;
 
   try {
