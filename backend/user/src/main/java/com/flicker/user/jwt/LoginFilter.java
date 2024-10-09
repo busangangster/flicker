@@ -13,8 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -108,10 +107,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        // TODO : 응답 에러코드와 함께 메세지 함께 보내야함.
-        response.getWriter().write("실패");
-        response.setStatus(401);
 
+        response.setStatus(400);
+        // 실패 이유 확인
+        String errorMessage = "아이디와 비밀번호가 틀렸습니다.";
+        // 에러 메시지 전송
+        response.getWriter().write(errorMessage);
     }
 
     private Cookie createCookie(String key, String value) {
