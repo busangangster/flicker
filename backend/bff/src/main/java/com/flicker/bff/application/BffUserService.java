@@ -1,6 +1,5 @@
 package com.flicker.bff.application;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.bff.common.module.exception.RestApiException;
@@ -13,10 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -48,11 +47,20 @@ public class BffUserService {
     }
 
     // 2. 로그인
-    public Mono<ResponseEntity<ResponseDto>> loginUser(UserLoginReqDto request) {
+    public Mono<ResponseEntity<?>> loginUser(UserLoginReqDto request) {
         // 1. 외부 API의 경로를 설정합니다.
         String path = util.getUri("/login");
+
         // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
-        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, request);
+        return util.sendPostRequestAsyncWithToken(userReviewBaseUrl, path, request)
+                .flatMap(response -> {
+                    // 상태 코드가 400인 경우 처리
+                    if (response.getStatusCode() == HttpStatus.OK) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(ResponseDto.response(StatusCode.INVALID_ID_OR_PASSWORD,"아이디 및 비밀번호가 일치하지 않습니다.")));
+                    }
+                    // 성공적으로 처리된 응답 반환
+                    return Mono.just(response);
+                });
     }
 
     // 3. 회원수정(LOW)
