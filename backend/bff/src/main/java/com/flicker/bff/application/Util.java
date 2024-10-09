@@ -150,7 +150,7 @@ public class Util {
                             clientResponse -> {
                                 return clientResponse.bodyToMono(String.class)
                                         .flatMap(errorBody -> {
-                                            return Mono.error(new RestApiException(StatusCode.BAD_REQUEST, errorBody));
+                                            return Mono.error(new RestApiException(StatusCode.BAD_REQUEST, "아이디와 비밀번호가 일치하지 않습니다."));
                                         });
                             }
                     )
