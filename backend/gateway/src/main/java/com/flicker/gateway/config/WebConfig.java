@@ -13,11 +13,11 @@ public class WebConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("http://192.168.30.180:5173");
-        config.addAllowedOrigin("http://localhost:5173");
-        config.addAllowedOrigin("http://j11e206.p.ssafy.io:5173");
-        config.addAllowedOrigin("http://192.168.30.195:5173");
-        config.addAllowedOrigin("https://j11e206.p.ssafy.io:5173");
+     //   config.addAllowedOrigin("http://192.168.30.180:5173");
+     //   config.addAllowedOrigin("http://localhost:5173");
+     //   config.addAllowedOrigin("http://j11e206.p.ssafy.io:5173");
+     //   config.addAllowedOrigin("http://192.168.30.195:5173");
+     //   config.addAllowedOrigin("https://j11e206.p.ssafy.io:5173");
         config.addAllowedOrigin("https://j11e206.p.ssafy.io");
 
         config.addAllowedMethod("GET");
