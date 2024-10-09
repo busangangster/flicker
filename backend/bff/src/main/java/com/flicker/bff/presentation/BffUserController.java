@@ -1,16 +1,13 @@
 package com.flicker.bff.presentation;
 
 import com.flicker.bff.application.BffUserService;
-import com.flicker.bff.common.module.exception.RestApiException;
 import com.flicker.bff.common.module.response.ResponseDto;
-import com.flicker.bff.common.module.status.StatusCode;
 import com.flicker.bff.dto.user.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -30,7 +27,7 @@ public class BffUserController {
 
     // 2. 로그인
     @PostMapping("/login")
-    public Mono<ResponseEntity<ResponseDto>> loginUser(@RequestBody UserLoginReqDto request) {
+    public Mono<ResponseEntity<?>> loginUser(@RequestBody UserLoginReqDto request) {
         return userService.loginUser(request);
     }
 
