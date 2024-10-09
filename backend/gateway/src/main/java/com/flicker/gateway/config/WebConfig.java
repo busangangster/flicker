@@ -20,12 +20,7 @@ public class WebConfig {
      //   config.addAllowedOrigin("https://j11e206.p.ssafy.io:5173");
         config.addAllowedOrigin("https://j11e206.p.ssafy.io");
 
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("OPTIONS");
-
+        config.addAllowedMethod("*");
         config.addAllowedHeader("*");  // 모든 헤더 허용
         config.addExposedHeader("Authorization");  // 노출할 헤더
         config.setAllowCredentials(true);  // 자격 증명 허용
