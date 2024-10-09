@@ -14,7 +14,7 @@ const MyPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col overflow-hidden">
       <header className="sticky top-0 bg-black z-10">
         <Navbar />
       </header>

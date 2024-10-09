@@ -2,9 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { Application, Sprite, Container, Graphics, Assets } from "pixi.js";
 import gsap from "gsap";
 import Navbar from "../components/common/Navbar";
+import FirstLoginModal from "../components/FirstLoginModal";
 import CircleCarousel from "../components/CircleCarousel";
+import { checkFirstLogin } from "../apis/authApi";
+import { useNavigate } from "react-router-dom";
+import { useUserQuery } from "../hooks/useUserQuery";
+
 
 const Home: React.FC = () => {
+  const { data: userData } = useUserQuery(); 
+  // const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
   const pixiContainerRef = useRef<HTMLDivElement | null>(null);
   const animationStopped = useRef(false);
   const [animationFinished, setAnimationFinished] = useState(false); // 애니메이션 종료 상태 관리
@@ -12,6 +21,23 @@ const Home: React.FC = () => {
   const [backgroundVideoUrl, setBackgroundVideoUrl] = useState<string | null>(
     null
   );
+
+  useEffect(() => {
+    const fetchFirstLoginStatus = async () => {
+      if (userData?.userSeq) {
+        const isFirst = await checkFirstLogin(userData.userSeq); // 첫 로그인 여부 확인
+        if (isFirst) {
+          // setIsFirstLogin(true);
+          setShowModal(true);
+          setTimeout(() => {
+            navigate("/survey"); // 5초 후 설문 페이지로 이동
+          }, 5000);
+        }
+      }
+    };
+
+    fetchFirstLoginStatus();
+  }, [userData, navigate]);
 
   useEffect(() => {
     if (sessionStorage.getItem("visited") === "true") {
@@ -244,6 +270,14 @@ const Home: React.FC = () => {
             </div>
           </main>
         </div>
+      )}
+      {showModal && (
+        <FirstLoginModal
+          onClose={() => {
+            setShowModal(false);
+            navigate("/survey"); // 모달 닫기 시 설문 페이지로 이동
+          }}
+        />
       )}
 
       {backgroundVideoUrl && (

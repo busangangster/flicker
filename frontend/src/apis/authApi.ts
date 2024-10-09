@@ -57,3 +57,15 @@ export const verifyToken = async () => {
     throw error;
   }
 };
+
+// 최초 로그인 판단
+export const checkFirstLogin = async (userSeq: number) => { 
+  try {
+    const response = await axios.get(`/api/bff/user/check-first-login/${userSeq}`);
+    console.log(response.data.data)
+    return response.data.data;
+  } catch (error) {
+      console.error("first login error:", error);
+    throw error;
+  }
+}

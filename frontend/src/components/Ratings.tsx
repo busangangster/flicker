@@ -68,8 +68,8 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
   }, [movieSeq]);
 
   // 최고 값을 가진 막대의 색상을 다르게 설정
-  const maxValue = Math.max(...yValues);
-  const maxIndex = yValues.indexOf(maxValue);
+  // const maxValue = Math.max(...yValues);
+  // const maxIndex = yValues.indexOf(maxValue);
 
   const data = {
     labels: xLabels,
@@ -77,12 +77,8 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
       {
         label: "Ratings",
         data: yValues,
-        backgroundColor: yValues.map((index) =>
-          index === maxIndex ? "#6282D3" : "#8694B8"
-        ),
-        borderColor: yValues.map((index) =>
-          index === maxIndex ? "#6282D3" : "#8694B8"
-        ),
+        backgroundColor: "#8694B8",
+        borderColor: "#8694B8",
         borderWidth: 0.5,
         borderRadius: 5,
         barPercentage: 1,

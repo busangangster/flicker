@@ -52,3 +52,14 @@
   background-color: #e1e1e1; /* 손잡이의 호버 색상 */
 }
 
+
+.pointer {
+  position: absolute;
+  background-color: #4D7FFF;
+  opacity: 0.56;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  left: -15px;
+  top: -15px;
+}

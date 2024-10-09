@@ -5,7 +5,6 @@ import { AxiosError } from "axios";
 import { IoMdCheckboxOutline, IoMdSquareOutline } from "react-icons/io";
 import { IoIosArrowRoundBack } from "react-icons/io";
 
-// background 이미지 목록
 const backgrounds = [
   "/assets/background/background1.png",
   "/assets/background/background2.png",
@@ -21,13 +20,11 @@ const SignInPage: React.FC = () => {
     password: "",
     rememberMe: false,
   });
-
   const [error, setError] = useState("");
   const [backgroundImage, setBackgroundImage] = useState(""); // 랜덤 배경 이미지 상태
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 랜덤한 배경 이미지 선택
     const randomIndex = Math.floor(Math.random() * backgrounds.length);
     setBackgroundImage(backgrounds[randomIndex]);
   }, []);
@@ -55,14 +52,13 @@ const SignInPage: React.FC = () => {
       });
 
       if (response) {
-        // alert("로그인 성공! \nFlicker에서 반짝이는 순간을 기록하세요.");
-        navigate("/"); // 메인 페이지로 이동
+        // 로그인 성공 시 홈으로 이동
+        navigate("/home");
       } else {
         throw new Error("로그인 응답이 없습니다.");
       }
     } catch (error: unknown) {
       const err = error as AxiosError;
-
       console.error("로그인 오류:", err);
 
       if (err.response && err.response.status === 400) {
@@ -75,19 +71,15 @@ const SignInPage: React.FC = () => {
     }
   };
 
-  const goToPasswordReset = () => {
-    navigate("/passwordreset");
-  };
-
   return (
     <div
       className="min-h-screen w-screen bg-black flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${backgroundImage})` }} // 랜덤 배경 이미지 적용
+      style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <header className="sticky top-0 bg-transparent z-20">
         <IoIosArrowRoundBack
           onClick={() => navigate(-1)}
-          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60"
         />
       </header>
       <form onSubmit={handleSubmit} className="w-full max-w-xl p-8">
@@ -127,13 +119,6 @@ const SignInPage: React.FC = () => {
             )}
             자동 로그인
           </label>
-          <a
-            type="button"
-            className="text-sm text-gray-100 underline hover:underline mr-2"
-            onClick={goToPasswordReset}
-          >
-            비밀번호 재설정
-          </a>
         </div>
 
         <button
@@ -142,10 +127,9 @@ const SignInPage: React.FC = () => {
         >
           로그인
         </button>
-
         <p className="text-sm text-center text-gray-200">
           Flicker와 함께 반짝이는 순간을 기록하시겠어요?&nbsp;&nbsp;&nbsp;
-          <a href="/signup" className="text-gray-100 underline hover:underline">
+          <a href="/signup" className="text-gray-100 underline hover:text-gray-400">
             회원가입
           </a>
         </p>

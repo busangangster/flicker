@@ -27,14 +27,20 @@ const PlotModal: React.FC<PlotModalProps> = ({
   } = movieDetail; // movieDetailResponse에서 데이터 추출
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 ">
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 "
+      lang="ko"
+    >
       <div className="bg-[#5D5D5D] rounded-lg p-10 w-[500px] overflow-y-auto">
         <div className="flex justify-end items-end text-gray-300 text-lg hover:opacity-60">
           <button onClick={onClose}>✖</button>
         </div>
         <div className="text-[35px] font-bold mb-6">{movieTitle}</div>
         <div className="flex">
-          <div className="flex-col text-white font-semibold self-end mb-2" lang="ko">
+          <div
+            className="flex-col text-white font-semibold self-end mb-2"
+            lang="ko"
+          >
             <div className="text-lg">
               <span>개봉년도</span>
               <span className="text-gray-300 ml-6">{movieYear}</span>
