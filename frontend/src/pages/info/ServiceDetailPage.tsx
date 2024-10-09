@@ -80,9 +80,10 @@ import React from "react";
 import Navbar from "../../components/common/Navbar";
 import recommend from "/assets/service/recommend.png";
 import favorite from "/assets/service/favorite2.png";
-import serviceImage from "/assets/service/serviceImage.png";
+// import serviceImage from "/assets/service/serviceImage.png";
 import photocard from "/assets/service/photocard.png";
 import click from "/assets/service/click.png";
+import star from "/assets/service/star.png";
 import ServiceContent from "../../components/SeviceContent";
 
 const ServiceDetailPage: React.FC = () => {
@@ -130,7 +131,7 @@ const ServiceDetailPage: React.FC = () => {
           title="추천"
           description="별점과 리뷰\n분석 기반 추천"
           tags={["별점", "리뷰"]}
-          imageUrl={serviceImage}
+          imageUrl={star}
         />
 
         <ServiceContent

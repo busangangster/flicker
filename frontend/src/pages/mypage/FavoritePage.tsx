@@ -9,6 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchFavoriteMovies } from "../../apis/axios";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { useNavigate } from "react-router-dom";
+import "../../css/MovieList.css";
+
 
 interface FavoriteMovie {
   movieSeq: number;
@@ -92,7 +94,7 @@ const FavoritePage: React.FC = () => {
 
 
   return (
-    <div className="bg-black p-8 rounded-lg w-[1200px] relative">
+    <div className="bg-black p-8 rounded-lg w-[1200px] relative h-5/6">
       <h2 className="text-2xl font-semibold italic text-white mb-6">
         My Favorite Movies
       </h2>
@@ -128,22 +130,26 @@ const FavoritePage: React.FC = () => {
         slidesPerView={1}
         style={{ overflow: "hidden" }}
       >
-        {slides.map((slide, index) => (
-          <SwiperSlide key={index}>
-            <div className="grid grid-cols-5 gap-6">
-              {slide.map((movie: FavoriteMovie, idx: number) => (
-                <img
-                  key={idx}
-                  src={movie.moviePosterUrl}
-                  alt={`Movie ${idx + 1}`}
-                  className="rounded-lg object-cover cursor-pointer"
-                  onClick={() => goToDetail(movie.movieSeq)}
-                  style={{ width: "250px", height: "300px" }}
-                />
-              ))}
-            </div>
-          </SwiperSlide>
-        ))}
+        {slides && slides.length > 0 ? (
+          slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <div className="grid grid-cols-5 gap-6">
+                {slide.map((movie: FavoriteMovie, idx: number) => (
+                  <img
+                    key={idx}
+                    src={movie.moviePosterUrl}
+                    alt={`Movie ${idx + 1}`}
+                    className="rounded-lg object-cover card"
+                    onClick={() => goToDetail(movie.movieSeq)}
+                    style={{ width: "200px", height: "270px" }}
+                  />
+                ))}
+              </div>
+            </SwiperSlide>
+          ))
+        ) : (
+          <p>찜한 영화 목록이 없습니다.</p>
+        )}
       </Swiper>
 
       <style>

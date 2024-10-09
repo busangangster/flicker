@@ -13,7 +13,8 @@ const MyInformationPage: React.FC = () => {
   }, []);
 
   const goToVerification = () => {
-    navigate("/mypage/verification");
+    // navigate("/mypage/verification");
+    navigate("/mypage/userinfoedit");
   };
 
   if (isLoading) return <p>로딩 중...</p>;

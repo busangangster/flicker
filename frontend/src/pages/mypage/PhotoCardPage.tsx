@@ -124,7 +124,7 @@ const PhotoCardPage: React.FC = () => {
         content: (
           <div className="flex flex-col items-center justify-center h-full p-4 bg-[#FFFDF8] rounded-sm">
             <h1 className="text-5xl font-bold italic text-gray-400">
-              Empty Page
+               
             </h1>
           </div>
         ),
@@ -145,14 +145,14 @@ const pages: Page[] = [
   {
     id: 1,
     content: (
-      <div className="flex flex-col items-center justify-center h-full p-4 bg-[#FFFDF8] rounded-sm">
+      <div className="flex flex-col items-center justify-center h-full p-4 bg-[#FFFDF8] rounded-sm  overflow-hidden">
         <h1 className="text-5xl font-bold italic text-black mb-3">
           MOVIE MEMORIES
         </h1>
         <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
         <hr className="border-t-2 border-neutral-500 my-1 w-4/5" />
         <p className="text-lg italic mt-2 text-gray-700 self-end mr-16 mb-10">
-          made by {userData?.userId}
+          made by {userData?.nickname}
         </p>
         <img
           src="/assets/background/photobookmain.png"
@@ -196,7 +196,7 @@ const pages: Page[] = [
             opacity: photocardData.length ? 1 : 0,
           }}
           maxShadowOpacity={0.5}
-          clickEventForward={false}
+          clickEventForward={true}
           swipeDistance={30}
           showPageCorners={true}
           disableFlipByClick={true}

@@ -19,7 +19,13 @@ const Keyword: React.FC = () => {
         );
 
         const formattedWords = wordCloudData.data
-          .filter((item) => item.keyword !== "영화")
+          .filter(
+            (item) =>
+              item.keyword !== "영화" &&
+              item.keyword !== "시리즈" &&
+              item.keyword !== "배우" &&
+              item.keyword !== "감독"
+          )
           .map((item) => ({
             text: item.keyword,
             value: item.count,
@@ -40,7 +46,7 @@ const Keyword: React.FC = () => {
   const fontSize = (word: { value: number }) => {
     const minSize = 50;
     const maxSize = 130;
-    return Math.min(Math.max(word.value * 0.1, minSize), maxSize);
+    return Math.min(Math.max(word.value * 0.3, minSize), maxSize);
   };
 
   const rotate = () => 0;

@@ -1,0 +1,31 @@
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+}
+
+/* 나타날 때 사용하는 애니메이션 */
+.fade-in-scale {
+  animation: fadeInScale 0.3s ease forwards;
+}
+
+/* 사라질 때 사용하는 애니메이션 */
+.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}

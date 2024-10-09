@@ -1,12 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useQuery, useQueryClient } from "@tanstack/react-query"; // react-query 사용
 import { fetchSideBarUserInfo } from "../apis/axios";
 import { useUserQuery } from "../hooks/useUserQuery"; // useUserQuery 가져오기
+import Modal from "../components/common/Modal"; // Modal 컴포넌트 불러오기
+import { FaCheckCircle } from "react-icons/fa"; // 모달에 사용할 아이콘 불러오기
+// import { useNavigate } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
   const queryClient = useQueryClient(); // react-query 캐시 무효화
+  // const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    description: "",
+    icon: FaCheckCircle,
+    buttonText: "확인",
+  }); // 모달의 내용 관리
 
   // 로그인한 유저의 정보를 가져오는 useUserQuery 사용
   const { data: userData } = useUserQuery();
@@ -32,8 +43,21 @@ const Sidebar: React.FC = () => {
       queryKey: ["sidebarUserInfo"], // queryKey를 정확하게 설정
     });
 
-    alert("로그아웃되었습니다.");
-    window.location.replace("/home"); // /home으로 이동하면서 새로고침
+    setModalContent({
+      title: "로그아웃 완료",
+      description:
+        "",
+      icon: FaCheckCircle,
+      buttonText: "확인",
+    });
+    setIsModalOpen(true);
+
+    // 모달 닫은 후 로그인 페이지로 이동
+    setTimeout(() => {
+      window.location.replace("/home");
+    }, 1300);
+    // alert("로그아웃되었습니다.");
+    // window.location.replace("/home"); // /home으로 이동하면서 새로고침
   };
 
   return (
@@ -99,6 +123,15 @@ const Sidebar: React.FC = () => {
       >
         logout
       </button>
+      {isModalOpen && (
+        <Modal
+          onClose={() => setIsModalOpen(false)}
+          title={modalContent.title}
+          description={modalContent.description}
+          icon={modalContent.icon}
+          buttonText={modalContent.buttonText}
+        />
+      )}
     </aside>
   );
 };

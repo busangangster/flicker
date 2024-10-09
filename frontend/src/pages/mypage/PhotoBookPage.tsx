@@ -47,7 +47,7 @@ const PhotoBookPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-black w-full min-h-screen flex flex-col items-center justify-center">
+    <div className="bg-black w-full min-h-screen flex flex-col items-center justify-center  overflow-hidden">
       {/* NavBar 추가 */}
       <header className="w-full fixed top-0 z-50">
         <Navbar />
@@ -72,7 +72,7 @@ const PhotoBookPage: React.FC = () => {
           <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
           <hr className="photobook-text border-t-2 border-neutral-500 my-1 w-3/5" />
           <p className="photobook-text text-lg italic mt-3 text-black text-right self-end mr-60">
-            made by {data.userId}
+            made by {data.nickname}
           </p>
           <img
             src={photobookmain}

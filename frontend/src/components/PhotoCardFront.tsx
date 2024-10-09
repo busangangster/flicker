@@ -7,7 +7,7 @@ const PhotoCardFront: React.FC<PhotoCardFrontProps> = ({
   onCardClick, // 클릭 핸들러 추가
 }) => {
   return (
-    <div className="bg-white flex flex-col justify-between h-full rounded-sm">
+    <div className="bg-[#FFFDF8] flex flex-col justify-between h-full rounded-sm">
       <div className="h-6" />
 
       <div className="grid grid-cols-2 grid-row-2 gap-x-14 gap-y-6 px-28 flex-grow">

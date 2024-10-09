@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Swal from "sweetalert2";
 import { updateUserInfo } from "../../apis/axios";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Modal from "../../components/common/Modal";
+import { FaExclamationCircle } from "react-icons/fa"; // Modal에서 사용할 아이콘 가져오기
 
 const UserInfoEditPage: React.FC = () => {
   const { data: userData } = useUserQuery();
@@ -15,37 +16,30 @@ const UserInfoEditPage: React.FC = () => {
   const [email, setEmail] = useState(userData?.email || "");
   const [password, setPassword] = useState("");
 
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
+
+  const openModal = () => {
+    setIsModalOpen(true); // 모달 열기
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // 모달 닫기
+  };
+
   const mutation = useMutation({
     mutationFn: (updatedData: {
       email: string;
       password: string;
       nickname: string;
-    }) => updateUserInfo(userSeq!, updatedData), // userSeq가 확실히 존재할 때만 실행
+    }) => updateUserInfo(userSeq!, updatedData),
     onSuccess: () => {
-      // 성공 시 캐시 무효화 (유저 정보 쿼리 재실행)
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      // queryClient.refetchQueries({ queryKey: ["user"] }); // user 쿼리를 다시 실행
-
-      // SweetAlert로 성공 메시지 띄우기
-      Swal.fire({
-        title: "성공!",
-        text: "회원 정보가 성공적으로 업데이트되었습니다.",
-        icon: "success",
-        confirmButtonText: "확인",
-      }).then(() => {
-        setTimeout(() => {
-          navigate("/mypage/myinformation");
-        }, 500);
-      });
+      setTimeout(() => {
+        navigate("/mypage/myinformation");
+      }, 500);
     },
     onError: (error) => {
       console.error("Error updating user info:", error);
-      Swal.fire({
-        title: "오류!",
-        text: "회원 정보 업데이트 중 문제가 발생했습니다.",
-        icon: "error",
-        confirmButtonText: "확인",
-      });
     },
   });
 
@@ -53,6 +47,12 @@ const UserInfoEditPage: React.FC = () => {
     if (!userSeq) {
       console.error("User sequence is not available.");
       return;
+    }
+
+    // 비밀번호가 비어있으면 모달을 열기
+    if (!password) {
+      openModal();
+      return; // 비밀번호가 없으면 제출을 중단
     }
 
     const updatedData = {
@@ -131,6 +131,17 @@ const UserInfoEditPage: React.FC = () => {
           수정완료
         </button>
       </div>
+
+      {/* Modal 사용 */}
+      {isModalOpen && (
+        <Modal
+          onClose={closeModal}
+          title="입력 오류"
+          description="비밀번호를 입력해주세요."
+          icon={FaExclamationCircle} // 아이콘으로 경고를 나타냄
+          buttonText="확인"
+        />
+      )}
     </div>
   );
 };
