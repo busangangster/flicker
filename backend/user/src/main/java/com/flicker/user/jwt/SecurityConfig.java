@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 .requestMatchers("/**").permitAll()  // 모든 경로 허용
 //                        .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()  // login 허용
 //                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()         // register 허용
-//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 모든 경로의 OPTIONS 요청 허용
+                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 모든 경로의 OPTIONS 요청 허용
 //                        .anyRequest().authenticated() // 나머지 경로는 인증 필요
                 )
                 .sessionManagement(session -> session
