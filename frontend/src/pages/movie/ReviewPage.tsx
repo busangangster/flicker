@@ -35,7 +35,6 @@ const ReviewPage: React.FC = () => {
   const navigate = useNavigate();
 
   const userSeq = userData?.userSeq || 0;
-  console.log(userSeq);
 
   // react-query로 getMoviePoster 요청
   const { data: moviePosterUrl } = useQuery({

@@ -21,22 +21,33 @@ const MoviesPage: React.FC = () => {
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
 
-  const { data: fantasyMovies, isLoading: isFantasyLoading } =
-    useMoviesByGenre("판타지");
+    const getRandomPage = () => Math.floor(Math.random() * 5);
+
+
+  const { data: fantasyMovies, isLoading: isFantasyLoading } = useMoviesByGenre(
+    "판타지",
+    getRandomPage()
+  );
   const { data: sfMovies, isLoading: isSfLoading } = useMoviesByGenre("SF");
-  const { data: romanceMovies, isLoading: isRomanceLoading } =
-    useMoviesByGenre("로맨스");
-  const { data: animeMovies, isLoading: isAnimeLoading } =
-    useMoviesByGenre("애니");
-  const { data: historyMovies, isLoading: isHistoryLoading } =
-    useMoviesByGenre("역사");
+  const { data: romanceMovies, isLoading: isRomanceLoading } = useMoviesByGenre(
+    "로맨스",
+    getRandomPage()
+  );
+  const { data: animeMovies, isLoading: isAnimeLoading } = useMoviesByGenre(
+    "애니",
+    getRandomPage()
+  );
+  const { data: historyMovies, isLoading: isHistoryLoading } = useMoviesByGenre(
+    "역사",
+    getRandomPage()
+  );
   const { data: adventureMovies, isLoading: isAdventureLoading } =
-    useMoviesByGenre("모험");
+    useMoviesByGenre("모험", getRandomPage());
   const { data: newMovies, isLoading: isNewMoviesLoading } = useMoviesByMonth();
   const { data: koreaMovies, isLoading: isKoreaMoveisLoading } =
-    useMoviesByCountry("한국");
+    useMoviesByCountry("한국", getRandomPage());
   const { data: twentyfourMovies, isLoading: isTwentyfourMoviesLoading } =
-    useMoviesByYear(2024);
+    useMoviesByYear(2024, getRandomPage());
   const { data: highRateMovies, isLoading: isHightRateMoviesLoading } =
     useMoviesByRate();
 const { data: actorData, isLoading: isActorMoviesLoading } = useMoviesByActor(
@@ -91,7 +102,6 @@ const movieTitle = actorData?.movieTitle || "";
       <header className="sticky top-0 bg-transparent z-10">
         <Navbar />
       </header>
-
       <div className="mt-[100px] flex justify-between items-end w-full pl-10 pr-5">
         <div className=" mt-3">
           <Filter
@@ -103,74 +113,70 @@ const movieTitle = actorData?.movieTitle || "";
         </div>
         <SearchBar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
       </div>
-      <TopTen />
- (
-        <>
-          {isNewMoviesLoading ? (
-            <p className="text-white">이번 달 신작 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="이번 달 신작 영화" movies={newMovies || []} />
-          )}
-          {isActorMoviesLoading ? (
-            <p className="text-white">영화 로딩 중...</p>
-          ) : (
-            <MoviesList
-              category={`재밌게 본 "${movieTitle}"에 출연한 "${actorName}"와 관련된 영화`}
-              movies={actorMovies || []}
-            />
-          )}
-          {isFantasyLoading ? (
-            <p className="text-white">판타지 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="판타지 영화" movies={fantasyMovies || []} />
-          )}
-          {isTwentyfourMoviesLoading ? (
-            <p className="text-white">올해 개봉한 영화 로딩 중...</p>
-          ) : (
-            <MoviesList
-              category="올해 개봉한 영화"
-              movies={twentyfourMovies || []}
-            />
-          )}{" "}
-          {isSfLoading ? (
-            <p className="text-white">SF 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="SF 영화" movies={sfMovies || []} />
-          )}
-          {isKoreaMoveisLoading ? (
-            <p className="text-white">한국 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="한국 영화" movies={koreaMovies || []} />
-          )}
-          {isHightRateMoviesLoading ? (
-            <p className="text-white">별점 높은 영화 로딩 중...</p>
-          ) : (
-            <MoviesList
-              category="별점 높은 영화"
-              movies={highRateMovies || []}
-            />
-          )}
-          {isRomanceLoading ? (
-            <p className="text-white">로맨스 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="로맨스 영화" movies={romanceMovies || []} />
-          )}
-          {isAnimeLoading ? (
-            <p className="text-white">애니메이션 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="애니메이션 영화" movies={animeMovies || []} />
-          )}
-          {isHistoryLoading ? (
-            <p className="text-white">역사 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="역사 영화" movies={historyMovies || []} />
-          )}
-          {isAdventureLoading ? (
-            <p className="text-white">모험 영화 로딩 중...</p>
-          ) : (
-            <MoviesList category="모험 영화" movies={adventureMovies || []} />
-          )}
-        </>
+      <TopTen />(
+      <>
+        {isNewMoviesLoading ? (
+          <p className="text-white">이번 달 신작 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="이번 달 신작 영화" movies={newMovies || []} />
+        )}
+        {isActorMoviesLoading ? (
+          <p className="text-white">관심 영화 로딩 중...</p>
+        ) : userSeq && actorMovies.length > 0 ? (
+          <MoviesList
+            category={`재밌게 본 "${movieTitle}"에 출연한 "${actorName}"와 관련된 영화`}
+            movies={actorMovies || []}
+          />
+        ) : null}
+        {isFantasyLoading ? (
+          <p className="text-white">판타지 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="판타지 영화" movies={fantasyMovies || []} />
+        )}
+        {isTwentyfourMoviesLoading ? (
+          <p className="text-white">올해 개봉한 영화 로딩 중...</p>
+        ) : (
+          <MoviesList
+            category="올해 개봉한 영화"
+            movies={twentyfourMovies || []}
+          />
+        )}{" "}
+        {isSfLoading ? (
+          <p className="text-white">SF 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="SF 영화" movies={sfMovies || []} />
+        )}
+        {isKoreaMoveisLoading ? (
+          <p className="text-white">한국 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="한국 영화" movies={koreaMovies || []} />
+        )}
+        {isHightRateMoviesLoading ? (
+          <p className="text-white">별점 높은 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="별점 높은 영화" movies={highRateMovies || []} />
+        )}
+        {isRomanceLoading ? (
+          <p className="text-white">로맨스 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="로맨스 영화" movies={romanceMovies || []} />
+        )}
+        {isAnimeLoading ? (
+          <p className="text-white">애니메이션 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="애니메이션 영화" movies={animeMovies || []} />
+        )}
+        {isHistoryLoading ? (
+          <p className="text-white">역사 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="역사 영화" movies={historyMovies || []} />
+        )}
+        {isAdventureLoading ? (
+          <p className="text-white">모험 영화 로딩 중...</p>
+        ) : (
+          <MoviesList category="모험 영화" movies={adventureMovies || []} />
+        )}
+      </>
       )
     </div>
   );
