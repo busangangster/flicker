@@ -144,6 +144,16 @@ public class Util {
                     .uri(path)
                     .body(requestBody != null ? BodyInserters.fromValue(requestBody) : BodyInserters.empty())
                     .retrieve()
+                    // 응답 상태가 400일 경우 처리 (상태 코드는 200 유지, 메시지만 변경)
+                    .onStatus(
+                            status -> status.is4xxClientError(),  // 람다 표현식을 사용하여 4xx 상태 코드 체크
+                            clientResponse -> {
+                                return clientResponse.bodyToMono(String.class)
+                                        .flatMap(errorBody -> {
+                                            return Mono.error(new RestApiException(StatusCode.BAD_REQUEST, errorBody));
+                                        });
+                            }
+                    )
                     .toEntity(String.class)  // 응답을 ResponseEntity로 받음
                     .flatMap(responseEntity -> {
                         // 응답 헤더에서 JWT 토큰 읽기 (Authorization 헤더에 있다고 가정)
