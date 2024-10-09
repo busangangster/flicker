@@ -41,6 +41,8 @@ public class AuthenticationFilter  extends AbstractGatewayFilterFactory<Authenti
         return ((exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
+            log.info("request: {}", request);
+
             // RouteValidator를 사용하여 해당 경로가 인증 예외 경로인지 확인
             if (routeValidator.isSecured.test(request)) {
                 String token = getTokenFromRequest(request);
