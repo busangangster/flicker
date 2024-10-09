@@ -18,6 +18,7 @@ public class WebConfig {
         config.addAllowedOrigin("http://j11e206.p.ssafy.io:5173");
         config.addAllowedOrigin("http://192.168.30.195:5173");
         config.addAllowedOrigin("https://j11e206.p.ssafy.io:5173");
+        config.addAllowedOrigin("https://j11e206.p.ssafy.io");
 
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
