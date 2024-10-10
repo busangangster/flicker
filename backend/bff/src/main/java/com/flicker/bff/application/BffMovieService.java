@@ -556,7 +556,6 @@ public class BffMovieService {
                         ));
                     }
                     FavoriteMovieListResponse favoriteMovieListResponse;
-                    System.out.println("favoriteMovieListResponse = " + favoriteMovieListResponse);
                     try {
                         // likeResponseDto의 데이터 필드를 List<Integer>로 변환
                         favoriteMovieListResponse = objectMapper.convertValue(likeResponseDto.getData(), FavoriteMovieListResponse.class);
