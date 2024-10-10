@@ -122,13 +122,63 @@ public class ReviewService {
         Page<Review> allByMovieSeq = reviewRepository.findAllByMovieSeq(movieSeq, sortedPageable);
 
         List<ReviewDto> reviewDtoList = new ArrayList<>();
-
         for (Review review : allByMovieSeq.getContent()) {
             String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
             ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
             reviewDtoList.add(reviewDto);
         }
 
+        return reviewDtoList;
+    }
+
+    public List<ReviewDto> getAllMovieReviews(Integer movieSeq, Integer myUserSeq, String option, Pageable pageable) {
+
+        Pageable sortedPageable;
+        if ("like".equals(option)) {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
+        } else if("date".equals(option)){
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
+        }
+        else {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, "createdAt").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
+        }
+
+        List<Integer> list = new ArrayList<>();
+        list.add(26301);
+        list.add(25588);
+        Page<Review> allByMovieSeq = reviewRepository.findAllByMovieSeqIn(list, sortedPageable);
+
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
+        for (Review review : allByMovieSeq.getContent()) {
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            reviewDtoList.add(reviewDto);
+        }
+
+        return reviewDtoList;
+    }
+
+    public List<ReviewDto> getAllMovieReviewsUsingOffset(Pageable pageable,Integer myUserSeq) {
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
+        Page<Review> all = reviewRepository.findAll(pageable);
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
+        for (Review review : all.getContent()) {
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            reviewDtoList.add(reviewDto);
+        }
+        return reviewDtoList;
+    }
+
+    public List<ReviewDto> getAllMovieReviewsNoOffset(int size, int lastSeq) {
+
+        List<Review> allNoOffset = reviewRepository.findAllNoOffset(lastSeq, size);
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
+        for (Review review : allNoOffset) {
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, 1);
+            reviewDtoList.add(reviewDto);
+        }
         return reviewDtoList;
     }
 
@@ -254,4 +304,6 @@ public class ReviewService {
         }
         return movieSeqWithAtLeast2000Reviews;
     }
+
+
 }
