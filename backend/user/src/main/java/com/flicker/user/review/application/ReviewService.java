@@ -176,7 +176,7 @@ public class ReviewService {
         List<ReviewDto> reviewDtoList = new ArrayList<>();
         for (Review review : allNoOffset) {
             String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
-            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, 1);
             reviewDtoList.add(reviewDto);
         }
         return reviewDtoList;
