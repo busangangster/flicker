@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flicker.logger.application.NewMovieService;
 import com.flicker.logger.application.NewMovieUpdateService;
+import com.flicker.logger.dto.ActorDto;
+import com.flicker.logger.dto.ActorRequest;
 import com.flicker.logger.dto.NewMovieDto;
+import com.flicker.logger.dto.NewMovieUpdateRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,11 +37,33 @@ public class NewMovieSchedule {
         log.info("New movie schedule");
 
         List<NewMovieDto> newMovieDtos = newMovieService.getNewMovies();
-        newMovieUpdateService.updateWordCloud(newMovieDtos);
+
         List<Integer> movieSeqList = new ArrayList<>();
+        List<NewMovieUpdateRequest> newMovies = new ArrayList<>();
+
         for (NewMovieDto newMovieDto : newMovieDtos) {
+
             movieSeqList.add(newMovieDto.getMovieSeq());
+
+            if (newMovieDto.isNewCheck()) {
+                NewMovieUpdateRequest newMovieUpdateRequest = new NewMovieUpdateRequest();
+                newMovieUpdateRequest.setMovieSeq(newMovieDto.getMovieSeq());
+                newMovieUpdateRequest.setMovieTitle(newMovieDto.getMovieTitle());
+                newMovieUpdateRequest.setMovieYear(newMovieDto.getMovieYear());
+                newMovieUpdateRequest.setGenre(newMovieDto.getGenre());
+                List<ActorRequest> actorRequestList = new ArrayList<>();
+                List<ActorDto> actors = newMovieDto.getActors();
+                for (ActorDto actorDto : actors) {
+                    ActorRequest actorRequest = new ActorRequest();
+                    actorRequest.setActorName(actorDto.getActorName());
+                    actorRequestList.add(actorRequest);
+                }
+                newMovieUpdateRequest.setActors(actorRequestList);
+                newMovies.add(newMovieUpdateRequest);
+            }
         }
+
+        newMovieUpdateService.newMovieUpdate(newMovies);
 
         try {
             String message = objectMapper.writeValueAsString(movieSeqList);

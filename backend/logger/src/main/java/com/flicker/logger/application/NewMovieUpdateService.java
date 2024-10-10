@@ -2,8 +2,8 @@ package com.flicker.logger.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flicker.logger.dto.NewMovieDto;
-import com.flicker.logger.dto.WordCloudRequest;
-import com.flicker.logger.dto.WordCloudResult;
+import com.flicker.logger.dto.NewMovieUpdateRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Service
+@Slf4j
 public class NewMovieUpdateService {
 
     private final WebClient webClient;
@@ -21,7 +22,7 @@ public class NewMovieUpdateService {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
-    public void updateWordCloud(List<NewMovieDto> newMovieDtos) {
+    public void newMovieUpdate(List<NewMovieUpdateRequest> newMovieDtos) {
 
         try {
             // 요청 데이터를 JSON으로 직렬화하여 출력
@@ -29,16 +30,15 @@ public class NewMovieUpdateService {
             String jsonString = objectMapper.writeValueAsString(newMovieDtos);
             System.out.println("Request JSON: " + jsonString);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error in New Movie Update", e);
         }
 
         webClient.post()
                 .uri("/movie_update")
                 .body(Mono.just(newMovieDtos), List.class)
                 .retrieve()
-                .bodyToFlux(NewMovieDto.class)
+                .bodyToFlux(NewMovieUpdateRequest.class)
                 .collectList()
                 .block();
     }
-
 }

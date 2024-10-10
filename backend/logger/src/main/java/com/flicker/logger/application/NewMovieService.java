@@ -13,7 +13,7 @@ public class NewMovieService {
     private final WebClient webClient;
 
     public NewMovieService(WebClient.Builder webClientBuilder,
-                                  @Value("${external.api.base-url}") String baseUrl) {
+                                  @Value("${newMovie.api.base-url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
