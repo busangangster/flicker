@@ -80,6 +80,45 @@ public class Util {
         }
     }
 
+    public Mono<ResponseEntity<ResponseDto>> sendGetRequestAsyncLimitMemorySizeUp(String baseUrl, String path) {
+        try {
+            WebClient webClient = webClientBuilder
+                    .baseUrl(baseUrl)
+                    .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(5120 * 1024))
+                    .build();
+            return webClient.get()
+                    .uri(path)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                        if (clientResponse.statusCode() == HttpStatus.NOT_FOUND) {
+                            // 404 상태 코드에 대한 예외 발생
+                            return Mono.error(new RestApiException(StatusCode.NOT_FOUND, "리소스를 찾을 수 없습니다."));
+                        }
+                        return Mono.error(new RestApiException(StatusCode.NOT_FOUND, "클라이언트 오류 발생"));
+                    })
+                    .bodyToMono(String.class)  // 응답을 문자열로 받음
+                    .flatMap(response -> {
+                        try {
+                            // 응답을 ResponseDto로 변환
+                            ResponseDto responseDto = objectMapper.readValue(response, ResponseDto.class);
+                            return Mono.just(ResponseDto.response(StatusCode.of(responseDto.getHttpStatus(), responseDto.getServiceStatus(), responseDto.getMessage()), responseDto.getData()));
+                        } catch (JsonProcessingException e) {
+                            // 예외 발생 시 에러 메시지 출력 및 에러 처리
+                            return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "응답 변환 중 오류 발생: " + e.getMessage()));
+                        }
+                    })
+                    .onErrorResume(e -> {
+                        if (e instanceof RestApiException ex) {
+                            return Mono.just(ResponseDto.response(ex.getStatusCode(), ex.getData()));
+                        } else {
+                            return Mono.just(ResponseDto.response(StatusCode.INTERNAL_SERVER_ERROR, "WebClient GET 요청 중 오류 발생: " + e.getMessage()));
+                        }
+                    });
+        } catch (Exception e) {
+            throw new RestApiException(StatusCode.UNKNOW_ERROR, "WebClient GET 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+        }
+    }
+
     // 공통으로 사용할 WebClient POST 요청 메서드 (비동기 처리)
     public <T> Mono<ResponseEntity<ResponseDto>> sendPostRequestAsync(String baseUrl, String path, T requestBody) {
         try {
