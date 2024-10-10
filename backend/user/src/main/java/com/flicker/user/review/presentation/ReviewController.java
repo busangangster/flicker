@@ -132,8 +132,8 @@ public class ReviewController {
     }
 
     @GetMapping("/no-offset/movies/{movieSeq}")
-    public ResponseEntity<ResponseDto> getAllMovieReviewsNoOffset(@PageableDefault(size = 20000) Pageable pageable,@RequestParam(value = "userSeq") Integer myUserSeq, @RequestParam(value = "lastSeq")Integer lastSeq) {
-        List<ReviewDto> movieReviews = reviewService.getAllMovieReviewsNoOffset(pageable,myUserSeq,lastSeq);
+    public ResponseEntity<ResponseDto> getAllMovieReviewsNoOffset(@RequestParam(value = "size")Integer size, @RequestParam(value = "lastSeq")Integer lastSeq) {
+        List<ReviewDto> movieReviews = reviewService.getAllMovieReviewsNoOffset(size,lastSeq);
         return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
     }
 
