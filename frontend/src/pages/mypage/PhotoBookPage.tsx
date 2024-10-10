@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
-import photobook from "../../assets/photobook/photobook.png";
+import photobook from "/assets/photobook/photobook.png";
 import "../../css/PhotoBook.css";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import photobookmain from "/assets/background/photobookmain.png";
