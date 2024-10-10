@@ -170,6 +170,18 @@ public class ReviewService {
         return reviewDtoList;
     }
 
+    public List<ReviewDto> getAllMovieReviewsNoOffset(Pageable pageable,Integer myUserSeq, int lastSeq) {
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
+        List<Review> allNoOffset = reviewRepository.findAllNoOffset(lastSeq, pageable);
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
+        for (Review review : allNoOffset) {
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            reviewDtoList.add(reviewDto);
+        }
+        return reviewDtoList;
+    }
+
     public List<ReviewDto> getPopularMovieReviews(Integer movieSeq, Integer myUserSeq) {
         List<Review> result = reviewRepository.findTop3ByMovieSeqAndIsSpoilerFalseAndContentIsNotNullOrderByLikesDesc(movieSeq);
         List<ReviewDto> reviewDtoList = new ArrayList<>();

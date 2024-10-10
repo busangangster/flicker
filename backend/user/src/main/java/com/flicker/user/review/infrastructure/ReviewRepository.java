@@ -25,6 +25,10 @@ public interface ReviewRepository extends JpaRepository<Review,Integer> {
     public Page<Review> findAllByMovieSeqIn(List<Integer> movieSeqs, Pageable pageable);
     public Page<Review> findAll(Pageable pageable);
 
+    @Query("SELECT r FROM Review r WHERE r.reviewSeq > :lastSeq ORDER BY r.reviewSeq ASC")
+    List<Review> findAllNoOffset(@Param("lastSeq") int lastSeq, Pageable pageable);
+
+
     // movieSeq가 같고, spoiler가 false인 리뷰 중에서 likes가 가장 높은 3개를 가져오는 쿼리
     List<Review> findTop3ByMovieSeqAndIsSpoilerFalseAndContentIsNotNullOrderByLikesDesc(Integer movieSeq);
 
