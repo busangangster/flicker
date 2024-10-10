@@ -63,6 +63,8 @@ const PhotoBookPage: React.FC = () => {
           src={photobook}
           alt="photobook"
           className="photobook-img w-[1000px] mx-auto"
+          decoding="async"
+          loading="lazy"
         />
         {/* 이미지 위의 텍스트 및 추가 요소 */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pl-32 pb-10">
@@ -78,6 +80,8 @@ const PhotoBookPage: React.FC = () => {
             src={photobookmain}
             alt="Cover Image"
             className="cover-image w-3/5 h-1/2 mt-10"
+            decoding="async"
+            loading="lazy"
           />
         </div>
       </div>
