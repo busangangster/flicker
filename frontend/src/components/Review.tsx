@@ -6,11 +6,23 @@ import thumbUpOutline from "../assets/review/thumb_up_outline.png";
 import thumbUp from "../assets/review/thumb_up.png";
 import { ReviewProps } from "../type";
 import { likeReview, cancelLikeReview } from "../apis/movieApi";
+import DeleteModal from "./DeleteModal";
+import Modal from "./common/Modal"; 
+import { GrStatusGood } from "react-icons/gr";
 
-const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, isDetailPage }) => {
+const Review: React.FC<ReviewProps> = ({
+  review,
+  userSeq,
+  onDelete,
+  onShowMore,
+  isDetailPage,
+}) => {
   const [showContent, setShowContent] = useState(!review.spoiler);
   const [liked, setLiked] = useState(review.liked);
   const [likes, setLikes] = useState(review.likes);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 삭제 모달 상태
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); // 삭제 성공 모달 상태
+  const [isLikeErrorModalOpen, setIsLikeErrorModalOpen] = useState(false); // 좋아요 오류 모달 상태
   const MAX_LENGTH = 250;
   const content = review.content || "";
   const isLongContent = content.length > MAX_LENGTH;
@@ -22,7 +34,6 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
     }
   };
 
-
   const handleShowMoreClick = () => {
     if (isDetailPage && onShowMore) {
       onShowMore(review.reviewSeq); // isDetailPage가 true일 때만 onShowMore 호출
@@ -30,18 +41,30 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
       setShowMore((prev) => !prev);
     }
   };
-  
+
   // 리뷰 삭제 처리
   const handleDeleteReview = async () => {
     if (onDelete) {
-      const confirmDelete = window.confirm(
-        "정말로 이 리뷰를 삭제하시겠습니까?"
-      );
-      if (confirmDelete) {
+      setIsDeleteModalOpen(true); // 삭제 모달 열기
+    }
+  };
+
+  // 삭제 확인 버튼 클릭 시 처리
+  const confirmDelete = async () => {
+    try {
+      if (onDelete) {
         await onDelete(review.reviewSeq);
-        alert("리뷰가 삭제되었습니다.");
-        window.location.reload(); // 페이지 새로고침
+        setIsSuccessModalOpen(true); // 삭제 성공 모달 열기
+
+        // 모달을 보여준 후 새로고침 (모달 표시 후 2초 후 새로고침)
+        setTimeout(() => {
+          window.location.reload(); // 페이지 새로고침
+        }, 1500);
       }
+    } catch (error) {
+      console.error("리뷰 삭제 중 오류 발생:", error);
+    } finally {
+      setIsDeleteModalOpen(false); // 삭제 모달 닫기
     }
   };
 
@@ -49,18 +72,17 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
   const handleLikeToggle = async () => {
     try {
       if (liked) {
-        // 좋아요 취소
-        await cancelLikeReview(userSeq, review.reviewSeq);
+        await cancelLikeReview(userSeq, review.reviewSeq); // 좋아요 취소
         setLiked(false);
         setLikes((prevLikes) => prevLikes - 1);
       } else {
-        // 좋아요 추가
-        await likeReview(userSeq, review.reviewSeq);
+        await likeReview(userSeq, review.reviewSeq); // 좋아요 추가
         setLiked(true);
         setLikes((prevLikes) => prevLikes + 1);
       }
     } catch (error) {
       console.error("좋아요 처리 중 오류 발생:", error);
+      setIsLikeErrorModalOpen(true); // 좋아요 처리 중 오류 모달 열기
     }
   };
 
@@ -168,6 +190,39 @@ const Review: React.FC<ReviewProps> = ({ review, userSeq, onDelete, onShowMore, 
           </span>
         </div>
       </div>
+
+      {/* 삭제 확인 모달 */}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          onClose={() => setIsDeleteModalOpen(false)}
+          onDeleteConfirm={confirmDelete}
+          title="리뷰 삭제"
+          description="이 리뷰를 삭제하시겠습니까?"
+          // icon={cancelLikeReview}
+        />
+      )}
+
+      {/* 삭제 성공 모달 */}
+      {isSuccessModalOpen && (
+        <Modal
+          onClose={() => setIsSuccessModalOpen(false)}
+          title="성공"
+          description="리뷰가 성공적으로 삭제되었습니다."
+          buttonText="확인"
+          icon={GrStatusGood}
+          iconColor="#20BD4D"
+        />
+      )}
+
+      {isLikeErrorModalOpen && (
+        <Modal
+          onClose={() => setIsLikeErrorModalOpen(false)}
+          title="오류"
+          description="좋아요 처리 중 오류가 발생했습니다."
+          buttonText="확인"
+          // icon을 전달하지 않음
+        />
+      )}
     </div>
   );
 };

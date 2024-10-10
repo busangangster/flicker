@@ -5,7 +5,7 @@ import SideBar from "../../components/SideBar";
 
 const MyPage: React.FC = () => {
   const location = useLocation();
-  const sidebarRef = useRef<HTMLDivElement>(null); // 사이드바에 대한 ref 설정
+  const sidebarRef = useRef<HTMLDivElement>(null); 
 
   // photocard 페이지와 photocarddetail 페이지인지 확인하는 조건
   const isPhotoCardPage = location.pathname === "/mypage/photocard";
@@ -14,7 +14,7 @@ const MyPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col overflow-hidden">
+    <div className="min-h-screen flex flex-col overflow-y-hidden">
       <header className="sticky top-0 bg-black z-10">
         <Navbar />
       </header>

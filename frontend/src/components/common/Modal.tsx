@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../css/Modal.css";
-import { IconType } from "react-icons";
-
-interface ModalProps {
-  onClose: () => void;
-  title: string;
-  description?: string;
-  icon: IconType; // 아이콘 컴포넌트를 동적으로 받음
-  buttonText: string;
-}
+import { ModalProps } from "../../type";
 
 const Modal: React.FC<ModalProps> = ({
   onClose,
@@ -16,20 +8,21 @@ const Modal: React.FC<ModalProps> = ({
   description,
   icon: Icon,
   buttonText,
+  iconColor = "#848484", 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
-    }, 50); // 모달이 뜰 때 약간의 딜레이를 줌
+    }, 50); 
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(() => {
       onClose();
-    }, 300); // 애니메이션 후 모달을 닫음
+    }, 300);
   };
 
   return (
@@ -44,7 +37,12 @@ const Modal: React.FC<ModalProps> = ({
         }`}
       >
         <div className="mb-6 flex items-center justify-center space-x-2">
-          <Icon className="text-[#848484] text-[35px] mr-2" />
+          {Icon && (
+            <Icon
+              className="mr-2"
+              style={{ color: iconColor, fontSize: "35px" }}
+            />
+          )}
           <span className="text-3xl font-bold text-[#4D4D4D]">{title}</span>
         </div>
         {description && (
