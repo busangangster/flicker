@@ -8,28 +8,23 @@ const instance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // for cross-origin requests
-  // timeout: 40000,
+  withCredentials: true, 
 });
 
 axiosRetry(instance, {
-  retries: 3, // 최대 3번 재시도
+  retries: 3, 
   retryDelay: () => {
-    return 500; // 각 재시도마다 3초씩 지연
+    return 500; 
   },
   retryCondition: (error) => {
-    console.error("Error occurred:", error.message);
-    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
     return (
       (error.response &&
         (error.response.status >= 500 || error.response.status === 404)) ||
       error.code === "ECONNABORTED"
     );
   },
-  onRetry: (retryCount, error, requestConfig) => {
-    console.log(`Retrying... Attempt #${retryCount}`);
-    console.log("Request Config:", requestConfig);
-    console.error("Error Details:", error);
+  onRetry: () => {
+
   },
 });
 
@@ -58,7 +53,6 @@ instance.interceptors.response.use(
         const refreshToken = Cookies.get("refreshToken");
 
         if (refreshToken) {
-          // 토큰 갱신 API 호출
           const response = await axios.post(
             `${originalRequest.baseURL}/auth/refresh-token`,
             {
@@ -87,63 +81,52 @@ export default instance;
 
 // 영화 상세정보 조회
 const movieDetailApi = axios.create({
-  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}`, // Base URL 설정
+  baseURL: `${import.meta.env.VITE_BFF_MOVIE_URL}`, 
   headers: {
-    "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
+    "Content-Type": "application/json", 
   },
-  // timeout: 40000,
 });
 
 //
 axiosRetry(movieDetailApi, {
-  retries: 3, // 최대 3번 재시도
+  retries: 3, 
   retryDelay: () => {
-    return 500; // 각 재시도마다 3초씩 지연
+    return 500; 
   },
   retryCondition: (error) => {
-    console.error("Error occurred:", error.message);
-    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
     return (
       (error.response &&
         (error.response.status >= 500 || error.response.status === 404)) ||
       error.code === "ECONNABORTED"
     );
   },
-  onRetry: (retryCount, error, requestConfig) => {
-    console.log(`Retrying... Attempt #${retryCount}`);
-    console.log("Request Config:", requestConfig);
-    console.error("Error Details:", error);
+  onRetry: () => {
+
   },
 });
 
 // 리뷰 데이터 조회
 const reviewApiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_BFF_USER_URL}`, // 리뷰 API에 맞는 Base URL 설정
+  baseURL: `${import.meta.env.VITE_BFF_USER_URL}`, 
   headers: {
-    "Content-Type": "application/json", // 모든 요청에 공통적으로 사용할 헤더
+    "Content-Type": "application/json", 
   },
-  // timeout: 40000,
 });
 
 // 리뷰 데이터 retry
 axiosRetry(reviewApiClient, {
-  retries: 3, // 최대 3번 재시도
+  retries: 3, 
   retryDelay: () => {
-    return 500; // 각 재시도마다 3초씩 지연
+    return 500; 
   },
   retryCondition: (error) => {
-    console.error("Error occurred:", error.message);
-    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
     return (
       (error.response &&
         (error.response.status >= 500 || error.response.status === 404)) ||
       error.code === "ECONNABORTED"
     );
   },
-  onRetry: (retryCount, error, requestConfig) => {
-    console.log(`Retrying... Attempt #${retryCount}`);
-    console.log("Request Config:", requestConfig);
-    console.error("Error Details:", error);
+  onRetry: () => {
   },
 });
 
@@ -153,28 +136,22 @@ const movieListApi = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // timeout: 40000,
 });
 
 // 영화 리스트 retry
 axiosRetry(movieListApi, {
-  retries: 3, // 최대 3번 재시도
+  retries: 3, 
   retryDelay: () => {
-    return 500; // 각 재시도마다 3초씩 지연
+    return 500; 
   },
   retryCondition: (error) => {
-    console.error("Error occurred:", error.message);
-    // 재시도할 조건을 설정 (예: 네트워크 오류 또는 5xx 오류 시)
     return (
       (error.response &&
         (error.response.status >= 500 || error.response.status === 404)) ||
       error.code === "ECONNABORTED"
     );
   },
-  onRetry: (retryCount, error, requestConfig) => {
-    console.log(`Retrying... Attempt #${retryCount}`);
-    console.log("Request Config:", requestConfig);
-    console.error("Error Details:", error);
+  onRetry: () => {
   },
 });
 
@@ -195,7 +172,7 @@ export const fetchMovieReviews = async (
         size,
       },
     });
-    return response?.data?.data ?? []; // 필요한 데이터만 반환
+    return response?.data?.data ?? []; 
   } catch (error) {
     console.error("Error fetching movie reviews:", error);
     throw error;
@@ -231,7 +208,7 @@ export const fetchMovieReviewsAll = async (
 export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
   try {
     const response = await movieDetailApi.get(`/detail/${movieSeq}/${userSeq}`);
-    return response.data.data; // 반환된 데이터가 올바른지 확인
+    return response.data.data; 
   } catch (error) {
     console.error("Error fetching movie detail:", error);
     throw error;
@@ -251,7 +228,7 @@ export const fetchMovieGenre = async (
       const movies = response.data.data;
       return movies;
     } else {
-      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+      return []; 
     }
   } catch (error) {
     console.error("Error fetching movies:", error);
@@ -273,7 +250,7 @@ export const fetchMovieYear = async (
       return movies;
     } else {
       console.error("Unexpected response structure", response);
-      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+      return []; 
     }
   } catch (error) {
     console.error("Error fetching movies:", error);
@@ -296,7 +273,7 @@ export const fetchMovieCountry = async (
       return movies;
     } else {
       console.error("Unexpected response structure", response);
-      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+      return []; 
     }
   } catch (error) {
     console.error("Error fetching movies:", error);
@@ -417,7 +394,7 @@ export const addFavoriteMovies = async (
     return response.data;
   } catch (error) {
     console.error("Error adding favorite movies:", error);
-    throw error; // 에러 처리
+    throw error; 
   }
 };
 
@@ -431,10 +408,10 @@ export const addfavoriteMovies = async (userSeq: number, movieSeq: number) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Response:", response.data);
+    return response.data;
   } catch (error) {
     console.error("Error adding favorite movies:", error);
-    throw error; // 에러 처리
+    throw error; 
   }
 };
 
@@ -451,10 +428,10 @@ export const deletefavoriteMovies = async (
         "Content-Type": "application/json",
       },
     });
-    console.log("Response:", response.data);
+    return response.data;
   } catch (error) {
     console.error("Error adding favorite movies:", error);
-    throw error; // 에러 처리
+    throw error; 
   }
 };
 
@@ -467,9 +444,7 @@ export const fetchFavoriteMovies = async (userSeq: number) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Favorite movies response:", response.data.data); // API 응답 로그 출력
-
-    return response.data.data; // 서버에서 영화 데이터를 반환
+    return response.data.data; 
   } catch (error) {
     console.error("Error fetching favorite movies:", error);
     throw error;
@@ -485,7 +460,7 @@ export const fetchDislikeMovies = async (userSeq: number) => {
         "Content-Type": "application/json",
       },
     });
-    return response.data.data; // 서버에서 영화 데이터를 반환
+    return response.data.data; 
   } catch (error) {
     console.error("Error fetching favorite movies:", error);
     throw error;
@@ -502,10 +477,10 @@ export const addDislikeMovies = async (userSeq: number, movieSeq: number) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Response:", response.data);
+    return response.data;
   } catch (error) {
     console.error("Error adding favorite movies:", error);
-    throw error; // 에러 처리
+    throw error; 
   }
 };
 
@@ -522,10 +497,10 @@ export const deleteDislikeMovies = async (
         "Content-Type": "application/json",
       },
     });
-    console.log("Response:", response.data);
+    return response.data;
   } catch (error) {
     console.error("Error adding favorite movies:", error);
-    throw error; // 에러 처리
+    throw error; 
   }
 };
 
@@ -542,7 +517,7 @@ export const updateUserInfo = async (
         email: data.email,
         password: data.password,
         nickname: data.nickname,
-      }, // JSON 형식으로 body 전달
+      }, 
       {
         headers: {
           "Content-Type": "application/json",
@@ -550,7 +525,7 @@ export const updateUserInfo = async (
       }
     );
 
-    return response.data; // 응답 데이터 반환
+    return response.data; 
   } catch (error) {
     console.error("Error updating user info:", error);
     throw error;
@@ -566,7 +541,7 @@ export const fetchSideBarUserInfo = async (userSeq: number) => {
         "Content-Type": "application/json",
       },
     });
-    return response.data; // API 응답 데이터 반환
+    return response.data; 
   } catch (error) {
     console.error("Error fetching user page info:", error);
     throw error;
@@ -588,7 +563,7 @@ export const fetchMoviesBySearch = async (
       return movies;
     } else {
       console.error("Unexpected response structure", response);
-      return []; // 응답 구조가 예상과 다르다면 빈 배열 반환
+      return []; 
     }
   } catch (error) {
     console.error("Error fetching movies:", error);

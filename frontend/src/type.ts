@@ -1,6 +1,11 @@
 import { Sprite } from "pixi.js";
 import { IconType } from "react-icons";
 
+export interface CircleCarouselProps {
+  onCardClick: (videoUrl: string) => void;
+  className?: string;
+}
+
 export interface ReviewType {
   reviewSeq: number;
   createdAt: string;
@@ -12,6 +17,20 @@ export interface ReviewType {
   liked: boolean;
   top?: boolean;
   isUserReview?: boolean;
+}
+
+export interface FavoriteMovie {
+  movieSeq: number;
+  moviePosterUrl: string;
+}
+
+export interface MemberProps {
+  name: string;
+  role: string;
+  description: string;
+  githubUrl: string;
+  emailUrl: string;
+  imgSrc: string;
 }
 
 export interface UseMoviesByActorResult {
@@ -30,18 +49,18 @@ export interface ReviewProps {
   review: ReviewType;
   onDelete?: (reviewSeq: number) => Promise<void>;
   userSeq: number;
-  onShowMore?: (reviewSeq: number) => void; // 추가된 prop
-  isDetailPage?: boolean; // 추가된 prop
+  onShowMore?: (reviewSeq: number) => void; 
+  isDetailPage?: boolean; 
 }
 
 export interface FilterOptions {
-  value: string; // 드롭다운 옵션 값
-  label: string; // 드롭다운 옵션 레이블
+  value: string; 
+  label: string; 
 }
 
 export interface RatingData {
-  stars: number; // 평점 데이터
-  count: number; // 평점 개수
+  stars: number; 
+  count: number; 
 }
 
 export interface SignUpParams {
@@ -76,7 +95,6 @@ export interface JwtPayload {
 export interface ApiErrorResponse {
   status: number;
   message: string;
-  //   data?: any; // 만약 응답 데이터 구조가 복잡하다면, 여기서 구체적인 타입을 추가할 수 있음
 }
 
 export interface ExtendedSprite extends Sprite {
@@ -89,7 +107,6 @@ export interface ExtendedSprite extends Sprite {
 
 export interface MovieDetail {
   movieDetailResponse: {
-    // movieSeq: number;
     movieTitle: string;
     director: string;
     genre: string;
@@ -152,7 +169,6 @@ export interface TopTenMovie {
   moviePosterUrl: string;
 }
 
-// Photocard Review 데이터 타입
 export interface PhotoCardReviewDto {
   userSeq: number;
   movieSeq: number;
@@ -167,7 +183,6 @@ export interface PhotoCardReviewDto {
   top: null | string;
 }
 
-// Movie Image DTO 데이터 타입
 export interface MovieImageDto {
   moviePosterUrl: string;
   movieTitle: string;
@@ -175,18 +190,15 @@ export interface MovieImageDto {
   backgroundUrl: string;
 }
 
-// Photocard 데이터 타입
 export interface PhotocardDataItem {
   reviewDto: PhotoCardReviewDto;
   movieImageDto: MovieImageDto;
 }
 
-// PhotocardData 내에 data라는 배열을 가진 타입
 export interface PhotocardData {
   data: PhotocardDataItem[];
 }
 
-// IFlipBook = 포토북
 export interface IFlipBook {
   flipNext: () => void;
   flipPrev: () => void;
@@ -218,7 +230,7 @@ export interface PhotoCardFrontProps {
     content: string;
     likes: number;
     backgroundUrl: string;
-  }) => void; // onCardClick 함수 타입 정의
+  }) => void; 
 };
 
 
@@ -234,13 +246,11 @@ export interface Movie {
 
 export interface SelectionListProps {
   movies: Movie[];
-  // loadMoreMovies: () => void; // loadMoreMovies 함수 추가
-  // hasMore: boolean; // hasMore 값 추가
 }
 
 export interface MoviesListProps {
   category: string;
-  movies: Movie[]; // movieSeq와 moviePosterUrl을 포함하는 배열
+  movies: Movie[]; 
 }
 
 export interface Page {
@@ -276,7 +286,6 @@ export interface RatingData {
   };
 }
 
-// 리뷰 데이터 타입 정의
 export interface CheckReview {
   reviewSeq: number;
   userSeq: number;
@@ -290,17 +299,16 @@ export interface CheckReview {
   liked: boolean;
 }
 
-// 리뷰 확인 응답 데이터 타입 정의
 export interface ReviewCheckResponse {
   alreadyReview: boolean;
-  reviewDto: CheckReview | null; // 리뷰가 없는 경우 null
+  reviewDto: CheckReview | null; 
 }
 
 export interface ModalProps {
   onClose: () => void;
   title: string;
   description?: string;
-  icon?: IconType; // 아이콘 컴포넌트를 동적으로 받음
+  icon?: IconType; 
   buttonText: string;
   iconColor?: string;
 }

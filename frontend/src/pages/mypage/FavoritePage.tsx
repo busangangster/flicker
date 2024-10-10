@@ -10,19 +10,12 @@ import { fetchFavoriteMovies } from "../../apis/axios";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { useNavigate } from "react-router-dom";
 import "../../css/MovieList.css";
-
-
-interface FavoriteMovie {
-  movieSeq: number;
-  moviePosterUrl: string;
-}
+import { FavoriteMovie } from "../../type";
 
 const FavoritePage: React.FC = () => {
   const navigate = useNavigate();
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
-
-  // 하나의 객체로 묶어서 전달해야함 !!
   const { data: favoriteMovies } = useQuery({
     queryKey: ["favoriteMovies", userSeq], 
     queryFn: () => fetchFavoriteMovies(userSeq!), 

@@ -1,4 +1,3 @@
-/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,9 +7,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: auto;
-    scroll-behavior: auto;
-
-  /* overflow: hidden; */
+  scroll-behavior: auto;
   font-family: "Nanum Gothic", sans-serif;
 }
 
@@ -22,7 +19,6 @@ body {
   font-family: "Nanum Gothic", sans-serif;
 }
 
-/* input의 자동 완성 시 배경색을 검정으로 유지 */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

@@ -11,13 +11,12 @@ import { useUserQuery } from "../hooks/useUserQuery";
 
 const Home: React.FC = () => {
   const { data: userData } = useUserQuery(); 
-  // const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const pixiContainerRef = useRef<HTMLDivElement | null>(null);
   const animationStopped = useRef(false);
-  const [animationFinished, setAnimationFinished] = useState(false); // 애니메이션 종료 상태 관리
-  const [showLanding, setShowLanding] = useState(false); // LandingPage 표시 여부 상태
+  const [animationFinished, setAnimationFinished] = useState(false); 
+  const [showLanding, setShowLanding] = useState(false); 
   const [backgroundVideoUrl, setBackgroundVideoUrl] = useState<string | null>(
     null
   );
@@ -25,12 +24,11 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchFirstLoginStatus = async () => {
       if (userData?.userSeq) {
-        const isFirst = await checkFirstLogin(userData.userSeq); // 첫 로그인 여부 확인
+        const isFirst = await checkFirstLogin(userData.userSeq); 
         if (isFirst) {
-          // setIsFirstLogin(true);
           setShowModal(true);
           setTimeout(() => {
-            navigate("/survey"); // 5초 후 설문 페이지로 이동
+            navigate("/survey"); 
           }, 5000);
         }
       }
@@ -60,29 +58,6 @@ const Home: React.FC = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (animationFinished) {
-  //     // 애니메이션이 완료된 후 CircleCarousel에 페이드 인 효과 적용
-  //     const timeline = gsap.timeline();
-  //     timeline
-  //       .fromTo(
-  //         ".circle-carousel",
-  //         { opacity: 0 },
-  //         { opacity: 0.3, duration: 0.5, ease: "power2.out" } // 처음 0에서 0.3까지 서서히 증가
-  //       )
-  //       .to(".circle-carousel", {
-  //         opacity: 0.5,
-  //         duration: 0.5,
-  //         ease: "power2.out",
-  //       }) // 0.3에서 0.6까지 증가
-  //       .to(".circle-carousel", {
-  //         opacity: 1,
-  //         duration: 1,
-  //         ease: "power2.out",
-  //       }); // 0.6에서 1까지 최종 증가
-  //   }
-  // }, [animationFinished]);
 
   useEffect(() => {
     if (!showLanding) return;
@@ -275,7 +250,7 @@ const Home: React.FC = () => {
         <FirstLoginModal
           onClose={() => {
             setShowModal(false);
-            navigate("/survey"); // 모달 닫기 시 설문 페이지로 이동
+            navigate("/survey"); 
           }}
         />
       )}

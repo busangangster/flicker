@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "./axios";
-// import Cookies from "js-cookie";
-import { handleApiError } from "../utils/errorHandling";
 import { SignUpParams, SignInParams, SignInResponse } from "../type";
+import { handleApiError } from "../utils/ErrorHandling";
 
-// 회원가입 API
 export const signUp = async (params: SignUpParams) => {
   try {
     const response = await axios.post("/api/bff/user", params);
@@ -15,7 +13,6 @@ export const signUp = async (params: SignUpParams) => {
   }
 };
 
-// 로그인 API
 export const signin = async (
   params: SignInParams
 ): Promise<SignInResponse | ""> => {
@@ -34,26 +31,11 @@ export const signin = async (
       console.error("Authorization 헤더가 없습니다:", response.headers);
     }
 
-    // 서버 응답에서 Authorization 헤더 추출
-
     const accessToken = response.headers["authorization"].replace(
       "Bearer ",
       ""
     );
     localStorage.setItem("accessToken", accessToken);
-
-    // if (accessTokenHeader) {
-    //   const accessToken = accessTokenHeader.replace("Bearer ", "");
-    //   localStorage.setItem("accessToken", accessToken);
-    // } else {
-    //   console.error("Authorization 헤더가 없습니다:", response.headers);
-    // }
-
-    // const accessToken = response.headers["authorization"].replace(
-    //   "Bearer ",
-    //   ""
-    // );
-    // localStorage.setItem("accessToken", accessToken);
 
     return response.data;
   } catch (error) {
@@ -62,7 +44,6 @@ export const signin = async (
   }
 };
 
-// 토큰 검증 API
 export const verifyToken = async () => {
   try {
     const response = await axios.get("/api/users/auth-test");
@@ -73,7 +54,6 @@ export const verifyToken = async () => {
   }
 };
 
-// 최초 로그인 판단
 export const checkFirstLogin = async (userSeq: number) => {
   try {
     const response = await axios.get(

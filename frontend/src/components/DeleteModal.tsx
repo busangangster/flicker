@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../css/Modal.css"; // 기존 Modal 스타일을 재사용
+import "../css/Modal.css"; 
 
 
 interface DeleteModalProps {
@@ -20,7 +20,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
     useEffect(() => {
       setTimeout(() => {
         setIsVisible(true);
-      }, 50); // 모달이 뜰 때 약간의 딜레이를 줌
+      }, 50); 
     }, []);
 
     

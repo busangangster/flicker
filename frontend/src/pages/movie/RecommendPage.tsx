@@ -52,7 +52,7 @@ const RecommendPage: React.FC = () => {
     setIsLeftOpen(true);
     setIsZoomed(true); // 문 아래쪽 부분 확대 시작
     setTimeout(() => {
-      navigate("/recommendlist/action");
+      navigate("/recommendlist/review");
     }, 1000); // 1초 후 이동
   };
 
@@ -61,7 +61,7 @@ const RecommendPage: React.FC = () => {
     setIsRightOpen(true);
     setIsZoomed(true); // 문 아래쪽 부분 확대 시작
     setTimeout(() => {
-      navigate("/recommendlist/review");
+      navigate("/recommendlist/action");
     }, 1000); // 1초 후 이동
   };
 

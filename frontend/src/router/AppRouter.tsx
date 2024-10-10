@@ -1,10 +1,8 @@
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import ErrorPage from "../pages/ErrorPage";
 import LandingPage from "../pages/LandingPage";
 import SurveyPage from "../pages/SurveyPage";
-import PasswordResetPage from "../pages/auth/PasswordResetPage";
 import SignUpPage from "../pages/auth/SignUpPage";
 import SignInPage from "../pages/auth/SignInPage";
 import ContactPage from "../pages/info/ContactPage";
@@ -20,7 +18,6 @@ import PhotoCardPage from "../pages/mypage/PhotoCardPage";
 import Mypage from "../pages/mypage/Mypage";
 import UserInfoEditPage from "../pages/mypage/UserInfoEditPage";
 import VerificationPage from "../pages/mypage/VerificationPage";
-import PasswordChangePage from "../pages/auth/PasswordChangePage";
 import Home from "../pages/Home";
 import MoviesPage from "../pages/movie/MoviesPage";
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -42,13 +39,7 @@ const AppRoutes: React.FC = () => {
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/error" element={<ErrorPage />} />
           <Route path="/landing" element={<LandingPage />} />
-          <Route path="/passwordreset" element={<PasswordResetPage />} />
-          <Route
-            path="/passwordreset/:token"
-            element={<PasswordChangePage />}
-          />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/contact" element={<ContactPage />} />

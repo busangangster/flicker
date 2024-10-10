@@ -28,9 +28,6 @@ const ContactPage: React.FC = () => {
               <span className="text-[#4D7FFF]">6 CAN DO IT !</span>"
             </h1>
             <p className="mt-6 text-2xl leading-relaxed">
-              {/* We made movie recommendation service called by Flicker. We always
-              do our best to make sure our users can be 100% satisfied. Blah
-              blah blah (we have to add more explanation !!) */}
               저희는 빅데이터를 활용하여 영화를 추천해주는 "Flicker"라는
               서비스를 개발했습니다. 든든한 팀장을 필두로하여, 뛰어난 팀원들과
               끈끈한 팀워크로 협업을 진행했습니다.
@@ -49,7 +46,7 @@ const ContactPage: React.FC = () => {
           <Member
             name="HaHyul Kim"
             role="Frontend"
-            description="담당했던 작업"
+            description={`UX / UI 개발. \n 데이터 캐싱 및 서버 비동기 통신`}
             githubUrl="https://github.com/busangangster"
             emailUrl="gkgbf1034@gmail.com"
             imgSrc="/assets/team/hyulKim.jpg"
@@ -57,7 +54,7 @@ const ContactPage: React.FC = () => {
           <Member
             name="HyunJeong Cho"
             role="Frontend"
-            description="담당했던 작업"
+            description={`UX / UI 디자인 및 개발. \n JWT 및 서버 비동기 통신`}
             githubUrl="https://github.com/hyunjeongg11"
             emailUrl="guswjd4585@gmail.com"
             imgSrc="/assets/team/jeong.jpg"
@@ -65,7 +62,7 @@ const ContactPage: React.FC = () => {
           <Member
             name="JiHwan Gong"
             role="Backend"
-            description="담당했던 작업"
+            description={`데이터 수집. \n 영화 도메인 서버/BFF 서버 설계 및 구현`}
             githubUrl="https://github.com/izgnok"
             emailUrl="rinch12332@gmail.com"
             imgSrc="/assets/team/jihwan.jpg"
@@ -73,7 +70,7 @@ const ContactPage: React.FC = () => {
           <Member
             name="DongGyu Oh"
             role="Backend"
-            description="담당했던 작업"
+            description={`유저/리뷰 도메인 개발. \n 시스템 아키텍처 설계, 부하 테스트`}
             githubUrl="https://github.com/Eastplanet"
             emailUrl="ehdrb1645@gmail.com"
             imgSrc="/assets/team/dong.png"
@@ -81,7 +78,7 @@ const ContactPage: React.FC = () => {
           <Member
             name="JaeChan Lee"
             role="Infra"
-            description="담당했던 작업"
+            description={`인프라 아키텍처, CI/CD 구축. \n 추천 모델 훈련 및 서버 구현`}
             githubUrl="https://github.com/jaechanjj"
             emailUrl="jaechanjj@gmail.com"
             imgSrc="/assets/team/chan.jpg"
@@ -89,7 +86,7 @@ const ContactPage: React.FC = () => {
           <Member
             name="JaeYoung Choi"
             role="Backend"
-            description="담당했던 작업"
+            description={`배치 서버 구현 및 ERD 설계. \n 추천 모델 훈련 및 서버 구현`}
             githubUrl="https://github.com/wodyddldl333"
             emailUrl="wodyddldl333@naver.com"
             imgSrc="/assets/team/jae.jpg"

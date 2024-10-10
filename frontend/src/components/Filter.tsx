@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
 interface FilterProps {
-  options: { value: string; label: string }[]; // 옵션을 외부에서 받도록 설정
-  onChange?: (value: string) => void; // 선택 변경 시 호출할 함수
-  defaultValue?: string; // 기본값을 받을 수 있도록 설정
-  customClass?: string; // 커스텀 클래스를 받을 수 있도록 설정
+  options: { value: string; label: string }[]; 
+  onChange?: (value: string) => void; 
+  defaultValue?: string; 
+  customClass?: string; 
 }
 
 const Filter: React.FC<FilterProps> = ({
@@ -13,18 +13,18 @@ const Filter: React.FC<FilterProps> = ({
   defaultValue,
   customClass,
 }) => {
-  const [isOpen, setIsOpen] = useState(false); // 드롭다운 열림/닫힘 상태 관리
+  const [isOpen, setIsOpen] = useState(false); 
   const [selectedOption, setSelectedOption] = useState(
     defaultValue || options[0].value
-  ); // 선택된 옵션 관리
+  );
 
   const handleToggle = () => {
-    setIsOpen(!isOpen); // 드롭다운 열고 닫는 동작
+    setIsOpen(!isOpen); 
   };
 
   const handleSelect = (value: string) => {
-    setSelectedOption(value); // 선택된 옵션 설정
-    setIsOpen(false); // 선택 후 드롭다운 닫기
+    setSelectedOption(value); 
+    setIsOpen(false); 
     if (onChange) {
       onChange(value);
     }
@@ -32,13 +32,12 @@ const Filter: React.FC<FilterProps> = ({
 
   return (
     <div className="relative inline-block text-left w-full">
-      {/* 드롭다운 버튼 */}
       <button
         type="button"
         className="inline-flex justify-between w-full rounded-md shadow-sm px-4 py-2 bg-gray-700 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none"
         onClick={handleToggle}
       >
-        {selectedOption} {/* 선택된 옵션 표시 */}
+        {selectedOption} 
         <svg
           className={`ml-2 h-5 w-5 transform ${
             isOpen ? "rotate-180" : "rotate-0"

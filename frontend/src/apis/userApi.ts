@@ -7,9 +7,6 @@ export const getUserInfoFromToken = () => {
 
   if (accessToken) {
     const decodedToken: JwtPayload = jwtDecode<JwtPayload>(accessToken);
-
-    // console.log("Decoded JWT Token:", decodedToken);
-
     return {
       userId: decodedToken.userId, 
       email: decodedToken.email,

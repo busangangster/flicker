@@ -1,15 +1,6 @@
-// src/components/Member.tsx
 import React from "react";
 import { FaGithub, FaEnvelope } from "react-icons/fa";
-
-interface MemberProps {
-  name: string;
-  role: string;
-  description: string;
-  githubUrl: string;
-  emailUrl: string;
-  imgSrc: string;
-}
+import { MemberProps } from "../type";
 
 const Member: React.FC<MemberProps> = ({
   name,
@@ -25,15 +16,21 @@ const Member: React.FC<MemberProps> = ({
       <img
         src={imgSrc}
         alt="Profile"
-        className="w-48 h-48 object-cover rounded-full"
+        className="w-48 h-48 object-cover rounded-full flex-shrink-0"
       />
       {/* 이름, 역할, 설명 */}
-      <div>
+      <div className="flex-1">
         <h3 className="text-3xl font-bold text-left mb-1">{name}</h3>
-        <p className="text-4D7FFF text-xl text-left text-[#4D7FFF]">{role}</p>
-        <p className="text-sm mt-2 text-left">{description}</p>
+        <p className="text-xl text-left text-[#4D7FFF]">{role}</p>
+        <p
+          className="text-sm mt-2 text-left min-h-[50px]"
+          style={{ whiteSpace: "pre-line" }}
+        >
+          {description}
+        </p>
+
         {/* 깃허브 및 이메일 아이콘과 텍스트 */}
-        <div className="flex space-x-4 mt-4 items-center">
+        <div className="flex space-x-4  items-center">
           <a href={githubUrl} target="_blank" rel="noopener noreferrer">
             <FaGithub className="text-xl text-white" />
           </a>
