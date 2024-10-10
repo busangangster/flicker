@@ -467,6 +467,7 @@ public class BffMovieService {
                     System.out.println("recommendResponse = " + recommendResponse);
                     if (recommendResponse == null || recommendResponse.isEmpty()) {
                         // 선호도 영화 기반 추천
+                        System.out.println("선호도 영화 기반 추천 호출됨");
                         return getRecommendationMovieListByLike(userSeq);
                     }
                     // 2. 사용자 서버에서 비선호 영화 목로 가져옴
