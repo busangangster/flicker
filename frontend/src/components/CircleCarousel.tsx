@@ -1,12 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Application, Sprite, Assets, Texture, Graphics } from "pixi.js";
-import { ExtendedSprite } from "../type";
+import { CircleCarouselProps, ExtendedSprite } from "../type";
 import gsap from "gsap";
-
-interface CircleCarouselProps {
-  onCardClick: (videoUrl: string) => void; // 외부에서 사용하는 함수
-  className?: string;
-}
 
 const CircleCarousel: React.FC<CircleCarouselProps> = ({
   onCardClick,
@@ -188,12 +183,11 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 
         const centerX = app.screen.width / 2;
         const centerY = app.screen.height;
-        const radiusX = 750; // Horizontal radius
-        const radiusY = 400; // Vertical radius
-        const cardCount = 20; // Number of cards
+        const radiusX = 750; 
+        const radiusY = 400; 
+        const cardCount = 20; 
         const cards: ExtendedSprite[] = [];
-        const spacingFactor = 1; // Card spacing adjustment
-        // let lastClosestCard: ExtendedSprite | null = null;
+        const spacingFactor = 1; 
 
         // Load textures
         const textures = await Promise.all(
@@ -276,7 +270,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           310,
           "#000000",
           4,
-          8 // Apply 8px border radius
+          8 
         );
 
         // Function to set up each card
@@ -298,11 +292,11 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           const maskGraphics = new Graphics();
           maskGraphics.beginFill(0xffffff);
           maskGraphics.drawRoundedRect(
-            -110, // x position (match the sprite's x position)
-            -155, // y position (match the sprite's y position)
-            220, // Width of the sprite
-            310, // Height of the sprite
-            8 // Border radius
+            -110, 
+            -155, 
+            220, 
+            310, 
+            8 
           );
           maskGraphics.endFill();
 
@@ -362,7 +356,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
             appRef.current.renderer.render(appRef.current.stage);
           }
         };
-        updateCardsRef.current = updateCards; // Store reference for cleanup
+        updateCardsRef.current = updateCards; 
 
         const rotateAnimation = () => {
           gsap.to(rotationOffsetRef.current, {
@@ -373,7 +367,6 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
               updateCards(); // rotationOffsetRef.current.value 값을 사용
             },
             onComplete: () => {
-              // 애니메이션이 끝난 후 마우스 이벤트도 계속 동작하도록 설정
               setupMouseEvents();
             },
           });
@@ -476,7 +469,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           style={{
             color: "#fff",
             zIndex: 10,
-            pointerEvents: "none", // 텍스트가 마우스 이벤트를 막지 않도록 설정
+            pointerEvents: "none", 
           }}
         >
           <p className="text-[57px] italic bg-gradient-to-r from-gray-400 via-white to-gray-400 text-transparent bg-clip-text pr-2">
@@ -491,7 +484,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           position: "absolute",
           top: "50%",
           transform: "translateY(-50%)",
-          pointerEvents: "auto", // 이벤트를 받을 수 있도록 설정
+          pointerEvents: "auto", 
           opacity: carouselOpacity,
         }}
       ></div>

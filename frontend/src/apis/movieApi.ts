@@ -98,7 +98,7 @@ export const checkAlreadyReview = async (
         },
       }
     );
-    return response.data.data; // 실제 필요한 데이터만 반환
+    return response.data.data; 
   } catch (error) {
     console.error("리뷰 확인 중 오류가 발생했습니다.", error);
     throw error;

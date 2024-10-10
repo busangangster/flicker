@@ -58,7 +58,7 @@ const MovieDetailPage: React.FC = () => {
         return movieDetail;
       }
     },
-    enabled: !!userSeq && !!movieSeq, // `userSeq`와 `movieSeq`가 존재할 때만 쿼리 실행
+    enabled: !!userSeq && !!movieSeq, 
     // staleTime: 1000 * 60 * 5, // 5분 동안 데이터 신선하게 유지
   });
 
@@ -107,14 +107,12 @@ const MovieDetailPage: React.FC = () => {
     similarMovies = [],
   } = movieData;
 
-  // 줄거리가 없을 경우 기본 메시지 설정
   const MAX_LENGTH = 250;
   const isLongText = moviePlot && moviePlot.length > MAX_LENGTH;
   const displayedText = moviePlot
     ? moviePlot.slice(0, MAX_LENGTH)
     : "줄거리를 준비 중입니다."; 
 
-  // moviePosterUrl가 없을 경우 대체 이미지 설정
   const posterUrl = moviePosterUrl
     ? moviePosterUrl
     : "/assets/movie/noImage.png";
@@ -157,7 +155,7 @@ const MovieDetailPage: React.FC = () => {
         await deletefavoriteMovies(userSeq, Number(movieSeq));
       } else {
         await addfavoriteMovies(userSeq, Number(movieSeq));
-        setIsFavoriteModalOpen(true); // FavoriteModal 열기
+        setIsFavoriteModalOpen(true); 
       }
     } catch (error) {
       console.error("즐겨찾기 API 호출 중 오류 발생:", error);
@@ -208,7 +206,7 @@ const MovieDetailPage: React.FC = () => {
         return (
           <div className="flex flex-wrap gap-2 mt-6">
             {(actors || [])
-              .slice(0, 15) // 첫 15개의 배우만 가져오기
+              .slice(0, 15) 
               .map((actor, index) => (
                 <span
                   key={index}
@@ -242,7 +240,6 @@ const MovieDetailPage: React.FC = () => {
 
   return (
     <div className="flex flex-col bg-black h-screen overflow-y-auto">
-      {/* 영화 세부 정보 */}
       <div className="relative h-auto">
         <div
           className="absolute inset-0 h-[650px] w-full bg-cover bg-center"

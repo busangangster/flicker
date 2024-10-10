@@ -1,7 +1,5 @@
-// src/utils/errorHandling.ts
 import { AxiosError } from "axios";
 import { ApiErrorResponse } from "../type";
-
 
 // 에러 처리 함수
 export const handleApiError = (error: AxiosError<ApiErrorResponse>) => {

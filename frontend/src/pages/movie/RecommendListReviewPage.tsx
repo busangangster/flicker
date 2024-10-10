@@ -58,13 +58,13 @@ const RecommandListReviewPage: React.FC = () => {
     >
       <header className="sticky top-0 bg-transparent z-20">
         <IoIosArrowRoundBack
-          onClick={goToRecommend} 
-          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60" 
+          onClick={goToRecommend}
+          className="text-gray-200 cursor-pointer fixed left-4 top-5 w-10 h-10 hover:opacity-60"
         />
       </header>
       <div className="relative w-[73%] h-[75vh] rounded-md overflow-hidden">
         <h2 className="text-center text-3xl font-bold text-black mb-[80px] mt-24 ">
-          My own movie theater
+          너가 작성한 리뷰와 별점을 보고 찾은 영화들이야!
         </h2>
         {isLoading ? (
           <p className="text-center text-white">Loading movies...</p>

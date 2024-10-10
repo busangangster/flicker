@@ -68,8 +68,8 @@ const Survey: React.FC = () => {
               ? "opacity-50"
               : "hover:bg-[#3256B0] taransition-transform duration-300 ese-in-out"
           }`}
-          disabled={selectedMovies.length < 3} // 3개 선택하지 않으면 비활성화
-          onClick={handleSubmit} // 선택 완료 버튼 클릭 시 서버로 전송
+          disabled={selectedMovies.length < 3} 
+          onClick={handleSubmit} 
         >
           3개 선택 완료
         </button>

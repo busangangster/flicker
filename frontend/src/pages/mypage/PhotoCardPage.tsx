@@ -5,14 +5,12 @@ import Navbar from "../../components/common/Navbar";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { getPhotocard } from "../../apis/photocardApi";
 import PhotoCardFront from "../../components/PhotoCardFront";
-import PhotoCardDetailPage from "./PhotoCardDetailPage"; // Detail 페이지 추가
+import PhotoCardDetailPage from "./PhotoCardDetailPage"; 
 import { IFlipBook, Page, PhotocardDataItem } from "../../type";
 import { useQuery } from "@tanstack/react-query";
 
-
 const PhotoCardPage: React.FC = () => {
   const book = useRef<IFlipBook | null>(null);
-  // const [photocardData, setPhotocardData] = useState<PhotocardDataItem[]>([]);
   const [selectedCard, setSelectedCard] = useState<{
     src: string;
     alt: string;
@@ -24,8 +22,8 @@ const PhotoCardPage: React.FC = () => {
     content: string;
     likes: number;
     backgroundUrl: string;
-  } | null>(null); // 선택된 카드 상태
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
+  } | null>(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
   const {
     data: userData,
@@ -33,19 +31,18 @@ const PhotoCardPage: React.FC = () => {
     isLoading: isUserLoading,
   } = useUserQuery();
 
-  const userSeq = userData?.userSeq; // useUserQuery를 통해 가져온 userSeq
+  const userSeq = userData?.userSeq; 
 
-  // useEffect는 항상 최상위에서 호출됩니다.
   const {
     data: photocardResponse,
     error: photocardError,
     isLoading: isPhotocardLoading,
   } = useQuery({
-    queryKey: ["photocardData", userSeq], // queryKey로 캐시를 관리
-    queryFn: () => getPhotocard(userSeq!), // userSeq가 있을 때만 getPhotocard 호출
-    enabled: !!userSeq, // userSeq가 있을 때만 쿼리 실행
-    retry: 1, // 실패 시 1번 재시도
-    refetchOnWindowFocus: false, // 창 포커스 시 다시 불러오지 않도록 설정
+    queryKey: ["photocardData", userSeq], 
+    queryFn: () => getPhotocard(userSeq!), 
+    enabled: !!userSeq, 
+    retry: 1, 
+    refetchOnWindowFocus: false, 
   });
 
   const handleBookInit = () => {
@@ -58,7 +55,6 @@ const PhotoCardPage: React.FC = () => {
     }
   };
 
-  // 포토카드 클릭 시 모달 열기
   const handleCardClick = (card: {
     src: string;
     alt: string;
@@ -72,10 +68,9 @@ const PhotoCardPage: React.FC = () => {
     backgroundUrl: string;
   }) => {
     setSelectedCard(card);
-    setIsModalOpen(true); // 모달 열기
+    setIsModalOpen(true); 
   };
 
-  // 모달 닫기
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedCard(null);
@@ -93,8 +88,8 @@ const PhotoCardPage: React.FC = () => {
       const imageSlice = photocardData
         .slice(i, i + imagesPerPage)
         .map((photocard) => ({
-          src: photocard.movieImageDto.moviePosterUrl, // 이미지 URL
-          alt: photocard.movieImageDto.movieTitle, // 대체 텍스트 추가
+          src: photocard.movieImageDto.moviePosterUrl, 
+          alt: photocard.movieImageDto.movieTitle, 
           movieSeq: photocard.reviewDto.movieSeq,
           movieTitle: photocard.movieImageDto.movieTitle,
           movieYear: photocard.movieImageDto.movieYear,
@@ -111,13 +106,12 @@ const PhotoCardPage: React.FC = () => {
           <PhotoCardFront
             images={imageSlice}
             pageIndex={i / imagesPerPage + 2}
-            onCardClick={(card) => handleCardClick(card)} // 가공된 카드 데이터를 전달
+            onCardClick={(card) => handleCardClick(card)} 
           />
         ),
         className: (i / imagesPerPage) % 2 === 0 ? "left-page" : "right-page",
       });
     }
-    // 페이지가 홀수일 때 빈 페이지 추가
     if (pages.length % 2 !== 0) {
       pages.push({
         id: pages.length + 1,
@@ -128,7 +122,7 @@ const PhotoCardPage: React.FC = () => {
             </h1>
           </div>
         ),
-        className: "right-page", // 짝수 페이지의 경우 빈 페이지는 오른쪽에 추가
+        className: "right-page", 
       });
     }
 
@@ -162,7 +156,7 @@ const pages: Page[] = [
       </div>
     ),
   },
-  ...createPages(photocardData), // photocardData가 배열로 처리됨
+  ...createPages(photocardData),
 ];
 
   return (
@@ -210,13 +204,11 @@ const pages: Page[] = [
         </HTMLFlipBook>
       </div>
 
-      {/* 모달이 열려있을 때 PhotoCardDetailPage 표시 */}
       {isModalOpen && selectedCard && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={handleCloseModal} // 배경 클릭 시 모달 닫기
+          onClick={handleCloseModal} 
         >
-          {/* 배경에 투명도를 적용하는 ::before 가상 요소 */}
           <div
             className="absolute inset-0"
             style={{
@@ -228,11 +220,11 @@ const pages: Page[] = [
           />
           <div
             className="relative"
-            onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 닫히지 않도록
+            onClick={(e) => e.stopPropagation()} 
           >
             <PhotoCardDetailPage
               card={selectedCard}
-              handleCloseModal={handleCloseModal} // 모달 닫기 함수 전달
+              handleCloseModal={handleCloseModal} 
             />
           </div>
         </div>

@@ -48,23 +48,22 @@ const PhotoBookPage: React.FC = () => {
 
   return (
     <div className="bg-black w-full min-h-screen flex flex-col items-center justify-center  overflow-hidden">
-      {/* NavBar 추가 */}
       <header className="w-full fixed top-0 z-50">
         <Navbar />
       </header>
 
-      {/* 클릭 가능한 전체 영역 */}
       <div
         className="relative cursor-pointer mt-16 hover:scale-105 taransition-transform duration-300 ese-in-out"
         onClick={goToPhotoCard}
       >
-        {/* 이미지 */}
+        
         <img
           src={photobook}
           alt="photobook"
           className="photobook-img w-[1000px] mx-auto"
+          decoding="async"
+          loading="lazy"
         />
-        {/* 이미지 위의 텍스트 및 추가 요소 */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pl-32 pb-10">
           <h1 className="photobook-text text-5xl font-bold italic text-black mb-4">
             MOVIE MEMORIES
@@ -78,6 +77,8 @@ const PhotoBookPage: React.FC = () => {
             src={photobookmain}
             alt="Cover Image"
             className="cover-image w-3/5 h-1/2 mt-10"
+            decoding="async"
+            loading="lazy"
           />
         </div>
       </div>

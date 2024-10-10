@@ -10,19 +10,12 @@ import { fetchDislikeMovies } from "../../apis/axios";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { useNavigate } from "react-router-dom";
 import  "../../css/MovieList.css";
-
-interface FavoriteMovie {
-  movieSeq: number;
-  moviePosterUrl: string;
-}
+import { FavoriteMovie } from "../../type";
 
 const DislikePage: React.FC = () => {
   const navigate = useNavigate();
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
-
-  // 즐겨찾기 영화 가져오기
-  // 하나의 객체로 묶어서 전달해야함 !!
   const { data: dislikeMovies } = useQuery({
     queryKey: ["dislikeMovies", userSeq], 
     queryFn: () => fetchDislikeMovies(userSeq!), 

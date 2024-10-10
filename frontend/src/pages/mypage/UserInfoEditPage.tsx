@@ -16,14 +16,14 @@ const UserInfoEditPage: React.FC = () => {
   const [email, setEmail] = useState(userData?.email || "");
   const [password, setPassword] = useState("");
 
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
   const openModal = () => {
-    setIsModalOpen(true); // 모달 열기
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // 모달 닫기
+    setIsModalOpen(false); 
   };
 
   const mutation = useMutation({
@@ -49,10 +49,9 @@ const UserInfoEditPage: React.FC = () => {
       return;
     }
 
-    // 비밀번호가 비어있으면 모달을 열기
     if (!password) {
       openModal();
-      return; // 비밀번호가 없으면 제출을 중단
+      return; 
     }
 
     const updatedData = {
@@ -61,7 +60,7 @@ const UserInfoEditPage: React.FC = () => {
       nickname,
     };
 
-    mutation.mutate(updatedData); // mutate로 업데이트 데이터 전송
+    mutation.mutate(updatedData); 
   };
 
   return (
@@ -122,7 +121,6 @@ const UserInfoEditPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Edit Button */}
       <div className="flex justify-end mt-6">
         <button
           className="bg-gray-700 px-6 py-2 rounded-md text-white hover:bg-gray-600"
@@ -132,13 +130,12 @@ const UserInfoEditPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Modal 사용 */}
       {isModalOpen && (
         <Modal
           onClose={closeModal}
           title="입력 오류"
           description="비밀번호를 입력해주세요."
-          icon={FaExclamationCircle} // 아이콘으로 경고를 나타냄
+          icon={FaExclamationCircle} 
           buttonText="확인"
         />
       )}
