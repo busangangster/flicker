@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import theaterDoorImage from "/assets/movie/theater7.jpg";
@@ -13,6 +13,37 @@ const RecommendPage: React.FC = () => {
   const [isLeftOpen, setIsLeftOpen] = useState(false);
   const [isRightOpen, setIsRightOpen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false); // 배경 확대 상태
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(window.innerHeight >= 1028); // 기본적으로 현재 창 크기 확인
+
+  // 윈도우 크기 변경 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerHeight >= 1028); // 1028px 이상일 때 true
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    setTooltipPosition({
+      x: event.clientX + 10, // 마우스 커서 우측에 10px 떨어지도록 설정
+      y: event.clientY + 10, // 마우스 커서 아래에 10px 떨어지도록 설정
+    });
+  };
+
+  const showTooltip = () => {
+    setTooltipVisible(true);
+  };
+
+  const hideTooltip = () => {
+    setTooltipVisible(false);
+  };
 
   // 왼쪽 문 클릭 시 애니메이션 및 이동
   const gotoLeftRecommend = () => {
@@ -33,51 +64,10 @@ const RecommendPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-black overflow-y-hidden">
+    <div className="flex flex-col h-screen bg-black overflow-hidden">
       <header className="sticky top-0 bg-transparent z-10">
         <Navbar />
       </header>
-
-      {/* 반짝이는 동그라미 추가 */}
-      {/* <div>
-        {Array.from({ length: 26 }).map((_, index) => (
-          <div
-            key={index}
-            className="twinkling-circle z-10"
-            style={{
-              position: "absolute",
-              top: "8.5%",
-              left: `${27.3 + index * 1.815}%`, // left 값을 1.8씩 증가
-            }}
-          ></div>
-        ))}
-      </div>
-      <div>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <div
-            key={index}
-            className="twinkling-circle z-10"
-            style={{
-              position: "absolute",
-              top: "26.5%",
-              left: `${27.3 + index * 1.815}%`, // left 값을 1.8씩 증가
-            }}
-          ></div>
-        ))}
-      </div>
-      <div>
-        {Array.from({ length: 15 }).map((_, index) => (
-          <div
-            key={index}
-            className="twinkling-circle z-10"
-            style={{
-              position: "absolute",
-              top: "26.5%",
-              left: `${46.5 + index * 1.88}%`, // left 값을 1.8씩 증가
-            }}
-          ></div>
-        ))}
-      </div> */}
 
       <div
         className={`relative flex items-center justify-center w-full h-full door-container ${
@@ -88,114 +78,148 @@ const RecommendPage: React.FC = () => {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
+        onMouseMove={handleMouseMove}
       >
-        {/* 왼쪽 문 */}
-        {/* <img
-          src={left_left_door}
-          alt="left_left_door"
-          className={`absolute h-[54.5vh] w-[8.5vw] door left-door-hover ${
-            isLeftOpen ? "open-left" : ""
-          }`}
-          style={{
-            left: "31.5vw",
-            top: "40vh",
-          }}
-          onClick={gotoLeftRecommend}
-        />
-        <img
-          src={left_right_door}
-          alt="left_right_door"
-          className={`absolute h-[54.5vh] w-[8.5vw] door ${
-            isLeftOpen ? "open-right" : ""
-          }`}
-          style={{
-            left: "39.8vw",
-            top: "40vh",
-          }}
-          onClick={gotoLeftRecommend}
-        /> */}
+        {isLargeScreen ? (
+          <>
+            {/* 왼쪽 문 */}
+            <img
+              src={left_left_door}
+              alt="left_left_door"
+              className={`absolute h-[52vh] w-[10vw] door cursor-pointer ${
+                isLeftOpen ? "open-left" : ""
+              }`}
+              style={{
+                left: "29vw",
+                top: "40vh",
+              }}
+              onClick={gotoLeftRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
+            <img
+              src={left_right_door}
+              alt="left_right_door"
+              className={`absolute h-[52vh] w-[10vw] door cursor-pointer ${
+                isLeftOpen ? "open-right" : ""
+              }`}
+              style={{
+                left: "38.5vw",
+                top: "40vh",
+              }}
+              onClick={gotoLeftRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
 
-        {/* 오른쪽 문 */}
-        {/* <img
-          src={right_left_door}
-          alt="right_left_door"
-          className={`absolute h-[54.5vh] w-[8.3vw] door left-door-hover ${
-            isRightOpen ? "open-left" : ""
-          }`}
-          style={{
-            left: "55vw",
-            top: "40vh",
-          }}
-          onClick={gotoRightRecommend}
-        />
-        <img
-          src={right_right_door}
-          alt="right_right_door"
-          className={`absolute h-[54.5vh] w-[8.3vw] door ${
-            isRightOpen ? "open-right" : ""
-          }`}
-          style={{
-            left: "63vw",
-            top: "40vh",
-          }}
-          onClick={gotoRightRecommend}
-        /> */}
+            {/* 오른쪽 문 */}
+            <img
+              src={right_left_door}
+              alt="right_left_door"
+              className={`absolute h-[52vh] w-[9.5vw] door cursor-pointer ${
+                isRightOpen ? "open-left" : ""
+              }`}
+              style={{
+                left: "55.5vw",
+                top: "40vh",
+              }}
+              onClick={gotoRightRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
+            <img
+              src={right_right_door}
+              alt="right_right_door"
+              className={`absolute h-[52vh] w-[9.5vw] door cursor-pointer ${
+                isRightOpen ? "open-right" : ""
+              }`}
+              style={{
+                left: "65vw",
+                top: "40vh",
+              }}
+              onClick={gotoRightRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
+          </>
+        ) : (
+          <>
+            {/* 작은 화면일 때 사용하는 문 */}
+            <img
+              src={left_left_door}
+              alt="left_left_door"
+              className={`absolute h-[54.5vh] w-[8.5vw] door cursor-pointer ${
+                isLeftOpen ? "open-left" : ""
+              }`}
+              style={{
+                left: "31.5vw",
+                top: "40vh",
+              }}
+              onClick={gotoLeftRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
+            <img
+              src={left_right_door}
+              alt="left_right_door"
+              className={`absolute h-[54.5vh] w-[8.5vw] door cursor-pointer ${
+                isLeftOpen ? "open-right" : ""
+              }`}
+              style={{
+                left: "39.8vw",
+                top: "40vh",
+              }}
+              onClick={gotoLeftRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
 
-        {/* f11 확대할 때의 문 */}
-        {/* 왼쪽 문 */}
-        <img
-          src={left_left_door}
-          alt="left_left_door"
-          className={`absolute h-[52vh] w-[10vw] door ${
-            isLeftOpen ? "open-left" : ""
-          }`}
-          style={{
-            left: "29vw",
-            top: "40vh",
-          }}
-          onClick={gotoLeftRecommend}
-        />
-        <img
-          src={left_right_door}
-          alt="left_right_door"
-          className={`absolute h-[52vh] w-[10vw] door ${
-            isLeftOpen ? "open-right" : ""
-          }`}
-          style={{
-            left: "38.5vw",
-            top: "40vh",
-          }}
-          onClick={gotoLeftRecommend}
-        />
+            {/* 오른쪽 문 */}
+            <img
+              src={right_left_door}
+              alt="right_left_door"
+              className={`absolute h-[54.5vh] w-[8.3vw] door cursor-pointer ${
+                isRightOpen ? "open-left" : ""
+              }`}
+              style={{
+                left: "55vw",
+                top: "40vh",
+              }}
+              onClick={gotoRightRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
+            <img
+              src={right_right_door}
+              alt="right_right_door"
+              className={`absolute h-[54.5vh] w-[8.3vw] door cursor-pointer ${
+                isRightOpen ? "open-right" : ""
+              }`}
+              style={{
+                left: "63vw",
+                top: "40vh",
+              }}
+              onClick={gotoRightRecommend}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
+            />
+          </>
+        )}
 
-        {/* 오른쪽 문 */}
-        <img
-          src={right_left_door}
-          alt="right_left_door"
-          className={`absolute h-[52vh] w-[9.5vw] door ${
-            isRightOpen ? "open-left" : ""
-          }`}
+        {/* 툴팁 추가 */}
+        <div
+          className={`custom-tooltip ${tooltipVisible ? "visible" : ""}`}
           style={{
-            left: "55.5vw",
-            top: "40vh",
+            top: `${tooltipPosition.y}px`,
+            left: `${tooltipPosition.x}px`,
           }}
-          onClick={gotoRightRecommend}
-        />
-        <img
-          src={right_right_door}
-          alt="right_right_door"
-          className={`absolute h-[52vh] w-[9.5vw] door ${
-            isRightOpen ? "open-right" : ""
-          }`}
-          style={{
-            left: "65vw",
-            top: "40vh",
-          }}
-          onClick={gotoRightRecommend}
-        />
+        >
+          문을 클릭하여, 영화를 추천받으세요!
+        </div>
       </div>
     </div>
   );
 };
 
 export default RecommendPage;
+

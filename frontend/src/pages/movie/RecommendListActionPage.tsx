@@ -47,7 +47,7 @@ const RecommandListActionPage: React.FC = () => {
 
   return (
     <div
-      className={`relative bg-black text-white min-h-screen flex items-center justify-center transition-all duration-700 ${
+      className={`relative overflow-hidden" bg-black text-white min-h-screen flex items-center justify-center transition-all duration-700 ${
         isLoaded
           ? "scale-100 opacity-100 bg-transparent "
           : "scale-110 opacity-50 bg-black"
