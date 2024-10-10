@@ -36,18 +36,18 @@ export const signin = async (
 
     // 서버 응답에서 Authorization 헤더 추출
 
-    // const accessToken = response.headers["authorization"].replace(
-    //   "Bearer ",
-    //   ""
-    // );
-    // localStorage.setItem("accessToken", accessToken);
+    const accessToken = response.headers["authorization"].replace(
+      "Bearer ",
+      ""
+    );
+    localStorage.setItem("accessToken", accessToken);
 
-    if (accessTokenHeader) {
-      const accessToken = accessTokenHeader.replace("Bearer ", "");
-      localStorage.setItem("accessToken", accessToken);
-    } else {
-      console.error("Authorization 헤더가 없습니다:", response.headers);
-    }
+    // if (accessTokenHeader) {
+    //   const accessToken = accessTokenHeader.replace("Bearer ", "");
+    //   localStorage.setItem("accessToken", accessToken);
+    // } else {
+    //   console.error("Authorization 헤더가 없습니다:", response.headers);
+    // }
 
     // const accessToken = response.headers["authorization"].replace(
     //   "Bearer ",
