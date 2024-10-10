@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUserQuery } from "../../hooks/useUserQuery";
 import { useQueryClient } from "@tanstack/react-query";
+import { IoBan } from "react-icons/io5"; 
+import Modal from "./Modal"; 
 
 function ClearCacheButton() {
   const queryClient = useQueryClient();
@@ -25,8 +27,12 @@ const Navbar: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true); // Navbar의 가시성 상태
   const [scrollPosition, setScrollPosition] = useState(0); // 스크롤 위치 상태
 
-  const clearCache = ClearCacheButton(); // 함수 호출이 아닌 함수 자체를 변수로 할당
+  // 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalDescription, setModalDescription] = useState("");
 
+  const clearCache = ClearCacheButton(); // 함수 호출이 아닌 함수 자체를 변수로 할당
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,8 +80,9 @@ const Navbar: React.FC = () => {
     if (data) {
       navigate("/recommend");
     } else {
-      alert("로그인한 사용자만 접근 가능합니다 !");
-      navigate("/signin");
+      setModalTitle("접근 불가");
+      setModalDescription("로그인한 사용자만 접근 가능합니다!");
+      setIsModalOpen(true); // 모달 열기
     }
   };
 
@@ -83,9 +90,15 @@ const Navbar: React.FC = () => {
     if (data) {
       navigate("/photobook");
     } else {
-      alert("로그인한 사용자만 접근 가능합니다 !");
-      navigate("/signin");
+      setModalTitle("접근 불가");
+      setModalDescription("로그인한 사용자만 접근 가능합니다!");
+      setIsModalOpen(true); // 모달 열기
     }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false); // 모달 닫기
+    navigate("/signin"); // 모달이 닫힐 때 로그인 페이지로 이동
   };
 
   const goToSignin = () => {
@@ -196,6 +209,15 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </header>
+      {isModalOpen && (
+        <Modal
+          onClose={handleModalClose}
+          title={modalTitle}
+          description={modalDescription}
+          icon={IoBan} // IoBan 아이콘 사용
+          buttonText="확인"
+        />
+      )}
     </div>
   );
 };
