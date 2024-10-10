@@ -19,21 +19,18 @@ import MoviesList from "../../components/MoviesList";
 import { IoBan } from "react-icons/io5";
 import { GoHeartFill } from "react-icons/go";
 import { useUserQuery } from "../../hooks/useUserQuery";
-// import Swal from "sweetalert2";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import Modal from "../../components/common/Modal"
-// import { getReviewRating } from "../../apis/movieApi"; // API 호출 함수 가져오기
 
 const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
-  const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq를 가져옴
+  const { movieSeq } = useParams<{ movieSeq: string }>(); 
   const [isLiked, setIsLiked] = useState(false);
   const [disLiked, setDisLiked] = useState(false);
-  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false); // FavoriteModal 상태 추가
+  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false); 
   const [isDislikeModalOpen, setIsDislikeModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("배우");
-  // const [totalCnt, setTotalCnt] = useState<number>(0);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
 
@@ -69,33 +66,15 @@ const MovieDetailPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // 리뷰 데이터 불러오기 - getReviewRating 호출
-  // useEffect(() => {
-  //   const fetchReviewRating = async () => {
-  //     if (movieSeq) {
-  //       try {
-  //         const ratingData: RatingData = await getReviewRating(
-  //           Number(movieSeq)
-  //         );
-  //         setTotalCnt(ratingData.data.totalCnt); // 총 리뷰 수를 상태에 저장
-  //       } catch (error) {
-  //         console.error("리뷰 데이터를 불러오는 데 실패했습니다.", error);
-  //       }
-  //     }
-  //   };
-
-  //   fetchReviewRating();
-  // }, [movieSeq]);
-
   useEffect(() => {
     if (movieData) {
-      setIsLiked(bookMarkedMovie); // 초기 상태 설정
+      setIsLiked(bookMarkedMovie); 
     }
   }, [movieData]);
 
   useEffect(() => {
     if (movieData) {
-      setDisLiked(unlikedMovie); // 초기 상태 설정
+      setDisLiked(unlikedMovie); 
     }
   }, [movieData]);
 
@@ -112,7 +91,6 @@ const MovieDetailPage: React.FC = () => {
       movieTitle,
       director,
       genre,
-      // country,
       moviePlot,
       audienceRating,
       movieYear,
@@ -122,7 +100,7 @@ const MovieDetailPage: React.FC = () => {
       backgroundUrl,
       movieRating,
       actors,
-    } = {}, // movieDetailResponse가 없을 경우를 대비해 기본값으로 빈 객체 설정
+    } = {}, 
     bookMarkedMovie = false,
     unlikedMovie = false,
     reviews = [],
@@ -134,7 +112,7 @@ const MovieDetailPage: React.FC = () => {
   const isLongText = moviePlot && moviePlot.length > MAX_LENGTH;
   const displayedText = moviePlot
     ? moviePlot.slice(0, MAX_LENGTH)
-    : "줄거리를 준비 중입니다."; // moviePlot이 없을 경우 기본 메시지
+    : "줄거리를 준비 중입니다."; 
 
   // moviePosterUrl가 없을 경우 대체 이미지 설정
   const posterUrl = moviePosterUrl
@@ -148,9 +126,10 @@ const MovieDetailPage: React.FC = () => {
     return videoIdMatch ? videoIdMatch[1] : null;
   };
 
-  // trailerUrl이 없을 경우 대체 이미지 설정
   const videoUrl = trailerUrl
-    ? `https://www.youtube.com/embed/${extractVideoId(trailerUrl)}`
+    ? `https://www.youtube.com/embed/${extractVideoId(
+        trailerUrl
+      )}?autoplay=1&mute=1&loop=1&playlist=${extractVideoId(trailerUrl)}`
     : "/assets/movie/noVideo.png";
 
   const handleCategorySelect = (category: string) => {
@@ -167,7 +146,7 @@ const MovieDetailPage: React.FC = () => {
 
   const toggleHeart = async () => {
     if (!userSeq) {
-      console.error("User sequence is not available."); // userSeq가 없을 때 에러 처리
+      console.error("User sequence is not available."); 
       return;
     }
 
@@ -179,11 +158,6 @@ const MovieDetailPage: React.FC = () => {
       } else {
         await addfavoriteMovies(userSeq, Number(movieSeq));
         setIsFavoriteModalOpen(true); // FavoriteModal 열기
-        // Swal.fire({
-        //   title: "찜 완료!",
-        //   icon: "success",
-        //   confirmButtonText: "확인",
-        // });
       }
     } catch (error) {
       console.error("즐겨찾기 API 호출 중 오류 발생:", error);
@@ -197,9 +171,7 @@ const MovieDetailPage: React.FC = () => {
     }
 
     try {
-      // setDisLiked와 동시에 현재 상태값을 이용해서 API 호출을 분기 처리
       setDisLiked((prevDisLiked) => {
-        // 현재 상태값을 기준으로 API 호출
         if (prevDisLiked) {
           deleteDislikeMovies(userSeq, Number(movieSeq))
             .then(() => {
@@ -212,12 +184,7 @@ const MovieDetailPage: React.FC = () => {
           addDislikeMovies(userSeq, Number(movieSeq))
             .then(() => {
               console.log("관심없음 목록에 추가");
-              setIsDislikeModalOpen(true); // DislikeModal 열기
-              // Swal.fire({
-              //   title: "무관심 추가 완료!",
-              //   icon: "success",
-              //   confirmButtonText: "확인",
-              // });
+              setIsDislikeModalOpen(true); 
             })
             .catch((error) => {
               console.error("관심없음 목록 추가 중 오류 발생:", error);
@@ -234,17 +201,6 @@ const MovieDetailPage: React.FC = () => {
   const goToReview = () => {
     navigate(`/review/${movieSeq}`);
   };
-
-  // const toggleDropdown = () => {
-  //   setIsDropdownOpen((prev) => !prev);
-  // };
-
-  // const handleOptionClick = () => {
-  //   setInterestOption((prev) =>
-  //     prev === "관심 없음" ? "관심 없음 취소" : "관심 없음"
-  //   );
-  //   setIsDropdownOpen(false);
-  // };
 
   const renderCategoryContent = () => {
     switch (selectedCategory) {
@@ -295,16 +251,14 @@ const MovieDetailPage: React.FC = () => {
           <div className="absolute inset-0 bg-black opacity-70"></div>
         </div>
 
-        {/* Header with Navbar */}
         <header className="sticky top-0 bg-transparent z-20">
           <Navbar />
           <IoIosArrowRoundBack
-            onClick={() => navigate(-1)} // 뒤로가기 기능
-            className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" // 크기 및 위치 설정
+            onClick={() => navigate(-1)} 
+            className="text-gray-200 cursor-pointer fixed left-4 top-16 w-10 h-10 hover:opacity-60" 
           />
         </header>
 
-        {/* Top section */}
         {/* Top section */}
         <div className="relative flex items-end text-white p-3 w-[1100px] h-[480px] bg-transparent ml-[50px] mt-[120px] overflow-hidden">
           {/* Left Section: Movie Poster and Details */}
@@ -315,8 +269,6 @@ const MovieDetailPage: React.FC = () => {
               className="w-[270px] h-[410px] shadow-md border"
             />
             <div className="mt-4 ml-[60px] flex-1 w-[500px]">
-              {" "}
-              {/* 고정된 너비 설정 */}
               <div className="flex items-center justify-between w-full">
                 <h2 className="text-4xl font-bold flex-1 flex items-center overflow-hidden">
                   <span
@@ -435,10 +387,10 @@ const MovieDetailPage: React.FC = () => {
             {reviews.map((review) => (
               <Review
                 key={review.reviewSeq}
-                review={{ ...review, top: false }} // review 객체로 모든 데이터를 전달
+                review={{ ...review, top: false }} 
                 userSeq={userData.userSeq}
-                onShowMore={handleShowMore} // onShowMore prop 추가
-                isDetailPage={true} // MovieDetailPage에서 사용하는 경우만 true
+                onShowMore={handleShowMore} 
+                isDetailPage={true} 
               />
             ))}
           </div>

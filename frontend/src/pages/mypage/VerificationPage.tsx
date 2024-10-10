@@ -17,7 +17,6 @@ const VerificationPage: React.FC = () => {
         회원 정보 수정을 위해서는 본인 확인이 필요해요.
       </h4>
 
-      {/* User Input for ID and Password */}
       <div className="flex items-start space-x-8 mb-[37px]">
         <div className="grid gap-y-6 w-full text-[18px]">
           <div className="flex items-center">
@@ -45,7 +44,6 @@ const VerificationPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Confirm Button */}
       <div className="flex justify-end mt-6">
         <button
           onClick={goToUseInfoEdit}

@@ -6,7 +6,7 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   description?: string;
-  icon: IconType; // 아이콘 컴포넌트를 동적으로 받음
+  icon: IconType; 
   buttonText: string;
 }
 
@@ -22,14 +22,14 @@ const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
-    }, 50); // 모달이 뜰 때 약간의 딜레이를 줌
+    }, 50); 
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(() => {
       onClose();
-    }, 300); // 애니메이션 후 모달을 닫음
+    }, 300);
   };
 
   return (

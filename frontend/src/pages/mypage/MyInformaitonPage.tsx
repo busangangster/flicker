@@ -4,16 +4,13 @@ import { useUserQuery } from "../../hooks/useUserQuery";
 
 const MyInformationPage: React.FC = () => {
   const navigate = useNavigate();
-
   const { data, error, isLoading, refetch } = useUserQuery();
 
-  // 페이지에 도착할 때마다 데이터를 강제로 다시 가져오도록 설정
   useEffect(() => {
-    refetch(); // 데이터를 다시 불러오는 작업
+    refetch(); 
   }, []);
 
   const goToVerification = () => {
-    // navigate("/mypage/verification");
     navigate("/mypage/userinfoedit");
   };
 
@@ -24,7 +21,6 @@ const MyInformationPage: React.FC = () => {
     <div className="bg-black p-8 rounded-lg w-[1000px] h-[500px] flex flex-col justify-between">
       <h2 className="text-2xl font-semibold italic mb-4">My Information</h2>
 
-      {/* User Profile Picture and Information */}
       <div className="flex items-start space-x-8">
         <img
           src="/assets/George.jpg"
@@ -69,7 +65,6 @@ const MyInformationPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Edit Button */}
       <div className="flex justify-end mt-6">
         <button
           className="bg-gray-700 px-6 py-2 rounded-md text-white hover:bg-gray-600"

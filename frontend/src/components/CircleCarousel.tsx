@@ -280,10 +280,6 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
         );
 
         // Function to set up each card
-
-        // ... 생략된 코드 ...
-
-        // Function to set up each card
         function setupCard(
           texture: Texture,
           backgroundTexture: Texture,
@@ -345,19 +341,9 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
         let dragging = false;
         let previousPosition = { x: 0, y: 0 };
 
-        // Function to calculate angle
-        // function calculateAngle(
-        //   x1: number,
-        //   y1: number,
-        //   x2: number,
-        //   y2: number
-        // ) {
-        //   return Math.atan2(y2 - y1, x2 - x1);
-        // }
-
         // Update cards function
         const updateCards = () => {
-          const rotationOffset = rotationOffsetRef.current.value; // rotationOffsetRef에서 값 가져오기
+          const rotationOffset = rotationOffsetRef.current.value; 
           cards.forEach((card, i) => {
             if (card) {
               const angle =
@@ -392,29 +378,6 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
             },
           });
         };
-
-        // Function to bring the center card to the front
-        // function bringCenterCardToFront() {
-        //   let closestCard: ExtendedSprite | null = null;
-        //   let minAngleDiff = Infinity;
-
-        //   cards.forEach((card) => {
-        //     const angleDiff = Math.abs(card.userData.angle - Math.PI / 2);
-        //     if (angleDiff < minAngleDiff) {
-        //       minAngleDiff = angleDiff;
-        //       closestCard = card;
-        //     }
-        //   });
-
-        //   if (
-        //     closestCard &&
-        //     closestCard !== lastClosestCard &&
-        //     minAngleDiff < 0.01
-        //   ) {
-        //     lastClosestCard = closestCard;
-        //     app.stage.setChildIndex(closestCard, app.stage.children.length - 1);
-        //   }
-        // }
 
         // Event handlers
         const setupMouseEvents = () => {
