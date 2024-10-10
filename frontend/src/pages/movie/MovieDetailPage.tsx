@@ -378,11 +378,11 @@ const MovieDetailPage: React.FC = () => {
           <div className="flex w-full justify-between items-center">
             <div className="text-[38px] font-bold text-white">Reviews</div>
             <button
-              className="text-gray-200 flex ml-auto items-center cursor-pointer text-[20px] px-3 justify-center hover:opacity-80 underline"
+              className="text-gray-200 flex ml-auto items-center cursor-pointer text-[16px] px-3 justify-center hover:opacity-80 underline"
               lang="ko"
               onClick={goToReview}
             >
-              more
+              전체보기
             </button>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
