@@ -93,6 +93,14 @@ public class BffUserService {
         return util.sendGetRequestAsyncLimitMemorySizeUp(userReviewBaseUrl,path);
     }
 
+    public Mono<ResponseEntity<ResponseDto>> getAllMovieReviewOffset(MovieReviewReqDto request) {
+        // 1. 외부 API의 경로를 설정합니다.
+        String path = util.getUri("/review/all-offset/movies/"+request.getMovieSeq()+"?userSeq="+request.getUserSeq()+"&page="+request.getPage())+"&size="+request.getSize()+"&option="+request.getOption();
+        // 2. POST 요청을 비동기적으로 외부 API에 보냅니다.
+        return util.sendGetRequestAsyncLimitMemorySizeUp(userReviewBaseUrl,path);
+    }
+
+
     // 6. 리뷰 삭제
     public Mono<ResponseEntity<ResponseDto>> deleteReview(DeleteReviewReqDto dto) {
         String path = util.getUri("/review?reviewSeq="+dto.getReviewSeq()+"&userSeq="+dto.getUserSeq());
@@ -462,4 +470,6 @@ public class BffUserService {
         String path = util.getUri("/first-login-check/"+userSeq);
         return util.sendGetRequestAsync(userReviewBaseUrl,path);
     }
+
+
 }

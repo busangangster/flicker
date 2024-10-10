@@ -83,6 +83,19 @@ public class BffUserController {
         return userService.getAllMovieReview(dto);
     }
 
+    @GetMapping("/all-offset/movies/{movieSeq}")
+    public Mono<ResponseEntity<ResponseDto>> getAllMovieReviewUsingOffset(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "20000")Integer size, @RequestParam(value = "option", defaultValue = "like")String option) {
+
+        MovieReviewReqDto dto = new MovieReviewReqDto();
+        dto.setMovieSeq(movieSeq);
+        dto.setUserSeq(myUserSeq);
+        dto.setPage(page);
+        dto.setSize(size);
+        dto.setOption(option);
+
+        return userService.getAllMovieReviewOffset(dto);
+    }
+
 
 
     // 6. 리뷰 삭제
