@@ -158,6 +158,18 @@ public class ReviewService {
         return reviewDtoList;
     }
 
+    public List<ReviewDto> getAllMovieReviewsUsingOffset(Pageable pageable,Integer myUserSeq) {
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "likes").and(Sort.by(Sort.Direction.ASC, "reviewSeq")));
+        Page<Review> all = reviewRepository.findAll(pageable);
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
+        for (Review review : all.getContent()) {
+            String nickname = userService.getNicknameByUserSeq(review.getUserSeq());
+            ReviewDto reviewDto = reviewConverter.reviewToReviewDto(review, nickname, myUserSeq);
+            reviewDtoList.add(reviewDto);
+        }
+        return reviewDtoList;
+    }
+
     public List<ReviewDto> getPopularMovieReviews(Integer movieSeq, Integer myUserSeq) {
         List<Review> result = reviewRepository.findTop3ByMovieSeqAndIsSpoilerFalseAndContentIsNotNullOrderByLikesDesc(movieSeq);
         List<ReviewDto> reviewDtoList = new ArrayList<>();
@@ -280,4 +292,6 @@ public class ReviewService {
         }
         return movieSeqWithAtLeast2000Reviews;
     }
+
+
 }
