@@ -111,6 +111,19 @@ public class ReviewController {
         return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
     }
 
+    @GetMapping("/all/movies/{movieSeq}")
+    public ResponseEntity<ResponseDto> getAllMovieReviews(@PathVariable("movieSeq") Integer movieSeq,
+                                                       @RequestParam(value = "userSeq") Integer myUserSeq,
+                                                       @RequestParam(value = "option", defaultValue = "like") String option,
+                                                       @PageableDefault(size = 20000) Pageable pageable) {
+        if (movieSeq == null || myUserSeq == null) {
+            throw new RestApiException(StatusCode.VALUE_CANT_NULL);
+        }
+
+        List<ReviewDto> movieReviews = reviewService.getMovieReviews(movieSeq, myUserSeq, option, pageable);
+        return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
+    }
+
     @GetMapping("/movies/{movieSeq}/popular-review")
     public ResponseEntity<ResponseDto> getPopularMovieReviews(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq){
         if(movieSeq == null || myUserSeq == null){
