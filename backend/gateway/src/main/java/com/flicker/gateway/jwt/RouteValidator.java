@@ -18,7 +18,8 @@ public class RouteValidator {
             "/api/bff/user",
             "/api/bff/user/",
             "/api/bff/user/login",
-            "/api/bff/user/reissue"
+            "/api/bff/user/refresh",
+            "/api/user/login"
     );
 
     /*
