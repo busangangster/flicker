@@ -464,6 +464,7 @@ public class BffMovieService {
         String path = util.getUri("/collabo");
         return util.sendPostRequestToRecommendServer(recommendBaseUrl, path, userSeq)
                 .flatMap(recommendResponse -> {
+                    System.out.println("recommendResponse = " + recommendResponse);
                     if (recommendResponse == null || recommendResponse.isEmpty()) {
                         // 선호도 영화 기반 추천
                         return getRecommendationMovieListByLike(userSeq);
