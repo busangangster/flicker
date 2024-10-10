@@ -120,7 +120,7 @@ public class ReviewController {
             throw new RestApiException(StatusCode.VALUE_CANT_NULL);
         }
 
-        List<ReviewDto> movieReviews = reviewService.getMovieReviews(movieSeq, myUserSeq, option, pageable);
+        List<ReviewDto> movieReviews = reviewService.getAllMovieReviews(movieSeq, myUserSeq, option, pageable);
         return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
     }
 
