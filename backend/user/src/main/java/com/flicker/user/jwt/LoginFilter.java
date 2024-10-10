@@ -13,8 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -73,6 +72,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
 
             UserLoginResDto dto = UserLoginResDto.builder()
+                    .userSeq(userDetails.getUserSeq())
                     .userId(userDetails.getUserId())
                     .email(userDetails.getEmail())
                     .nickname(userDetails.getNickname())
@@ -85,11 +85,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             String refresh = jwtUtil.createToken("refresh", dto, role, 86400000L);
 
             // TODO : Refresh Token 저장 로직 구현
-//            System.out.println("액세스 토큰 발급 : "+ access);
-//            System.out.println("리프레시 토큰 발급 :"+refresh);
+            System.out.println("액세스 토큰 발급 : "+ access);
+            System.out.println("리프레시 토큰 발급 :"+refresh);
 
             response.addHeader("Authorization", "Bearer " + access);
             response.addCookie(createCookie("refresh", refresh));
+
 
             // 응답 본문에 간단하게 "OK" 메시지 전송
             response.setContentType("text/plain");
@@ -106,10 +107,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        // TODO : 응답 에러코드와 함께 메세지 함께 보내야함.
-        response.getWriter().write("실패");
-        response.setStatus(401);
 
+        response.setStatus(400);
+        // 실패 이유 확인
+        String errorMessage = "아이디와 비밀번호가 틀렸습니다.";
+        // 에러 메시지 전송
+        response.getWriter().write(errorMessage);
     }
 
     private Cookie createCookie(String key, String value) {
@@ -124,7 +127,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/api/users/login");
+        setFilterProcessesUrl("/api/user/login");
     }
 
 }

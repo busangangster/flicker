@@ -23,6 +23,8 @@ public enum StatusCode {
     INVALID_INPUT_DATA_TYPE(HttpStatus.BAD_REQUEST, 409, "잘못된 데이터 형식입니다."),
     CAN_NOT_FIND_USER(HttpStatus.BAD_REQUEST, 410, "사용자를 찾을 수 없습니다."),
     INACTIVE_USER(HttpStatus.BAD_REQUEST, 411, "탈퇴한 사용자 입니다."),
+    DUPLICATED_REVIEW(HttpStatus.BAD_REQUEST, 412, "리뷰는 한번만 작성 가능합니다"),
+    CAN_NOT_FIND_REVIEW(HttpStatus.BAD_REQUEST, 413, "리뷰를 찾을 수 없습니다."),
 
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "서버에서 처리 중 에러가 발생했습니다."),

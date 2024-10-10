@@ -28,6 +28,10 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", String.class);
     }
 
+    public Integer getUserSeq(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userSeq", Integer.class);
+    }
+
     public String getRole(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
@@ -54,6 +58,7 @@ public class JWTUtil {
 //        System.out.println("dto 를 변환 = " + dto);
 
         String token = Jwts.builder()
+                .claim("userSeq", dto.getUserSeq())
                 .claim("category", category)
                 .claim("userId", dto.getUserId())
                 .claim("email", dto.getEmail())

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 public class UserLoginResDto {
+    private Integer userSeq;
     private String userId;
     private String email;
     private String nickname;

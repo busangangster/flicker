@@ -7,8 +7,7 @@ import com.flicker.user.user.domain.entity.BookmarkMovie;
 import com.flicker.user.user.domain.entity.FavoriteMovie;
 import com.flicker.user.user.domain.entity.UnlikeMovie;
 import com.flicker.user.user.domain.entity.User;
-import com.flicker.user.user.dto.MovieSeqListDto;
-import com.flicker.user.user.dto.UserRegisterDto;
+import com.flicker.user.user.dto.*;
 import com.flicker.user.user.infrastructure.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService{
     public MovieSeqListDto getBookmarkMovies(Integer userSeq) {
         User user = findUserSeqToUser(userSeq);
         List<Integer> movieSeqList = user.getBookmarkMovies().stream()
-                .map(BookmarkMovie::getBookmarkMovieSeq)
+                .map(BookmarkMovie::getMovieSeq)
                 .toList();
         return new MovieSeqListDto(movieSeqList);
     }
@@ -47,7 +46,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional
     public MovieSeqListDto getUnlikeMovies(Integer userSeq) {
         User user = findUserSeqToUser(userSeq);
         List<Integer> movieSeqList = user.getUnlikeMovies().stream()
@@ -110,19 +108,43 @@ public class UserServiceImpl implements UserService{
         return true;
     }
 
+    @Override
+    public String getNicknameByUserSeq(Integer userSeq) {
 
+
+        Optional<User> byId = userRepository.findById(userSeq);
+
+//        System.out.println("byId.isPresent() = " + byId.isPresent());
+        
+        if(byId.isPresent()) {
+            User user = byId.get();
+            return user.getNickname();
+        }
+
+        throw new RestApiException(StatusCode.NOT_FOUND);
+    }
 
     @Override
     @Transactional
     public boolean delete(Integer userSeq) {
 
-        Optional<User> byId = userRepository.findById(userSeq);
-        if(byId.isPresent()) {
-            byId.get().deleteUser();
-            return true;
-        }
+        User user = userRepository.findById(userSeq)
+                .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_USER));
+        user.deleteUser();
 
         return false;
+    }
+
+    @Override
+    @Transactional
+    public UserLoginResDto update(Integer userSeq, UserUpdateDto dto) {
+        User user = userRepository.findById(userSeq)
+                .orElseThrow(() -> new RestApiException(StatusCode.CAN_NOT_FIND_USER));
+
+        dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+        user.updateUser(dto);
+
+        return userConverter.toUserLoginResDto(user);
     }
 
     public User findUserSeqToUser(Integer userSeq){
@@ -132,5 +154,45 @@ public class UserServiceImpl implements UserService{
             throw new RestApiException(StatusCode.INACTIVE_USER);
         }
         return user;
+    }
+
+
+    // 찜한 영화인지, 비선호영화인지, 비선호영화 목록, 대표 리뷰3건
+    @Override
+    public MovieDetail getMovieDetail(Integer userSeq, Integer movieSeq) {
+
+
+        MovieSeqListDto bookmarkMovies = getBookmarkMovies(userSeq);
+        MovieSeqListDto unlikeMovies = getUnlikeMovies(userSeq);
+
+
+
+        MovieDetail movieDetail = new MovieDetail();
+        movieDetail.setBookMarkedMovie(bookmarkMovies.getMovieSeqList().contains(movieSeq));
+        movieDetail.setUnlikedMovie(unlikeMovies.getMovieSeqList().contains(movieSeq));
+        movieDetail.setUnlikedMovies(unlikeMovies.getMovieSeqList());
+
+
+        return movieDetail;
+    }
+
+    @Override
+    public User getUserByUserSeq(Integer userSeq) {
+        User byUserSeq = userRepository.findByUserSeq(userSeq);
+        if(byUserSeq == null) {
+            throw new RestApiException(StatusCode.CAN_NOT_FIND_USER);
+        }
+        return byUserSeq;
+    }
+
+    @Override
+    public boolean isFirstLoginUser(Integer userSeq) {
+
+        User byUserSeq = userRepository.findByUserSeq(userSeq);
+
+        if(byUserSeq.getFavoriteMovies() == null || byUserSeq.getFavoriteMovies().isEmpty()){
+            return true;
+        }
+        return false;
     }
 }
