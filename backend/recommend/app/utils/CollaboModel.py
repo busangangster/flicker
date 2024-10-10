@@ -29,11 +29,15 @@ async def updatePcaResultOptimal():
     query = '''SELECT * FROM review_info'''
     new_test = pd.read_sql_query(query, conn)
 
+    print("db 끝")
+
     # user_seq가 null인 행을 제거
     new_test = new_test.dropna(subset=['user_seq'])
 
     # 피벗 테이블로 변환 (유저-영화-평점)
     pivot_test = new_test.pivot_table(index='user_seq', columns='movie_seq', values='review_rating', aggfunc='first')
+
+    print("pivot 끝")
 
     # 결측값을 0으로 채움
     pivot_test = pivot_test.fillna(0)
@@ -43,10 +47,14 @@ async def updatePcaResultOptimal():
     pca_optimal = PCA(n_components=optimal_components, svd_solver='randomized')
     pca_result_optimal = pca_optimal.fit_transform(pivot_test)
 
+    print("pca 끝")
+
     # PCA 결과 저장
     pca_result_optimal = pd.DataFrame(pca_result_optimal)
     pca_result_optimal['user_seq'] = pivot_test.index
     pd.DataFrame(pca_result_optimal).to_csv("pca_result_optimal.csv", index=False)
+
+    print("pca 저장")
 
     # 캐시에 새로운 PCA 결과 저장
     pca_cache = pca_result_optimal
