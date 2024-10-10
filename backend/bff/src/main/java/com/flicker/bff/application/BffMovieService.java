@@ -559,8 +559,7 @@ public class BffMovieService {
                     System.out.println("favoriteMovieListResponse = " + favoriteMovieListResponse);
                     try {
                         // likeResponseDto의 데이터 필드를 List<Integer>로 변환
-                        favoriteMovieListResponse = objectMapper.convertValue(likeResponseDto.getData(), FavoriteMovieListResponse.class); {
-                        });
+                        favoriteMovieListResponse = objectMapper.convertValue(likeResponseDto.getData(), FavoriteMovieListResponse.class);
                     } catch (Exception e) {
                         return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                     }
