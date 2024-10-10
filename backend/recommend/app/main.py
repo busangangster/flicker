@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Body
 from typing import List
 from models import SentimentReviewEvent, SentimentResult, ContentMovieRequest, ContentMovieResponse, \
-    CollaboMovieRequest, CollaboMovieResponse, ModelUpdateRequest, WordCloudRequest
+    CollaboMovieRequest, CollaboMovieResponse, ModelUpdateRequest, WordCloudRequest, NewMovieUpdateRequest
 from predict import sequential_movie_evaluation
 from gensim.models import Word2Vec
 from word2vec_model import load_word2vec_model, get_similar_words_with_T
@@ -12,19 +12,15 @@ import sqlite3
 import asyncio
 from contextlib import asynccontextmanager
 
+BATCH_SIZE = 8192  # 배치 크기 설정
 
-# TODO : 새로운 리뷰데이터를 파이썬 서버에서 수집해야하는데 감성분석하러 들어올 때 같이 데이터 받고 처리하는 과정에 DB에 저장하면 될 듯!
-# TODO : 지금 워드 클라우드 (단어 빈도 수) 추출해서 반환하는 로직이 지금 필요할 것 같아요!!
-# TODO : 컨텐츠 기반의 추천에서 본 영화는 안나오게 하는 로직이 필요할 듯
-# FastAPI 애플리케이션 생성
 
 # Lifespan 이벤트 핸들러 정의
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global word2vec_model
-    # 애플리케이션 시작 시 실행될 로직 (예: 데이터 로드)
     print("Loading initial data...")
-    await load_initial_data()  # 비동기 데이터 로드 함수 호출
+    await load_initial_data()  #
     word2vec_model = load_word2vec_model()
     print("Initial data loaded.")
     yield  # 애플리케이션이 실행되는 동안 유지
@@ -35,12 +31,6 @@ async def lifespan(app: FastAPI):
 # FastAPI 애플리케이션 생성
 app = FastAPI(lifespan=lifespan)
 
-BATCH_SIZE = 2024  # 배치 크기 설정
-
-
-# word2vec_model = load_word2vec_model()
-
-# updatePcaResultOptimal()
 
 # FastAPI 엔드포인트 정의
 @app.post("/content")
@@ -58,14 +48,8 @@ async def get_movie_with_content(request: List[ContentMovieRequest]):
 
 
 # API 엔드포인트 정의 (배치 처리)
-@app.post("/sentiment_score")
-async def analyze_sentiment(reviews: List[SentimentReviewEvent]):
-    print(f"Received reviews: {reviews}")
-    sentiment_scores = sequential_movie_evaluation(reviews, batch_size=BATCH_SIZE)
-    return sentiment_scores
-
-
-# 협업 필터링
+# 1. 추천 관련 API
+# 협업 필터링을 활용한 리뷰데이터 기반 추천 API
 @app.post("/collabo")
 async def get_movie_with_collabo(userSeq: int = Body(...)):
     # 결과 출력
@@ -74,33 +58,18 @@ async def get_movie_with_collabo(userSeq: int = Body(...)):
     return collabo_movie_responses
 
 
-@app.post("/word_cloud")
-async def word_cloud_update(reviews: List[WordCloudRequest]):
-    conn = sqlite3.connect('recommend.db')
-    cursor = conn.cursor()
-
-    insert_query = """
-        INSERT INTO wordcloud (movie_seq, content) 
-        VALUES (?, ?)
-        """
-    try:
-        for review in reviews:
-            if review.content is not None and review.content.strip() != "":
-                cursor.execute(insert_query, (review.movieSeq, review.content))
-
-        conn.commit()
-
-    except Exception as e:
-        print(f"Error inserting data: {e}")
-        conn.rollback()  # 오류 발생 시 롤백
-
-    finally:
-        # 연결 종료
-        conn.close()
+# 2. Kobert 리뷰 감성분석 API
+@app.post("/sentiment_score")
+async def analyze_sentiment(reviews: List[SentimentReviewEvent]):
+    print(f"Received reviews: {reviews}")
+    sentiment_scores = sequential_movie_evaluation(reviews, batch_size=BATCH_SIZE)
+    return sentiment_scores
 
 
+# 3. 업데이트 관련 API
+# 협업 필터링을 위한 리뷰 데이터 수집 및 수집 된 데이터를 통한 PCA 업데이트
 @app.post("/update_model")
-async def update_model():
+async def update_model(reviews: List[ModelUpdateRequest]):
     conn = sqlite3.connect('recommend.db')
     # print(reviews)
     cursor = conn.cursor()
@@ -139,15 +108,76 @@ async def update_model():
     # await updatePcaResultOptimal()
 
 
+# word2vec 업데이트 API
 @app.post("/word2vec_update")
 async def word2vec_update():
     asyncio.create_task(model_update())
     word2vec_model = load_word2vec_model()
 
 
+# 4. wordCloud 관련 API
+# 워드 클라우드를 위한 형태소 분석 데이터 수집
+@app.post("/word_cloud")
+async def word_cloud_update(reviews: List[WordCloudRequest]):
+    conn = sqlite3.connect('recommend.db')
+    cursor = conn.cursor()
+
+    insert_query = """
+        INSERT INTO wordcloud (movie_seq, content) 
+        VALUES (?, ?)
+        """
+    try:
+        for review in reviews:
+            if review.content is not None and review.content.strip() != "":
+                cursor.execute(insert_query, (review.movieSeq, review.content))
+
+        conn.commit()
+
+    except Exception as e:
+        print(f"Error inserting data: {e}")
+        conn.rollback()  # 오류 발생 시 롤백
+
+    finally:
+        # 연결 종료
+        conn.close()
+
+
+# 워드 클라우드 업데이트
 @app.post("/wordcloud_update")
 async def wordcloud_update():
     return wordcloudUpdate()
+
+
+# 5. 크롤링 된 새로운 영화 업데이트 (word2vec 업데이트를 위한 수집 API)
+@app.post("/movie_update")
+async def new_movieUpdate(movies: List[NewMovieUpdateRequest]):
+    conn = sqlite3.connect('recommend.db')
+    cursor = conn.cursor()
+    insert_query = """
+        INSERT INTO movie_info (movie_seq, movie_title, movie_year, genre) 
+        VALUES (?, ?, ?, ?)
+        """
+    insert_query2 = """
+        INSERT INTO movie_actor (movie_seq, actor_name) 
+        VALUES (?, ?)
+        """
+    try:
+        # 받은 데이터를 반복하면서 삽입
+        for movie in movies:
+            cursor.execute(insert_query, (movie.movieSeq, movie.movieTitle, movie.movieYear, movie.genre))
+            for actor in movie.actors:
+                cursor.execute(insert_query2, (movie.movieSeq, actor.actorName))
+
+        # 변경 사항 커밋
+        conn.commit()
+
+    except Exception as e:
+        print(f"Error inserting data: {e}")
+        conn.rollback()  # 오류 발생 시 롤백
+
+    finally:
+        # 연결 종료
+        conn.close()
 
 
 @app.get("/")
