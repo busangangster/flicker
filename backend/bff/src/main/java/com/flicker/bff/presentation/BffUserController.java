@@ -80,7 +80,7 @@ public class BffUserController {
         dto.setSize(size);
         dto.setOption(option);
 
-        return userService.getMovieReview(dto);
+        return userService.getAllMovieReview(dto);
     }
 
 
