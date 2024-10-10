@@ -15,3 +15,4 @@ const useMoviesByCountry = (
 };
 
 export default useMoviesByCountry;
+

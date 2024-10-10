@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import "../../css/MoviesPage.css";
@@ -21,8 +21,7 @@ const MoviesPage: React.FC = () => {
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
 
-    const getRandomPage = () => Math.floor(Math.random() * 5);
-
+  const getRandomPage = () => Math.floor(Math.random() * 5);
 
   const { data: fantasyMovies, isLoading: isFantasyLoading } = useMoviesByGenre(
     "판타지",
@@ -50,14 +49,13 @@ const MoviesPage: React.FC = () => {
     useMoviesByYear(2024, getRandomPage());
   const { data: highRateMovies, isLoading: isHightRateMoviesLoading } =
     useMoviesByRate();
-const { data: actorData, isLoading: isActorMoviesLoading } = useMoviesByActor(
-  userSeq!
-);
+  const { data: actorData, isLoading: isActorMoviesLoading } = useMoviesByActor(
+    userSeq!
+  );
 
-const actorMovies = actorData?.movies || [];
-const actorName = actorData?.actorName || "";
-const movieTitle = actorData?.movieTitle || "";
-
+  const actorMovies = actorData?.movies || [];
+  const actorName = actorData?.actorName || "";
+  const movieTitle = actorData?.movieTitle || "";
 
   const genres = [
     { value: "SF", label: "SF" },
@@ -91,7 +89,6 @@ const movieTitle = actorData?.movieTitle || "";
     { value: "판타지", label: "판타지" },
   ];
 
-  // 장르 선택 시 해당 페이지로 이동
   const handleGenreChange = (value: string) => {
     setSelectedGenre(value);
     navigate(`/movies/genre/${value}`);

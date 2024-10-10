@@ -4,7 +4,7 @@ import { useUserQuery } from "../../hooks/useUserQuery";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modal from "../../components/common/Modal";
-import { FaExclamationCircle } from "react-icons/fa"; // Modal에서 사용할 아이콘 가져오기
+import { FaExclamationCircle } from "react-icons/fa"; 
 
 const UserInfoEditPage: React.FC = () => {
   const { data: userData } = useUserQuery();

@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const PhotoCardDetailPage: React.FC<{
   card: PhotoCardFrontProps["images"][0] | null;
-  handleCloseModal: () => void; // 모달 닫기 함수 추가
+  handleCloseModal: () => void;
 }> = ({ card, handleCloseModal }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const navigate = useNavigate();
@@ -23,7 +23,6 @@ const PhotoCardDetailPage: React.FC<{
   }
   
 
-  // card가 undefined일 경우 렌더링하지 않음
   if (!card) {
     return <p>카드 데이터가 없습니다.</p>;
   }
@@ -71,9 +70,6 @@ const PhotoCardDetailPage: React.FC<{
                 영화 상세페이지
               </div>
             </div>
-            {/* <span className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-gray-500 bg-opacity-70 text-white text-xs p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-              {`영화 상세페이지로 이동`}
-            </span> */}
           </div>
           <hr className="mb-6 border-gray-600" />
           <div className="flex items-center justify-center mb-6">

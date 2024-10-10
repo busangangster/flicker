@@ -15,8 +15,6 @@ const MovieGenrePage: React.FC = () => {
   const [selectedGenre, setSelectedGenre] = useState(genre || "");
 
   const navigate = useNavigate();
-
-  // 초기 page 값에 따라 MAX_PAGE 설정
   const initialPage = 0;
   const MAX_PAGE = initialPage + 3;
 
@@ -47,13 +45,10 @@ const MovieGenrePage: React.FC = () => {
   ];
 
   const loadMoreMovies = async () => {
-    // 조건을 명확하게 해서 MAX_PAGE를 초과했을 때 함수를 종료
     if (loading || !hasMore || page > MAX_PAGE) return;
 
     setLoading(true);
     try {
-      // console.log(`페이지 ${page}에 대해 영화 데이터를 로드 중...`); // 페이지 로드 시점 확인
-
       if (genre) {
         const encodedGenre = encodeURIComponent(genre);
         const response = await fetchMovieGenre(encodedGenre, page, 30);

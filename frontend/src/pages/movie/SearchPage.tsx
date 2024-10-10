@@ -31,7 +31,6 @@ const SearchPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // console.log(`페이지 ${page}에 대해 영화 데이터를 로드 중...`);
 
       if (searchQuery) {
         const response = await fetchMoviesBySearch(

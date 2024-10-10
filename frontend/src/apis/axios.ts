@@ -1,8 +1,7 @@
-import axios  from "axios";
+import axios from "axios";
 import Cookies from "js-cookie";
 import axiosRetry from "axios-retry";
 import { ActorMoviesResponse } from "../type";
-
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -179,7 +178,7 @@ axiosRetry(movieListApi, {
   },
 });
 
-// 영화 리뷰 가져오기 
+// 영화 리뷰 가져오기
 export const fetchMovieReviews = async (
   movieId: number,
   userSeq: number,
@@ -203,6 +202,31 @@ export const fetchMovieReviews = async (
   }
 };
 
+// 영화 전체 리뷰 가져오기 
+export const fetchMovieReviewsAll = async (
+  movieSeq: number,
+  userSeq: number,
+  option: string,
+) => {
+  try {
+    const response = await reviewApiClient.get(
+      `/all/movies/${movieSeq}?userSeq=${userSeq}`,
+      {
+        params: {
+          userSeq,
+          movieSeq,
+          option,
+        },
+      }
+    );
+    return response?.data?.data ?? [];
+  } catch (error) {
+    console.error("Error fetching movie reviews:", error);
+    throw error;
+  }
+};
+
+
 // 영화 상세정보 조회
 export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
   try {
@@ -210,7 +234,7 @@ export const fetchMovieDetail = async (movieSeq: number, userSeq: number) => {
     return response.data.data; // 반환된 데이터가 올바른지 확인
   } catch (error) {
     console.error("Error fetching movie detail:", error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -336,7 +360,9 @@ export const fetchMovieUserActing = async (userSeq: number) => {
 // 리뷰 기반 추천 영화 목록 조회
 export const fetchMovieUserReview = async (userSeq: number) => {
   try {
-    const response = await movieListApi.get(`/recommendation/review/${userSeq}`);
+    const response = await movieListApi.get(
+      `/recommendation/review/${userSeq}`
+    );
     if (response?.data.data && Array.isArray(response.data.data)) {
       const movies = response.data.data;
       return movies;
@@ -348,7 +374,7 @@ export const fetchMovieUserReview = async (userSeq: number) => {
     console.error("Error fetching movies:", error);
     throw error;
   }
-}
+};
 
 // 최근 작성한 영화 리뷰에 출연한 배우 기반 연관 영화 추천
 export const fetchMovieBasedOnActor = async (
@@ -547,7 +573,12 @@ export const fetchSideBarUserInfo = async (userSeq: number) => {
   }
 };
 
-export const fetchMoviesBySearch = async (keyword: string, userSeq: number, page: number, size: number) => {
+export const fetchMoviesBySearch = async (
+  keyword: string,
+  userSeq: number,
+  page: number,
+  size: number
+) => {
   try {
     const response = await movieListApi.get(
       `/search/${keyword}/${userSeq}/${page}/${size}`
@@ -563,5 +594,4 @@ export const fetchMoviesBySearch = async (keyword: string, userSeq: number, page
     console.error("Error fetching movies:", error);
     throw error;
   }
-}
-
+};

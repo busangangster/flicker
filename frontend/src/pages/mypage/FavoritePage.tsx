@@ -19,16 +19,14 @@ interface FavoriteMovie {
 
 const FavoritePage: React.FC = () => {
   const navigate = useNavigate();
-  // 사용자 정보 가져오기
   const { data: userData } = useUserQuery();
   const userSeq = userData?.userSeq;
 
-  // 즐겨찾기 영화 가져오기
   // 하나의 객체로 묶어서 전달해야함 !!
   const { data: favoriteMovies } = useQuery({
-    queryKey: ["favoriteMovies", userSeq], // queryKey
-    queryFn: () => fetchFavoriteMovies(userSeq!), // queryFn
-    enabled: !!userSeq, // userSeq가 존재할 때만 쿼리 실행, options
+    queryKey: ["favoriteMovies", userSeq], 
+    queryFn: () => fetchFavoriteMovies(userSeq!), 
+    enabled: !!userSeq, 
   });
 
   const prevRef = useRef<HTMLDivElement | null>(null);

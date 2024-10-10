@@ -15,14 +15,14 @@ const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
-    }, 50); // 모달이 뜰 때 약간의 딜레이를 줌
+    }, 50); 
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(() => {
       onClose();
-    }, 300); // 애니메이션 후 모달을 닫음
+    }, 300);
   };
 
   return (

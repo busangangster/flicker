@@ -189,7 +189,7 @@ const MoviesList: React.FC<MoviesListProps> = ({ category, movies }) => {
           movies.map((movie) => (
             <SwiperSlide
               key={movie.movieSeq}
-              className="flex justify-center items-center mt-4 card-wrapper" // 카드 스타일 추가
+              className="flex justify-center items-center mt-4 card-wrapper"
             >
               <div className="card">
                 <div className="poster">
