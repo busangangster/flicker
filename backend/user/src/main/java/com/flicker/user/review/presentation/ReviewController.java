@@ -131,7 +131,7 @@ public class ReviewController {
         return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
     }
 
-    @GetMapping("/no-offset/movies/{movieSeq}")
+    @GetMapping("/no-offset/movies")
     public ResponseEntity<ResponseDto> getAllMovieReviewsNoOffset(@RequestParam(value = "size")Integer size, @RequestParam(value = "lastSeq")Integer lastSeq) {
         List<ReviewDto> movieReviews = reviewService.getAllMovieReviewsNoOffset(size,lastSeq);
         return ResponseDto.response(StatusCode.SUCCESS, movieReviews);
