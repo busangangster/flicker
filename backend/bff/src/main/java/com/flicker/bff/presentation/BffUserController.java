@@ -96,15 +96,11 @@ public class BffUserController {
         return userService.getAllMovieReviewOffset(dto);
     }
 
-    @GetMapping("/no-offset/movies/{movieSeq}")
-    public Mono<ResponseEntity<ResponseDto>> getAllMovieReviewNoOffset(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "20000")Integer size, @RequestParam(value = "option", defaultValue = "like")String option, @RequestParam(value = "lastSeq")Integer lastSeq) {
+    @GetMapping("/no-offset/movies")
+    public Mono<ResponseEntity<ResponseDto>> getAllMovieReviewNoOffset(@RequestParam(value = "size", defaultValue = "20000")Integer size, @RequestParam(value = "lastSeq")Integer lastSeq) {
 
         MovieReviewReqDto dto = new MovieReviewReqDto();
-        dto.setMovieSeq(movieSeq);
-        dto.setUserSeq(myUserSeq);
-        dto.setPage(page);
         dto.setSize(size);
-        dto.setOption(option);
 
         return userService.getAllMovieReviewNoOffset(dto, lastSeq);
     }
