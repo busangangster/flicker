@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class FavoriteMovieListResponse {
-    List<Integer> likeMovieSeqs;
+    List<Integer> movieSeqList;
 }

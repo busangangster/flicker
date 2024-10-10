@@ -464,10 +464,8 @@ public class BffMovieService {
         String path = util.getUri("/collabo");
         return util.sendPostRequestToRecommendServer(recommendBaseUrl, path, userSeq)
                 .flatMap(recommendResponse -> {
-                    System.out.println("recommendResponse = " + recommendResponse);
                     if (recommendResponse == null || recommendResponse.isEmpty()) {
                         // 선호도 영화 기반 추천
-                        System.out.println("선호도 영화 기반 추천 호출됨");
                         return getRecommendationMovieListByLike(userSeq);
                     }
                     // 2. 사용자 서버에서 비선호 영화 목로 가져옴
@@ -564,7 +562,7 @@ public class BffMovieService {
                     }
                     // 2. 영화서버에서 해당 영화의 정보를 가져옴
                     String listMoviePath = util.getUri("/list/movieId");
-                    return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, listMoviePath, favoriteMovieListResponse.getLikeMovieSeqs())
+                    return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, listMoviePath, favoriteMovieListResponse.getMovieSeqList())
                             .flatMap(listMovieResponse -> {
                                 ResponseDto listMovieResponseDto;
                                 try {
