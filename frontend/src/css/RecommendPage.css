@@ -21,9 +21,10 @@
   transform: rotateY(90deg); /* 오른쪽 문이 완전히 열리는 애니메이션 */
 }
 
-.left-door-hover:hover {
-  transform: rotateY(-30deg); /* 왼쪽 문이 절반만 열림 */
-}
+/* 왼쪽문 절반만 열림 */
+/* .left-door-hover:hover {
+  transform: rotateY(-30deg);
+} */
 
 /* 반짝거리는 작은 동그라미 */
 .twinkling-circle {
@@ -44,5 +45,41 @@
   50% {
     opacity: 0.2;
     transform: scale(1.1);
+  }
+}
+
+/* 커스텀 툴팁 기본 스타일 */
+.custom-tooltip {
+  position: absolute;
+  background-color: #030303;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none; /* 마우스 이벤트 무시 */
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.custom-tooltip.visible {
+  opacity: 0.85;
+}
+
+/* 1028px 이상의 화면 크기일 때 */
+@media (min-height: 1028px) {
+  .door {
+    /* F11 시 화면에서 사용되는 스타일 */
+    height: 52vh;
+    width: 10vw;
+  }
+}
+
+/* 1028px 미만의 화면 크기일 때 */
+@media (max-height: 1027px) {
+  .door {
+    /* 기본 화면에서 사용되는 스타일 */
+    height: 54.5vh;
+    width: 8.5vw;
   }
 }

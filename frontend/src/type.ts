@@ -1,4 +1,5 @@
 import { Sprite } from "pixi.js";
+import { IconType } from "react-icons";
 
 export interface ReviewType {
   reviewSeq: number;
@@ -293,4 +294,13 @@ export interface CheckReview {
 export interface ReviewCheckResponse {
   alreadyReview: boolean;
   reviewDto: CheckReview | null; // 리뷰가 없는 경우 null
+}
+
+export interface ModalProps {
+  onClose: () => void;
+  title: string;
+  description?: string;
+  icon?: IconType; // 아이콘 컴포넌트를 동적으로 받음
+  buttonText: string;
+  iconColor?: string;
 }

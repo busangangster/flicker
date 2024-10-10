@@ -207,14 +207,16 @@ const MovieDetailPage: React.FC = () => {
       case "배우":
         return (
           <div className="flex flex-wrap gap-2 mt-6">
-            {(actors || []).map((actor, index) => (
-              <span
-                key={index}
-                className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10"
-              >
-                {actor.actorName}
-              </span>
-            ))}
+            {(actors || [])
+              .slice(0, 15) // 첫 15개의 배우만 가져오기
+              .map((actor, index) => (
+                <span
+                  key={index}
+                  className="relative px-3 py-1 text-[15px] rounded-[5px] text-white bg-black bg-opacity-70 z-10"
+                >
+                  {actor.actorName}
+                </span>
+              ))}
           </div>
         );
       case "감독":
@@ -376,11 +378,11 @@ const MovieDetailPage: React.FC = () => {
           <div className="flex w-full justify-between items-center">
             <div className="text-[38px] font-bold text-white">Reviews</div>
             <button
-              className="text-gray-200 flex ml-auto items-center cursor-pointer text-[16px] px-3 justify-center hover:opacity-80 underline"
+              className="text-gray-200 flex ml-auto items-center cursor-pointer text-[20px] px-3 justify-center hover:opacity-80 underline"
               lang="ko"
               onClick={goToReview}
             >
-              전체보기
+              more
             </button>
           </div>
           <div className="mt-4 space-y-4 text-white text-[14px]">
@@ -430,6 +432,7 @@ const MovieDetailPage: React.FC = () => {
           title="찜 완료!"
           icon={GoHeartFill}
           buttonText="확인"
+          iconColor="#EF7B7B"
         />
       )}
 

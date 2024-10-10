@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../css/Modal.css";
-import { IconType } from "react-icons";
-
-interface ModalProps {
-  onClose: () => void;
-  title: string;
-  description?: string;
-  icon: IconType; 
-  buttonText: string;
-}
+import { ModalProps } from "../../type";
 
 const Modal: React.FC<ModalProps> = ({
   onClose,
@@ -16,6 +8,7 @@ const Modal: React.FC<ModalProps> = ({
   description,
   icon: Icon,
   buttonText,
+  iconColor = "#848484", 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -44,7 +37,12 @@ const Modal: React.FC<ModalProps> = ({
         }`}
       >
         <div className="mb-6 flex items-center justify-center space-x-2">
-          <Icon className="text-[#848484] text-[35px] mr-2" />
+          {Icon && (
+            <Icon
+              className="mr-2"
+              style={{ color: iconColor, fontSize: "35px" }}
+            />
+          )}
           <span className="text-3xl font-bold text-[#4D4D4D]">{title}</span>
         </div>
         {description && (

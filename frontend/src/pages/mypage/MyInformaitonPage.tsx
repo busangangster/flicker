@@ -22,11 +22,12 @@ const MyInformationPage: React.FC = () => {
       <h2 className="text-2xl font-semibold italic mb-4">My Information</h2>
 
       <div className="flex items-start space-x-8">
-        <img
-          src="/assets/George.jpg"
-          alt="User"
-          className="rounded-[90px] w-[220px] h-[170px] object-cover mr-10"
-        />
+        <div
+          className="flex items-center
+       rounded-[9999px] bg-gray-500 w-[220px] h-[170px] justify-center text-white text-[80px]"
+        >
+          {data?.nickname.charAt(0)}
+        </div>
         <div className="grid gap-y-6 w-full text-[18px]">
           <div className="flex items-center">
             <p className="w-24 font-semibold">닉네임</p>
@@ -48,8 +49,8 @@ const MyInformationPage: React.FC = () => {
           </div>
           <div className="flex items-center">
             <p className="w-24 font-semibold">생년월일</p>
-            <p className="border-b border-gray-400 flex-grow pl-2">
-              {data?.birthDate}
+            <p className="border-b border-gray-400 flex-grow pl-2" lang="ko">
+              {data?.birthDate.slice(0, 10).replace(/-/g, ".")}
             </p>
           </div>
           <div className="flex items-center">

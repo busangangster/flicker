@@ -25,9 +25,22 @@ export const signin = async (
       params
     );
 
+    const accessTokenHeader = response.headers["Authorization"];
+
+    if (accessTokenHeader) {
+      const accessToken = accessTokenHeader.replace("Bearer ", "");
+      localStorage.setItem("accessToken", accessToken);
+    } else {
+      console.error("Authorization 헤더가 없습니다:", response.headers);
+    }
+
     // 서버 응답에서 Authorization 헤더 추출
 
-    const accessTokenHeader = response.headers["Authorization"];
+    // const accessToken = response.headers["authorization"].replace(
+    //   "Bearer ",
+    //   ""
+    // );
+    // localStorage.setItem("accessToken", accessToken);
 
     if (accessTokenHeader) {
       const accessToken = accessTokenHeader.replace("Bearer ", "");
