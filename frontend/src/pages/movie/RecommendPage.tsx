@@ -33,7 +33,7 @@ const RecommendPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-black">
+    <div className="flex flex-col h-screen bg-black overflow-y-hidden">
       <header className="sticky top-0 bg-transparent z-10">
         <Navbar />
       </header>

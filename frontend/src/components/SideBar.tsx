@@ -64,28 +64,27 @@ const Sidebar: React.FC = () => {
     <aside className="w-[300px] h-5/6 rounded-md bg-[#2C3751] bg-opacity-80 flex flex-col items-center py-8 ml-20 mt-[110px]">
       {/* Profile Section */}
       <div>MY PAGE</div>
-      <div className="flex flex-col items-center my-8 ">
-        <img
-          src="/assets/George.jpg"
-          alt="Profile"
-          className="rounded-full w-[150px] h-[150px] mb-2"
-        />
+      <div
+        className="flex flex-col items-center my-8
+       rounded-full bg-gray-500 w-[150px] h-[150px] justify-center text-white text-[80px]"
+      >
+        {userData?.nickname.charAt(0)}
+      </div>
         <span className="text-white font-semibold mt-3 text-[20px] mb-8">
           {userData?.nickname}
         </span>
 
         <div className="w-[200px] h-[60px] text-white flex justify-between items-center px-4">
           <div className="flex flex-col items-center">
-            <span className="text-xl font-bold">{data.data.reviewCnt}</span>
+            <span className="text-xl font-bold" lang="ko">{data.data.reviewCnt}</span>
             <span className="text-sm">reviews</span>
           </div>
           <div className="h-8 border-r border-gray-400"></div>
           <div className="flex flex-col items-center">
-            <span className="text-xl font-bold">{data.data.likes}</span>
+            <span className="text-xl font-bold" lang="ko">{data.data.likes}</span>
             <span className="text-sm">likes</span>
           </div>
         </div>
-      </div>
 
       {/* Navigation Menu */}
       <nav className="flex flex-col space-y-8 text-white text-[20px] italic mt-[20px]">
@@ -130,6 +129,7 @@ const Sidebar: React.FC = () => {
           description={modalContent.description}
           icon={modalContent.icon}
           buttonText={modalContent.buttonText}
+          iconColor="#20BD4D"
         />
       )}
     </aside>

@@ -1,3 +1,53 @@
+body {
+  background-color: black; /* 원하는 색상으로 변경 */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+}
+
+
+/* 페이지 전환 페이드 애니메이션 */
+.fade-enter {
+  opacity: 0;
+  transform: scale(0.95);
+  overflow-y: hidden; 
+  position: absolute; /* 레이아웃에 영향 주지 않도록 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  position: absolute; /* 레이아웃에 영향 주지 않도록 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: scale(1);
+  transition: opacity 200ms, transform 200ms;
+}
+.fade-exit {
+  opacity: 1;
+  position: absolute; /* 레이아웃에 영향 주지 않도록 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: scale(1);
+}
+.fade-exit-active {
+  opacity: 0;
+  position: absolute; /* 레이아웃에 영향 주지 않도록 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: scale(0.95);
+  transition: opacity 200ms, transform 200ms;
+}
+
+
 /* 공통 스크롤바 스타일 */
 ::-webkit-scrollbar {
   width: 8px;

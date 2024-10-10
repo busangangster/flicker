@@ -330,6 +330,7 @@ const SignUpPage: React.FC = () => {
           description={modalContent.description}
           icon={modalContent.icon}
           buttonText={modalContent.buttonText}
+          iconColor="#20BD4D"
         />
       )}
     </div>

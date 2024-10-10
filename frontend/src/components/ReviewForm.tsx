@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import starOutline from "../assets/review/star_outline.png";
 import starHalf from "../assets/review/star_half.png";
 import starFull from "../assets/review/star.png";
-import { ReviewType, ReviewForm as ReviewFormData } from "../type"; 
+import { ReviewType, ReviewForm as ReviewFormData } from "../type";
 import { IoMdCheckboxOutline, IoMdSquareOutline } from "react-icons/io";
-import { createReview } from "../apis/movieApi"; 
+import { createReview } from "../apis/movieApi";
 import { useUserQuery } from "../hooks/useUserQuery";
+import Modal from "./common/Modal"; 
+import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa"; 
 
 const ReviewForm: React.FC<{
   onSubmit: (review: ReviewType) => void;
@@ -16,6 +18,11 @@ const ReviewForm: React.FC<{
   const [isSpoiler, setIsSpoiler] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [showModal, setShowModal] = useState<{
+    isOpen: boolean;
+    message: string;
+    type: "success" | "error";
+  } | null>(null); // 모달 상태
   const { data } = useUserQuery();
 
   const handleRatingChange = (index: number, isLeftHalf: boolean) => {
@@ -62,9 +69,17 @@ const ReviewForm: React.FC<{
   const submitReviewToApi = async (reviewData: ReviewFormData) => {
     try {
       await createReview(reviewData);
-      alert("리뷰 작성이 성공적으로 완료되었습니다.");
+      setShowModal({
+        isOpen: true,
+        message: "리뷰 작성이 성공적으로 완료되었습니다.",
+        type: "success",
+      });
     } catch (error) {
-      alert("리뷰 작성에 실패했습니다.");
+      setShowModal({
+        isOpen: true,
+        message: "리뷰 작성에 실패했습니다.",
+        type: "error",
+      });
       throw error;
     }
   };
@@ -74,12 +89,20 @@ const ReviewForm: React.FC<{
 
     // userSeq가 undefined인 경우 폼 제출을 막음
     if (!data?.userSeq) {
-      alert("유저 정보가 없습니다.");
+      setShowModal({
+        isOpen: true,
+        message: "유저 정보가 없습니다.",
+        type: "error",
+      });
       return;
     }
 
     if (content.trim() === "" || rating === 0) {
-      alert("별점과 내용을 모두 입력해주세요.");
+      setShowModal({
+        isOpen: true,
+        message: "별점과 내용을 모두 입력해주세요.",
+        type: "error",
+      });
       return;
     }
 
@@ -187,6 +210,18 @@ const ReviewForm: React.FC<{
           작성하기
         </button>
       </div>
+
+      {showModal?.isOpen && (
+        <Modal
+          onClose={() => setShowModal(null)}
+          title={showModal.type === "success" ? "성공" : "실패"}
+          description={showModal.message}
+          icon={
+            showModal.type === "success" ? FaCheckCircle : FaExclamationCircle
+          }
+          buttonText="확인"
+        />
+      )}
     </form>
   );
 };

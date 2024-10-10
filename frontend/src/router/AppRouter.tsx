@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import ErrorPage from "../pages/ErrorPage";
 import LandingPage from "../pages/LandingPage";
 import SurveyPage from "../pages/SurveyPage";
@@ -19,7 +20,6 @@ import PhotoCardPage from "../pages/mypage/PhotoCardPage";
 import Mypage from "../pages/mypage/Mypage";
 import UserInfoEditPage from "../pages/mypage/UserInfoEditPage";
 import VerificationPage from "../pages/mypage/VerificationPage";
-// import PhotoCardDetailPage from "../pages/mypage/PhotoCardDetailPage";
 import PasswordChangePage from "../pages/auth/PasswordChangePage";
 import Home from "../pages/Home";
 import MoviesPage from "../pages/movie/MoviesPage";
@@ -30,76 +30,85 @@ import RecommendListReviewPage from "../pages/movie/RecommendListReviewPage";
 import RecommendListActionPage from "../pages/movie/RecommendListActionPage";
 
 const AppRoutes: React.FC = () => {
+  const location = useLocation();
+
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/error" element={<ErrorPage />} />
-      <Route path="/landing" element={<LandingPage />} />
-      <Route path="/passwordreset" element={<PasswordResetPage />} />
-      <Route path="/passwordreset/:token" element={<PasswordChangePage />} />
-      <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/signin" element={<SignInPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/servicedetail" element={<ServiceDetailPage />} />
-      <Route path="/moviedetail/:movieSeq" element={<MovieDetailPage />} />
-      <Route
-        path="/recommendlist/action"
-        element={
-          <ProtectedRoute>
-            <RecommendListActionPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/recommendlist/review"
-        element={
-          <ProtectedRoute>
-            <RecommendListReviewPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/recommend"
-        element={
-          <ProtectedRoute>
-            <RecommendPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/survey"
-        element={
-          <ProtectedRoute>
-            <SurveyPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/review/:movieSeq" element={<ReviewPage />} />
-      <Route path="/search" element={<SearchPage />} />
-      <Route path="/movies" element={<MoviesPage />} />{" "}
-      <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />
-      <Route path="/photobook" element={<PhotoBookPage />} />
-      <Route path="/photocard" element={<PhotoCardPage />} />
-      {/* <Route
-        path="/photocarddetail/:movieSeq"
-        element={<PhotoCardDetailPage />}
-      /> */}
-      <Route
-        path="/mypage/*"
-        element={
-          <ProtectedRoute>
-            <Mypage />
-          </ProtectedRoute>
-        }
+    <TransitionGroup>
+      <CSSTransition
+        key={location.key}
+        classNames="fade" 
+        timeout={200} 
       >
-        <Route path="favorite" element={<FavoritePage />} />
-        <Route path="dislike" element={<DisLikePage />} />
-        <Route path="myinformation" element={<MyInformaitonPage />} />
-        <Route path="userinfoedit" element={<UserInfoEditPage />} />
-        <Route path="verification" element={<VerificationPage />} />
-      </Route>
-    </Routes>
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/error" element={<ErrorPage />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/passwordreset" element={<PasswordResetPage />} />
+          <Route
+            path="/passwordreset/:token"
+            element={<PasswordChangePage />}
+          />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/servicedetail" element={<ServiceDetailPage />} />
+          <Route path="/moviedetail/:movieSeq" element={<MovieDetailPage />} />
+          <Route
+            path="/recommendlist/action"
+            element={
+              <ProtectedRoute>
+                <RecommendListActionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recommendlist/review"
+            element={
+              <ProtectedRoute>
+                <RecommendListReviewPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recommend"
+            element={
+              <ProtectedRoute>
+                <RecommendPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/survey"
+            element={
+              <ProtectedRoute>
+                <SurveyPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/review/:movieSeq" element={<ReviewPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/movies/genre/:genre" element={<MovieGenrePage />} />
+          <Route path="/photobook" element={<PhotoBookPage />} />
+          <Route path="/photocard" element={<PhotoCardPage />} />
+          <Route
+            path="/mypage/*"
+            element={
+              <ProtectedRoute>
+                <Mypage />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="favorite" element={<FavoritePage />} />
+            <Route path="dislike" element={<DisLikePage />} />
+            <Route path="myinformation" element={<MyInformaitonPage />} />
+            <Route path="userinfoedit" element={<UserInfoEditPage />} />
+            <Route path="verification" element={<VerificationPage />} />
+          </Route>
+        </Routes>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 
