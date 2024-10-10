@@ -60,8 +60,18 @@ public class BffUserController {
     @GetMapping("/movies/{movieSeq}")
     public Mono<ResponseEntity<ResponseDto>> getMovieReview(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "10")Integer size, @RequestParam(value = "option", defaultValue = "like")String option) {
 
+        MovieReviewReqDto dto = new MovieReviewReqDto();
+        dto.setMovieSeq(movieSeq);
+        dto.setUserSeq(myUserSeq);
+        dto.setPage(page);
+        dto.setSize(size);
+        dto.setOption(option);
 
+        return userService.getMovieReview(dto);
+    }
 
+    @GetMapping("/all/movies/{movieSeq}")
+    public Mono<ResponseEntity<ResponseDto>> getAllMovieReview(@PathVariable("movieSeq") Integer movieSeq, @RequestParam(value = "userSeq") Integer myUserSeq, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "size", defaultValue = "20000")Integer size, @RequestParam(value = "option", defaultValue = "like")String option) {
 
         MovieReviewReqDto dto = new MovieReviewReqDto();
         dto.setMovieSeq(movieSeq);
@@ -72,6 +82,8 @@ public class BffUserController {
 
         return userService.getMovieReview(dto);
     }
+
+
 
     // 6. 리뷰 삭제
     @DeleteMapping("/review")
