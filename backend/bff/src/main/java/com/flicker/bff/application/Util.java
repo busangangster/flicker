@@ -84,7 +84,7 @@ public class Util {
         try {
             WebClient webClient = webClientBuilder
                     .baseUrl(baseUrl)
-                    .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(5120 * 1024))
+                    .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(51200 * 1024))
                     .build();
             return webClient.get()
                     .uri(path)
