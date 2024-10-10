@@ -49,6 +49,7 @@ public class PreFlightCorsConfiguration {
                     headers.add("Access-Control-Max-Age", MAX_AGE);
                     headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
                     headers.add("Access-Control-Allow-Credentials", ALLOWED_CREDENTIALS);
+                    headers.add("Access-Control-Expose-Headers", "Authorization");
                 }
 
                 if (request.getMethod() == HttpMethod.OPTIONS) {
