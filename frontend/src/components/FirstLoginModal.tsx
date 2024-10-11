@@ -11,14 +11,14 @@ const FirstLoginModal: React.FC<FirstLoginModalProps> = ({ onClose }) => {
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
-    }, 50); // 모달이 뜰 때 자연스러운 애니메이션을 위한 딜레이
+    }, 50); 
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(() => {
       onClose();
-    }, 400); // 애니메이션 종료 후 모달 닫기
+    }, 400); 
   };
 
   return (

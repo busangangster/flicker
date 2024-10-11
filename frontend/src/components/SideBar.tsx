@@ -6,41 +6,35 @@ import { fetchSideBarUserInfo } from "../apis/axios";
 import { useUserQuery } from "../hooks/useUserQuery"; // useUserQuery 가져오기
 import Modal from "../components/common/Modal"; // Modal 컴포넌트 불러오기
 import { FaCheckCircle } from "react-icons/fa"; // 모달에 사용할 아이콘 불러오기
-// import { useNavigate } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
-  const queryClient = useQueryClient(); // react-query 캐시 무효화
-  // const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+  const queryClient = useQueryClient(); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const [modalContent, setModalContent] = useState({
     title: "",
     description: "",
     icon: FaCheckCircle,
     buttonText: "확인",
-  }); // 모달의 내용 관리
+  }); 
 
-  // 로그인한 유저의 정보를 가져오는 useUserQuery 사용
   const { data: userData } = useUserQuery();
-  const userSeq = userData?.userSeq; // userSeq 추출
+  const userSeq = userData?.userSeq; 
 
   // 유저 정보가 있을 때만 sidebarUserInfo를 가져옴
   const { data, error, isLoading } = useQuery({
-    queryKey: ["sidebarUserInfo", userSeq], // queryKey에 userSeq 포함
-    queryFn: () => fetchSideBarUserInfo(userSeq!), // userSeq가 있을 때만 fetch 함수 호출
-    enabled: !!userSeq, // userSeq가 존재할 때만 쿼리 실행
+    queryKey: ["sidebarUserInfo", userSeq], 
+    queryFn: () => fetchSideBarUserInfo(userSeq!), 
+    enabled: !!userSeq, 
   });
 
   if (isLoading) return <p>로딩 중...</p>;
   if (error) return <p>유저 정보를 불러오는데 실패했습니다.</p>;
 
-  // 로그아웃 핸들러
   const handleLogout = () => {
-    localStorage.removeItem("accessToken"); // 로컬 스토리지에서 accessToken 삭제
-    Cookies.remove("refreshToken"); // 쿠키에서 refreshToken 삭제
-
-    // react-query 캐시 무효화 (유저 정보 초기화)
+    localStorage.removeItem("accessToken"); 
+    Cookies.remove("refreshToken"); 
     queryClient.removeQueries({
-      queryKey: ["sidebarUserInfo"], // queryKey를 정확하게 설정
+      queryKey: ["sidebarUserInfo"], 
     });
 
     setModalContent({
@@ -51,13 +45,9 @@ const Sidebar: React.FC = () => {
       buttonText: "확인",
     });
     setIsModalOpen(true);
-
-    // 모달 닫은 후 로그인 페이지로 이동
     setTimeout(() => {
       window.location.replace("/home");
     }, 1300);
-    // alert("로그아웃되었습니다.");
-    // window.location.replace("/home"); // /home으로 이동하면서 새로고침
   };
 
   return (
@@ -136,5 +126,4 @@ const Sidebar: React.FC = () => {
   );
 };
 
-// Sidebar를 React.memo로 감싸 리렌더링 방지
 export default React.memo(Sidebar);

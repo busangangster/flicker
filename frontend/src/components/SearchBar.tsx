@@ -58,10 +58,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
       } relative`}
     >
       <div className="flex items-center w-full">
-        {/* 아이콘을 감싸는 div에 크기 조절 */}
         <div className="cursor-pointer" onClick={handleClick}>
           <IoIosSearch size={30} className="text-white" />{" "}
-          {/* 아이콘 크기만 조정 */}
         </div>
 
         <form onSubmit={handleSearchSubmit} className="relative w-full">

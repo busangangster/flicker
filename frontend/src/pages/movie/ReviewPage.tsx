@@ -35,8 +35,6 @@ const ReviewPage: React.FC = () => {
   const navigate = useNavigate();
 
   const userSeq = userData?.userSeq || 0;
-
-  // react-query로 getMoviePoster 요청
   const { data: moviePosterUrl } = useQuery({
     queryKey: ["moviePoster", movieSeq],
     queryFn: () => getMoviePoster(Number(movieSeq)),
@@ -85,7 +83,7 @@ const ReviewPage: React.FC = () => {
           ? "like"
           : sortOption === "최신순"
           ? "date"
-          : "old", // 정렬 옵션 적용
+          : "old", 
         page,
         100
       );
@@ -144,9 +142,9 @@ const ReviewPage: React.FC = () => {
 
   const handleFilterChange = async (value: string) => {
     setSortOption(value);
-    setPage(0); // 페이지 초기화
-    setReviews([]); // 리뷰 초기화
-    setHasMore(true); // 더 가져올 수 있도록 설정
+    setPage(0); 
+    setReviews([]);
+    setHasMore(true); 
   };
 
   const handleAddReview = (newReview: ReviewType) => {
