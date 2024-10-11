@@ -22,7 +22,7 @@ const ReviewForm: React.FC<{
     isOpen: boolean;
     message: string;
     type: "success" | "error";
-  } | null>(null); // 모달 상태
+  } | null>(null); 
   const { data } = useUserQuery();
 
   const handleRatingChange = (index: number, isLeftHalf: boolean) => {
@@ -65,7 +65,6 @@ const ReviewForm: React.FC<{
     }
   };
 
-  // 리뷰 작성 API 호출
   const submitReviewToApi = async (reviewData: ReviewFormData) => {
     try {
       await createReview(reviewData);
@@ -87,7 +86,6 @@ const ReviewForm: React.FC<{
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // userSeq가 undefined인 경우 폼 제출을 막음
     if (!data?.userSeq) {
       setShowModal({
         isOpen: true,
@@ -118,7 +116,6 @@ const ReviewForm: React.FC<{
       top: false,
     };
 
-    // API로 보낼 데이터 구조
     const reviewData: ReviewFormData = {
       userSeq: data?.userSeq || 0,
       movieSeq: movieSeq,
@@ -128,11 +125,9 @@ const ReviewForm: React.FC<{
     };
     try {
       await submitReviewToApi(reviewData);
-      onSubmit(newReview); // 화면에 리뷰 추가
-      setIsFormSubmitted(true); // 폼이 제출되면 폼을 숨김
-
-      // 새로고침 추가
-      window.location.reload(); // 페이지 새로고침
+      onSubmit(newReview); 
+      setIsFormSubmitted(true); 
+      window.location.reload(); 
     } catch (error) {
       console.error("리뷰 제출 중 오류 발생:", error);
     }

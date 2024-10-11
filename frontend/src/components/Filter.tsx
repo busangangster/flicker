@@ -55,7 +55,6 @@ const Filter: React.FC<FilterProps> = ({
         </svg>
       </button>
 
-      {/* 드롭다운 메뉴 (isOpen이 true일 때만 보임) */}
       {isOpen && (
         <div
           className={`absolute z-50 mt-2 rounded-md shadow-lg bg-gray-700 ${
