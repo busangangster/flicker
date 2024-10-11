@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # 🌙 Shoot for the Moon, Even if You Miss, You'll Land Among the Stars 🌟
 
 > **달을 향해 쏴라, 빛나가도 별이 될 테니**  
@@ -11,3 +12,6 @@ This quote reminds us that even when our ambitions seem out of reach, the journe
 ---
 
 **Keep aiming for the stars! 🌠**
+=======
+# frontend
+>>>>>>> Stashed changes

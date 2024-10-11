@@ -1,0 +1,33 @@
+/* MoviesPage.css */
+.swiper-button-next-custom,
+.swiper-button-prev-custom {
+  color: white; /* SVG 색상 */
+  position: absolute;
+  top: 15%; /* 상단에 위치 */
+  height: 90%; /* 전체 높이 차지 */
+  width: 50px; /* 화살표가 차지할 너비 (원하는 대로 조정 가능) */
+  display: flex; /* 중앙 정렬을 위해 flex 사용 */
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  z-index: 3;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+}
+
+.swiper-button-next-custom {
+  right: 0; /* 오른쪽에 위치 */
+}
+
+.swiper-button-prev-custom {
+  left: 0; /* 왼쪽에 위치 */
+}
+
+.swiper-button-next-custom:hover,
+.swiper-button-prev-custom:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* hover 시 배경색 추가 */
+}
+
+.swiper-button-next-custom:hover svg,
+.swiper-button-prev-custom:hover svg {
+  color: white; /* hover 시 SVG 색상 변경 */
+}
