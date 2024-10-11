@@ -20,9 +20,9 @@ const Review: React.FC<ReviewProps> = ({
   const [showContent, setShowContent] = useState(!review.spoiler);
   const [liked, setLiked] = useState(review.liked);
   const [likes, setLikes] = useState(review.likes);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 삭제 모달 상태
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); // 삭제 성공 모달 상태
-  const [isLikeErrorModalOpen, setIsLikeErrorModalOpen] = useState(false); // 좋아요 오류 모달 상태
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
+  const [isLikeErrorModalOpen, setIsLikeErrorModalOpen] = useState(false); 
   const MAX_LENGTH = 250;
   const content = review.content || "";
   const isLongContent = content.length > MAX_LENGTH;
@@ -36,7 +36,7 @@ const Review: React.FC<ReviewProps> = ({
 
   const handleShowMoreClick = () => {
     if (isDetailPage && onShowMore) {
-      onShowMore(review.reviewSeq); // isDetailPage가 true일 때만 onShowMore 호출
+      onShowMore(review.reviewSeq); 
     } else {
       setShowMore((prev) => !prev);
     }
@@ -45,20 +45,18 @@ const Review: React.FC<ReviewProps> = ({
   // 리뷰 삭제 처리
   const handleDeleteReview = async () => {
     if (onDelete) {
-      setIsDeleteModalOpen(true); // 삭제 모달 열기
+      setIsDeleteModalOpen(true);
     }
   };
 
-  // 삭제 확인 버튼 클릭 시 처리
   const confirmDelete = async () => {
     try {
       if (onDelete) {
         await onDelete(review.reviewSeq);
-        setIsSuccessModalOpen(true); // 삭제 성공 모달 열기
+        setIsSuccessModalOpen(true); 
 
-        // 모달을 보여준 후 새로고침 (모달 표시 후 2초 후 새로고침)
         setTimeout(() => {
-          window.location.reload(); // 페이지 새로고침
+          window.location.reload(); 
         }, 1500);
       }
     } catch (error) {
@@ -72,31 +70,29 @@ const Review: React.FC<ReviewProps> = ({
   const handleLikeToggle = async () => {
     try {
       if (liked) {
-        await cancelLikeReview(userSeq, review.reviewSeq); // 좋아요 취소
+        await cancelLikeReview(userSeq, review.reviewSeq); 
         setLiked(false);
         setLikes((prevLikes) => prevLikes - 1);
       } else {
-        await likeReview(userSeq, review.reviewSeq); // 좋아요 추가
+        await likeReview(userSeq, review.reviewSeq); 
         setLiked(true);
         setLikes((prevLikes) => prevLikes + 1);
       }
     } catch (error) {
       console.error("좋아요 처리 중 오류 발생:", error);
-      setIsLikeErrorModalOpen(true); // 좋아요 처리 중 오류 모달 열기
+      setIsLikeErrorModalOpen(true); 
     }
   };
 
   return (
     <div key={review.reviewSeq} className="border-b border-gray-700 mb-2">
       <div className="flex items-start mt-5">
-        {/* 프로필 */}
         <div className="rounded-full bg-gray-500 w-8 h-8 flex items-center justify-center text-white font-bold">
           {review.nickname.charAt(0)}
         </div>
         <div className="ml-4 flex flex-col w-full">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center">
-              {/* 닉네임 및 별점 */}
               <span className="font-semibold">{review.nickname}</span>
               <span className="text-gray-400 text-sm ml-2">
                 's flick record is
@@ -131,7 +127,6 @@ const Review: React.FC<ReviewProps> = ({
             </div>
 
             <div className="flex items-center">
-              {/* 본인 리뷰에만 삭제 버튼 추가 */}
               {onDelete && (
                 <button
                   onClick={handleDeleteReview}
@@ -140,7 +135,6 @@ const Review: React.FC<ReviewProps> = ({
                   삭제
                 </button>
               )}
-              {/* 좋아요 버튼 */}
               <button
                 className="flex items-center p-0 bg-transparent border-none outline-none"
                 onClick={handleLikeToggle}
@@ -191,7 +185,6 @@ const Review: React.FC<ReviewProps> = ({
         </div>
       </div>
 
-      {/* 삭제 확인 모달 */}
       {isDeleteModalOpen && (
         <DeleteModal
           onClose={() => setIsDeleteModalOpen(false)}
@@ -202,7 +195,6 @@ const Review: React.FC<ReviewProps> = ({
         />
       )}
 
-      {/* 삭제 성공 모달 */}
       {isSuccessModalOpen && (
         <Modal
           onClose={() => setIsSuccessModalOpen(false)}
@@ -220,7 +212,6 @@ const Review: React.FC<ReviewProps> = ({
           title="오류"
           description="좋아요 처리 중 오류가 발생했습니다."
           buttonText="확인"
-          // icon을 전달하지 않음
         />
       )}
     </div>

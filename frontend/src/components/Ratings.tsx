@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { getReviewRating } from "../apis/movieApi"; // API 호출 함수 가져오기
+import { getReviewRating } from "../apis/movieApi"; 
 import { RatingData, ReviewRatingCount } from "../type";
 import { TooltipItem } from "chart.js";
 
@@ -23,11 +23,10 @@ ChartJS.register(
 );
 
 const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
-  const [yValues, setYValues] = useState<number[]>(Array(10).fill(0)); // 초기값은 0으로 채워진 배열
-  const [averageRating, setAverageRating] = useState<number>(0); // 가중 평균 값
-  const [totalCnt, setTotalCnt] = useState<number>(0); // 총 리뷰 수
+  const [yValues, setYValues] = useState<number[]>(Array(10).fill(0)); 
+  const [averageRating, setAverageRating] = useState<number>(0); 
+  const [totalCnt, setTotalCnt] = useState<number>(0); 
 
-  // x 라벨 (0.5부터 시작해서 5.0까지)
   const xLabels = Array.from({ length: 10 }, (_, i) =>
     (i * 0.5 + 0.5).toFixed(1)
   );
@@ -37,26 +36,23 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
     try {
       const response: RatingData = await getReviewRating(movieSeq);
 
-      // 별점에 따라 yValues를 업데이트하는 로직
-      const ratingCountMap = Array(10).fill(0); // 0.5부터 5.0까지 0.5 단위로 값 설정
+      const ratingCountMap = Array(10).fill(0); 
 
       response.data.reviewRatingCount.forEach((rating: ReviewRatingCount) => {
-        const index = (rating.reviewRating - 0.5) / 0.5; // reviewRating에 따른 index 계산
+        const index = (rating.reviewRating - 0.5) / 0.5; 
         if (index >= 0 && index < ratingCountMap.length) {
           ratingCountMap[index] = rating.count;
         }
       });
 
-      setYValues(ratingCountMap); // yValues 업데이트
+      setYValues(ratingCountMap); 
 
-      // 가중 평균 계산
       const sumOfRatings = response.data.reviewRatingCount.reduce(
         (sum, rating) => sum + rating.reviewRating * rating.count,
         0
       );
-      setAverageRating(sumOfRatings / response.data.totalCnt || 0); // 평균 값 설정
+      setAverageRating(sumOfRatings / response.data.totalCnt || 0); 
 
-      // 총 리뷰 수 업데이트
       setTotalCnt(response.data.totalCnt);
     } catch (error) {
       console.error("별점 데이터를 불러오는 중 오류 발생:", error);
@@ -64,12 +60,8 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
   };
 
   useEffect(() => {
-    fetchRatingsData(); // 컴포넌트가 로드될 때 별점 데이터를 불러옴
+    fetchRatingsData(); 
   }, [movieSeq]);
-
-  // 최고 값을 가진 막대의 색상을 다르게 설정
-  // const maxValue = Math.max(...yValues);
-  // const maxIndex = yValues.indexOf(maxValue);
 
   const data = {
     labels: xLabels,
@@ -97,9 +89,9 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
           minRotation: 0,
           padding: 0,
           font: {
-            size: 14, // X라벨 크기 조정
+            size: 14, 
           },
-          color: "#FFFFFF", // X라벨 글씨 색상 더 하얗게
+          color: "#FFFFFF", 
           callback: function (_: string | number, index: number) {
             const numericLabel = parseFloat(xLabels[index]);
             return numericLabel % 1 === 0 ? numericLabel.toString() : "";
@@ -119,10 +111,10 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
         display: false,
       },
       tooltip: {
-        enabled: true, // 툴팁 활성화
+        enabled: true, 
         callbacks: {
           label: function (tooltipItem: TooltipItem<"bar">) {
-            return ` ${tooltipItem.raw} Flickers`; // y값을 툴팁으로 표시
+            return ` ${tooltipItem.raw} Flickers`; 
           },
         },
       },
@@ -136,13 +128,10 @@ const Ratings: React.FC<{ movieSeq: number }> = ({ movieSeq }) => {
     clip: false as const,
   };
 
-  // const formattedTotalRatings =
-  //   totalCnt >= 1000 ? `${(totalCnt / 1000).toFixed(0)}K` : totalCnt;
 
   return (
     <div
       className="mt-4 bg-black rounded text-white relative"
-      // style={{ height: "300px" }}
     >
       <div className="flex justify-between items-center mb-1">
         <p className="font-semibold text-lg mr-2">RATINGS</p>

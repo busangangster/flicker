@@ -12,10 +12,8 @@ const Navbar: React.FC = () => {
   const { data } = useUserQuery();
   const navigate = useNavigate();
 
-  const [isVisible, setIsVisible] = useState(true); // Navbar의 가시성 상태
-  const [scrollPosition, setScrollPosition] = useState(0); // 스크롤 위치 상태
-
-  // 모달 상태 관리
+  const [isVisible, setIsVisible] = useState(true); 
+  const [scrollPosition, setScrollPosition] = useState(0); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
@@ -25,7 +23,6 @@ const Navbar: React.FC = () => {
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
 
-      // 스크롤을 아래로 하면 Navbar를 숨기고, 위로 하면 다시 보여줌
       if (currentScrollPos > scrollPosition && currentScrollPos > 50) {
         setIsVisible(false);
       } else {
@@ -43,7 +40,6 @@ const Navbar: React.FC = () => {
   }, [scrollPosition]);
 
   const handleMouseEnter = () => {
-    // 마우스가 화면 상단에 있을 때 Navbar를 다시 보여줌
     if (!isVisible && window.pageYOffset > 50) {
       setIsVisible(true);
     }
@@ -69,7 +65,7 @@ const Navbar: React.FC = () => {
     } else {
       setModalTitle("접근 불가");
       setModalDescription("로그인한 사용자만 접근 가능합니다!");
-      setIsModalOpen(true); // 모달 열기
+      setIsModalOpen(true); 
     }
   };
 
@@ -79,13 +75,13 @@ const Navbar: React.FC = () => {
     } else {
       setModalTitle("접근 불가");
       setModalDescription("로그인한 사용자만 접근 가능합니다!");
-      setIsModalOpen(true); // 모달 열기
+      setIsModalOpen(true); 
     }
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false); // 모달 닫기
-    navigate("/signin"); // 모달이 닫힐 때 로그인 페이지로 이동
+    setIsModalOpen(false); 
+    navigate("/signin"); 
   };
 
   const goToSignin = () => {
@@ -100,12 +96,11 @@ const Navbar: React.FC = () => {
     <div
       className={`w-full bg-black fixed z-20 transition-all duration-300 ${
         isVisible ? "top-0" : "-top-16"
-      }`} // 스크롤에 따라 위치 조정
-      onMouseEnter={handleMouseEnter} // 마우스 호버 시 Navbar 표시
+      }`} 
+      onMouseEnter={handleMouseEnter} 
     >
       <header className="flex items-center mx-auto border-b bg-black border-gray-700 w-full">
         <div className="flex items-center justify-between w-full">
-          {/* 로고 */}
           <div className="flex-none ml-[25px]">
             <NavLink
               to="/home"
@@ -195,7 +190,7 @@ const Navbar: React.FC = () => {
           onClose={handleModalClose}
           title={modalTitle}
           description={modalDescription}
-          icon={IoBan} // IoBan 아이콘 사용
+          icon={IoBan} 
           buttonText="확인"
         />
       )}

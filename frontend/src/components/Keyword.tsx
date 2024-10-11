@@ -5,8 +5,8 @@ import { WordCloud as WordCloudDataType } from "../type";
 import { useParams } from "react-router-dom";
 
 const Keyword: React.FC = () => {
-  const { movieSeq } = useParams<{ movieSeq: string }>(); // URL에서 movieSeq 받아오기
-  const [words, setWords] = useState<{ text: string; value: number }[]>([]); // 워드 클라우드 데이터를 저장할 상태
+  const { movieSeq } = useParams<{ movieSeq: string }>(); 
+  const [words, setWords] = useState<{ text: string; value: number }[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
