@@ -553,17 +553,16 @@ public class BffMovieService {
                                 likeResponseDto.getData()
                         ));
                     }
-                    List<Integer> likeMovieSeqs;
+                    FavoriteMovieListResponse favoriteMovieListResponse;
                     try {
                         // likeResponseDto의 데이터 필드를 List<Integer>로 변환
-                        likeMovieSeqs = objectMapper.convertValue(likeResponseDto.getData(), new TypeReference<List<Integer>>() {
-                        });
+                        favoriteMovieListResponse = objectMapper.convertValue(likeResponseDto.getData(), FavoriteMovieListResponse.class);
                     } catch (Exception e) {
                         return Mono.error(new RestApiException(StatusCode.INTERNAL_SERVER_ERROR, "선호 영화 번호 목록 데이터를 역직렬화하는데 오류 발생: " + e.getMessage()));
                     }
                     // 2. 영화서버에서 해당 영화의 정보를 가져옴
                     String listMoviePath = util.getUri("/list/movieId");
-                    return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, listMoviePath, likeMovieSeqs)
+                    return util.sendGetWithRequestBodyRequestAsync(movieBaseUrl, listMoviePath, favoriteMovieListResponse.getMovieSeqList())
                             .flatMap(listMovieResponse -> {
                                 ResponseDto listMovieResponseDto;
                                 try {

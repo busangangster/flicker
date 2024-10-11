@@ -24,7 +24,7 @@ const PlotModal: React.FC<PlotModalProps> = ({
       moviePosterUrl,
       moviePlot,
     },
-  } = movieDetail; // movieDetailResponse에서 데이터 추출
+  } = movieDetail; 
 
   return (
     <div
@@ -64,7 +64,6 @@ const PlotModal: React.FC<PlotModalProps> = ({
             className="w-[100x] h-[170px] ml-24 opacity-85 mb-2 self-end rounded-sm"
           />
         </div>
-        {/* <p className="text-black mt-5"></p> */}
         <hr className="mt-4" />
         <div className="bg-gray w-full h-[250px] mt-5 overflow-y-scroll custom-scrollbar2 text-white">
           {moviePlot}

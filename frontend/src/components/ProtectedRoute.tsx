@@ -8,14 +8,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { data, isLoading } = useUserQuery();
 
   if (isLoading) {
-    return <div>로딩 중...</div>; // 로딩 상태
+    return <div>로딩 중...</div>; 
   }
 
   if (!data) {
-    return <Navigate to="/signin" />; // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+    return <Navigate to="/signin" />; 
   }
 
-  return <>{children}</>; // 로그인된 경우 자식 컴포넌트를 렌더링
+  return <>{children}</>; 
 };
 
 export default ProtectedRoute;

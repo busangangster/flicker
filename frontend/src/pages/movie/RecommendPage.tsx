@@ -6,23 +6,23 @@ import left_left_door from "/assets/movie/left_left_door.jpg";
 import left_right_door from "/assets/movie/left_right_door.jpg";
 import right_left_door from "/assets/movie/right_left_door.jpg";
 import right_right_door from "/assets/movie/right_right_door.jpg";
-import "../../css/RecommendPage.css"; // CSS 파일에서 애니메이션 정의
+import "../../css/RecommendPage.css"; 
 
 const RecommendPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLeftOpen, setIsLeftOpen] = useState(false);
   const [isRightOpen, setIsRightOpen] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false); // 배경 확대 상태
+  const [isZoomed, setIsZoomed] = useState(false); 
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(
     window.innerHeight >= 1028
-  ); // 기본적으로 현재 창 크기 확인
+  ); 
 
   // 윈도우 크기 변경 감지
   useEffect(() => {
     const handleResize = () => {
-      setIsLargeScreen(window.innerHeight >= 1028); // 1028px 이상일 때 true
+      setIsLargeScreen(window.innerHeight >= 1028); 
     };
 
     window.addEventListener("resize", handleResize);
@@ -34,8 +34,8 @@ const RecommendPage: React.FC = () => {
 
   const handleMouseMove = (event: React.MouseEvent) => {
     setTooltipPosition({
-      x: event.clientX + 10, // 마우스 커서 우측에 10px 떨어지도록 설정
-      y: event.clientY + 10, // 마우스 커서 아래에 10px 떨어지도록 설정
+      x: event.clientX + 10, 
+      y: event.clientY + 10, 
     });
   };
 
@@ -50,19 +50,19 @@ const RecommendPage: React.FC = () => {
   // 왼쪽 문 클릭 시 애니메이션 및 이동
   const gotoLeftRecommend = () => {
     setIsLeftOpen(true);
-    setIsZoomed(true); // 문 아래쪽 부분 확대 시작
+    setIsZoomed(true); 
     setTimeout(() => {
       navigate("/recommendlist/review");
-    }, 1000); // 1초 후 이동
+    }, 1000); 
   };
 
   // 오른쪽 문 클릭 시 애니메이션 및 이동
   const gotoRightRecommend = () => {
     setIsRightOpen(true);
-    setIsZoomed(true); // 문 아래쪽 부분 확대 시작
+    setIsZoomed(true); 
     setTimeout(() => {
       navigate("/recommendlist/action");
-    }, 1000); // 1초 후 이동
+    }, 1000); 
   };
 
   return (
