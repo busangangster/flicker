@@ -31,13 +31,8 @@
 
 ![alt text](exec/img/schedule.png)
 
-####
 
-**Keep aiming for the stars! 🌠**
-
----
-
-## ⭐ 추천 기능
+## ✨ 추천 기능
 
 ### **리뷰를 기반으로 한 추천(협업필터링)**
 
@@ -63,7 +58,7 @@
 
 ![alt text](exec/img/systenarch.png)
 
-## 팀원 소개
+## ⭐ 팀원 소개
 
 ### ***Meet our highly skilled team members!*** | <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg" alt="Notion Logo" width="20"/> [팀 노션](https://snowy-lilac-f3b.notion.site/6-5193ecebfd8643ba9d99d29e3bea2482?pvs=4)
 
