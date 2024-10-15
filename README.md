@@ -62,79 +62,13 @@
 
 ### ***Meet our highly skilled team members!*** | <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg" alt="Notion Logo" width="20"/> [팀 노션](https://snowy-lilac-f3b.notion.site/6-5193ecebfd8643ba9d99d29e3bea2482?pvs=4)
 
-<div>
-  <table>
-    <tr>
-      <td>
-        <div style="display: flex; align-items: center;">
-          <img src="exec/img/hyulKim.jpg" alt="HaHyul Kim" width="150" style="border-radius: 50%; margin-right: 20px;" />
-          <div>
-            <strong>HaHyul Kim</strong><br>
-            <em>Frontend</em><br>
-            UX / UI 개발. 데이터 캐싱 및 서버 비동기 통신<br>
-            <a href="https://github.com/busangangster" target="_blank">GitHub</a> | gkgbf1034@gmail.com
-          </div>
-        </div>
-      </td>
-       <td>
-        <div style="display: flex; align-items: center;">
-          <img src="exec/img/jeong.jpg" alt="HyunJeong Cho" width="150" style="border-radius: 50%; margin-right: 20px;" />
-          <div>
-            <strong>HyunJeong Cho</strong><br>
-            <em>Frontend</em><br>
-            UX / UI 디자인 및 개발. JWT 및 서버 비동기 통신<br>
-            <a href="https://github.com/hyunjeongg11" target="_blank">GitHub</a> | guswjd4585@gmail.com
-          </div>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div style="display: flex; align-items: center;">
-          <img src="exec/img/jihwan.jpg" alt="JiHwan Gong" width="150" style="border-radius: 50%; margin-right: 20px;" />
-          <div>
-            <strong>JiHwan Gong</strong><br>
-            <em>Backend</em><br>
-            데이터 수집. 영화 도메인 서버/BFF 서버 설계 및 구현<br>
-            <a href="https://github.com/izgnok" target="_blank">GitHub</a> | rinch12332@gmail.com
-          </div>
-        </div>
-      </td>
-       <td>
-        <div style="display: flex; align-items: center;">
-          <img src="exec/img/dong.png" alt="dong Oh" width="150" style="border-radius: 50%; margin-right: 20px;" />
-          <div>
-            <strong>DongGyu Oh</strong><br>
-            <em>Backend</em><br>
-            유저/리뷰 도메인 개발. 시스템 아키텍처 설계, 부하 테스트<br>
-            <a href="https://github.com/Eastplanet" target="_blank">GitHub</a> | ehdrb1645@gmail.com
-          </div>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div style="display: flex; align-items: center;">
-          <img src="exec/img/chan.jpg" alt="chan" width="150" style="border-radius: 50%; margin-right: 20px;" />
-          <div>
-             <strong>JaeChan Lee</strong><br>
-            <em>Infra</em><br>
-            인프라 아키텍처, CI/CD 구축. 추천 모델 훈련 및 서버 구현<br>
-            <a href="https://github.com/jaechanjj" target="_blank">GitHub</a> | jaechanjj@gmail.com
-          </div>
-        </div>
-      </td>
-       <td>
-        <div style="display: flex; align-items: center;">
-          <img src="exec/img/jae.jpg" alt="yong" width="150" style="border-radius: 50%; margin-right: 20px;" />
-          <div>
-            <strong>JaeYoung Choi</strong><br>
-            <em>Backend</em><br>
-            배치 서버 구현 및 ERD 설계. 추천 모델 훈련 및 서버 구현<br>
-            <a href="https://github.com/wodyddldl333" target="_blank">GitHub</a> | wodyddldl333@naver.com
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
-</div>
+|  |  |  |  |  |   |
+|---|---|---|---|---|---|
+|![HaHyul Kim](exec/img/hyulKim.jpg) | **HaHyul Kim** <br> Frontend <br> UX / UI 개발. <br> 데이터 캐싱 및 서버 비동기 통신 <br> [GitHub](https://github.com/busangangster) gkgbf1034@gmail.com |![HyunJeong Cho](exec/img/jeong.jpg)| **HyunJeong Cho**  <br> Frontend <br>  UX / UI 디자인 및 개발. <br> JWT 및 서버 비동기 통신 <br> [GitHub](https://github.com/hyunjeongg11) guswjd4585@gmail.com| ![HaHyul Kim](exec/img/jihwan.jpg) | **JiHwan Gong**  <br> Backend  <br> 데이터 수집. 영화 도메인 서버/BFF 서버 설계 및 구현 <br>[GitHub](https://github.com/izgnok)  rinch12332@gmail.com |
+|![HyunJeong Cho](exec/img/dong.png)| **DongGyu Oh**  <br> Backend  <br> 유저/리뷰 도메인 개발. 시스템 아키텍처 설계, 부하 테스트  <br> [GitHub](https://github.com/Eastplanet) <br> ehdrb1645@gmail.com|![HaHyul Kim](exec/img/chan.jpg) | **JaeChan Lee** <br> Infra  <br> 인프라 아키텍처, CI/CD 구축. 추천 모델 훈련 및 서버 구현  <br> [GitHub](https://github.com/jaechanjj)  jaechanjj@gmail.com |![HyunJeong Cho](exec/img/jae.jpg)| **JaeYoung Choi**  <br> Backend  <br> 배치 서버 구현 및 ERD 설계. 추천 모델 훈련 및 서버 구현  <br> [GitHub](https://github.com/wodyddldl333)  wodyddldl333@naver.com|
+
+
+## 🌐 개발 설정
+
+[포팅메뉴얼](https://lab.ssafy.com/s11-bigdata-recom-sub1/S11P21E206/-/blob/master/exec/%EB%B0%B0%ED%8F%AC%20%EA%B0%80%EC%9D%B4%EB%93%9C%20%EB%AC%B8%EC%84%9C.pdf?ref_type=heads)을 참고하세요.
+
