@@ -13,6 +13,24 @@
 
 ---
 
+## ✨ Flicker 페이지 소개
+
+### 1️⃣ HOME
+
+![home](exec/img/flicker_home.gif)
+
+### 2️⃣ MOVIES
+
+![movies](exec/img/flicker_movies.gif)
+
+### 3️⃣ FOR YOU
+
+![foryou](exec/img/flicker_foryou.gif)
+
+### 4️⃣ PHOTOBOOK
+
+![photobook](exec/img/flicker_photobook.gif)
+
 ## ✨ 주요 기능
 
 #### (1) 평점 + 리뷰 기반 추천
@@ -31,7 +49,6 @@
 
 ![alt text](exec/img/schedule.png)
 
-
 ## ✨ 추천 기능
 
 ### **리뷰를 기반으로 한 추천(협업필터링)**
@@ -43,8 +60,6 @@
 3. 유사도 계산 : 차원 축소된 데이터를 바탕으로 코사인 유사도를 계산하여 비슷한 영화나 사용자를 추천
 4. 추천 : 유사도가 높은 영화를 바탕으로 맟춤형 영화 추천 리스트를 생성하여 제공
 5. 모델 업데이트 : 실시간 리뷰 로그 데이터를 수집하여 1시간을 주기로 모델 업데이트 진행
-
-
 
 ### **Word2Vec 모델을 활용한 컨텐츠 기반 추천**
 
@@ -60,15 +75,13 @@
 
 ## ⭐ 팀원 소개
 
-### ***Meet our highly skilled team members!*** | <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg" alt="Notion Logo" width="20"/> [팀 노션](https://snowy-lilac-f3b.notion.site/6-5193ecebfd8643ba9d99d29e3bea2482?pvs=4)
+### **_Meet our highly skilled team members!_** | <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg" alt="Notion Logo" width="20"/> [팀 노션](https://snowy-lilac-f3b.notion.site/6-5193ecebfd8643ba9d99d29e3bea2482?pvs=4)
 
-|   |   |   |   |
-|---|---|---|---|
-| ![HaHyul Kim](exec/img/hyulKim.jpg) | **HaHyul Kim** <br> Frontend <br> UX / UI 개발 <br> 데이터 캐싱 및 서버 비동기 통신 <br> [GitHub](https://github.com/busangangster) <br> gkgbf1034@gmail.com | ![HyunJeong Cho](exec/img/jeong.jpg) | **HyunJeong Cho** <br> Frontend <br>  UX / UI 디자인 및 개발 <br> JWT 및 서버 비동기 통신 <br> [GitHub](https://github.com/hyunjeongg11) <br> guswjd4585@gmail.com |
-| ![jihwan](exec/img/jihwan.jpg) | **JiHwan Gong** <br> Backend <br> 데이터 수집 <br> 영화 도메인 서버 <br> BFF 서버 설계 및 구현 <br>[GitHub](https://github.com/izgnok) <br> rinch12332@gmail.com | ![dong](exec/img/dong.png) | **DongGyu Oh** <br> Backend <br> 유저/리뷰 도메인 개발 <br> 시스템 아키텍처 설계 <br> 부하 테스트  <br> [GitHub](https://github.com/Eastplanet) <br> ehdrb1645@gmail.com |
-| ![chan](exec/img/chan.jpg) | **JaeChan Lee** <br> Infra <br> 인프라 아키텍처, CI/CD 구축 <br>  추천 모델 훈련 및 서버 구현  <br> [GitHub](https://github.com/jaechanjj)  <br> jaechanjj@gmail.com | ![jae](exec/img/jae.jpg) | **JaeYoung Choi** <br> Backend <br> 배치 서버 구현 및 ERD 설계 <br> 추천 모델 훈련 및 서버 구현 <br> [GitHub](https://github.com/wodyddldl333) <br> wodyddldl333@naver.com |
-
-
+|                                     |                                                                                                                                                                   |                                      |                                                                                                                                                                            |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![HaHyul Kim](exec/img/hyulKim.jpg) | **HaHyul Kim** <br> Frontend <br> UX / UI 개발 <br> 데이터 캐싱 및 서버 비동기 통신 <br> [GitHub](https://github.com/busangangster) <br> gkgbf1034@gmail.com      | ![HyunJeong Cho](exec/img/jeong.jpg) | **HyunJeong Cho** <br> Frontend <br> UX / UI 디자인 및 개발 <br> JWT 및 서버 비동기 통신 <br> [GitHub](https://github.com/hyunjeongg11) <br> guswjd4585@gmail.com          |
+| ![jihwan](exec/img/jihwan.jpg)      | **JiHwan Gong** <br> Backend <br> 데이터 수집 <br> 영화 도메인 서버 <br> BFF 서버 설계 및 구현 <br>[GitHub](https://github.com/izgnok) <br> rinch12332@gmail.com  | ![dong](exec/img/dong.png)           | **DongGyu Oh** <br> Backend <br> 유저/리뷰 도메인 개발 <br> 시스템 아키텍처 설계 <br> 부하 테스트 <br> [GitHub](https://github.com/Eastplanet) <br> ehdrb1645@gmail.com    |
+| ![chan](exec/img/chan.jpg)          | **JaeChan Lee** <br> Infra <br> 인프라 아키텍처, CI/CD 구축 <br> 추천 모델 훈련 및 서버 구현 <br> [GitHub](https://github.com/jaechanjj) <br> jaechanjj@gmail.com | ![jae](exec/img/jae.jpg)             | **JaeYoung Choi** <br> Backend <br> 배치 서버 구현 및 ERD 설계 <br> 추천 모델 훈련 및 서버 구현 <br> [GitHub](https://github.com/wodyddldl333) <br> wodyddldl333@naver.com |
 
 ## 🌐 개발 설정
 
