@@ -18,6 +18,7 @@
 ### 1️⃣ HOME
 
 ![home](exec/img/flicker_home.gif)
+
 Flicker 웹 페이지에 처음 들어왔을때,
 
 랜딩페이지와 움직이는 카드형식의 홈페이지를 볼 수 있습니다.
@@ -25,6 +26,7 @@ Flicker 웹 페이지에 처음 들어왔을때,
 ### 2️⃣ MOVIES
 
 ![movies](exec/img/flicker_movies.gif)
+
 Movies 페이지에 들어오면, 사이트의 Today Top 10과 다양한 장르들의 영화 목록을 볼 수 있습니다.
 
 각 영화의 포스터를 호버시에 해당 영화의 간략한 정보를 확인할 수 있습니다.
