@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Application, Sprite, Assets, Texture, Graphics } from "pixi.js";
 import { CircleCarouselProps, ExtendedSprite } from "../type";
 import gsap from "gsap";
@@ -9,19 +9,20 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 }) => {
   const pixiContainerRef = useRef<HTMLDivElement | null>(null);
   const appRef = useRef<Application | null>(null);
-  const cardsRef = useRef<ExtendedSprite[]>([]); // 카드들을 참조하기 위한 ref
-  const isCarouselMovedRef = useRef(false); // useRef로 상태 관리
-  const isMovingRef = useRef(false); // 이동 중 여부 상태
+  const cardsRef = useRef<ExtendedSprite[]>([]);
+  const isCarouselMovedRef = useRef(false);
+  const isMovingRef = useRef(false);
   const rotationOffsetRef = useRef({ value: 0 });
 
-  // Refs for cleanup
+  const carouselOpacityRef = useRef<number>(1);
+  const textContainerRef = useRef<HTMLDivElement | null>(null);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+
   const updateCardsRef = useRef<() => void>(() => {});
   const pointerDownHandlerRef = useRef<(event: PointerEvent) => void>();
   const pointerUpHandlerRef = useRef<(event: PointerEvent) => void>();
   const pointerMoveHandlerRef = useRef<(event: PointerEvent) => void>();
-  const [carouselOpacity, setCarouselOpacity] = useState(1);
 
-  // 카드 이동시키는 함수
   const moveCards = (distance: number) => {
     cardsRef.current.forEach((card) => {
       if (!card.userData.yOffset) {
@@ -40,7 +41,17 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
     isMovingRef.current = true;
     moveCards(distance);
     isCarouselMovedRef.current = true;
-    setCarouselOpacity(0.25);
+
+    // useRef로 관리된 carouselOpacityRef와 DOM 직접 조작
+    carouselOpacityRef.current = 0.25;
+    if (carouselRef.current) {
+      carouselRef.current.style.opacity = "0.25";
+    }
+
+    if (textContainerRef.current) {
+      textContainerRef.current.style.display = "none";
+    }
+
     isMovingRef.current = false;
   };
 
@@ -52,7 +63,16 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
     isMovingRef.current = true;
     moveCards(-distance);
     isCarouselMovedRef.current = false;
-    setCarouselOpacity(1);
+
+    carouselOpacityRef.current = 1;
+    if (carouselRef.current) {
+      carouselRef.current.style.opacity = "1";
+    }
+    // 텍스트 복원
+    if (textContainerRef.current) {
+      textContainerRef.current.style.display = "block";
+    }
+
     isMovingRef.current = false;
   };
 
@@ -70,26 +90,11 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
   };
 
   const items = [
-    {
-      imageUrl: "/assets/CircleCarousel/베테랑.jpg",
-      videoUrl: "BQZ3-mdczwM",
-    },
-    {
-      imageUrl: "/assets/CircleCarousel/기생충.jpg",
-      videoUrl: "ke5YikykPj0",
-    },
-    {
-      imageUrl: "/assets/CircleCarousel/노트북.jpg",
-      videoUrl: "nTTK0S0LPtk",
-    },
-    {
-      imageUrl: "/assets/CircleCarousel/듄.jpg",
-      videoUrl: "ZQhuVLPXf24",
-    },
-    {
-      imageUrl: "/assets/CircleCarousel/명량.jpg",
-      videoUrl: "spQtwggaCy4",
-    },
+    { imageUrl: "/assets/CircleCarousel/베테랑.jpg", videoUrl: "BQZ3-mdczwM" },
+    { imageUrl: "/assets/CircleCarousel/기생충.jpg", videoUrl: "ke5YikykPj0" },
+    { imageUrl: "/assets/CircleCarousel/노트북.jpg", videoUrl: "nTTK0S0LPtk" },
+    { imageUrl: "/assets/CircleCarousel/듄.jpg", videoUrl: "ZQhuVLPXf24" },
+    { imageUrl: "/assets/CircleCarousel/명량.jpg", videoUrl: "spQtwggaCy4" },
     {
       imageUrl: "/assets/CircleCarousel/반지의제왕.jpg",
       videoUrl: "VfrSYFChe40",
@@ -106,14 +111,8 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
       imageUrl: "/assets/CircleCarousel/서울의봄.jpg",
       videoUrl: "-AZ7cnwn2YI",
     },
-    {
-      imageUrl: "/assets/CircleCarousel/신세계.jpg",
-      videoUrl: "rvLMVcRkRfY",
-    },
-    {
-      imageUrl: "/assets/CircleCarousel/암살.jpg",
-      videoUrl: "OkEZTCPpgXc",
-    },
+    { imageUrl: "/assets/CircleCarousel/신세계.jpg", videoUrl: "rvLMVcRkRfY" },
+    { imageUrl: "/assets/CircleCarousel/암살.jpg", videoUrl: "OkEZTCPpgXc" },
     {
       imageUrl: "/assets/CircleCarousel/어바웃타임.jpg",
       videoUrl: "ksn1zUkcKys",
@@ -126,10 +125,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
       imageUrl: "/assets/CircleCarousel/올드보이.jpg",
       videoUrl: "2HkjrJ6IK5E",
     },
-    {
-      imageUrl: "/assets/CircleCarousel/인셉션.jpg",
-      videoUrl: "Uj7z5HH9nfs",
-    },
+    { imageUrl: "/assets/CircleCarousel/인셉션.jpg", videoUrl: "Uj7z5HH9nfs" },
     {
       imageUrl: "/assets/CircleCarousel/콰이어트플레이스.jpg",
       videoUrl: "rf7SFaFSf5c",
@@ -138,14 +134,8 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
       imageUrl: "/assets/CircleCarousel/타이타닉.jpg",
       videoUrl: "9KQm_7Lpt5E",
     },
-    {
-      imageUrl: "/assets/CircleCarousel/파묘.jpg",
-      videoUrl: "fRkOWmfZjkY",
-    },
-    {
-      imageUrl: "/assets/CircleCarousel/베놈.jpg",
-      videoUrl: "BryJA-Xp-Q4",
-    },
+    { imageUrl: "/assets/CircleCarousel/파묘.jpg", videoUrl: "fRkOWmfZjkY" },
+    { imageUrl: "/assets/CircleCarousel/베놈.jpg", videoUrl: "BryJA-Xp-Q4" },
     {
       imageUrl: "/assets/CircleCarousel/극한직업.jpg",
       videoUrl: "-OvSJ4_zc2c",
@@ -183,11 +173,11 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 
         const centerX = app.screen.width / 2;
         const centerY = app.screen.height;
-        const radiusX = 750; 
-        const radiusY = 400; 
-        const cardCount = 20; 
+        const radiusX = 750;
+        const radiusY = 400;
+        const cardCount = 20;
         const cards: ExtendedSprite[] = [];
-        const spacingFactor = 1; 
+        const spacingFactor = 1;
 
         // Load textures
         const textures = await Promise.all(
@@ -270,7 +260,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           310,
           "#000000",
           4,
-          8 
+          8
         );
 
         // Function to set up each card
@@ -291,13 +281,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
           // Create a mask to round the corners of the sprite
           const maskGraphics = new Graphics();
           maskGraphics.beginFill(0xffffff);
-          maskGraphics.drawRoundedRect(
-            -110, 
-            -155, 
-            220, 
-            310, 
-            8 
-          );
+          maskGraphics.drawRoundedRect(-110, -155, 220, 310, 8);
           maskGraphics.endFill();
 
           // Apply the mask to the sprite
@@ -337,7 +321,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 
         // Update cards function
         const updateCards = () => {
-          const rotationOffset = rotationOffsetRef.current.value; 
+          const rotationOffset = rotationOffsetRef.current.value;
           cards.forEach((card, i) => {
             if (card) {
               const angle =
@@ -356,7 +340,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
             appRef.current.renderer.render(appRef.current.stage);
           }
         };
-        updateCardsRef.current = updateCards; 
+        updateCardsRef.current = updateCards;
 
         const rotateAnimation = () => {
           gsap.to(rotationOffsetRef.current, {
@@ -364,7 +348,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
             duration: 2,
             ease: "power2.inOut",
             onUpdate: () => {
-              updateCards(); // rotationOffsetRef.current.value 값을 사용
+              updateCards();
             },
             onComplete: () => {
               setupMouseEvents();
@@ -392,7 +376,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
             const deltaX = currentPosition.x - previousPosition.x;
 
             // 마우스 드래그에 따라 회전 값 조정
-            rotationOffsetRef.current.value += deltaX * 0.002; // 회전 속도 조정
+            rotationOffsetRef.current.value += deltaX * 0.002;
             updateCards();
 
             previousPosition = currentPosition;
@@ -406,11 +390,7 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
         };
 
         rotateAnimation();
-
-        // Use app.ticker instead of Ticker.shared
         app.ticker.add(updateCards);
-
-        // Start the application
         app.start();
       }
     };
@@ -463,29 +443,37 @@ const CircleCarousel: React.FC<CircleCarouselProps> = ({
 
   return (
     <div className="relative w-full h-full">
-      {carouselOpacity === 1 && (
-        <div
-          className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          style={{
-            color: "#fff",
-            zIndex: 10,
-            pointerEvents: "none", 
-          }}
-        >
-          <p className="text-[57px] italic bg-gradient-to-r from-gray-400 via-white to-gray-400 text-transparent bg-clip-text pr-2">
-            FIND YOUR OWN TASTE !
-          </p>
-        </div>
-      )}
+      {/* 
+        기존에는 carouselOpacity === 1 조건으로 이 문구를 렌더링했지만,
+        이제는 DOM을 직접 조작할 예정이므로 항상 렌더링해두고
+        display를 토글합니다.
+      */}
       <div
-        ref={pixiContainerRef}
+        ref={textContainerRef}
+        className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        style={{
+          color: "#fff",
+          zIndex: 10,
+          pointerEvents: "none",
+        }}
+      >
+        <p className="text-[57px] italic bg-gradient-to-r from-gray-400 via-white to-gray-400 text-transparent bg-clip-text pr-2">
+          FIND YOUR OWN TASTE !
+        </p>
+      </div>
+
+      <div
+        ref={(el) => {
+          pixiContainerRef.current = el;
+          carouselRef.current = el; // 동일 요소 참조
+        }}
         className={`w-full h-full ${className} rounded-md`}
         style={{
           position: "absolute",
           top: "50%",
           transform: "translateY(-50%)",
-          pointerEvents: "auto", 
-          opacity: carouselOpacity,
+          pointerEvents: "auto",
+          opacity: carouselOpacityRef.current,
         }}
       ></div>
     </div>
